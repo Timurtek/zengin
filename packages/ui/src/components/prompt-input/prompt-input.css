@@ -1,0 +1,77 @@
+.z-prompt {
+  display: grid;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-xl);
+  color: var(--color-text);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.z-prompt:focus-within {
+  border-color: var(--color-focus);
+}
+
+/* Status owns the edge: quiet while ready, the primary while an answer is on its way, danger on error. */
+.z-prompt[data-status="ready"] {
+  border-color: var(--color-border-strong);
+}
+
+.z-prompt[data-status="submitted"],
+.z-prompt[data-status="streaming"] {
+  border-color: var(--color-primary);
+}
+
+.z-prompt[data-status="error"] {
+  border-color: var(--color-danger);
+}
+
+.z-prompt[data-status="ready"]:focus-within {
+  border-color: var(--color-focus);
+}
+
+.z-prompt__field {
+  width: 100%;
+  min-height: 1.5em;
+  padding: var(--spacing-1);
+  background: none;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  resize: none;
+}
+
+.z-prompt__field:focus-visible {
+  outline: none;
+}
+
+.z-prompt__field::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.z-prompt__field:disabled {
+  color: var(--color-text-subtle);
+}
+
+.z-prompt__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.z-prompt__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z-prompt {
+    transition-duration: 0ms;
+  }
+}

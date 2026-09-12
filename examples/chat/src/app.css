@@ -1,0 +1,147 @@
+/* Layout only. Every value is a token; the components own their own appearance. */
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.chat *,
+.chat *::before,
+.chat *::after {
+  box-sizing: border-box;
+}
+
+.chat h1,
+.chat h2,
+.chat p {
+  margin: 0;
+}
+
+.chat {
+  display: grid;
+  grid-template-columns: 16rem minmax(0, 1fr);
+  height: 100vh;
+}
+
+@media (max-width: 52rem) {
+  .chat {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.chat__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: var(--color-surface-raised);
+  border-right: 1px solid var(--color-border);
+}
+
+@media (max-width: 52rem) {
+  .chat__side {
+    display: none;
+  }
+}
+
+.chat__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.chat__new {
+  width: 100%;
+}
+
+.chat__threads {
+  display: grid;
+  gap: var(--spacing-1);
+}
+
+.chat__thread {
+  width: 100%;
+}
+
+.chat__foot {
+  margin-top: auto;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.chat__main {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+}
+
+.chat__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.chat__title {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+.chat__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.chat__model {
+  width: 9rem;
+}
+
+.chat__thread-view {
+  height: 100%;
+}
+
+/* The log column: centred and capped, so long answers stay readable. */
+.chat__log {
+  width: min(100%, 48rem);
+  margin-inline: auto;
+  padding: var(--spacing-6);
+}
+
+.chat__empty {
+  display: grid;
+  gap: var(--spacing-4);
+  margin: auto 0;
+  padding: var(--spacing-8) 0;
+}
+
+.chat__empty h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+.chat__empty p {
+  max-width: 36rem;
+  color: var(--color-text-muted);
+}
+
+.chat__composer {
+  display: grid;
+  gap: var(--spacing-2);
+  width: min(100%, 48rem);
+  margin-inline: auto;
+  padding: var(--spacing-3) var(--spacing-6) var(--spacing-5);
+}
+
+.chat__hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+  text-align: center;
+}

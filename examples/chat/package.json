@@ -1,0 +1,31 @@
+{
+  "name": "chat",
+  "private": true,
+  "version": "0.0.0",
+  "description": "The AI chat template: conversation, streamed markdown, reasoning, tool calls and sources on @zengin/ui, driven by the Vercel AI SDK.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5177",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check": "node ../../packages/cli/dist/index.js check",
+    "test": "node ../../packages/cli/dist/index.js check",
+    "screenshot": "node demo/look.mjs"
+  },
+  "dependencies": {
+    "@ai-sdk/react": "^4.0.102",
+    "@zengin/ui": "workspace:*",
+    "ai": "^7.0.99",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@zengin/cli": "workspace:*",
+    "puppeteer-core": "^25.10.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.3.0"
+  }
+}

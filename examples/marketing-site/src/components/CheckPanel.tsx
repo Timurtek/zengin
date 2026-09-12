@@ -32,14 +32,15 @@ export function CheckPanel() {
         </div>
       </div>
 
-      <pre className="check__code" tabIndex={0}>
+      {/* A line-numbered view with flagged rows, which is a table of lines rather than a code block. */}
+      <div className="check__code" role="region" aria-label="File contents" tabIndex={0}>
         {lines.map((text, i) => (
           <div key={i} className="check__line" data-flagged={!fixed && flagged.has(i + 1) ? "true" : undefined} data-changed={fixed && changed.has(i + 1) ? "true" : undefined}>
             <span className="check__lineno">{i + 1}</span>
             <code>{text || " "}</code>
           </div>
         ))}
-      </pre>
+      </div>
 
       {fixed ? (
         <p className="check__clean">

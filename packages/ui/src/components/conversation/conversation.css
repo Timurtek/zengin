@@ -1,0 +1,37 @@
+.z-conversation {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  color: var(--color-text);
+}
+
+.z-conversation__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-4);
+  overscroll-behavior: contain;
+}
+
+.z-conversation__jump {
+  position: absolute;
+  bottom: var(--spacing-4);
+  left: 50%;
+  transform: translateX(-50%);
+  animation: z-conversation-rise var(--duration-normal) var(--ease-emphasized);
+}
+
+@keyframes z-conversation-rise {
+  from { opacity: 0; transform: translate(-50%, var(--spacing-2)); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z-conversation__jump {
+    animation: none;
+  }
+}

@@ -15,14 +15,17 @@ describe("buildRegistry", () => {
   it("has every Zengin UI component, the shared items, and the three templates", () => {
     const by = (t: string) => registry.items.filter((i) => i.type === t).map((i) => i.name);
     expect(by("component")).toEqual([
-      "avatar", "badge", "bar-chart", "button", "card", "checkbox", "dialog", "line-chart", "menu", "popover", "progress", "select",
-      "separator", "sheet", "skeleton", "sparkline", "switch", "table", "tabs", "text-area", "text-field", "toast", "tooltip",
+      "avatar", "badge", "bar-chart", "button", "card", "checkbox", "code-block", "conversation", "dialog", "line-chart", "loader", "markdown", "menu", "message",
+      "popover", "progress", "prompt-input", "reasoning", "select", "separator", "sheet", "skeleton", "sources", "sparkline", "suggestions", "switch", "table",
+      "tabs", "text-area", "text-field", "toast", "tool-call", "tooltip",
     ]);
-    expect(by("template")).toEqual(["blank", "marketing", "review", "saas"]);
-    expect(by("lib")).toEqual(["chart", "cx"]);
+    expect(by("template")).toEqual(["blank", "marketing", "review", "saas", "chat"]);
+    expect(by("lib")).toEqual(["lib-chart", "lib-cx", "lib-markdown"]);
+    // A component that composes others depends on them, so `zengin add markdown` brings code-block and table.
+    expect(registry.items.find((i) => i.name === "markdown")!.registryDependencies).toEqual(expect.arrayContaining(["lib-markdown", "code-block", "table"]));
     // A chart component depends on the chart helper as well as cx, and imports both through the alias.
     const line = registry.items.find((i) => i.name === "line-chart")!;
-    expect(line.registryDependencies).toEqual(expect.arrayContaining(["foundation", "chart", "cx"]));
+    expect(line.registryDependencies).toEqual(expect.arrayContaining(["foundation", "lib-chart", "lib-cx"]));
     expect(line.files.find((f) => f.kind === "component")!.content).toContain('from "@/lib/chart"');
     expect(registry.items.find((i) => i.name === "foundation")!.files.map((f) => f.path)).toEqual(expect.arrayContaining(["src/styles/chart.css", "src/styles/motion.css"]));
     expect(by("definitions")).toEqual(["foundation"]);
@@ -37,7 +40,7 @@ describe("buildRegistry", () => {
     expect(tsx.content).not.toContain("internal/cx");
     expect(tsx.content).not.toMatch(/from "\.\.?\/[^"]+\.js"/);
     expect(Object.keys(dialog.dependencies)).toContain("@radix-ui/react-dialog");
-    expect(dialog.registryDependencies).toEqual(expect.arrayContaining(["cx", "foundation"]));
+    expect(dialog.registryDependencies).toEqual(expect.arrayContaining(["lib-cx", "foundation"]));
     expect(dialog.manifest?.export.from).toBe("@/components/ui");
     expect(dialog.files.some((f) => f.kind === "story" && f.content.includes('from "@/components/ui"'))).toBe(true);
   });
@@ -64,7 +67,7 @@ describe("buildRegistry", () => {
     const def = registry.items.find((i) => i.name === "default")!;
     expect(def.files[0]!.content).toContain("--color-primary: #2563eb;");
     expect(def.files[0]!.content).toContain('[data-theme="dark"]');
-    expect(marketing.registryDependencies).toEqual(["foundation", "cx", "badge", "button", "card", "checkbox", "skeleton", "table", "tabs", "text-field", "tooltip"]);
+    expect(marketing.registryDependencies).toEqual(["foundation", "lib-cx", "badge", "button", "card", "checkbox", "code-block", "skeleton", "table", "tabs", "text-field", "tooltip"]); // code-block is imported under an alias
   });
 
   it("round-trips through static files", async () => {
@@ -84,7 +87,7 @@ describe("resolveItems", () => {
     const source = registryFromMemory(registry);
     const items = await resolveItems(source, ["dialog", "button"]);
     const names = items.map((i) => i.name);
-    expect(names.indexOf("cx")).toBeLessThan(names.indexOf("dialog"));
+    expect(names.indexOf("lib-cx")).toBeLessThan(names.indexOf("dialog"));
     expect(names.indexOf("foundation")).toBeLessThan(names.indexOf("dialog"));
     expect(new Set(names).size).toBe(names.length);
     await expect(resolveItems(source, ["buton"])).rejects.toThrow(/no item "buton".*Available: /);
@@ -96,7 +99,7 @@ describe("createProject", () => {
     const dir = join(tmp, "acme-site");
     const r = await createProject({ dir, template: "marketing", source: registryFromMemory(registry), local: root });
     expect(r.violations).toBe(0);
-    expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card", "Checkbox", "Skeleton", "Table", "Tabs", "TextField", "Tooltip"]);
+    expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card", "Checkbox", "CodeBlock", "Skeleton", "Table", "Tabs", "TextField", "Tooltip"]);
 
     const button = readFileSync(join(dir, "src/components/ui/button/button.tsx"), "utf8");
     expect(button.startsWith(`/* zengin-owned Button, forked from @zengin/ui@${registry.version} */`)).toBe(true);

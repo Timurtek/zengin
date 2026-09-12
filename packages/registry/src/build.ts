@@ -21,12 +21,13 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
   const LIB_DESCRIPTIONS: Record<string, string> = {
     cx: "Joins class names, dropping falsy values. Every component imports it.",
     chart: "Scales, paths and the width hook the chart components share.",
+    markdown: "The markdown subset models produce, parsed into blocks for the Markdown component.",
   };
   for (const file of readdirSync(join(ui, "src", "internal")).sort()) {
     if (!file.endsWith(".ts")) continue;
     const name = file.replace(/\.ts$/, "");
     items.push({
-      name,
+      name: `lib-${name}`,
       type: "lib",
       title: name,
       description: LIB_DESCRIPTIONS[name] ?? `${name} helpers from Zengin UI.`,
@@ -70,7 +71,7 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       dependencies[pkg] = v;
     }
     const registryDependencies = ["foundation"];
-    for (const m of tsx.matchAll(/from\s+"\.\.\/\.\.\/internal\/([\w-]+)\.js"/g)) registryDependencies.push(m[1]!);
+    for (const m of tsx.matchAll(/from\s+"\.\.\/\.\.\/internal\/([\w-]+)\.js"/g)) registryDependencies.push(`lib-${m[1]!}`);
     for (const m of tsx.matchAll(/from\s+"\.\.\/([\w-]+)\/[\w-]+\.js"/g)) registryDependencies.push(m[1]!);
 
     const files: RegistryFile[] = [
@@ -140,6 +141,18 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       componentNames,
     }),
   );
+  items.push(
+    templateFrom({
+      root: opts.root,
+      dir: "examples/chat",
+      name: "chat",
+      title: "AI chat",
+      description: "An assistant: conversation with streamed markdown, reasoning, tool calls and sources, a prompt with suggestions, a model picker. On the Vercel AI SDK, with a scripted transport so it runs without a key.",
+      rootFiles: ["index.html"],
+      componentNames,
+    }),
+  );
+
   // Themes: one directory each under packages/ui/themes, a theme.json beside a brand.css.
   const themesDir = join(ui, "themes");
   for (const dir of existsSync(themesDir) ? readdirSync(themesDir).sort() : []) {
@@ -203,7 +216,7 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
     if (/\.(tsx?|css)$/.test(rel)) {
       for (const m of content.matchAll(/import\s*\{([^}]+)\}\s*from\s*"@zengin\/ui"/g)) {
         for (const name of m[1]!.split(",")) {
-          const clean = name.replace(/^\s*type\s+/, "").trim();
+          const clean = name.replace(/^\s*type\s+/, "").replace(/\s+as\s+\w+\s*$/, "").trim(); // `type X` and `X as Y` both name X
           if (!clean) continue;
           const k = kebab(clean);
           if (opts.componentNames.has(k)) used.add(k);
@@ -228,7 +241,7 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
     description: opts.description,
     dependencies: {},
     devDependencies: {},
-    registryDependencies: ["foundation", "cx", ...[...used].sort()],
+    registryDependencies: ["foundation", "lib-cx", ...[...used].sort()],
     files,
     source: opts.dir,
   };

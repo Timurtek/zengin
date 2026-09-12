@@ -66,6 +66,16 @@ Every component renders its variant props as `data-*` attributes and the stylesh
 | `LineChart` | `series` (name, values, tone), `labels`, `height`, `area`, `curve` linear, smooth, `showGrid`, `showAxis`, `formatValue`, `aria-label`. Hover shows every series at the nearest point. | default, hover |
 | `BarChart` | `series`, `labels`, `height`, `showGrid`, `showAxis`, `formatValue`, `aria-label`. Several series draw grouped bars. | default, hover |
 | `Sparkline` | `values`, `tone`, `height`, `area`, `aria-label`. Sets `data-trend` up, down or flat. | |
+| `Markdown` | `text`, `streaming`. The subset models produce: paragraphs, headings, lists, fenced code (as `CodeBlock`), quotes, pipe tables (as `Table`), inline code, bold, italic, links. Never raw HTML. | default, streaming |
+| `CodeBlock` | `code`, `language`, `showCopy`. | default, copied |
+| `Conversation` | Parts `Content` (a live log) and `ScrollButton`. Follows new content while the reader is at the bottom, stops when they scroll up. | at-bottom, scrolled-up |
+| `Message` | `role` user, assistant, system. `name`, `avatarSrc`, `avatar`, `showAvatar`. Parts `Content`, `Actions`. | default, hover |
+| `PromptInput` | `value`, `onValueChange`, `onSubmit`, `status` ready, submitted, streaming, error, `onStop`, `maxRows`, `toolbar`, plus textarea props. Enter sends, Shift+Enter breaks. | ready, submitted, streaming, error, focus-within |
+| `Reasoning` | `text`, `streaming`, `duration`, `defaultOpen`. Open while it streams, folded when the answer starts. | open, closed, streaming |
+| `ToolCall` | `name`, `state` (the AI SDK's tool part states), `input`, `output`, `errorText`, `defaultOpen`. | one per state |
+| `Sources` | `sources` (url, title), `defaultOpen`. | open, closed |
+| `Suggestions` | `items`, `onSelect`, `layout` wrap, scroll. | |
+| `Loader` | `label`, `showLabel`, `size` sm, md. | |
 
 ### The customization contract, as the components implement it
 
@@ -81,6 +91,10 @@ Durations and easings are tokens. Buttons and cards transition on `--duration-fa
 ## Zengin on itself
 
 The package carries a `zengin.config.yaml` and a test that runs the engine over its own source. Components are owned files, so the contract rules are off; the foundation rules stay on. The test passes only when every color and spacing value in every component stylesheet is a token reference. It caught a hardcoded `margin-top: 0.125rem` in the checkbox on the first run.
+
+## The AI kit
+
+Ten components in the shape of AI Elements, taking the Vercel AI SDK's message parts as they are: `Conversation`, `Message`, `Markdown`, `CodeBlock`, `PromptInput`, `Reasoning`, `ToolCall`, `Sources`, `Suggestions`, `Loader`. Zengin UI does not depend on the SDK; `examples/chat` shows the wiring with `useChat` and a scripted transport that streams without a key. The markdown parser is `src/internal/markdown.ts`, shipped by the registry as `lib-markdown`.
 
 ## Charts, motion and breakpoints
 

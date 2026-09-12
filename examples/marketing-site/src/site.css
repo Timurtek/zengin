@@ -553,33 +553,6 @@ body {
   background: linear-gradient(transparent calc(50% - var(--spacing-1)), var(--color-primary) calc(50% - var(--spacing-1)), var(--color-primary) calc(50% + var(--spacing-1)), transparent calc(50% + var(--spacing-1)));
 }
 
-/* Code blocks */
-.code {
-  display: grid;
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-}
-
-.code__title {
-  padding: var(--spacing-1) var(--spacing-4);
-  background-color: var(--color-text);
-  color: var(--color-surface);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: 0.04em;
-}
-
-.code pre {
-  margin: 0;
-  padding: var(--spacing-4);
-  overflow-x: auto;
-  background-color: var(--color-surface-raised);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: var(--leading-normal);
-  tab-size: 2;
-}
-
 /* Rules table: the system's Table; these classes only place and set content type on cells. */
 .rules__id {
   font-family: var(--font-mono);
@@ -827,11 +800,6 @@ body {
   gap: var(--spacing-2);
 }
 
-/* The create command wraps inside the card instead of scrolling. */
-.catalog__body .code pre {
-  white-space: pre-wrap;
-  word-break: break-word;
-}
 
 /* Footer */
 .footer {

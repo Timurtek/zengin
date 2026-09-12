@@ -62,6 +62,16 @@
         "dev"
       ],
       "port": 5176
+    },
+    {
+      "name": "chat",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "chat",
+        "dev"
+      ],
+      "port": 5177
     }
   ]
 }

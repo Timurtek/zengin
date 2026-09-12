@@ -38,8 +38,8 @@ Items are built, never hand-written. Components come from `packages/ui/src/compo
 | Item type | Examples | Installs |
 | --- | --- | --- |
 | `component` | `button`, `dialog`, `tabs` | TSX and CSS under `src/components/ui`, the story, the manifest entry, the barrel export, the stylesheet import |
-| `template` | `blank`, `marketing`, `review`, `saas` | App files under `src/` plus `index.html`; depends on the components it uses |
-| `lib` | `cx`, `chart` | `src/lib/<name>.ts`; every file in `packages/ui/src/internal` is one, and components depend on the ones they import |
+| `template` | `blank`, `marketing`, `review`, `saas`, `chat` | App files under `src/` plus `index.html`; depends on the components it uses |
+| `lib` | `lib-cx`, `lib-chart`, `lib-markdown` | `src/lib/<name>.ts`; every file in `packages/ui/src/internal` is one, named `lib-<file>` so it cannot collide with a component, and components depend on the ones they import |
 | `definitions` | `foundation` | `zengin/tokens.json`, `zengin/tokens.dark.json`, `src/styles/base.css` |
 | `theme` | `default`, `meadow`, `plex`, `spec-sheet` | `src/theme/brand.css`, replacing the current one, plus the theme's fonts link in `index.html` |
 

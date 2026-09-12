@@ -21,7 +21,17 @@
 .z-separator,
 .z-textarea,
 .z-chart,
-.z-sparkline {
+.z-sparkline,
+.z-markdown,
+.z-codeblock,
+.z-conversation,
+.z-message,
+.z-prompt,
+.z-reasoning,
+.z-toolcall,
+.z-sources,
+.z-suggestions,
+.z-loader {
   box-sizing: border-box;
   font-family: var(--font-sans);
   line-height: var(--leading-normal);
@@ -46,7 +56,17 @@
 .z-progress *,
 .z-separator *,
 .z-textarea *,
-.z-chart * {
+.z-chart *,
+.z-markdown *,
+.z-codeblock *,
+.z-conversation *,
+.z-message *,
+.z-prompt *,
+.z-reasoning *,
+.z-toolcall *,
+.z-sources *,
+.z-suggestions *,
+.z-loader * {
   box-sizing: border-box;
 }
 

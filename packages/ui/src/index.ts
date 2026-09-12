@@ -22,3 +22,14 @@ export { LineChart, type LineChartProps, type LineChartCurve } from "./component
 export { BarChart, type BarChartProps } from "./components/bar-chart/bar-chart.js";
 export { Sparkline, type SparklineProps } from "./components/sparkline/sparkline.js";
 export type { ChartTone, Series as ChartSeries } from "./internal/chart.js";
+export { Markdown, type MarkdownProps } from "./components/markdown/markdown.js";
+export { CodeBlock, type CodeBlockProps } from "./components/code-block/code-block.js";
+export { Conversation, type ConversationProps } from "./components/conversation/conversation.js";
+export { Message, type MessageProps, type MessageRole } from "./components/message/message.js";
+export { PromptInput, type PromptInputProps, type PromptStatus } from "./components/prompt-input/prompt-input.js";
+export { Reasoning, type ReasoningProps } from "./components/reasoning/reasoning.js";
+export { ToolCall, type ToolCallProps, type ToolCallState } from "./components/tool-call/tool-call.js";
+export { Sources, type SourcesProps, type Source } from "./components/sources/sources.js";
+export { Suggestions, type SuggestionsProps } from "./components/suggestions/suggestions.js";
+export { Loader, type LoaderProps, type LoaderSize } from "./components/loader/loader.js";
+export { parseMarkdown, type Block as MarkdownBlock, type Inline as MarkdownInline } from "./internal/markdown.js";

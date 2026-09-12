@@ -119,7 +119,7 @@ function TemplateCard({ template, src, theme, embedded }: { template: Item; src:
           </Badge>
         </div>
         <p>{template.description}</p>
-        <CodeBlock>{command}</CodeBlock>
+        <CodeBlock wrap>{command}</CodeBlock>
         <div className="catalog__actions">
           <Button asChild variant="soft" size="sm">
             <a href={src} target="_blank" rel="noreferrer">

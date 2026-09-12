@@ -11,3 +11,5 @@ examples/marketing-site/public/r/
 examples/marketing-site/public/templates/
 # Rendered by examples/saas/demo/look.mjs
 examples/saas/demo/*.png
+# Rendered by examples/chat/demo/look.mjs
+examples/chat/demo/*.png

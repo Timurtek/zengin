@@ -14,6 +14,7 @@
   "updateInternalDependencies": "patch",
   "ignore": [
     "blank",
+    "chat",
     "marketing-site",
     "review-workspace",
     "saas"

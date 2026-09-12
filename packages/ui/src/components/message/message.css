@@ -1,0 +1,81 @@
+.z-message {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--spacing-3);
+  color: var(--color-text);
+}
+
+.z-message__avatar {
+  padding-top: var(--spacing-1);
+}
+
+.z-message__main {
+  display: grid;
+  gap: var(--spacing-2);
+  min-width: 0;
+}
+
+.z-message__content {
+  display: grid;
+  gap: var(--spacing-3);
+  min-width: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+/* The user speaks in a bubble on the right; the assistant answers in the open, full width. */
+.z-message[data-role="assistant"] .z-message__content {
+  max-width: 100%;
+}
+
+.z-message[data-role="user"] {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.z-message[data-role="user"] .z-message__avatar {
+  order: 2;
+}
+
+.z-message[data-role="user"] .z-message__main {
+  justify-items: end;
+}
+
+.z-message[data-role="user"] .z-message__content {
+  max-width: 80%;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-primary-soft);
+  border-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-sm);
+  color: var(--color-primary-soft-foreground);
+}
+
+.z-message[data-role="system"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.z-message[data-role="system"] .z-message__content {
+  justify-self: center;
+  padding: var(--spacing-1) var(--spacing-3);
+  background-color: var(--color-surface-sunken);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.z-message__actions {
+  display: flex;
+  gap: var(--spacing-1);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.z-message:hover .z-message__actions,
+.z-message:focus-within .z-message__actions {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z-message__actions {
+    transition-duration: 0ms;
+  }
+}

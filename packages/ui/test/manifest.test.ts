@@ -97,6 +97,11 @@ describe("components.json against the implementation", () => {
       Separator: ["orientation"],
       TextArea: ["size", "resize"],
       Sparkline: ["tone"],
+      Message: ["role"],
+      Loader: ["size"],
+      Suggestions: ["layout"],
+      PromptInput: ["status"],
+      ToolCall: ["state"],
     };
     for (const [comp, props] of Object.entries(styled)) {
       const m = manifests.find((x) => x.name === comp)!;

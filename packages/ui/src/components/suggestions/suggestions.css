@@ -1,0 +1,19 @@
+.z-suggestions {
+  display: flex;
+  gap: var(--spacing-2);
+  color: var(--color-text);
+}
+
+.z-suggestions[data-layout="wrap"] {
+  flex-wrap: wrap;
+}
+
+.z-suggestions[data-layout="scroll"] {
+  overflow-x: auto;
+  padding-bottom: var(--spacing-1);
+  scrollbar-width: thin;
+}
+
+.z-suggestions[data-layout="scroll"] > * {
+  flex: none;
+}

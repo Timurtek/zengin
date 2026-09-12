@@ -1,10 +1,6 @@
-export function CodeBlock({ title, children }: { title?: string; children: string }) {
-  return (
-    <div className="code">
-      {title && <div className="code__title">{title}</div>}
-      <pre>
-        <code>{children}</code>
-      </pre>
-    </div>
-  );
+import { CodeBlock as UiCodeBlock } from "@zengin/ui";
+
+/** The system's CodeBlock, with the page's older `title` name kept for the label. */
+export function CodeBlock({ title, wrap = false, children }: { title?: string; wrap?: boolean; children: string }) {
+  return <UiCodeBlock code={children} language={title} wrap={wrap} />;
 }

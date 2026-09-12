@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Avatar, Badge, BarChart, Button, Card, Checkbox, Dialog, LineChart, Menu, Popover, Progress, Select, Separator, Sheet, Skeleton, Sparkline, Switch, Table, Tabs, TextArea, TextField, Toast, Tooltip, initials, toast } from "../src/index.js";
+import { Avatar, Badge, BarChart, Button, Card, Checkbox, CodeBlock, Conversation, Dialog, LineChart, Loader, Markdown, Menu, Message, Popover, Progress, PromptInput, Reasoning, Select, Separator, Sheet, Skeleton, Sources, Sparkline, Suggestions, Switch, Table, Tabs, TextArea, TextField, Toast, ToolCall, Tooltip, initials, parseMarkdown, toast } from "../src/index.js";
 import { axisLabelIndexes } from "../src/components/line-chart/line-chart.js";
 import { extent, linePath, defaultFormat } from "../src/internal/chart.js";
 
@@ -530,5 +530,123 @@ describe("charts", () => {
     expect(defaultFormat(1234)).toBe("1.2k");
     expect(defaultFormat(2_500_000)).toBe("2.5M");
     expect(defaultFormat(7)).toBe("7");
+  });
+});
+
+describe("AI kit", () => {
+  it("parses the markdown subset models produce", () => {
+    const blocks = parseMarkdown("## Title\n\nOne `code` and **bold** with [a link](https://x.io/p).\n\n- first\n- second\n\n```ts\nconst a = 1;\n```\n\n> quoted\n\n---\n1. one\n2. two");
+    expect(blocks.map((b) => b.kind)).toEqual(["heading", "paragraph", "list", "code", "quote", "rule", "list"]);
+    expect(blocks[2]).toMatchObject({ kind: "list", ordered: false });
+    expect(blocks[3]).toEqual({ kind: "code", language: "ts", code: "const a = 1;" });
+    expect(blocks[6]).toMatchObject({ kind: "list", ordered: true });
+    const para = blocks[1]!;
+    expect(para.kind === "paragraph" && para.children.map((n) => n.kind)).toEqual(["text", "code", "text", "strong", "text", "link", "text"]);
+    // An unclosed fence while streaming is still a code block.
+    expect(parseMarkdown("```css\n.a { color: red; }")[0]).toEqual({ kind: "code", language: "css", code: ".a { color: red; }" });
+  });
+
+  it("renders markdown without raw HTML and shows a cursor while streaming", () => {
+    const { container } = render(<Markdown text={"Hello **there** <b>x</b>\n\n```ts\nlet a\n```"} streaming />);
+    expect(container.querySelector("strong")).toHaveTextContent("there");
+    expect(container.querySelector("b")).toBeNull();
+    expect(container.textContent).toContain("<b>x</b>");
+    expect(container.querySelector(".z-codeblock code")).toHaveTextContent("let a");
+    expect(container.querySelector(".z-markdown__cursor")).not.toBeNull();
+  });
+
+  it("code block shows its language and copies", async () => {
+    const write = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText: write } });
+    render(<CodeBlock code="npm i" language="bash" />);
+    expect(screen.getByText("bash")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Copy" }));
+    expect(write).toHaveBeenCalledWith("npm i");
+    await screen.findByText("Copied");
+  });
+
+  it("messages take a role and label themselves", () => {
+    render(
+      <Message role="user" name="Mina">
+        <Message.Content>Hi</Message.Content>
+      </Message>,
+    );
+    const m = screen.getByRole("article", { name: "Mina" });
+    expect(m).toHaveAttribute("data-role", "user");
+    expect(screen.getByRole("img", { name: "Mina" })).toHaveTextContent("M");
+  });
+
+  it("conversation exposes a live log and hides the jump button at the bottom", () => {
+    render(
+      <Conversation>
+        <Conversation.Content>
+          <Message role="assistant">
+            <Message.Content>One</Message.Content>
+          </Message>
+        </Conversation.Content>
+        <Conversation.ScrollButton />
+      </Conversation>,
+    );
+    expect(screen.getByRole("log")).toHaveAttribute("aria-live", "polite");
+    expect(screen.queryByRole("button", { name: "Jump to latest" })).toBeNull();
+  });
+
+  it("prompt input sends on Enter, keeps Shift+Enter, and swaps to stop while streaming", () => {
+    const onSubmit = vi.fn();
+    const onStop = vi.fn();
+    const { rerender } = render(<PromptInput onSubmit={onSubmit} onStop={onStop} />);
+    const field = screen.getByRole("textbox", { name: "Message" });
+    expect(screen.getByRole("button", { name: "Send" })).toBeDisabled();
+    fireEvent.change(field, { target: { value: "  hello  " } });
+    expect(screen.getByRole("button", { name: "Send" })).toBeEnabled();
+    fireEvent.keyDown(field, { key: "Enter", shiftKey: true });
+    expect(onSubmit).not.toHaveBeenCalled();
+    fireEvent.keyDown(field, { key: "Enter" });
+    expect(onSubmit).toHaveBeenCalledWith("hello");
+    expect(field).toHaveValue("");
+    rerender(<PromptInput onSubmit={onSubmit} onStop={onStop} status="streaming" />);
+    fireEvent.click(screen.getByRole("button", { name: "Stop generating" }));
+    expect(onStop).toHaveBeenCalled();
+    expect(screen.getByRole("textbox").closest(".z-prompt")).toHaveAttribute("data-status", "streaming");
+  });
+
+  it("reasoning opens while streaming, summarises the duration, and toggles", () => {
+    const { rerender } = render(<Reasoning text="thinking" streaming />);
+    expect(screen.getByRole("button", { name: /Thinking/ })).toHaveAttribute("aria-expanded", "true");
+    rerender(<Reasoning text="thought" duration={3.2} />);
+    const summary = screen.getByRole("button", { name: /Thought for 3s/ });
+    expect(summary).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(summary);
+    expect(screen.getByText("thought")).toBeInTheDocument();
+  });
+
+  it("tool calls show the state and fold input and output", () => {
+    render(<ToolCall name="getWeather" state="output-available" input={{ city: "Berlin" }} output={{ temp: 21 }} defaultOpen />);
+    expect(screen.getByText("getWeather")).toBeInTheDocument();
+    expect(screen.getByText("Done")).toBeInTheDocument();
+    expect(screen.getByText(/"city": "Berlin"/)).toBeInTheDocument();
+    expect(screen.getByText(/"temp": 21/)).toBeInTheDocument();
+    const { container } = render(<ToolCall name="x" state="output-error" errorText="boom" defaultOpen />);
+    expect(container.querySelector(".z-toolcall")).toHaveAttribute("data-state", "output-error");
+    expect(screen.getByRole("alert")).toHaveTextContent("boom");
+  });
+
+  it("sources count, unfold, and show hosts; nothing renders for none", () => {
+    const { container } = render(<Sources sources={[]} />);
+    expect(container.firstChild).toBeNull();
+    render(<Sources sources={[{ url: "https://www.w3.org/community/design-tokens/", title: "DTCG" }, { url: "https://example.com/a" }]} />);
+    fireEvent.click(screen.getByRole("button", { name: "2 sources" }));
+    expect(screen.getByRole("link", { name: /DTCG.*w3\.org/ })).toHaveAttribute("href", "https://www.w3.org/community/design-tokens/");
+    expect(screen.getByRole("link", { name: /example\.com\/a.*example\.com/ })).toBeInTheDocument();
+  });
+
+  it("suggestions send their text, and the loader announces itself", () => {
+    const onSelect = vi.fn();
+    render(<Suggestions items={["One", "Two"]} onSelect={onSelect} layout="scroll" />);
+    fireEvent.click(screen.getByRole("button", { name: "Two" }));
+    expect(onSelect).toHaveBeenCalledWith("Two");
+    expect(screen.getByRole("group", { name: "Suggestions" })).toHaveAttribute("data-layout", "scroll");
+    render(<Loader label="Working" size="sm" />);
+    expect(screen.getByRole("status", { name: "Working" })).toHaveAttribute("data-size", "sm");
   });
 });

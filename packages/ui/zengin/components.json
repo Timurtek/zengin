@@ -1577,5 +1577,523 @@
       "down",
       "flat"
     ]
+  },
+  {
+    "name": "Markdown",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Markdown"
+    },
+    "replaces": [
+      "react-markdown#*",
+      "streamdown#*"
+    ],
+    "props": {
+      "text": {
+        "type": "string"
+      },
+      "streaming": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "color": null,
+      "font": null,
+      "background-color": null
+    },
+    "states": [
+      "default",
+      "streaming"
+    ]
+  },
+  {
+    "name": "CodeBlock",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "CodeBlock"
+    },
+    "replaces": [
+      "pre"
+    ],
+    "props": {
+      "code": {
+        "type": "string"
+      },
+      "language": {
+        "type": "string"
+      },
+      "showCopy": {
+        "type": "boolean",
+        "default": true
+      },
+      "wrap": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "border-radius": null,
+      "padding": null,
+      "font": null,
+      "color": null
+    },
+    "states": [
+      "default",
+      "copied"
+    ]
+  },
+  {
+    "name": "Conversation",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Conversation"
+    },
+    "replaces": [],
+    "props": {},
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "padding": null
+    },
+    "slots": [
+      "Content",
+      "ScrollButton"
+    ],
+    "states": [
+      "at-bottom",
+      "scrolled-up"
+    ]
+  },
+  {
+    "name": "Message",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Message"
+    },
+    "replaces": [],
+    "props": {
+      "role": {
+        "type": "enum",
+        "values": [
+          "user",
+          "assistant",
+          "system"
+        ],
+        "default": "assistant"
+      },
+      "name": {
+        "type": "string"
+      },
+      "avatarSrc": {
+        "type": "string"
+      },
+      "avatar": {
+        "type": "node"
+      },
+      "showAvatar": {
+        "type": "boolean",
+        "default": true
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": "role",
+      "color": "role",
+      "border-radius": "role",
+      "padding": "role",
+      "font": null
+    },
+    "slots": [
+      "Content",
+      "Actions"
+    ],
+    "states": [
+      "default",
+      "hover"
+    ]
+  },
+  {
+    "name": "PromptInput",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "PromptInput"
+    },
+    "replaces": [],
+    "props": {
+      "value": {
+        "type": "string"
+      },
+      "defaultValue": {
+        "type": "string"
+      },
+      "onValueChange": {
+        "type": "function"
+      },
+      "onSubmit": {
+        "type": "function"
+      },
+      "status": {
+        "type": "enum",
+        "values": [
+          "ready",
+          "submitted",
+          "streaming",
+          "error"
+        ],
+        "default": "ready"
+      },
+      "onStop": {
+        "type": "function"
+      },
+      "maxRows": {
+        "type": "number",
+        "default": 8
+      },
+      "toolbar": {
+        "type": "node"
+      },
+      "sendLabel": {
+        "type": "string"
+      },
+      "placeholder": {
+        "type": "string"
+      },
+      "disabled": {
+        "type": "boolean"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": "status",
+      "border-radius": null,
+      "padding": null,
+      "font": null,
+      "color": null
+    },
+    "slots": [
+      "toolbar"
+    ],
+    "states": [
+      "ready",
+      "submitted",
+      "streaming",
+      "error",
+      "focus-within"
+    ]
+  },
+  {
+    "name": "Reasoning",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Reasoning"
+    },
+    "replaces": [],
+    "props": {
+      "text": {
+        "type": "string"
+      },
+      "streaming": {
+        "type": "boolean",
+        "default": false
+      },
+      "duration": {
+        "type": "number"
+      },
+      "defaultOpen": {
+        "type": "boolean"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "color": null,
+      "font": null,
+      "border-color": null
+    },
+    "states": [
+      "open",
+      "closed",
+      "streaming"
+    ]
+  },
+  {
+    "name": "ToolCall",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "ToolCall"
+    },
+    "replaces": [],
+    "props": {
+      "name": {
+        "type": "string"
+      },
+      "state": {
+        "type": "enum",
+        "values": [
+          "input-streaming",
+          "input-available",
+          "approval-requested",
+          "approval-responded",
+          "output-available",
+          "output-error",
+          "output-denied"
+        ],
+        "default": "input-available"
+      },
+      "input": {
+        "type": "unknown"
+      },
+      "output": {
+        "type": "unknown"
+      },
+      "errorText": {
+        "type": "string"
+      },
+      "defaultOpen": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "border-radius": null,
+      "padding": null,
+      "font": null,
+      "color": null
+    },
+    "states": [
+      "input-streaming",
+      "input-available",
+      "approval-requested",
+      "approval-responded",
+      "output-available",
+      "output-error",
+      "output-denied"
+    ]
+  },
+  {
+    "name": "Sources",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Sources"
+    },
+    "replaces": [],
+    "props": {
+      "sources": {
+        "type": "array"
+      },
+      "defaultOpen": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "border-radius": null,
+      "padding": null,
+      "font": null,
+      "color": null
+    },
+    "states": [
+      "open",
+      "closed"
+    ]
+  },
+  {
+    "name": "Suggestions",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Suggestions"
+    },
+    "replaces": [],
+    "props": {
+      "items": {
+        "type": "array"
+      },
+      "onSelect": {
+        "type": "function"
+      },
+      "layout": {
+        "type": "enum",
+        "values": [
+          "wrap",
+          "scroll"
+        ],
+        "default": "wrap"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "padding": null
+    },
+    "states": [
+      "default"
+    ]
+  },
+  {
+    "name": "Loader",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Loader"
+    },
+    "replaces": [
+      "@radix-ui/themes#Spinner"
+    ],
+    "props": {
+      "label": {
+        "type": "string",
+        "default": "Thinking"
+      },
+      "showLabel": {
+        "type": "boolean",
+        "default": false
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "color": null,
+      "font": null,
+      "width": "size",
+      "height": "size"
+    },
+    "states": [
+      "default"
+    ]
   }
 ]
