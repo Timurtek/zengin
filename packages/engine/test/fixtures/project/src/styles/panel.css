@@ -1,0 +1,12 @@
+.panel {
+  background: #ffffff;
+  padding: 13px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-txt);
+}
+
+.panel__title {
+  margin-bottom: 8px;
+  color: var(--color-text);
+}

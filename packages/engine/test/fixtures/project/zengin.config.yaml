@@ -1,0 +1,26 @@
+system:
+  package: "@zengin/ui"
+  version: "1.2.0"
+  definitions: ../system
+  sources: ["@zengin/ui", "@/components/ui/*"]
+
+scope:
+  include: ["src/**/*.{ts,tsx,css}"]
+  exclude: ["**/*.stories.tsx", "**/*.test.tsx"]
+  foundations: ["src/theme/**"]
+  ownership: ["src/components/ui/**"]
+
+rules:
+  color-literal:
+    severity: error
+    allow: semantic
+    except: ["src/marketing/illustrations/**"]
+  spacing-literal: { severity: error }
+  token-reference: { severity: error }
+  unknown-prop: { severity: error }
+  unknown-prop-value: { severity: error }
+  classname-policy: { severity: error }
+  component-substitution:
+    severity: error
+    map:
+      "@headlessui/react#Dialog": Dialog

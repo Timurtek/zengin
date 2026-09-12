@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Button",
+    "since": "1.0.0",
+    "export": { "from": "@zengin/ui", "name": "Button" },
+    "replaces": ["button", "@headlessui/react#Button"],
+    "extends": "button",
+    "props": {
+      "variant": { "type": "enum", "values": ["solid", "soft", "ghost", "link"], "default": "solid" },
+      "tone": { "type": "enum", "values": ["neutral", "primary", "danger"], "default": "neutral", "since": "1.1.0" },
+      "size": { "type": "enum", "values": ["sm", "md", "lg", "xl"], "default": "md", "valuesSince": { "xl": "1.3.0" } },
+      "loading": { "type": "boolean", "default": false },
+      "leadingIcon": { "type": "node" },
+      "trailingIcon": { "type": "node" }
+    },
+    "className": { "allow": ["margin", "width", "flex-item", "grid-item", "position"] },
+    "owns": {
+      "background-color": "tone",
+      "color": "tone",
+      "padding": "size",
+      "border-radius": null,
+      "font": "size"
+    },
+    "slots": ["leadingIcon", "trailingIcon"],
+    "states": ["default", "hover", "active", "focus-visible", "disabled", "loading"]
+  },
+  {
+    "name": "Dialog",
+    "since": "1.0.0",
+    "export": { "from": "@zengin/ui", "name": "Dialog" },
+    "replaces": ["dialog", "@headlessui/react#Dialog", "@radix-ui/react-dialog#*"],
+    "props": {
+      "open": { "type": "boolean" },
+      "onOpenChange": { "type": "function" },
+      "size": { "type": "enum", "values": ["sm", "md", "lg"], "default": "md" }
+    },
+    "className": { "allow": [] },
+    "owns": {
+      "background-color": null,
+      "padding": "size",
+      "border-radius": null,
+      "box-shadow": null
+    },
+    "slots": ["Trigger", "Content", "Title", "Description", "Close"],
+    "states": ["closed", "open"],
+    "migrations": {
+      "@headlessui/react#Dialog": "Dialog.Panel becomes Dialog.Content; onClose becomes onOpenChange."
+    }
+  }
+]

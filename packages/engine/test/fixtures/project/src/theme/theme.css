@@ -1,0 +1,7 @@
+/* Foundation file: the only place literal values live. The engine does not check it. */
+@theme {
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --spacing-3: 12px;
+  --radius-md: 6px;
+}
