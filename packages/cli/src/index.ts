@@ -5,6 +5,7 @@ import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { init, initFromShadcn } from "./init.js";
 import { renderRollup, runReport, runRollup } from "./report.js";
+import { runAdd, runCreate, runRegistryBuild, runTokens, type ScaffoldOptions } from "./scaffold.js";
 import { writeFileSync } from "node:fs";
 
 const HELP = `zengin: design-system conformance, enforceable.
@@ -16,11 +17,28 @@ Usage:
   zengin init --from shadcn           derive tokens, manifest and config from a shadcn/ui project
   zengin report [--out file]          one repository's snapshot: violations plus inventory, as JSON, for the rollup
   zengin rollup <snapshots...>        drift and adoption across repositories, from report snapshots
+  zengin create <dir>                 a new project on Zengin UI: components copied in, engine, MCP, hook, Storybook wired
+  zengin add <items...>               components or templates from the registry into this project
+  zengin tokens                       zengin/tokens*.json to src/styles/generated/tokens.css
+  zengin registry build --out <dir>   build the registry from a Zengin repository checkout
 
 Init options:
   --from shadcn         read the theme CSS, Tailwind config and components/ui; write zengin/ and zengin.config.yaml
   --dir <path>          project directory (default: cwd)
   --force               overwrite existing zengin/ definitions and config
+
+Create and add options:
+  --template <name>     blank | marketing | review (create; default: blank)
+  --name <name>         package name (create; default: the directory name)
+  --registry <dir|url>  where items come from (default: $ZENGIN_REGISTRY or the public registry)
+  --no-storybook        skip the Storybook config and stories (create)
+  --local <repo>        link the Zengin packages from a repository checkout instead of npm (create)
+  --dir <path>          project directory (add, tokens; default: cwd)
+  --force               overwrite files that already exist (add)
+
+Registry options:
+  --root <path>         the Zengin repository (default: found above cwd)
+  --out <dir>           where to write index.json and items/
 
 Report options:
   --repo <name>         repository name in the snapshot (default: from the git remote, else the directory)
@@ -46,12 +64,13 @@ Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 us
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "report" | "rollup" | "help";
+  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "help";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
   report: { repo?: string; includeViolations: boolean; out?: string };
   rollup: { previous?: string; format: "markdown" | "json" | "html"; out?: string };
+  scaffold: ScaffoldOptions;
 }
 
 export function parseArgs(argv: string[], cwd: string): Parsed {
@@ -62,6 +81,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
   const initOpts: Parsed["init"] = { force: false };
   const reportOpts: Parsed["report"] = { includeViolations: false };
   const rollupOpts: Parsed["rollup"] = { format: "markdown" };
+  const scaffold: ScaffoldOptions = { storybook: true, force: false };
   let rawFormat: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
@@ -72,7 +92,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       return v;
     };
     if (!a.startsWith("-") && !command) {
-      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "help") command = a;
+      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "help") command = a;
       else {
         command = "check";
         positional.push(a);
@@ -96,14 +116,25 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a.startsWith("--max=")) check.max = asInt(a.slice(6));
     else if (a === "--from") initOpts.from = value();
     else if (a.startsWith("--from=")) initOpts.from = a.slice(7);
-    else if (a === "--dir") initOpts.dir = value();
-    else if (a.startsWith("--dir=")) initOpts.dir = a.slice(6);
-    else if (a === "--force") initOpts.force = true;
+    else if (a === "--dir") initOpts.dir = scaffold.dir = value();
+    else if (a.startsWith("--dir=")) initOpts.dir = scaffold.dir = a.slice(6);
+    else if (a === "--force") initOpts.force = scaffold.force = true;
+    else if (a === "--template") scaffold.template = value();
+    else if (a.startsWith("--template=")) scaffold.template = a.slice(11);
+    else if (a === "--name") scaffold.name = value();
+    else if (a.startsWith("--name=")) scaffold.name = a.slice(7);
+    else if (a === "--registry") scaffold.registry = value();
+    else if (a.startsWith("--registry=")) scaffold.registry = a.slice(11);
+    else if (a === "--no-storybook") scaffold.storybook = false;
+    else if (a === "--local") scaffold.local = value();
+    else if (a.startsWith("--local=")) scaffold.local = a.slice(8);
+    else if (a === "--root") scaffold.root = value();
+    else if (a.startsWith("--root=")) scaffold.root = a.slice(7);
     else if (a === "--repo") reportOpts.repo = value();
     else if (a.startsWith("--repo=")) reportOpts.repo = a.slice(7);
     else if (a === "--include-violations") reportOpts.includeViolations = true;
-    else if (a === "--out") reportOpts.out = rollupOpts.out = value();
-    else if (a.startsWith("--out=")) reportOpts.out = rollupOpts.out = a.slice(6);
+    else if (a === "--out") reportOpts.out = rollupOpts.out = scaffold.out = value();
+    else if (a.startsWith("--out=")) reportOpts.out = rollupOpts.out = scaffold.out = a.slice(6);
     else if (a === "--previous") rollupOpts.previous = value();
     else if (a.startsWith("--previous=")) rollupOpts.previous = a.slice(11);
     else throw new Error(`Unknown option ${a}. Try zengin --help.`);
@@ -119,7 +150,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     }
   }
   if (initOpts.from && initOpts.from !== "shadcn") throw new Error(`--from supports "shadcn" (got ${initOpts.from}).`);
-  return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts };
+  return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold };
 }
 
 function asRule(s: string): RuleId {
@@ -172,6 +203,20 @@ async function main(): Promise<void> {
       }
       const path = init(dir);
       process.stdout.write(`Wrote ${path}. Edit system.package to point at your design system, then run: zengin check\n`);
+      return;
+    }
+    case "create":
+      process.stdout.write((await runCreate(parsed.positional[0], parsed.scaffold, process.cwd())) + "\n");
+      return;
+    case "add":
+      process.stdout.write((await runAdd(parsed.positional, parsed.scaffold, process.cwd())) + "\n");
+      return;
+    case "tokens":
+      process.stdout.write(runTokens(parsed.scaffold, process.cwd()) + "\n");
+      return;
+    case "registry": {
+      if (parsed.positional[0] !== "build") throw new Error("zengin registry supports: build --out <dir>");
+      process.stdout.write(runRegistryBuild(parsed.scaffold, process.cwd()) + "\n");
       return;
     }
     case "report": {

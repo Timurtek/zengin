@@ -1,0 +1,58 @@
+import type { ComponentManifest } from "@zengin/engine";
+
+export const REGISTRY_SCHEMA = "zengin-registry/1";
+
+export type ItemType = "component" | "template" | "lib" | "definitions";
+
+export type FileKind = "component" | "style" | "story" | "lib" | "template" | "definitions";
+
+export interface RegistryFile {
+  /** Path relative to the project root the item installs into. */
+  path: string;
+  kind: FileKind;
+  content: string;
+}
+
+export interface RegistryItem {
+  name: string;
+  type: ItemType;
+  title: string;
+  description: string;
+  /** npm packages the item needs at runtime. */
+  dependencies: Record<string, string>;
+  /** npm packages the item needs at build time. */
+  devDependencies: Record<string, string>;
+  /** Other registry items this one needs, installed first. */
+  registryDependencies: string[];
+  files: RegistryFile[];
+  /** For components: the manifest entry, with `export.from` already pointing at the project alias. */
+  manifest?: ComponentManifest;
+}
+
+/** The index: every item without its file contents, so a client can list and resolve before fetching. */
+export interface RegistryIndex {
+  schema: typeof REGISTRY_SCHEMA;
+  name: string;
+  /** Version of the system the items were cut from; written into the owned pragma of installed files. */
+  version: string;
+  generatedAt: string;
+  items: Omit<RegistryItem, "files" | "manifest">[];
+}
+
+export interface Registry extends Omit<RegistryIndex, "items"> {
+  items: RegistryItem[];
+}
+
+/** Where installed files go inside a project. One convention, so `add` needs no configuration. */
+export const LAYOUT = {
+  componentsDir: "src/components/ui",
+  alias: "@/components/ui",
+  libDir: "src/lib",
+  stylesIndex: "src/styles/index.css",
+  storiesDir: "stories",
+  definitionsDir: "zengin",
+} as const;
+
+export function isRegistryIndex(x: unknown): x is RegistryIndex {
+  return typeof x === "object" && x !== null && (x as RegistryIndex).schema === REGISTRY_SCHEMA && Array.isArray((x as RegistryIndex).items);
+}

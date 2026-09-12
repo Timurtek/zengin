@@ -5,12 +5,13 @@
   "description": "Zengin's own marketing page, built on @zengin/ui with a distinct brand through tokens, and enforced by the engine it advertises.",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 5174",
-    "build": "vite build",
+    "dev": "node ../../packages/cli/dist/index.js registry build --out public/r && vite --port 5174",
+    "build": "node ../../packages/cli/dist/index.js registry build --out public/r && vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check": "node ../../packages/cli/dist/index.js check",
     "test": "node ../../packages/cli/dist/index.js check",
-    "screenshot": "node demo/screenshot.mjs"
+    "screenshot": "node demo/screenshot.mjs",
+    "registry": "node ../../packages/cli/dist/index.js registry build --out public/r"
   },
   "dependencies": {
     "@zengin/ui": "workspace:*",

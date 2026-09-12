@@ -150,9 +150,11 @@ export const PROOF = [
   { figure: "0", after: null, title: "hand-written definitions", body: "Both field tests ran from zengin init --from shadcn. 275 violations classified in total; every miss became a regression test in the engine." },
 ];
 
-export const INSTALL = `git clone ${REPO}
-cd zengin && pnpm install && pnpm build
+export const INSTALL = `# A new project: components copied in, engine, MCP, hook and Storybook wired
+npx zengin create acme --template marketing
+cd acme && npm install && npm run dev
+npm run add -- dialog tooltip
 
-cd ../your-app
-zengin init --from shadcn     # or write zengin.config.yaml by hand
+# An existing project: derive the definitions, then check
+zengin init --from shadcn
 zengin check`;

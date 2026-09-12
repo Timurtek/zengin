@@ -6,6 +6,11 @@ The `zengin` command. The gate that actually protects the codebase: run it pre-c
 zengin check [paths...]     check files (default: everything in scope)
 zengin explain [rule]       what each rule checks
 zengin init                 write a zengin.config.yaml in the current directory
+zengin create <dir>         a new project that owns its components, with the engine, MCP, hook and Storybook wired
+zengin add <items...>       components or templates from the registry into this project
+zengin tokens               zengin/tokens*.json to src/styles/generated/tokens.css
+zengin registry build       the registry, from a Zengin repository checkout
+zengin report, rollup       drift and adoption, per repository and across them
 ```
 
 ## check
@@ -66,6 +71,18 @@ jobs:
 ```
 
 `--format github` emits workflow commands, so each violation appears as an inline annotation on the changed line with the fix in the message. The job fails on `error` severity unless `--fail-on` says otherwise.
+
+## create and add
+
+```bash
+zengin create acme --template marketing       # blank | marketing | review
+zengin create acme --no-storybook
+zengin create acme --registry ./r --local ../zengin   # a local registry, packages linked from a checkout
+cd acme && zengin add dialog tooltip          # more items; --force overwrites files that exist
+zengin tokens                                 # after editing zengin/tokens*.json (dev and build run it)
+```
+
+`create` writes the project, copies the template's components in with the owned pragma, merges their manifest entries into `zengin/components.json`, builds `tokens.css`, and runs the engine on the result before it prints. `add` does the same for further items and records any npm packages they need in `package.json`. See [@zengin/registry](../registry) for the layout and the registry format.
 
 ## report and rollup
 

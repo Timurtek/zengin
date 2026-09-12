@@ -16,7 +16,18 @@ Everyone else serves context. Zengin serves constraints.
 | [`@zengin/cli`](packages/cli) | Phase 1 | `zengin check` for pre-commit and CI, with `--changed`, `--staged`, and GitHub annotations. `explain`, `init`. |
 | [`@zengin/adapter-shadcn`](packages/adapter-shadcn) | Phase 2 | `zengin init --from shadcn`: derives tokens, the component manifest and a config from a shadcn/ui project. Reproduces the taxonomy field test exactly. |
 | [`@zengin/rollup`](packages/rollup) | Phase 2 | `zengin report` in each consuming repo, `zengin rollup` across them: drift, adoption, suppressions, owned forks, pinned versions, deltas. Markdown, JSON, or a self-contained HTML page. |
+| [`@zengin/registry`](packages/registry) | Phase 3 | The registry and the generator: `zengin create` scaffolds a project that owns its components shadcn-style, `zengin add` brings in more, `zengin tokens` compiles the token JSON. Items are built from `packages/ui` and `examples/`; the marketing site serves the public registry. |
 | [`@zengin/ui`](packages/ui) | Phase 1, eight components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
+
+## Start a project
+
+```bash
+npx zengin create acme --template marketing   # or: blank, review
+cd acme && npm install && npm run dev
+npm run add -- dialog tooltip
+```
+
+The project owns its components (`src/components/ui`, each file carrying the version it was copied from), its definitions (`zengin/`), a brand file, Storybook, and the MCP server and hook. The generator runs the engine on the result before it returns: a fresh project reports zero violations. Until the first npm release, run the CLI from a checkout with `--local <path>`.
 
 ## The two reference experiences
 

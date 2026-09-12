@@ -10,7 +10,8 @@
     "typecheck": "pnpm -r typecheck",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm install --lockfile-only",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "registry": "node packages/cli/dist/index.js registry build --out examples/marketing-site/public/r"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^1.0.1",

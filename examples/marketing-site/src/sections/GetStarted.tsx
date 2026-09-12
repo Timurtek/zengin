@@ -8,12 +8,12 @@ export function GetStarted() {
       <div className="wrap start">
         <div className="start__copy">
           <span className="eyebrow">Get started</span>
-          <h2 className="title">A clone, a config, a check</h2>
+          <h2 className="title">One command, then build</h2>
           <p>
-            The packages publish to npm as @zengin/engine, @zengin/cli, @zengin/mcp, @zengin/hook, @zengin/rollup, @zengin/adapter-shadcn and @zengin/ui with the first release. Until
-            then, a local clone is the install, and the CLI runs from packages/cli/dist.
+            A new project arrives with the components copied into src/components/ui, yours to edit, the definitions in zengin/, a brand file, Storybook, and the engine, MCP server and
+            hook already wired. This page is the marketing template; the review workspace is the other one.
           </p>
-          <p>The config is one line when the system is an installed package. A shadcn project gets its definitions derived; anything else gets a template with the questions to answer.</p>
+          <p>An existing project keeps its own system: a shadcn project gets its definitions derived, anything else gets a config template with the questions to answer.</p>
           <div className="hero__actions">
             <Button asChild tone="primary">
               <a href={REPO}>Open the repository</a>
