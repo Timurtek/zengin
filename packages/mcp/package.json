@@ -4,10 +4,36 @@
   "description": "MCP server exposing the Zengin conformance engine to coding agents.",
   "license": "MIT",
   "type": "module",
-  "bin": { "zengin-mcp": "./dist/index.js" },
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "lint",
+    "conformance",
+    "coding-agents",
+    "zengin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Timurtek/zengin.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://github.com/Timurtek/zengin/tree/main/packages/mcp#readme",
+  "bugs": "https://github.com/Timurtek/zengin/issues",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "zengin-mcp": "./dist/index.js"
+  },
   "main": "./dist/server.js",
   "types": "./dist/server.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",

@@ -4,10 +4,36 @@
   "description": "Claude Code PostToolUse hook that checks every file write against the design system.",
   "license": "MIT",
   "type": "module",
-  "bin": { "zengin-hook": "./dist/index.js" },
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "lint",
+    "conformance",
+    "coding-agents",
+    "zengin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Timurtek/zengin.git",
+    "directory": "packages/hook"
+  },
+  "homepage": "https://github.com/Timurtek/zengin/tree/main/packages/hook#readme",
+  "bugs": "https://github.com/Timurtek/zengin/issues",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "zengin-hook": "./dist/index.js"
+  },
   "main": "./dist/hook.js",
   "types": "./dist/hook.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",

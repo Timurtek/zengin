@@ -4,6 +4,24 @@
   "description": "Deterministic design-system conformance engine. Code in, structured violations out.",
   "license": "MIT",
   "type": "module",
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "lint",
+    "conformance",
+    "coding-agents",
+    "zengin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Timurtek/zengin.git",
+    "directory": "packages/engine"
+  },
+  "homepage": "https://github.com/Timurtek/zengin/tree/main/packages/engine#readme",
+  "bugs": "https://github.com/Timurtek/zengin/issues",
+  "engines": {
+    "node": ">=20"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -15,6 +33,10 @@
   "files": [
     "dist"
   ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -27,14 +49,6 @@
     "postcss": "^8.5.28",
     "yaml": "^2.8.1"
   },
-  "devDependencies": {
-    "@types/babel__parser": "*",
-    "@types/node": "^22",
-    "@types/picomatch": "^4",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.2",
-    "vitest": "^5.0.0"
-  },
   "peerDependencies": {
     "tailwindcss": "^4.0.0"
   },
@@ -42,5 +56,13 @@
     "tailwindcss": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "@types/babel__parser": "*",
+    "@types/node": "^22",
+    "@types/picomatch": "^4",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.2",
+    "vitest": "^5.0.0"
   }
 }
