@@ -44,12 +44,22 @@ describe("buildRegistry", () => {
     expect(paths.some((p) => p.includes("generated"))).toBe(false);
     for (const f of marketing.files) expect(f.content, f.path).not.toMatch(/from "@zengin\/ui/); // prose may still name the package
     expect(marketing.files.find((f) => f.path === "src/main.tsx")!.content).toContain('import "./styles/index.css"');
-    // Every template's entry point loads the brand file, or themes and brands would change nothing.
+    // Every template's entry point loads the brand file, or themes and brands would change nothing; the
+    // site's preview harness never ships in a template; every template names the app it is derived from.
     for (const name of ["blank", "marketing", "review"]) {
-      const main = registry.items.find((i) => i.name === name)!.files.find((f) => f.path === "src/main.tsx")!;
+      const item = registry.items.find((i) => i.name === name)!;
+      const main = item.files.find((f) => f.path === "src/main.tsx")!;
       expect(main.content, `${name} main.tsx`).toContain('import "./theme/brand.css"');
+      expect(main.content, `${name} main.tsx`).not.toContain("preview-theme");
+      expect(item.files.some((f) => f.path.includes("preview-theme")), `${name} files`).toBe(false);
+      expect(item.source).toMatch(/^examples\//);
     }
-    expect(marketing.registryDependencies).toEqual(["foundation", "cx", "badge", "button", "card", "checkbox", "table", "tabs", "text-field", "tooltip"]);
+    expect(registry.items.find((i) => i.name === "blank")!.source).toBe("examples/blank");
+    // The default theme spells out the system's tokens so it resets any brand it is applied over.
+    const def = registry.items.find((i) => i.name === "default")!;
+    expect(def.files[0]!.content).toContain("--color-primary: #2563eb;");
+    expect(def.files[0]!.content).toContain('[data-theme="dark"]');
+    expect(marketing.registryDependencies).toEqual(["foundation", "cx", "badge", "button", "card", "checkbox", "skeleton", "table", "tabs", "text-field", "tooltip"]);
   });
 
   it("round-trips through static files", async () => {
@@ -81,7 +91,7 @@ describe("createProject", () => {
     const dir = join(tmp, "acme-site");
     const r = await createProject({ dir, template: "marketing", source: registryFromMemory(registry), local: root });
     expect(r.violations).toBe(0);
-    expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card", "Checkbox", "Table", "Tabs", "TextField", "Tooltip"]);
+    expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card", "Checkbox", "Skeleton", "Table", "Tabs", "TextField", "Tooltip"]);
 
     const button = readFileSync(join(dir, "src/components/ui/button/button.tsx"), "utf8");
     expect(button.startsWith(`/* zengin-owned Button, forked from @zengin/ui@${registry.version} */`)).toBe(true);

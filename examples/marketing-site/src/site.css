@@ -735,6 +735,104 @@ body {
   text-wrap: pretty;
 }
 
+/* Templates: live previews in ruled cards, scaled from desktop width. */
+.catalog__themes {
+  margin-bottom: var(--spacing-8);
+}
+
+.catalog__error {
+  margin-bottom: var(--spacing-6);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.catalog {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-6);
+}
+
+@media (max-width: 64rem) {
+  .catalog {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.catalog__card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border: 1px solid var(--color-border);
+}
+
+.catalog__frame {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-color: var(--color-surface-sunken);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.catalog__iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1280px;
+  height: 800px;
+  border: 0;
+  background-color: var(--color-surface);
+  transform-origin: 0 0;
+}
+
+.catalog__placeholder {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: var(--spacing-6);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.catalog__body {
+  display: grid;
+  align-content: start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-5);
+}
+
+.catalog__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.catalog__head h3 {
+  font-family: var(--font-display);
+  font-stretch: 106%;
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+.catalog__body > p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+
+.catalog__actions {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+/* The create command wraps inside the card instead of scrolling. */
+.catalog__body .code pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* Footer */
 .footer {
   padding-block: var(--spacing-10);

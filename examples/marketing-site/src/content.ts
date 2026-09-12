@@ -4,6 +4,7 @@ export const REPO = "https://github.com/Timurtek/zengin";
 
 export const NAV = [
   { href: "#how", label: "How it works" },
+  { href: "#templates", label: "Templates" },
   { href: "#surfaces", label: "Surfaces" },
   { href: "#rules", label: "Rules" },
   { href: "#system", label: "Reference system" },

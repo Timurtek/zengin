@@ -29,7 +29,7 @@ export function Hero({ theme }: { theme: "light" | "dark" }) {
                 <a href="#get-started">Get started</a>
               </Button>
               <Button asChild variant="soft" size="lg">
-                <a href="#rules">Read the seven rules</a>
+                <a href="#templates">Try the templates</a>
               </Button>
             </div>
           </div>

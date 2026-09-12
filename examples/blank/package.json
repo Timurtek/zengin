@@ -1,0 +1,27 @@
+{
+  "name": "blank",
+  "private": true,
+  "version": "0.0.0",
+  "description": "The blank template: one card and one button on @zengin/ui, ready to be replaced.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5175",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check": "node ../../packages/cli/dist/index.js check",
+    "test": "node ../../packages/cli/dist/index.js check"
+  },
+  "dependencies": {
+    "@zengin/ui": "workspace:*",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@zengin/cli": "workspace:*",
+    "typescript": "^5.9.2",
+    "vite": "^8.3.0"
+  }
+}

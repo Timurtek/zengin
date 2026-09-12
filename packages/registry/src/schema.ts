@@ -29,6 +29,8 @@ export interface RegistryItem {
   manifest?: ComponentManifest;
   /** For themes: Google Fonts families the brand file expects, linked into index.html on apply. */
   fonts?: string[];
+  /** For templates: the repository directory the template is derived from, which the site builds as its live preview. */
+  source?: string;
 }
 
 /** The index: every item without its file contents, so a client can list and resolve before fetching. */

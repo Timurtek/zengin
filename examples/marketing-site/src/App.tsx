@@ -1,6 +1,7 @@
 import { Tooltip } from "@zengin/ui";
 import { useEffect, useState } from "react";
 import { REPO } from "./content";
+import { Catalog } from "./sections/Catalog";
 import { GetStarted } from "./sections/GetStarted";
 import { Hero } from "./sections/Hero";
 import { HowItWorks } from "./sections/HowItWorks";
@@ -39,6 +40,7 @@ export function App() {
         <main>
           <Hero theme={theme} />
           <HowItWorks />
+          <Catalog />
           <Surfaces />
           <Rules />
           <System />

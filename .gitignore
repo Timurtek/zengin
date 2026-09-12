@@ -7,3 +7,5 @@ packages/ui/src/styles/generated/
 storybook-static/
 # Built by `zengin registry build`, served by the marketing site
 examples/marketing-site/public/r/
+# Built by examples/marketing-site/scripts/build-previews.mjs
+examples/marketing-site/public/templates/

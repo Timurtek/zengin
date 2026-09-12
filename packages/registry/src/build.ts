@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSy
 import { join, relative } from "node:path";
 import type { ComponentManifest } from "@zengin/engine";
 import { LAYOUT, REGISTRY_SCHEMA, type Registry, type RegistryFile, type RegistryIndex, type RegistryItem } from "./schema.js";
+import { buildTokensCss } from "./tokens.js";
 
 /**
  * Builds the registry from the repository: every component in packages/ui, the shared lib and foundation
@@ -82,7 +83,17 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
   }
 
   const componentNames = new Set(items.filter((i) => i.type === "component").map((i) => i.name));
-  items.push(blankTemplate(componentNames));
+  items.push(
+    templateFrom({
+      root: opts.root,
+      dir: "examples/blank",
+      name: "blank",
+      title: "Blank",
+      description: "A page with one card and one button, ready to be replaced.",
+      rootFiles: ["index.html"],
+      componentNames,
+    }),
+  );
   items.push(
     templateFrom({
       root: opts.root,
@@ -113,6 +124,11 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
     const css = join(themesDir, dir, "brand.css");
     if (!existsSync(meta) || !existsSync(css)) continue;
     const t = JSON.parse(read(meta)) as { title: string; description: string; fonts?: string[] };
+    // The default theme is the system's own tokens, spelled out, so applying it over any brand is a real reset.
+    const content =
+      dir === "default"
+        ? `/*\n * The default theme: Zengin UI's own tokens, every one, so that applying it over another brand resets\n * everything. Generated from zengin/tokens.json and tokens.dark.json. Edit freely, or run \`zengin brand\`.\n */\n\n${buildTokensCss(join(ui, "zengin")).css.replace(/^\/\*.*\*\/\n\n/, "")}`
+        : read(css);
     items.push({
       name: dir,
       type: "theme",
@@ -121,7 +137,7 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       dependencies: {},
       devDependencies: {},
       registryDependencies: [],
-      files: [{ path: "src/theme/brand.css", kind: "theme", content: read(css) }],
+      files: [{ path: "src/theme/brand.css", kind: "theme", content }],
       fonts: t.fonts ?? [],
     });
   }
@@ -158,7 +174,9 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
   for (const p of walk(join(base, "src"))) {
     const rel = relative(base, p).replace(/\\/g, "/");
     if (rel.startsWith("src/styles/generated/")) continue;
+    if (rel === "src/preview-theme.ts") continue; // the site's preview harness, not part of the template
     let content = read(p);
+    if (rel === "src/main.tsx") content = content.replace(/import "\.\/preview-theme";\r?\n/, "");
     if (/\.(tsx?|css)$/.test(rel)) {
       for (const m of content.matchAll(/import\s*\{([^}]+)\}\s*from\s*"@zengin\/ui"/g)) {
         for (const name of m[1]!.split(",")) {
@@ -189,91 +207,7 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
     devDependencies: {},
     registryDependencies: ["foundation", "cx", ...[...used].sort()],
     files,
-  };
-}
-
-function blankTemplate(componentNames: Set<string>): RegistryItem {
-  const deps = ["button", "card"].filter((n) => componentNames.has(n));
-  return {
-    name: "blank",
-    type: "template",
-    title: "Blank",
-    description: "A page with one card and one button, ready to be replaced.",
-    dependencies: {},
-    devDependencies: {},
-    registryDependencies: ["foundation", "cx", ...deps],
-    files: [
-      {
-        path: "src/App.tsx",
-        kind: "template",
-        content: `import { Button, Card } from "${LAYOUT.alias}";
-
-export function App() {
-  return (
-    <main className="app">
-      <Card padding="lg">
-        <h1 className="app__title">It runs.</h1>
-        <p className="app__lead">Components live in src/components/ui and are yours to edit. The brand is src/theme/brand.css. The engine checks everything else.</p>
-        <Button tone="primary" onClick={() => alert("Still on the system.")}>
-          Get started
-        </Button>
-      </Card>
-    </main>
-  );
-}
-`,
-      },
-      {
-        path: "src/app.css",
-        kind: "template",
-        content: `/* Layout only. Every value is a token; the components own their own appearance. */
-body {
-  margin: 0;
-  font-family: var(--font-sans);
-  background-color: var(--color-surface-sunken);
-  color: var(--color-text);
-}
-
-.app {
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
-  padding: var(--spacing-8);
-}
-
-.app__title {
-  margin: 0 0 var(--spacing-3);
-  font-family: var(--font-display);
-  font-size: var(--text-3xl);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--leading-tight);
-}
-
-.app__lead {
-  max-width: 32rem;
-  margin: 0 0 var(--spacing-6);
-  color: var(--color-text-muted);
-}
-`,
-      },
-      {
-        path: "src/main.tsx",
-        kind: "template",
-        content: `import "./styles/index.css";
-import "./theme/brand.css";
-import "./app.css";
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { App } from "./App";
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
-`,
-      },
-    ],
+    source: opts.dir,
   };
 }
 

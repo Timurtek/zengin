@@ -33,7 +33,7 @@ A directory of static JSON, so it can be served from anywhere: `index.json` list
 zengin registry build --out public/r        # from a Zengin repository checkout
 ```
 
-Items are built, never hand-written. Components come from `packages/ui/src/components`, their stories from `packages/ui/stories`, their manifest entries from `packages/ui/zengin/components.json`. Templates come from `examples/` with `@zengin/ui` imports rewritten to `@/components/ui`. The one test that matters: every template creates a project the engine finds clean.
+Items are built, never hand-written. Components come from `packages/ui/src/components`, their stories from `packages/ui/stories`, their manifest entries from `packages/ui/zengin/components.json`. Templates come from `examples/` (every template is a real app there, recorded in the item's `source` field, which the marketing site builds as the template's live preview) with `@zengin/ui` imports rewritten to `@/components/ui`. The `default` theme is generated from the token files rather than read from a file, so applying it over another brand resets every token. The one test that matters: every template creates a project the engine finds clean.
 
 | Item type | Examples | Installs |
 | --- | --- | --- |

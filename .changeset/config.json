@@ -13,6 +13,7 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
+    "blank",
     "marketing-site",
     "review-workspace"
   ]
