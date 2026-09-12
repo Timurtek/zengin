@@ -11,13 +11,10 @@ scope:
   ownership: ["src/components/ui/**"]
 
 classes:
-  tailwind: true
+  tailwind: false
 
 rules:
-  color-literal:
-    severity: error
-    allow: semantic
-    except: ["src/marketing/illustrations/**"]
+  color-literal: { severity: error, allow: semantic }
   spacing-literal: { severity: error }
   token-reference: { severity: error }
   unknown-prop: { severity: error }

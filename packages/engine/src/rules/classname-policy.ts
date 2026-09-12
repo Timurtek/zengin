@@ -29,7 +29,7 @@ export const classnamePolicy: Rule = {
           ctx.report(ID, {
             range: use.range,
             found: use.candidate,
-            message: `className on ${comp.name} may not set ${quoteList(denied)}. ${reason(comp, denied[0]!)}`,
+            message: `className on ${comp.name} may not set ${quoteList(denied)}${use.origin ? ` (.${use.candidate} in ${use.origin})` : ""}. ${reason(comp, denied[0]!)}`,
             fix: { replace: null, confidence: "none" },
           }),
         );

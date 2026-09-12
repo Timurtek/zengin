@@ -2,47 +2,45 @@ import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import postcss from "postcss";
-import { __unstable__loadDesignSystem } from "tailwindcss";
-
-export interface Declaration {
-  prop: string;
-  value: string;
-}
-
-export interface ClassResolver {
-  /** CSS declarations a utility class compiles to, or null when the class does not exist at all. */
-  resolve(candidate: string): Declaration[] | null;
-  /** Custom properties defined by Tailwind's default theme (the palette and default scales). */
-  defaultVars: Set<string>;
-  /** Their values, so a palette reference can be matched against system tokens by value. */
-  defaultVarValues: Map<string, string>;
-}
+import type { Declaration, UtilityResolver } from "./resolver.js";
 
 const require = createRequire(import.meta.url);
 
 /**
- * Builds a class resolver from Tailwind v4's own compiler, so utility resolution is exactly what a
- * Tailwind build produces. `themeCss` is the `@theme` block generated from the system tokens.
- *
- * The Tailwind default theme is always loaded underneath the system theme. That lets the rules tell
- * "references the default palette" (a policy question) apart from "references nothing" (a typo).
+ * Tailwind v4 adapter. Optional: loaded only when the consumer's project uses Tailwind. Utility classes
+ * are compiled through Tailwind's own design system so resolution is exactly what their build produces.
+ * `themeCss` is the `@theme` block generated from the system tokens; Tailwind's default theme is loaded
+ * underneath it so the rules can tell "references the default palette" apart from "references nothing".
  */
-export async function createTailwindResolver(themeCss: string): Promise<ClassResolver> {
+export async function createTailwindResolver(themeCss: string): Promise<UtilityResolver> {
+  let tailwind: typeof import("tailwindcss");
+  try {
+    tailwind = await import("tailwindcss");
+  } catch {
+    throw new Error(
+      "classes.tailwind is enabled but the tailwindcss package could not be loaded. Install tailwindcss@^4 in the project, or set classes.tailwind: false in zengin.config.yaml.",
+    );
+  }
+
   const themePath = require.resolve("tailwindcss/theme.css");
-  const defaultTheme = readFileSync(themePath, "utf8");
   const defaultVars = new Set<string>();
   const defaultVarValues = new Map<string, string>();
-  postcss.parse(defaultTheme).walkDecls((d) => {
+  postcss.parse(readFileSync(themePath, "utf8")).walkDecls((d) => {
     if (!d.prop.startsWith("--")) return;
     defaultVars.add(d.prop);
     defaultVarValues.set(d.prop, d.value);
   });
 
   const css = `@import "tailwindcss/theme.css";\n${themeCss}`;
-  const designSystem = await __unstable__loadDesignSystem(css, {
-    base: process.cwd(),
+  const designSystem = await tailwind.__unstable__loadDesignSystem(css, {
+    base: dirname(themePath),
     loadStylesheet: async (id: string, base: string) => {
-      const resolved = require.resolve(id, { paths: [base, process.cwd()] });
+      let resolved: string;
+      try {
+        resolved = require.resolve(id);
+      } catch {
+        resolved = require.resolve(id, { paths: [base] });
+      }
       return { path: resolved, content: readFileSync(resolved, "utf8"), base: dirname(resolved) };
     },
   });
@@ -61,7 +59,6 @@ export async function createTailwindResolver(themeCss: string): Promise<ClassRes
         if (cssText) {
           const decls: Declaration[] = [];
           postcss.parse(cssText).walkDecls((d) => {
-            // Tailwind emits internal `--tw-*` bookkeeping; the consumer-facing declaration is what we judge.
             if (!d.prop.startsWith("--tw-")) decls.push({ prop: d.prop, value: d.value });
           });
           result = decls;

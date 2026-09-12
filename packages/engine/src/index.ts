@@ -4,4 +4,6 @@ export { readProjectFiles } from "./project.js";
 export { loadTokens, toThemeCss, TokenIndex } from "./system/tokens.js";
 export { ComponentIndex } from "./system/components.js";
 export { RULES } from "./rules/index.js";
+export { StylesheetIndex } from "./resolve/stylesheet.js";
+export type { ClassResolver, Declaration, Resolution, UtilityResolver, StylesheetResolver } from "./resolve/resolver.js";
 export * from "./types.js";

@@ -1,7 +1,7 @@
 import { offsetsToRange } from "../parse/css.js";
 import { findLengthLiterals, isSpacingProp, tokenUtilityPrefix } from "../resolve/css-props.js";
 import type { Fix, Token, Violation } from "../types.js";
-import { rewriteKey, type ClassUse, type Rule, type RuleContext } from "./context.js";
+import { rewriteKey, utilityUses, type ClassUse, type Rule, type RuleContext } from "./context.js";
 
 const ID = "spacing-literal";
 
@@ -35,7 +35,7 @@ export const spacingLiteral: Rule = {
   check(ctx) {
     const out: Violation[] = [];
 
-    for (const use of ctx.classUses) {
+    for (const use of utilityUses(ctx)) {
       if (!use.decls) continue;
       const decl = use.decls.find((d) => isSpacingProp(d.prop));
       if (!decl) continue;

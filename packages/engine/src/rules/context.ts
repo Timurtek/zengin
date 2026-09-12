@@ -1,18 +1,23 @@
 import type { CssFile } from "../parse/css.js";
 import type { JsxElementInfo, TsxFile } from "../parse/tsx.js";
-import type { ClassResolver, Declaration } from "../resolve/tailwind.js";
+import type { ClassResolver, Declaration } from "../resolve/resolver.js";
 import type { ComponentIndex } from "../system/components.js";
 import type { TokenIndex } from "../system/tokens.js";
 import type { ComponentManifest, FileInput, FileKind, Fix, Range, ResolvedConfig, RuleId, Violation } from "../types.js";
 import { suppressHint } from "../suppress.js";
 
-/** One utility class as used in the file, with what it compiles to. */
+/** One class name as used in the file, with what it resolves to. */
 export interface ClassUse {
   candidate: string;
   /** Candidate without variants, `!` or leading `-`. */
   base: string;
   range: Range;
+  /** Declarations the class applies, or null when nothing resolves it. */
   decls: Declaration[] | null;
+  /** Where the declarations came from. Undefined when unresolved. */
+  source?: "utility" | "stylesheet";
+  /** Stylesheet the class is defined in, for stylesheet resolutions. */
+  origin?: string;
   /** The JSX element the class is on, when attached to one. */
   element?: JsxElementInfo;
 }
@@ -49,6 +54,11 @@ export function makeReporter(file: FileInput, config: ResolvedConfig): RuleConte
     suppress: suppressHint(rule),
     ...(v.note ? { note: v.note } : {}),
   });
+}
+
+/** Utility-class uses only: the ones a class compiler produced and can therefore rewrite. */
+export function utilityUses(ctx: RuleContext): ClassUse[] {
+  return ctx.classUses.filter((u) => u.source === "utility");
 }
 
 /** Rewrites a utility's theme key: `bg-[#3B82F6]` + `primary` -> `bg-primary`, `hover:px-[13px]` + `3` -> `hover:px-3`. */

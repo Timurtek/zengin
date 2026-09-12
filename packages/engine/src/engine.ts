@@ -3,21 +3,29 @@ import { join } from "node:path";
 import { parseCss } from "./parse/css.js";
 import { parseTsx, type JsxElementInfo, type StringSpan } from "./parse/tsx.js";
 import { comparePos } from "./parse/positions.js";
-import { baseUtility, createTailwindResolver, splitClasses, type ClassResolver } from "./resolve/tailwind.js";
+import { combineResolvers, type ClassResolver, type UtilityResolver } from "./resolve/resolver.js";
+import { StylesheetIndex } from "./resolve/stylesheet.js";
+import { baseUtility, createTailwindResolver, splitClasses } from "./resolve/tailwind.js";
 import { RULES } from "./rules/index.js";
 import { makeReporter, type ClassUse, type RuleContext } from "./rules/context.js";
 import { Scope } from "./scope.js";
 import { applySuppressions } from "./suppress.js";
 import { ComponentIndex } from "./system/components.js";
 import { loadTokens, toThemeCss, TokenIndex } from "./system/tokens.js";
-import type { ComponentManifest, FileInput, ResolvedConfig, SystemDefinitions, Violation } from "./types.js";
+import type { ComponentManifest, FileInput, FileKind, ResolvedConfig, SystemDefinitions, Violation } from "./types.js";
 import { RULE_IDS } from "./types.js";
 
 export interface Engine {
   readonly config: ResolvedConfig;
   readonly definitions: SystemDefinitions;
+  /** Checks a batch. Stylesheets in the batch resolve class names for the whole batch. */
   check(files: FileInput[]): Violation[];
+  /** Checks one file against the stylesheets loaded with `loadStylesheets`. */
   checkFile(file: FileInput): Violation[];
+  /** Registers the project's stylesheets so single-file checks can resolve class names. Replaces any previous set. */
+  loadStylesheets(files: FileInput[]): void;
+  /** How scope classifies a file: consumer, owned, foundation, or excluded. */
+  kindOf(file: FileInput): FileKind;
 }
 
 /** Reads `tokens.json` and `components.json` from a definitions directory. */
@@ -31,12 +39,15 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
   const defs = definitions ?? loadDefinitions(config.system.definitionsDir);
   const tokens = new TokenIndex(defs.tokens);
   const components = new ComponentIndex(defs.components, config.system.sources, config.rules["component-substitution"].map);
-  const resolver = await createTailwindResolver(toThemeCss(defs.tokens));
+  const utility: UtilityResolver | undefined = config.classes.tailwind
+    ? await createTailwindResolver(toThemeCss(defs.tokens))
+    : undefined;
   const scope = new Scope(config);
   const rules = RULES.filter((r) => config.rules[r.id].enabled);
+  let loaded = new StylesheetIndex();
 
-  const checkFile = (file: FileInput): Violation[] => {
-    const path = file.path.replace(/\\/g, "/");
+  const checkWith = (file: FileInput, resolver: ClassResolver): Violation[] => {
+    const path = normalize(file.path);
     const kind = scope.kindOf(path, file.content);
     if (kind === "excluded") return [];
 
@@ -76,13 +87,25 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
   return {
     config,
     definitions: defs,
-    checkFile,
+    loadStylesheets(files) {
+      loaded = StylesheetIndex.from(files.map((f) => ({ ...f, path: normalize(f.path) })));
+    },
+    checkFile(file) {
+      return checkWith(file, combineResolvers(loaded, utility));
+    },
     check(files) {
+      const batch = StylesheetIndex.from(files.map((f) => ({ ...f, path: normalize(f.path) })));
+      const resolver = combineResolvers(loaded.merge(batch), utility);
       return [...files]
         .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))
-        .flatMap((f) => checkFile(f));
+        .flatMap((f) => checkWith(f, resolver));
     },
+    kindOf: (file) => scope.kindOf(normalize(file.path), file.content),
   };
+}
+
+function normalize(path: string): string {
+  return path.replace(/\\/g, "/");
 }
 
 function resolveSystemElements(
@@ -109,11 +132,14 @@ function collectClassUses(tsx: ReturnType<typeof parseTsx>, resolver: ClassResol
   const add = (span: StringSpan, element?: JsxElementInfo) => {
     for (const { candidate, offset } of splitClasses(span.value)) {
       const start = span.offset + offset;
+      const resolution = resolver.resolve(candidate);
       uses.push({
         candidate,
         base: baseUtility(candidate),
         range: tsx.lines.range(start, start + candidate.length),
-        decls: resolver.resolve(candidate),
+        decls: resolution?.decls ?? null,
+        ...(resolution ? { source: resolution.source } : {}),
+        ...(resolution?.origin ? { origin: resolution.origin } : {}),
         ...(element ? { element } : {}),
       });
     }

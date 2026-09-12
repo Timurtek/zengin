@@ -1,7 +1,7 @@
 import { offsetsToRange } from "../parse/css.js";
 import { findColorLiterals, findVarRefs, isColorProp, tokenUtilityPrefix } from "../resolve/css-props.js";
 import type { Token, Fix, Violation } from "../types.js";
-import { rewriteKey, type ClassUse, type Rule, type RuleContext } from "./context.js";
+import { rewriteKey, utilityUses, type ClassUse, type Rule, type RuleContext } from "./context.js";
 
 const ID = "color-literal";
 
@@ -72,7 +72,7 @@ export const colorLiteral: Rule = {
     const out: Violation[] = [];
     const allowPalette = ctx.config.rules[ID].allow === "palette";
 
-    for (const use of ctx.classUses) {
+    for (const use of utilityUses(ctx)) {
       if (!use.decls) continue;
       const colorDecls = use.decls.filter((d) => isColorProp(d.prop));
       if (colorDecls.length === 0) continue;

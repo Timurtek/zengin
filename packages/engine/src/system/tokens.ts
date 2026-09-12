@@ -102,6 +102,8 @@ function normalizeValue(v: string, type: TokenType): string {
  */
 export function normalizeColor(v: string): string | undefined {
   const s = v.trim().toLowerCase();
+  const named = NAMED_HEX[s];
+  if (named) return named;
   const hex = /^#([0-9a-f]{3,8})$/.exec(s);
   if (hex) {
     const h = hex[1]!;
@@ -119,6 +121,30 @@ export function normalizeColor(v: string): string | undefined {
   }
   return undefined;
 }
+
+/** The CSS named colors that show up in real stylesheets. Others fall through to `confidence: none`. */
+const NAMED_HEX: Record<string, string> = {
+  white: "#ffffff",
+  black: "#000000",
+  red: "#ff0000",
+  green: "#008000",
+  blue: "#0000ff",
+  yellow: "#ffff00",
+  orange: "#ffa500",
+  purple: "#800080",
+  gray: "#808080",
+  grey: "#808080",
+  silver: "#c0c0c0",
+  navy: "#000080",
+  teal: "#008080",
+  maroon: "#800000",
+  olive: "#808000",
+  lime: "#00ff00",
+  aqua: "#00ffff",
+  cyan: "#00ffff",
+  fuchsia: "#ff00ff",
+  magenta: "#ff00ff",
+};
 
 function toHex(r: number, g: number, b: number): string {
   const to = (n: number) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, "0");

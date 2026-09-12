@@ -95,6 +95,11 @@ export interface ZenginConfig {
     foundations?: string[];
     ownership?: string[];
   };
+  /** How class names are resolved to CSS. The project's own stylesheets are always read. */
+  classes?: {
+    /** Compile utility classes with Tailwind v4. `auto` (default) enables it when the project depends on tailwindcss. */
+    tailwind?: "auto" | boolean;
+  };
   rules?: Partial<Record<RuleId, RuleConfig | Severity | "off">>;
 }
 
@@ -118,6 +123,9 @@ export interface ResolvedConfig {
     exclude: string[];
     foundations: string[];
     ownership: string[];
+  };
+  classes: {
+    tailwind: boolean;
   };
   rules: Record<RuleId, ResolvedRuleConfig>;
 }

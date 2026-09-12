@@ -1,0 +1,373 @@
+[
+  {
+    "rule": "component-substitution",
+    "severity": "error",
+    "file": "src/features/review/ApproveBar.tsx",
+    "range": {
+      "start": {
+        "line": 7,
+        "col": 7
+      },
+      "end": {
+        "line": 9,
+        "col": 16
+      }
+    },
+    "found": "<button className=\"approve-bar__button\" style={{ backgroundColor: \"#2563EB\" }}>",
+    "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @zengin/ui.",
+    "fix": {
+      "replace": "<Button>\n        Approve all\n      </Button>",
+      "confidence": "nearest",
+      "note": "Express the removed styling through Button props. Add: import { Button } from \"@zengin/ui\";"
+    },
+    "suppress": "// zengin-allow component-substitution: <reason>"
+  },
+  {
+    "rule": "color-literal",
+    "severity": "error",
+    "file": "src/features/review/ApproveBar.tsx",
+    "range": {
+      "start": {
+        "line": 7,
+        "col": 73
+      },
+      "end": {
+        "line": 7,
+        "col": 82
+      }
+    },
+    "found": "\"#2563EB\"",
+    "message": "Color literal in inline style (background-color) where a token reference is required. The value matches color.primary.hover in the default theme but will not follow theme changes.",
+    "fix": {
+      "replace": "\"var(--color-primary-hover)\"",
+      "confidence": "exact",
+      "token": "color.primary.hover"
+    },
+    "suppress": "// zengin-allow color-literal: <reason>"
+  },
+  {
+    "rule": "component-substitution",
+    "severity": "error",
+    "file": "src/features/review/ConfirmReject.tsx",
+    "range": {
+      "start": {
+        "line": 1,
+        "col": 1
+      },
+      "end": {
+        "line": 1,
+        "col": 44
+      }
+    },
+    "found": "import { Dialog } from \"@headlessui/react\";",
+    "message": "@headlessui/react Dialog is shadowed by the system. Use Dialog from @zengin/ui.",
+    "fix": {
+      "replace": "import { Dialog } from \"@zengin/ui\";",
+      "confidence": "exact",
+      "note": "API differs. Dialog.Panel becomes Dialog.Content; onClose becomes onOpenChange."
+    },
+    "suppress": "// zengin-allow component-substitution: <reason>"
+  },
+  {
+    "rule": "component-substitution",
+    "severity": "error",
+    "file": "src/features/review/ConfirmReject.tsx",
+    "range": {
+      "start": {
+        "line": 14,
+        "col": 9
+      },
+      "end": {
+        "line": 16,
+        "col": 18
+      }
+    },
+    "found": "<button type=\"button\" onClick={onClose} className=\"confirm-reject__cancel\">",
+    "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @zengin/ui.",
+    "fix": {
+      "replace": "<Button onClick={onClose}>\n          Cancel\n        </Button>",
+      "confidence": "nearest",
+      "note": "Express the removed styling through Button props. Add: import { Button } from \"@zengin/ui\";"
+    },
+    "suppress": "// zengin-allow component-substitution: <reason>"
+  },
+  {
+    "rule": "unknown-prop-value",
+    "severity": "error",
+    "file": "src/features/review/RejectButton.tsx",
+    "range": {
+      "start": {
+        "line": 7,
+        "col": 15
+      },
+      "end": {
+        "line": 7,
+        "col": 37
+      }
+    },
+    "found": "variant=\"ghost-danger\"",
+    "message": "Button has no variant \"ghost-danger\". Valid: solid, soft, ghost, link.",
+    "fix": {
+      "replace": "variant=\"ghost\" tone=\"danger\"",
+      "confidence": "nearest",
+      "note": "\"danger\" is a value of the tone prop."
+    },
+    "suppress": "// zengin-allow unknown-prop-value: <reason>"
+  },
+  {
+    "rule": "unknown-prop-value",
+    "severity": "error",
+    "file": "src/features/review/RejectButton.tsx",
+    "range": {
+      "start": {
+        "line": 7,
+        "col": 38
+      },
+      "end": {
+        "line": 7,
+        "col": 47
+      }
+    },
+    "found": "size=\"xl\"",
+    "message": "Button size \"xl\" was added in @zengin/ui 1.3.0. This project pins 1.2.0. Valid here: sm, md, lg.",
+    "fix": {
+      "replace": "size=\"lg\"",
+      "confidence": "nearest"
+    },
+    "suppress": "// zengin-allow unknown-prop-value: <reason>"
+  },
+  {
+    "rule": "classname-policy",
+    "severity": "error",
+    "file": "src/features/review/RejectButton.tsx",
+    "range": {
+      "start": {
+        "line": 7,
+        "col": 59
+      },
+      "end": {
+        "line": 7,
+        "col": 72
+      }
+    },
+    "found": "reject-button",
+    "message": "className on Button may not set background, padding-inline (.reject-button in src/features/review/reject-button.css). background-color is owned by the tone prop.",
+    "fix": {
+      "replace": null,
+      "confidence": "none"
+    },
+    "suppress": "// zengin-allow classname-policy: <reason>"
+  },
+  {
+    "rule": "classname-policy",
+    "severity": "error",
+    "file": "src/features/review/RejectButton.tsx",
+    "range": {
+      "start": {
+        "line": 7,
+        "col": 83
+      },
+      "end": {
+        "line": 7,
+        "col": 98
+      }
+    },
+    "found": "borderRadius: 0",
+    "message": "style on Button may not set border-radius. border-radius is owned by the component; use a variant or a token.",
+    "fix": {
+      "replace": null,
+      "confidence": "none"
+    },
+    "suppress": "// zengin-allow classname-policy: <reason>"
+  },
+  {
+    "rule": "unknown-prop",
+    "severity": "error",
+    "file": "src/features/review/RejectButton.tsx",
+    "range": {
+      "start": {
+        "line": 10,
+        "col": 15
+      },
+      "end": {
+        "line": 10,
+        "col": 29
+      }
+    },
+    "found": "varient=\"link\"",
+    "message": "Button has no prop \"varient\". Props: variant, tone, size, loading, leadingIcon, trailingIcon.",
+    "fix": {
+      "replace": "variant=\"link\"",
+      "confidence": "nearest"
+    },
+    "suppress": "// zengin-allow unknown-prop: <reason>"
+  },
+  {
+    "rule": "classname-policy",
+    "severity": "error",
+    "file": "src/features/review/RejectButton.tsx",
+    "range": {
+      "start": {
+        "line": 10,
+        "col": 41
+      },
+      "end": {
+        "line": 10,
+        "col": 60
+      }
+    },
+    "found": "reject-button__undo",
+    "message": "className on Button may not set color (.reject-button__undo in src/features/review/reject-button.css). color is owned by the tone prop.",
+    "fix": {
+      "replace": null,
+      "confidence": "none"
+    },
+    "suppress": "// zengin-allow classname-policy: <reason>"
+  },
+  {
+    "rule": "color-literal",
+    "severity": "error",
+    "file": "src/features/review/approve-bar.css",
+    "range": {
+      "start": {
+        "line": 5,
+        "col": 15
+      },
+      "end": {
+        "line": 5,
+        "col": 22
+      }
+    },
+    "found": "#3b82f6",
+    "message": "Color literal where a token reference is required. The value matches color.primary in the default theme but will not follow theme changes.",
+    "fix": {
+      "replace": "var(--color-primary)",
+      "confidence": "exact",
+      "token": "color.primary"
+    },
+    "suppress": "// zengin-allow color-literal: <reason>"
+  },
+  {
+    "rule": "spacing-literal",
+    "severity": "error",
+    "file": "src/features/review/approve-bar.css",
+    "range": {
+      "start": {
+        "line": 6,
+        "col": 12
+      },
+      "end": {
+        "line": 6,
+        "col": 15
+      }
+    },
+    "found": "8px",
+    "message": "Spacing literal where a token reference is required. 8px matches space.2 but will not follow scale changes.",
+    "fix": {
+      "replace": "var(--spacing-2)",
+      "confidence": "exact",
+      "token": "space.2"
+    },
+    "suppress": "// zengin-allow spacing-literal: <reason>"
+  },
+  {
+    "rule": "spacing-literal",
+    "severity": "error",
+    "file": "src/features/review/approve-bar.css",
+    "range": {
+      "start": {
+        "line": 6,
+        "col": 16
+      },
+      "end": {
+        "line": 6,
+        "col": 20
+      }
+    },
+    "found": "13px",
+    "message": "Arbitrary spacing value. 13px is not on the spacing scale.",
+    "fix": {
+      "replace": "var(--spacing-3)",
+      "confidence": "nearest",
+      "token": "space.3",
+      "note": "space.3 = 12px, space.4 = 16px"
+    },
+    "suppress": "// zengin-allow spacing-literal: <reason>"
+  },
+  {
+    "rule": "color-literal",
+    "severity": "error",
+    "file": "src/features/review/approve-bar.css",
+    "range": {
+      "start": {
+        "line": 7,
+        "col": 10
+      },
+      "end": {
+        "line": 7,
+        "col": 15
+      }
+    },
+    "found": "white",
+    "message": "Color literal where a token reference is required. The value matches 3 tokens (color.on-primary, color.on-danger, color.surface) in the default theme but will not follow theme changes.",
+    "fix": {
+      "replace": "var(--color-on-primary)",
+      "confidence": "nearest",
+      "token": "color.on-primary",
+      "candidates": [
+        "color.on-primary",
+        "color.on-danger",
+        "color.surface"
+      ],
+      "note": "Several tokens share this value. Pick by role: color.on-primary, color.on-danger, color.surface."
+    },
+    "suppress": "// zengin-allow color-literal: <reason>"
+  },
+  {
+    "rule": "spacing-literal",
+    "severity": "error",
+    "file": "src/features/review/reject-button.css",
+    "range": {
+      "start": {
+        "line": 3,
+        "col": 19
+      },
+      "end": {
+        "line": 3,
+        "col": 23
+      }
+    },
+    "found": "13px",
+    "message": "Arbitrary spacing value. 13px is not on the spacing scale.",
+    "fix": {
+      "replace": "var(--spacing-3)",
+      "confidence": "nearest",
+      "token": "space.3",
+      "note": "space.3 = 12px, space.4 = 16px"
+    },
+    "suppress": "// zengin-allow spacing-literal: <reason>"
+  },
+  {
+    "rule": "token-reference",
+    "severity": "error",
+    "file": "src/features/review/reject-button.css",
+    "range": {
+      "start": {
+        "line": 10,
+        "col": 14
+      },
+      "end": {
+        "line": 10,
+        "col": 25
+      }
+    },
+    "found": "--color-txt",
+    "message": "Unknown token --color-txt.",
+    "fix": {
+      "replace": "--color-text",
+      "confidence": "nearest",
+      "token": "color.text"
+    },
+    "suppress": "// zengin-allow token-reference: <reason>"
+  }
+]

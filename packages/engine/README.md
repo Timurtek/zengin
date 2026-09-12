@@ -10,7 +10,12 @@ Three artifacts, each with one owner:
 2. **Policy**, authored by the consumer in `zengin.config.yaml`: which rules are on, at what severity, with what exceptions.
 3. **Rule kinds**, implemented here in TypeScript. Consumers configure instances; they never write rule logic.
 
-Tailwind utilities are resolved through Tailwind v4's own compiler, so `px-[13px]` becomes `padding-inline: 13px` exactly as the consumer's build would produce it. The Tailwind default theme is always loaded underneath the system theme, which lets the engine tell "references the default palette" (a policy question) apart from "references nothing" (a typo).
+The engine judges CSS declarations. It never knows how a class name is styled; adapters do:
+
+- **Project stylesheets**, always on, no dependency. A `.btn { ... }` rule in any CSS file in scope tells the engine what `className="btn"` does. Only simple single-class selectors are indexed; descendant and compound selectors depend on the DOM and are skipped.
+- **Tailwind v4**, optional. Enabled by `classes.tailwind: true`, or automatically when the project depends on `tailwindcss`. Utilities are compiled through Tailwind's own design system, so `px-[13px]` becomes `padding-inline: 13px` exactly as the consumer's build produces it. Tailwind's default theme is loaded underneath the system theme so the engine can tell "references the default palette" (a policy question) apart from "references nothing" (a typo). `tailwindcss` is an optional peer dependency and is never loaded unless enabled.
+
+A project's own stylesheet wins over a utility of the same name. Literal values inside stylesheet classes are reported in the stylesheet, where the fix belongs; the class use on the element is judged only for contract and substitution rules.
 
 ## The seven rule kinds
 
@@ -40,6 +45,9 @@ scope:
   exclude: ["**/*.stories.tsx", "**/*.test.tsx"]
   foundations: ["src/theme/**"]    # literals live here; not checked
   ownership: ["src/components/ui/**"]
+
+classes:
+  tailwind: auto                   # auto | true | false; auto = on when package.json depends on tailwindcss
 
 rules:
   color-literal: { severity: error, allow: semantic, except: ["src/marketing/illustrations/**"] }
@@ -95,6 +103,8 @@ const violations = engine.check(readProjectFiles(dir, resolved.scope.include, re
 - Sub-part elements like `Dialog.Content` are not contracted yet.
 - The raw-element substitution heuristic fires when a replaced intrinsic element carries two or more properties the system component owns. Its false positive rate is unmeasured.
 - Width and height on Tailwind's default multiplier scale are treated as layout and not reported.
+- Stylesheet resolution indexes single-class selectors only. `.card .btn` and `.btn.primary` are invisible to className checks; their literals are still checked in the stylesheet.
+- CSS Modules resolve through the stylesheet index only when the class name in the file matches the one in the JSX, which is not the case for hashed class names. A CSS Modules adapter is a candidate for later.
 
 ## Tests
 
@@ -102,4 +112,4 @@ const violations = engine.check(readProjectFiles(dir, resolved.scope.include, re
 pnpm test
 ```
 
-The fixture project under `test/fixtures/project` is the three violation examples from the design record, plus a theme file, a CSS file, a suppression example and an owned component. The snapshot at `test/fixtures/expected/violations.json` is the contract: the engine must return it byte for byte.
+Two fixture projects hold the three violation examples from the design record, one written with Tailwind utilities (`test/fixtures/project`, adapter on) and one in plain CSS (`test/fixtures/project-css`, no adapter). The snapshots under `test/fixtures/expected/` are the contract: the engine must return each byte for byte, and every rule kind fires in both.

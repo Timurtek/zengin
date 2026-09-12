@@ -1,0 +1,11 @@
+.reject-button {
+  background: var(--color-danger);
+  padding-inline: 13px;
+  margin-top: var(--spacing-4);
+  width: 100%;
+}
+
+.reject-button__undo {
+  margin-left: var(--spacing-2);
+  color: var(--color-txt);
+}

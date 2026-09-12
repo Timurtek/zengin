@@ -46,8 +46,24 @@ export function resolveConfig(config: ZenginConfig, projectDir: string): Resolve
       foundations: config.scope?.foundations ?? [],
       ownership: config.scope?.ownership ?? [],
     },
+    classes: {
+      tailwind: resolveTailwind(config.classes?.tailwind ?? "auto", projectDir),
+    },
     rules,
   };
+}
+
+/** `auto` enables the Tailwind adapter when the project's package.json depends on tailwindcss. */
+function resolveTailwind(setting: "auto" | boolean, projectDir: string): boolean {
+  if (setting !== "auto") return setting;
+  const p = join(projectDir, "package.json");
+  if (!existsSync(p)) return false;
+  try {
+    const pkg = JSON.parse(readFileSync(p, "utf8")) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
+    return "tailwindcss" in (pkg.dependencies ?? {}) || "tailwindcss" in (pkg.devDependencies ?? {});
+  } catch {
+    return false;
+  }
 }
 
 function resolveRule(raw: RuleConfig | Severity | "off" | undefined): ResolvedRuleConfig {

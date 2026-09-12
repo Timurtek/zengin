@@ -21,10 +21,12 @@ export const tokenReference: Rule = {
     const out: Violation[] = [];
 
     for (const use of ctx.classUses) {
+      if (use.source === "stylesheet") continue; // the project defines it; its literals are checked in the stylesheet
       const prefix = tokenUtilityPrefix(use.base);
       if (!prefix) continue;
 
       if (!use.decls) {
+        if (!ctx.resolver.utilities) continue; // without a class compiler an unknown class is just a class
         const key = use.base.slice(prefix.length + 1);
         const near = nearestKey(ctx, key);
         const candidate = near ? rewriteKey(use, prefix, near.key) : undefined;
