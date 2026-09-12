@@ -25,15 +25,16 @@ const COLOR_PROPS = new Set([
   "column-rule-color",
 ]);
 
-const SPACING_PREFIXES = ["margin", "padding", "gap", "row-gap", "column-gap", "inset", "scroll-margin", "scroll-padding", "text-indent"];
-const SPACING_EXACT = new Set(["top", "right", "bottom", "left"]);
+// Rhythm properties. Position offsets (top, left, inset) are coordinates, often legitimately arbitrary, and are not judged.
+const SPACING_PREFIXES = ["margin", "padding", "gap", "row-gap", "column-gap", "scroll-margin", "scroll-padding", "text-indent"];
+const POSITION_EXACT = new Set(["top", "right", "bottom", "left"]);
 
 export function isColorProp(prop: string): boolean {
   return COLOR_PROPS.has(prop);
 }
 
 export function isSpacingProp(prop: string): boolean {
-  return SPACING_EXACT.has(prop) || SPACING_PREFIXES.some((p) => prop === p || prop.startsWith(p + "-"));
+  return SPACING_PREFIXES.some((p) => prop === p || prop.startsWith(p + "-"));
 }
 
 /**
@@ -46,7 +47,7 @@ export function categoryOf(prop: string): string {
   if (["height", "min-height", "max-height", "block-size", "min-block-size", "max-block-size"].includes(prop)) return "height";
   if (["flex", "flex-grow", "flex-shrink", "flex-basis", "align-self", "order"].includes(prop)) return "flex-item";
   if (prop.startsWith("grid-column") || prop.startsWith("grid-row") || prop === "grid-area" || prop === "justify-self" || prop === "place-self") return "grid-item";
-  if (prop === "position" || prop === "z-index" || SPACING_EXACT.has(prop) || prop === "inset" || prop.startsWith("inset-")) return "position";
+  if (prop === "position" || prop === "z-index" || POSITION_EXACT.has(prop) || prop === "inset" || prop.startsWith("inset-")) return "position";
   return prop;
 }
 

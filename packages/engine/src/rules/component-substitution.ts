@@ -1,13 +1,25 @@
 import { ownedKey } from "../resolve/css-props.js";
 import type { SubstitutionTarget } from "../system/components.js";
 import type { ImportUse } from "../parse/tsx.js";
-import type { Violation } from "../types.js";
-import type { Rule } from "./context.js";
+import type { ComponentManifest, Violation } from "../types.js";
+import type { Rule, RuleContext } from "./context.js";
 
 const ID = "component-substitution";
 
 /** Attributes dropped when rewriting a raw element to the system component. */
 const STYLING_ATTRS = new Set(["className", "class", "style"]);
+
+/** Imported names that are types or helpers, never a component that could be substituted. */
+function isComponentName(name: string): boolean {
+  return /^[A-Z]/.test(name) && !/Props$/.test(name) && !/^(use[A-Z]|create[A-Z])/.test(name);
+}
+
+/** `buttonVariants` -> the Button manifest, when the system has one. */
+function componentForVariants(ctx: RuleContext, call: string): ComponentManifest | undefined {
+  const base = call.replace(/Variants$/, "");
+  const name = base.charAt(0).toUpperCase() + base.slice(1);
+  return ctx.components.byName.get(name);
+}
 
 export const componentSubstitution: Rule = {
   id: ID,
@@ -16,7 +28,7 @@ export const componentSubstitution: Rule = {
     if (!ctx.tsx) return out;
     const pkg = ctx.config.system.package;
 
-    // Shadowed imports, one violation per import declaration.
+    // Shadowed imports, one violation per import declaration. Type-only imports and *Props names are not components.
     const byDeclaration = new Map<string, ImportUse[]>();
     for (const imp of ctx.tsx.imports) {
       const key = `${imp.declarationRange.start.line}:${imp.declarationRange.start.col}`;
@@ -26,7 +38,7 @@ export const componentSubstitution: Rule = {
       const replaced: { imp: ImportUse; target: SubstitutionTarget }[] = [];
       const remaining: ImportUse[] = [];
       for (const imp of imports) {
-        const target = ctx.components.replacementFor(imp.source, imp.imported);
+        const target = !imp.typeOnly && isComponentName(imp.imported) ? ctx.components.replacementFor(imp.source, imp.imported) : undefined;
         if (target) replaced.push({ imp, target });
         else remaining.push(imp);
       }
@@ -52,44 +64,51 @@ export const componentSubstitution: Rule = {
       );
     }
 
-    // Raw intrinsic elements carrying the visual properties a system component owns.
     const importedNames = new Set(ctx.tsx.imports.map((i) => i.local));
     for (const el of ctx.tsx.elements) {
       if (!el.isIntrinsic) continue;
-      const comp = ctx.components.intrinsic.get(el.tag);
-      if (!comp?.owns) continue;
+
+      // A raw element styled with the system's own variant function is the system component, minus the component.
+      const variantCall = el.attrs.flatMap((a) => a.variantCalls).find((c) => componentForVariants(ctx, c));
+      const viaVariants = variantCall ? componentForVariants(ctx, variantCall) : undefined;
+
+      const comp = viaVariants ?? ctx.components.intrinsic.get(el.tag);
+      if (!comp) continue;
 
       const owned = new Set<string>();
-      for (const use of ctx.classUses) {
-        if (use.element !== el || !use.decls) continue;
-        for (const d of use.decls) {
-          const k = ownedKey(d.prop, comp.owns);
-          if (k) owned.add(k);
+      if (!viaVariants) {
+        if (!comp.owns) continue;
+        for (const use of ctx.classUses) {
+          if (use.element !== el || !use.decls) continue;
+          for (const d of use.decls) {
+            const k = ownedKey(d.prop, comp.owns);
+            if (k) owned.add(k);
+          }
         }
-      }
-      for (const attr of el.attrs) {
-        for (const sp of attr.styleProps) {
-          const k = ownedKey(sp.prop, comp.owns);
-          if (k) owned.add(k);
+        for (const attr of el.attrs) {
+          for (const sp of attr.styleProps) {
+            const k = ownedKey(sp.prop, comp.owns);
+            if (k) owned.add(k);
+          }
         }
+        if (owned.size < 2) continue;
       }
-      if (owned.size < 2) continue;
 
       const kept = el.attrs.filter((a) => !STYLING_ATTRS.has(a.name) && !(el.tag === "button" && a.name === "type"));
       const attrs = kept.map((a) => ` ${a.source}`).join("");
-      const replace = el.selfClosing
-        ? `<${comp.name}${attrs} />`
-        : `<${comp.name}${attrs}>${el.childrenSource}</${comp.name}>`;
+      const replace = el.selfClosing ? `<${comp.name}${attrs} />` : `<${comp.name}${attrs}>${el.childrenSource}</${comp.name}>`;
       const needsImport = !importedNames.has(comp.name);
       out.push(
         ctx.report(ID, {
           range: el.range,
           found: el.openingSource,
-          message: `Raw <${el.tag}> styled as a system ${comp.name} (${[...owned].sort().join(", ")}). Use ${comp.name} from ${pkg}.`,
+          message: viaVariants
+            ? `Raw <${el.tag}> styled with ${variantCall}(). Use ${comp.name} from ${pkg}; it applies the same variants and carries the behavior.`
+            : `Raw <${el.tag}> styled as a system ${comp.name} (${[...owned].sort().join(", ")}). Use ${comp.name} from ${pkg}.`,
           fix: {
             replace,
             confidence: "nearest",
-            note: `Express the removed styling through ${comp.name} props.${needsImport ? ` Add: import { ${comp.name} } from "${pkg}";` : ""}`,
+            note: `${viaVariants ? `Pass the ${variantCall}() arguments as props.` : `Express the removed styling through ${comp.name} props.`}${needsImport ? ` Add: import { ${comp.name} } from "${pkg}";` : ""}`,
           },
         }),
       );

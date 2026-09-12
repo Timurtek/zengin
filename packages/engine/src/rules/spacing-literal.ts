@@ -47,7 +47,8 @@ export const spacingLiteral: Rule = {
         continue;
       }
       const scale = DEFAULT_SCALE.exec(decl.value);
-      if (scale) {
+      // A system that defines no spacing tokens has adopted Tailwind's scale as its own.
+      if (scale && ctx.tokens.namespaces.has("spacing")) {
         const px = Number(scale[1]) * 4;
         if (px === 0) continue;
         const m = match(ctx, `${px}px`);
@@ -118,12 +119,25 @@ function fixFor(m: Match, replace: string | null): Fix {
   };
 }
 
+/** Tailwind's default spacing steps by pixel value, for systems that adopted that scale. */
+const TAILWIND_STEPS: [number, string][] = [[1, "px"], [2, "0.5"], [4, "1"], [6, "1.5"], [8, "2"], [10, "2.5"], [12, "3"], [14, "3.5"], [16, "4"], [20, "5"], [24, "6"], [28, "7"], [32, "8"], [36, "9"], [40, "10"], [44, "11"], [48, "12"], [56, "14"], [64, "16"], [80, "20"], [96, "24"], [112, "28"], [128, "32"], [144, "36"], [160, "40"], [176, "44"], [192, "48"], [208, "52"], [224, "56"], [240, "60"], [256, "64"], [288, "72"], [320, "80"], [384, "96"]];
+
 function reportClass(ctx: RuleContext, use: ClassUse, m: Match, message: string): Violation {
   const prefix = tokenUtilityPrefix(use.base);
-  let replace: string | null = null;
+  let fix: Fix;
   if (m.token && prefix) {
     const candidate = rewriteKey(use, prefix, m.token.key);
-    if (ctx.resolver.resolve(candidate)) replace = candidate;
+    fix = fixFor(m, ctx.resolver.resolve(candidate) ? candidate : null);
+  } else if (prefix && !ctx.tokens.namespaces.has("spacing")) {
+    // No system scale: the Tailwind scale is the scale. Suggest its step.
+    const px = Math.abs(m.px);
+    const exact = TAILWIND_STEPS.find(([p]) => p === px);
+    const nearest = exact ?? TAILWIND_STEPS.reduce((a, b) => (Math.abs(b[0] - px) < Math.abs(a[0] - px) ? b : a));
+    const candidate = rewriteKey(use, prefix, nearest[1]);
+    const replace = ctx.resolver.resolve(candidate) ? candidate : null;
+    fix = { replace, confidence: replace ? (exact ? "exact" : "nearest") : "none", ...(replace && !exact ? { note: `Nearest step: ${nearest[1]} = ${nearest[0]}px.` } : {}) };
+  } else {
+    fix = fixFor(m, null);
   }
-  return ctx.report(ID, { range: use.range, found: use.candidate, message, fix: fixFor(m, replace) });
+  return ctx.report(ID, { range: use.range, found: use.candidate, message, fix });
 }

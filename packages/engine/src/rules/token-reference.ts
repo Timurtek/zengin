@@ -51,7 +51,8 @@ export const tokenReference: Rule = {
           // Derived variables such as `--text-lg--line-height` belong to the token they hang off.
           const split = r.literal.lastIndexOf("--");
           if (split > 0 && ctx.tokens.byVar.has(r.literal.slice(0, split))) return false;
-          return ctx.tokens.namespaces.has(varNamespace(r.literal));
+          const ns = varNamespace(r.literal);
+          return ctx.tokens.namespaces.has(ns) && !ctx.tokens.extendedNamespaces.has(ns);
         });
         if (!ref) continue;
         const ns = varNamespace(ref.literal);

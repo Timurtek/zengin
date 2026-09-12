@@ -150,6 +150,8 @@ export interface Token {
   namespace: string;
   /** Theme key after the namespace, e.g. `primary`, `primary-hover`, `3`. */
   key: string;
+  /** The group declared `$extensions.zengin.extendsDefault`: the framework default scale stays part of the system. */
+  extendsDefault: boolean;
 }
 
 export interface PropManifest {

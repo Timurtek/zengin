@@ -34,6 +34,8 @@ export interface JsxAttr {
   styleProps: StyleProp[];
   /** True when part of the value could not be read statically. */
   dynamic: boolean;
+  /** Names of `xxxVariants(...)` calls found in a class position, e.g. `buttonVariants`. */
+  variantCalls: string[];
 }
 
 export interface JsxElementInfo {
@@ -60,6 +62,8 @@ export interface ImportUse {
   /** Range of the whole import declaration. */
   declarationRange: Range;
   declarationSource: string;
+  /** True for `import type` declarations and `type` specifiers. Types cannot be substituted. */
+  typeOnly: boolean;
 }
 
 export interface Comment {
@@ -208,7 +212,7 @@ export function parseTsx(content: string): TsxFile {
         ? `${((nameNode["namespace"] as Node)["name"] as string)}:${((nameNode["name"] as Node)["name"] as string)}`
         : (nameNode["name"] as string);
     const value = a["value"] as Node | null;
-    const attr: JsxAttr = { name, range: rangeOf(a), source: sourceOf(a), classSpans: [], styleProps: [], dynamic: false };
+    const attr: JsxAttr = { name, range: rangeOf(a), source: sourceOf(a), classSpans: [], styleProps: [], dynamic: false, variantCalls: [] };
     if (!value) return attr;
     if (value.type === "StringLiteral") {
       attr.stringValue = value["value"] as string;
@@ -225,11 +229,32 @@ export function parseTsx(content: string): TsxFile {
         attr.stringValue = ((expr["quasis"] as Node[])[0]!["value"] as { cooked: string }).cooked;
         attr.stringValueRange = rangeOf(expr);
       }
-      if (CLASS_ATTRS.has(name)) attr.dynamic = collectClassStrings(expr, attr.classSpans, true);
+      if (CLASS_ATTRS.has(name)) {
+        attr.dynamic = collectClassStrings(expr, attr.classSpans, true);
+        attr.variantCalls = collectVariantCalls(expr);
+      }
       else if (name === "style") attr.dynamic = collectStyleProps(expr, attr.styleProps);
       else if (attr.stringValue === undefined) attr.dynamic = true;
     }
     return attr;
+  };
+
+  /** `buttonVariants(...)` style calls anywhere in an expression. */
+  const collectVariantCalls = (n: Node | null | undefined, out: string[] = []): string[] => {
+    if (!n || typeof n !== "object") return out;
+    if (n.type === "CallExpression") {
+      const callee = n["callee"] as Node;
+      if (callee.type === "Identifier" && /Variants$/.test(callee["name"] as string)) out.push(callee["name"] as string);
+    }
+    for (const [k, v] of Object.entries(n)) {
+      if (k === "loc") continue;
+      if (Array.isArray(v)) {
+        for (const item of v) if (item && typeof item === "object" && "type" in item) collectVariantCalls(item as Node, out);
+      } else if (v && typeof v === "object" && "type" in (v as object)) {
+        collectVariantCalls(v as Node, out);
+      }
+    }
+    return out;
   };
 
   const tagName = (n: Node): string => {
@@ -250,8 +275,10 @@ export function parseTsx(content: string): TsxFile {
     switch (n.type) {
       case "ImportDeclaration": {
         const source = (n["source"] as Node)["value"] as string;
+        const declType = n["importKind"] === "type";
         for (const s of n["specifiers"] as Node[]) {
           const local = (s["local"] as Node)["name"] as string;
+          const typeOnly = declType || s["importKind"] === "type";
           const imported =
             s.type === "ImportDefaultSpecifier"
               ? "default"
@@ -260,7 +287,7 @@ export function parseTsx(content: string): TsxFile {
                 : ((s["imported"] as Node).type === "Identifier"
                     ? ((s["imported"] as Node)["name"] as string)
                     : ((s["imported"] as Node)["value"] as string));
-          file.imports.push({ source, imported, local, declarationRange: rangeOf(n), declarationSource: sourceOf(n) });
+          file.imports.push({ source, imported, local, declarationRange: rangeOf(n), declarationSource: sourceOf(n), typeOnly });
         }
         return;
       }

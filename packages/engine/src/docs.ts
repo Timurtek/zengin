@@ -10,7 +10,7 @@ export const RULE_DOCS: Record<RuleId, { family: RuleFamily; description: string
   },
   "spacing-literal": {
     family: "foundation",
-    description: "An arbitrary length on margin, padding, gap or inset that is not on the system spacing scale, or a Tailwind default-scale utility that resolves off the system scale.",
+    description: "An arbitrary length on margin, padding, gap or scroll offsets that is not on the system spacing scale. Position offsets (top, left, inset) are coordinates and are not judged. When the system defines no spacing tokens, Tailwind's scale is the scale and its steps are suggested.",
   },
   "token-reference": {
     family: "foundation",
@@ -30,7 +30,7 @@ export const RULE_DOCS: Record<RuleId, { family: RuleFamily; description: string
   },
   "component-substitution": {
     family: "substitution",
-    description: "An import from a package the system shadows (e.g. @headlessui/react Dialog), or a raw element such as <button> styled with two or more properties the system component owns.",
+    description: "An import from a package the system shadows (e.g. @headlessui/react Dialog), a raw element such as <button> styled with two or more properties the system component owns, or a raw element styled with the system's own variant function (buttonVariants()). Type-only imports and *Props names are never candidates.",
   },
 };
 

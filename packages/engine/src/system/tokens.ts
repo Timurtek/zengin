@@ -25,19 +25,21 @@ interface RawToken {
   path: string[];
   type: TokenType;
   raw: unknown;
+  extendsDefault: boolean;
 }
 
-function collect(node: unknown, path: string[], inherited: TokenType | undefined, out: RawToken[]): void {
+function collect(node: unknown, path: string[], inherited: TokenType | undefined, extendsDefault: boolean, out: RawToken[]): void {
   if (typeof node !== "object" || node === null) return;
   const obj = node as Record<string, unknown>;
   const type = (obj["$type"] as TokenType | undefined) ?? inherited;
+  const ext = (obj["$extensions"] as { zengin?: { extendsDefault?: boolean } } | undefined)?.zengin?.extendsDefault ?? extendsDefault;
   if ("$value" in obj) {
-    out.push({ path, type: type ?? "string", raw: obj["$value"] });
+    out.push({ path, type: type ?? "string", raw: obj["$value"], extendsDefault: ext });
     return;
   }
   for (const [k, v] of Object.entries(obj)) {
     if (k.startsWith("$")) continue;
-    collect(v, [...path, k], type, out);
+    collect(v, [...path, k], type, ext, out);
   }
 }
 
@@ -58,7 +60,7 @@ function stringify(raw: unknown): string {
 
 export function loadTokens(json: unknown): Token[] {
   const raws: RawToken[] = [];
-  collect(json, [], undefined, raws);
+  collect(json, [], undefined, false, raws);
   const byPath = new Map(raws.map((r) => [r.path.join("."), r]));
 
   const resolve = (raw: unknown, depth = 0): unknown => {
@@ -88,6 +90,7 @@ export function loadTokens(json: unknown): Token[] {
       cssVar: key ? `--${namespace}-${key}` : `--${namespace}`,
       namespace,
       key,
+      extendsDefault: r.extendsDefault,
     };
   });
 }
@@ -194,6 +197,8 @@ export class TokenIndex {
   readonly byName = new Map<string, Token>();
   readonly colors: Token[];
   readonly namespaces: Set<string>;
+  /** Namespaces whose framework default scale remains on-system (Tailwind `extend` semantics). */
+  readonly extendedNamespaces: Set<string>;
   private readonly scale: SpacingStep[];
 
   constructor(readonly tokens: Token[]) {
@@ -203,6 +208,7 @@ export class TokenIndex {
     }
     this.colors = tokens.filter((t) => t.type === "color");
     this.namespaces = new Set(tokens.map((t) => t.namespace));
+    this.extendedNamespaces = new Set(tokens.filter((t) => t.extendsDefault).map((t) => t.namespace));
     this.scale = tokens
       .filter((t) => t.namespace === "spacing")
       .map((token) => ({ token, px: toPx(token.value) }))

@@ -5,6 +5,9 @@ import type { Rule } from "./context.js";
 
 const ID = "classname-policy";
 
+/** Utilities that hide or reveal content for assistive technology. They set many properties and restyle nothing. */
+const ACCESSIBILITY_UTILITIES = new Set(["sr-only", "not-sr-only"]);
+
 function reason(comp: ComponentManifest, prop: string): string {
   const key = ownedKey(prop, comp.owns);
   const control = key ? comp.owns?.[key] : undefined;
@@ -23,6 +26,7 @@ export const classnamePolicy: Rule = {
 
       for (const use of ctx.classUses) {
         if (use.element !== el || !use.decls) continue;
+        if (ACCESSIBILITY_UTILITIES.has(use.base)) continue; // visually-hidden is not a styling decision
         const denied = [...new Set(use.decls.map((d) => d.prop))].filter((p) => !allow.includes(categoryOf(p)));
         if (denied.length === 0) continue;
         out.push(
