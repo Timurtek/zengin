@@ -28,6 +28,10 @@ node demo/sample/run.mjs                    # regenerate the hero panel's violat
 
 Building it is what decided the next components and tokens, as the vision asks: `Tabs` (line and pill variants, two sizes, manifest, story, tests), a `font.display` token, `text.4xl` to `text.6xl`, `space.20` to `space.32`, and `leading.none`.
 
+## Deploying to Vercel
+
+The site is a static Vite build; `vercel.json` pins the rest. In the Vercel project, set **Root Directory** to `examples/marketing-site` and turn on **Include source files outside of the Root Directory**, so the workspace packages are available. The build command builds the dependency chain first (`pnpm --filter marketing-site... build`: engine, then ui, then the site) and then runs `zengin check`, so a deploy fails if the page drifts from its own system, the same gate CI applies.
+
 ## Wired in
 
 | File | Surface |
