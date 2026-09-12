@@ -8,8 +8,8 @@
     "dev": "vite --port 5174",
     "build": "vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "check": "zengin check",
-    "test": "zengin check",
+    "check": "node ../../packages/cli/dist/index.js check",
+    "test": "node ../../packages/cli/dist/index.js check",
     "screenshot": "node demo/screenshot.mjs"
   },
   "dependencies": {
