@@ -64,7 +64,7 @@ describe("Tailwind 3 project (HSL triples, config with extend)", () => {
     const card = d.components.find((c) => c.name === "Card")!;
     expect(card.slots).toEqual(["Header", "Title", "Content"]);
     const dialog = d.components.find((c) => c.name === "Dialog")!;
-    expect(dialog.replaces).toEqual(["dialog", "@radix-ui/react-dialog#*", "@headlessui/react#Dialog"]);
+    expect(dialog.replaces).toEqual(["dialog", "@radix-ui/react-dialog#*", "radix-ui#Dialog", "@headlessui/react#Dialog"]);
     expect(dialog.props!["onOpenChange"]).toEqual({ type: "function" });
     expect(dialog.className!.allow).toEqual([]);
     expect(dialog.slots).toEqual(["Trigger", "Content", "Title"]);
@@ -96,6 +96,32 @@ describe("Tailwind 4 project (oklch, @theme inline, src/ via tsconfig paths)", (
     expect(radius["lg"]).toEqual({ $value: "10px" });
     expect(radius["xl"]).toEqual({ $value: "14px" });
     expect((d.tokens["font"] as Record<string, { $value: string }>)["sans"]).toEqual({ $value: "var(--font-geist-sans)" });
+  });
+
+  it("reads Radix through the unified radix-ui package", () => {
+    const hc = d.components.find((c) => c.name === "HoverCard")!;
+    expect(hc.props!["openDelay"]).toEqual({ type: "number" });
+    expect(hc.props!["onOpenChange"]).toEqual({ type: "function" });
+    expect(hc.replaces).toEqual(["@radix-ui/react-hover-card#*", "radix-ui#HoverCard"]);
+    expect(hc.slots).toEqual(["Trigger", "Content"]);
+  });
+
+  it("reads props from the primary's own signature and ignores a sub-part's cva", () => {
+    const sb = d.components.find((c) => c.name === "Sidebar")!;
+    expect(sb.props!["side"]).toEqual({ type: "enum", values: ["left", "right"], default: "left" });
+    expect(sb.props!["variant"]).toEqual({ type: "enum", values: ["sidebar", "floating", "inset"], default: "sidebar" });
+    expect(sb.props!["collapsible"]).toEqual({ type: "enum", values: ["offcanvas", "icon", "none"], default: "offcanvas" });
+    expect(sb.props!["size"]).toBeUndefined();
+    expect(sb.extends).toBe("div");
+    expect(sb.replaces).toBeUndefined(); // extends <div>; does not stand in for every div
+    expect(sb.slots).toEqual(["MenuButton"]);
+  });
+
+  it("tells the engine about the project's own Tailwind rules and allows display on system components", () => {
+    expect(d.config).toContain('css: ["src/app/globals.css"]');
+    const button = d.components.find((c) => c.name === "Button")!;
+    expect(button.className!.allow).toContain("display");
+    expect(button.className!.allow).toContain("overflow");
   });
 
   it("reads the function-component shape with asChild and an icon size", () => {

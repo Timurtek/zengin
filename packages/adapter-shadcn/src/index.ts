@@ -84,6 +84,7 @@ scope:
 
 classes:
   tailwind: ${tailwind ? "true" : "auto"}
+  css: ["${themeFile}"]          # @custom-variant and @utility rules the class compiler must know
 
 rules:
   color-literal: { severity: error, allow: semantic }

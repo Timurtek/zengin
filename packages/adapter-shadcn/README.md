@@ -13,7 +13,7 @@ zengin check
 | --- | --- | --- |
 | Theme variables | the CSS file defining `--background` and `--foreground` (`app/globals.css`, `src/app/globals.css`, `styles/globals.css`, or found by scanning) | `zengin/tokens.json`: semantic color tokens, `primary` + `primary-foreground` grouped, HSL triples and oklch converted to hex. The `.dark` block becomes `zengin/tokens.dark.json`. `--radius` becomes the radius scale shadcn derives from it. |
 | Tailwind config | `tailwind.config.{js,ts}` on Tailwind 3, the `@theme` block on Tailwind 4 | Font families, and which namespaces extend the defaults rather than replace them. Extended namespaces are marked `extendsDefault`, so `rounded-2xl` and `font-mono` stay on-system. Spacing is never declared: shadcn projects use Tailwind's scale as their own. |
-| `components/ui/*.tsx` | located through `components.json` aliases and `tsconfig` paths, or the usual places | `zengin/components.json`: one entry per file. Variants and defaults from the `cva()` or `tv()` call, sub-parts from PascalCase exports, behavior props from the Radix package the file imports, `replaces` from the file name and that package, `owns` from the utilities the cva base and variants set. |
+| `components/ui/*.tsx` | located through `components.json` aliases and `tsconfig` paths, or the usual places | `zengin/components.json`: one entry per file. Variants and defaults from the `cva()` or `tv()` call named for the component, props from the component's own signature (string-literal unions become enums), behavior props from the Radix package the file imports (`@radix-ui/react-*` or the unified `radix-ui`) or from cmdk, vaul and sonner, `replaces` from the file name and that package, `extends` from `React.ComponentProps<"div">`, `owns` from the utilities the cva base and variants set. |
 
 The config it writes declares `components/ui/**` as owned, the theme directory as foundation, the ui alias as the system source, and the Tailwind adapter on. `classname-policy` starts at `warn`, because shadcn projects use `className` freely and a team should tighten it per component rather than be flooded on day one.
 
@@ -28,7 +28,7 @@ The report lists two kinds of defaults, per component:
 
 ## Verified against
 
-The first field test, shadcn/taxonomy, was run with hand-authored definitions and classified by hand: 35 violations, none false. Running this adapter on the same clone reproduces that result exactly, the same 35, from 36 derived components instead of 22 hand-written ones. See `docs/field-tests/`.
+Two field tests. shadcn/taxonomy (Tailwind 3): hand-authored definitions gave 35 violations, none false, and the adapter reproduces the same 35 from 36 derived components. vercel/ai-chatbot (Tailwind 4, current conventions): no hand-authored definitions, 109 violations after fixes, none false, and a real migration bug found. See `docs/field-tests/`.
 
 ## Programmatic use
 

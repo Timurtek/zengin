@@ -77,8 +77,15 @@ export const HEADLESS_BY_FILE: Record<string, string[]> = {
   command: ["@headlessui/react#Combobox"],
 };
 
-export const LAYOUT_ALLOW = ["margin", "width", "height", "flex-item", "grid-item", "position"];
-export const PLACEMENT_ALLOW = ["margin", "flex-item", "grid-item", "position"];
+export const LAYOUT_ALLOW = ["margin", "width", "height", "flex-item", "grid-item", "position", "display", "overflow"];
+export const PLACEMENT_ALLOW = ["margin", "flex-item", "grid-item", "position", "display"];
+
+/** Root props of non-Radix primitives shadcn wraps, by package name. */
+export const PACKAGE_ROOT_PROPS: Record<string, Record<string, PropSpec>> = {
+  cmdk: { value: S, defaultValue: S, onValueChange: F, filter: F, shouldFilter: B, loop: B, label: S, disablePointerSelection: B, vimBindings: B },
+  vaul: { open: B, defaultOpen: B, onOpenChange: F, modal: B, direction: { type: "enum", values: ["top", "bottom", "left", "right"] }, dismissible: B, shouldScaleBackground: B },
+  sonner: { position: S, expand: B, richColors: B, closeButton: B, duration: N, theme: { type: "enum", values: ["light", "dark", "system"] } },
+};
 
 /** Overlays and menus: className is not a styling API. Inline controls: placement only. Everything else: layout. */
 const OVERLAYS = new Set(["dialog", "alert-dialog", "sheet", "drawer", "popover", "tooltip", "hover-card", "dropdown-menu", "context-menu", "menubar", "navigation-menu", "select", "command", "combobox", "toast", "toaster", "sonner"]);

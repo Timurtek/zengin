@@ -23,7 +23,7 @@ Everyone else serves context. Zengin serves constraints.
 
 ## Field tests
 
-`docs/field-tests/` records runs against real external codebases, every violation classified by hand, and the engine changes each run produced. First: [shadcn/taxonomy](docs/field-tests/2026-09-12-shadcn-taxonomy.md), 41 violations of which 10 were false positives, then 35 with none after the fixes. The shadcn adapter now reproduces that run from one command.
+`docs/field-tests/` records runs against real external codebases, every violation classified by hand, and the engine changes each run produced. First: [shadcn/taxonomy](docs/field-tests/2026-09-12-shadcn-taxonomy.md), 41 violations of which 10 were false positives, then 35 with none after the fixes; the shadcn adapter reproduces that run from one command. Second: [vercel/ai-chatbot](docs/field-tests/2026-09-12-vercel-ai-chatbot.md) on Tailwind 4, 128 then 109 with none, no hand-authored definitions, and a migration bug found that nobody had noticed.
 
 ## Development
 
