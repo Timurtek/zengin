@@ -27,6 +27,14 @@ pnpm typecheck
 
 Node 22 and pnpm 10.
 
+## Agent skill
+
+`skills/zengin/SKILL.md` teaches a coding agent the loop: learn the system, write, check, apply fixes by confidence, re-check, and never suppress without a reason. Copy the directory into a project's `.claude/skills/` (or wherever your agent loads skills from) alongside the MCP server or hook.
+
+```bash
+cp -r skills/zengin .claude/skills/zengin
+```
+
 ## Releasing
 
 Releases are automated with [Changesets](https://github.com/changesets/changesets). A change a consumer should know about ships with a changeset file in `.changeset/` naming the packages and bumps. On push to `main`, the release workflow opens a "Version packages" pull request that applies the pending bumps and changelogs; merging it publishes the affected packages to npm with provenance. Internal dependents are bumped automatically, so a change to the engine releases new patch versions of the surfaces that depend on it.
