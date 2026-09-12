@@ -84,6 +84,7 @@ describe("components.json against the implementation", () => {
       TextField: ["size"],
       Checkbox: ["size"],
       Dialog: ["size"],
+      Tabs: ["variant", "size"],
     };
     for (const [comp, props] of Object.entries(styled)) {
       const m = manifests.find((x) => x.name === comp)!;

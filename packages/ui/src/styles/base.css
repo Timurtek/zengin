@@ -6,7 +6,8 @@
 .z-field,
 .z-checkbox,
 .z-dialog,
-.z-tooltip {
+.z-tooltip,
+.z-tabs {
   box-sizing: border-box;
   font-family: var(--font-sans);
   line-height: var(--leading-normal);
@@ -17,7 +18,8 @@
 .z-card *,
 .z-field *,
 .z-checkbox *,
-.z-dialog * {
+.z-dialog *,
+.z-tabs * {
   box-sizing: border-box;
 }
 

@@ -1,0 +1,16 @@
+# The page is enforced by the engine it advertises. The brand lives in src/theme; nothing else may hold a literal.
+system:
+  package: "@zengin/ui"
+
+scope:
+  include: ["src/**/*.{ts,tsx,css}"]
+  foundations: ["src/theme/**"]
+
+rules:
+  color-literal: { severity: error, allow: semantic }
+  spacing-literal: error
+  token-reference: error
+  unknown-prop: error
+  unknown-prop-value: error
+  classname-policy: error
+  component-substitution: error

@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Badge, Button, Card, Checkbox, Dialog, TextField, Tooltip } from "../src/index.js";
+import { Badge, Button, Card, Checkbox, Dialog, Tabs, TextField, Tooltip } from "../src/index.js";
 
 describe("Button", () => {
   it("renders defaults as data attributes the stylesheet keys on", () => {
@@ -180,5 +180,61 @@ describe("Tooltip", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+describe("Tabs", () => {
+  function Surfaces(props: { variant?: "line" | "pill"; size?: "sm" | "md" }) {
+    return (
+      <Tabs defaultValue="mcp" {...props}>
+        <Tabs.List aria-label="Surfaces">
+          <Tabs.Trigger value="mcp">MCP</Tabs.Trigger>
+          <Tabs.Trigger value="hook">Hook</Tabs.Trigger>
+          <Tabs.Trigger value="cli" disabled>
+            CLI
+          </Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value="mcp">Tools the agent calls.</Tabs.Content>
+        <Tabs.Content value="hook">Runs after every edit.</Tabs.Content>
+        <Tabs.Content value="cli">Runs in CI.</Tabs.Content>
+      </Tabs>
+    );
+  }
+
+  it("renders the ARIA tab pattern with defaults as data attributes", () => {
+    const { container } = render(<Surfaces />);
+    const root = container.querySelector(".z-tabs")!;
+    expect(root).toHaveAttribute("data-variant", "line");
+    expect(root).toHaveAttribute("data-size", "md");
+    expect(screen.getByRole("tablist", { name: "Surfaces" })).toBeInTheDocument();
+    expect(screen.getAllByRole("tab")).toHaveLength(3);
+    expect(screen.getByRole("tab", { name: "MCP" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("Tools the agent calls.");
+    expect(screen.getByRole("tab", { name: "CLI" })).toBeDisabled();
+  });
+
+  it("switches panels on click and hides the inactive ones", () => {
+    render(<Surfaces variant="pill" size="sm" />);
+    fireEvent.mouseDown(screen.getByRole("tab", { name: "Hook" }));
+    expect(screen.getByRole("tab", { name: "Hook" })).toHaveAttribute("data-state", "active");
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("Runs after every edit.");
+    expect(screen.queryByText("Tools the agent calls.")).not.toBeInTheDocument();
+  });
+
+  it("is controllable", () => {
+    const onChange = vi.fn();
+    render(
+      <Tabs value="a" onValueChange={onChange}>
+        <Tabs.List>
+          <Tabs.Trigger value="a">A</Tabs.Trigger>
+          <Tabs.Trigger value="b">B</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value="a">Panel A</Tabs.Content>
+        <Tabs.Content value="b">Panel B</Tabs.Content>
+      </Tabs>,
+    );
+    fireEvent.mouseDown(screen.getByRole("tab", { name: "B" }));
+    expect(onChange).toHaveBeenCalledWith("b");
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("Panel A"); // still controlled by the parent
   });
 });

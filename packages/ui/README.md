@@ -50,6 +50,7 @@ Every component renders its variant props as `data-*` attributes and the stylesh
 | `Checkbox` | `label`, `description`, `size` sm, md, plus Radix checkbox props: `checked` (including `"indeterminate"`), `onCheckedChange`, `disabled`. | unchecked, checked, indeterminate, hover, focus-visible, disabled |
 | `Dialog` | `open`, `defaultOpen`, `onOpenChange`, `size` sm, md, lg, `modal`. Parts `Dialog.Trigger`, `Dialog.Content` (wraps portal and overlay), `Dialog.Title`, `Dialog.Description`, `Dialog.Footer`, `Dialog.Close`. | closed, open, with enter and exit motion |
 | `Tooltip` | `content`, `side`, `delay`, `open`, `onOpenChange`. Wrap the app in `Tooltip.Provider`. | closed, open |
+| `Tabs` | `variant` line, pill. `size` sm, md. `value`, `defaultValue`, `onValueChange`. Parts `Tabs.List`, `Tabs.Trigger`, `Tabs.Content`. Arrow keys move between tabs. | active, inactive, hover, focus-visible, disabled |
 
 ### The customization contract, as the components implement it
 

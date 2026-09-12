@@ -1,0 +1,113 @@
+{
+  "file": "src/Actions.tsx",
+  "before": "import { Button } from \"@zengin/ui\";\n\nexport function Actions({ pending }: { pending: number }) {\n  return (\n    <div style={{ display: \"flex\", gap: \"14px\" }}>\n      <Button variant=\"ghost-danger\">Reject</Button>\n      <Button varient=\"soft\">Later</Button>\n      <button style={{ background: \"#2563EB\", color: \"#FFFFFF\", padding: \"8px 14px\", borderRadius: \"6px\" }}>Approve</button>\n      <span style={{ color: \"#475569\" }}>{pending} pending</span>\n    </div>\n  );\n}",
+  "after": "import { Button } from \"@zengin/ui\";\n\nexport function Actions({ pending }: { pending: number }) {\n  return (\n    <div style={{ display: \"flex\", gap: \"var(--spacing-3)\" }}>\n      <Button variant=\"ghost\" tone=\"danger\">Reject</Button>\n      <Button variant=\"soft\">Later</Button>\n      <Button tone=\"primary\">Approve</Button>\n      <span style={{ color: \"var(--color-text-muted)\" }}>{pending} pending</span>\n    </div>\n  );\n}",
+  "violations": [
+    {
+      "rule": "spacing-literal",
+      "severity": "error",
+      "line": 5,
+      "found": "gap: \"14px\"",
+      "message": "Arbitrary spacing value in inline style (gap). 14px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"var(--spacing-3)\"",
+        "confidence": "nearest",
+        "token": "space.3",
+        "note": "space.3 = 12px, space.4 = 16px"
+      }
+    },
+    {
+      "rule": "unknown-prop-value",
+      "severity": "error",
+      "line": 6,
+      "found": "variant=\"ghost-danger\"",
+      "message": "Button has no variant \"ghost-danger\". Valid: solid, soft, ghost, link.",
+      "fix": {
+        "replace": "variant=\"ghost\" tone=\"danger\"",
+        "confidence": "nearest",
+        "note": "\"danger\" is a value of the tone prop."
+      }
+    },
+    {
+      "rule": "unknown-prop",
+      "severity": "error",
+      "line": 7,
+      "found": "varient=\"soft\"",
+      "message": "Button has no prop \"varient\". Props: variant, tone, size, loading, leadingIcon, trailingIcon, asChild.",
+      "fix": {
+        "replace": "variant=\"soft\"",
+        "confidence": "nearest"
+      }
+    },
+    {
+      "rule": "component-substitution",
+      "severity": "error",
+      "line": 8,
+      "found": "<button style={{ background: \"#2563EB\", color: \"#FFFFFF\", padding: \"8px 14px\", borderRadius: \"6px\" }}>",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @zengin/ui.",
+      "fix": {
+        "replace": "<Button>Approve</Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props."
+      }
+    },
+    {
+      "rule": "color-literal",
+      "severity": "error",
+      "line": 8,
+      "found": "\"#2563EB\"",
+      "message": "Color literal in inline style (background) where a token reference is required. The value matches color.primary in the default theme but will not follow theme changes.",
+      "fix": {
+        "replace": "\"var(--color-primary)\"",
+        "confidence": "exact",
+        "token": "color.primary"
+      }
+    },
+    {
+      "rule": "color-literal",
+      "severity": "error",
+      "line": 8,
+      "found": "\"#FFFFFF\"",
+      "message": "Color literal in inline style (color) where a token reference is required. The value matches 6 tokens (color.surface, color.on-primary, color.on-danger, color.on-success, color.on-warning, color.on-neutral) in the default theme but will not follow theme changes.",
+      "fix": {
+        "replace": "\"var(--color-surface)\"",
+        "confidence": "nearest",
+        "token": "color.surface",
+        "candidates": [
+          "color.surface",
+          "color.on-primary",
+          "color.on-danger",
+          "color.on-success",
+          "color.on-warning",
+          "color.on-neutral"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.surface, color.on-primary, color.on-danger, color.on-success, color.on-warning, color.on-neutral."
+      }
+    },
+    {
+      "rule": "spacing-literal",
+      "severity": "error",
+      "line": 8,
+      "found": "padding: \"8px 14px\"",
+      "message": "Arbitrary spacing value in inline style (padding). 14px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"var(--spacing-2) var(--spacing-3)\"",
+        "confidence": "nearest",
+        "token": "space.3",
+        "note": "space.3 = 12px, space.4 = 16px"
+      }
+    },
+    {
+      "rule": "color-literal",
+      "severity": "error",
+      "line": 9,
+      "found": "\"#475569\"",
+      "message": "Color literal in inline style (color) where a token reference is required. The value matches color.text-muted in the default theme but will not follow theme changes.",
+      "fix": {
+        "replace": "\"var(--color-text-muted)\"",
+        "confidence": "exact",
+        "token": "color.text-muted"
+      }
+    }
+  ]
+}

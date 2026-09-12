@@ -16,11 +16,15 @@ Everyone else serves context. Zengin serves constraints.
 | [`@zengin/cli`](packages/cli) | Phase 1 | `zengin check` for pre-commit and CI, with `--changed`, `--staged`, and GitHub annotations. `explain`, `init`. |
 | [`@zengin/adapter-shadcn`](packages/adapter-shadcn) | Phase 2 | `zengin init --from shadcn`: derives tokens, the component manifest and a config from a shadcn/ui project. Reproduces the taxonomy field test exactly. |
 | [`@zengin/rollup`](packages/rollup) | Phase 2 | `zengin report` in each consuming repo, `zengin rollup` across them: drift, adoption, suppressions, owned forks, pinned versions, deltas. Markdown, JSON, or a self-contained HTML page. |
-| [`@zengin/ui`](packages/ui) | Phase 1, seven components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
+| [`@zengin/ui`](packages/ui) | Phase 1, eight components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
 
-## The demo
+## The two reference experiences
 
-[`examples/review-workspace`](examples/review-workspace) is a review queue built on `@zengin/ui` with the MCP server, hook and CLI wired in. Its [DEMO.md](examples/review-workspace/DEMO.md) replays the enforcement loop: an off-system component the way an agent writes it, the engine's 19 violations, the corrected component, zero violations, and both renders. The replay runs in CI with assertions.
+The vision asks for one marketing page and one application workflow from the same foundations with distinct visual treatments. Both are workspace examples built on `@zengin/ui`, and both are checked by the engine in CI.
+
+[`examples/review-workspace`](examples/review-workspace) is a review queue with the MCP server, hook and CLI wired in, in the default theme. Its [DEMO.md](examples/review-workspace/DEMO.md) replays the enforcement loop: an off-system component the way an agent writes it, the engine's 19 violations, the corrected component, zero violations, and both renders. The replay runs in CI with assertions.
+
+[`examples/marketing-site`](examples/marketing-site) is Zengin's own marketing page. Its brand is one file of token overrides (an expanded grotesk for headlines, square corners, black rules, cobalt as the single accent, both color schemes); the components have no idea. The hero panel renders real engine output for a sample file, the four surfaces sit in a `Tabs` component, and the page's own check passes with zero violations and zero suppressions. Building the page is what added `Tabs`, the display typeface token, display text sizes and the larger spacing steps to Zengin UI.
 
 ## Field tests
 

@@ -482,5 +482,77 @@
       "closed",
       "open"
     ]
+  },
+  {
+    "name": "Tabs",
+    "since": "0.1.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Tabs"
+    },
+    "replaces": [
+      "@radix-ui/react-tabs#*",
+      "@headlessui/react#TabGroup",
+      "@radix-ui/themes#Tabs"
+    ],
+    "props": {
+      "variant": {
+        "type": "enum",
+        "values": [
+          "line",
+          "pill"
+        ],
+        "default": "line"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      },
+      "value": {
+        "type": "string"
+      },
+      "defaultValue": {
+        "type": "string"
+      },
+      "onValueChange": {
+        "type": "function"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": "variant",
+      "color": null,
+      "border-color": "variant",
+      "padding": "size",
+      "border-radius": null,
+      "font": "size",
+      "box-shadow": "variant"
+    },
+    "slots": [
+      "List",
+      "Trigger",
+      "Content"
+    ],
+    "states": [
+      "active",
+      "inactive",
+      "hover",
+      "focus-visible",
+      "disabled"
+    ]
   }
 ]

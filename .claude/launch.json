@@ -12,6 +12,16 @@
       "port": 6006
     },
     {
+      "name": "marketing-site",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "marketing-site",
+        "dev"
+      ],
+      "port": 5174
+    },
+    {
       "name": "review-workspace",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": [

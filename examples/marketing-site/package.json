@@ -1,0 +1,32 @@
+{
+  "name": "marketing-site",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Zengin's own marketing page, built on @zengin/ui with a distinct brand through tokens, and enforced by the engine it advertises.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5174",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check": "zengin check",
+    "test": "zengin check",
+    "screenshot": "node demo/screenshot.mjs"
+  },
+  "dependencies": {
+    "@zengin/ui": "workspace:*",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@zengin/cli": "workspace:*",
+    "@zengin/engine": "workspace:*",
+    "@zengin/hook": "workspace:*",
+    "@zengin/mcp": "workspace:*",
+    "puppeteer-core": "^25.10.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.3.0"
+  }
+}
