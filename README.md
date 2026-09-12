@@ -14,7 +14,7 @@ Everyone else serves context. Zengin serves constraints.
 | [`@zengin/mcp`](packages/mcp) | Phase 1, four tools | stdio MCP server: `zengin_check_code`, `zengin_get_violations`, `zengin_describe_system`, `zengin_explain_rules`. |
 | [`@zengin/hook`](packages/hook) | Phase 1 | Claude Code PostToolUse hook. Checks every file write; blocks with the violations as the reason. |
 | [`@zengin/cli`](packages/cli) | Phase 1 | `zengin check` for pre-commit and CI, with `--changed`, `--staged`, and GitHub annotations. `explain`, `init`. |
-| `@zengin/ui` | not started | The reference component system the engine is proven against. Plain CSS and custom properties, no styling framework. |
+| [`@zengin/ui`](packages/ui) | Phase 1, seven components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
 
 ## Development
 

@@ -1,0 +1,25 @@
+# Zengin checks its own reference system. Components are the system, so they are "owned";
+# the foundation rules still apply, which is the point: every value in a component is a token.
+system:
+  package: "@zengin/ui"
+  version: "0.1.0"
+  definitions: ./zengin
+  sources: ["@zengin/ui"]
+
+scope:
+  include: ["src/**/*.{ts,tsx,css}"]
+  exclude: ["src/styles/generated/**"]
+  foundations: ["src/styles/**"]
+  ownership: ["src/components/**"]
+
+classes:
+  tailwind: false
+
+rules:
+  color-literal: error
+  spacing-literal: error
+  token-reference: error
+  unknown-prop: error
+  unknown-prop-value: error
+  classname-policy: error
+  component-substitution: error

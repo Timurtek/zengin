@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zengin UI demo</title>
+<link rel="stylesheet" href="../dist/zengin.css" />
+<style>
+  /* Demo chrome only. Everything inside the sections is the system's own markup. */
+  body { margin: 0; font-family: var(--font-sans); background: var(--color-surface); color: var(--color-text); }
+  .demo { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+  .demo > section { padding: var(--spacing-8); }
+  .demo h1 { margin: 0 0 var(--spacing-6); font-size: var(--text-xl); font-weight: var(--font-weight-semibold); }
+  .demo h2 { margin: var(--spacing-6) 0 var(--spacing-3); font-size: var(--text-xs); font-weight: var(--font-weight-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-3); }
+  .col { display: flex; flex-direction: column; gap: var(--spacing-3); max-width: 24rem; }
+  .dialog-demo { position: relative; height: 22rem; overflow: hidden; border-radius: var(--radius-lg); }
+  .dialog-demo .z-dialog__overlay, .dialog-demo .z-dialog { position: absolute; animation: none; }
+</style>
+</head>
+<body>
+<div class="demo">
+<template id="section">
+  <section>
+    <h1></h1>
+
+    <h2>Button: variants by tone</h2>
+    <div class="col">
+      <div class="row">
+        <button class="z-button z-focusable" data-variant="solid" data-tone="neutral" data-size="md"><span class="z-button__label">Neutral</span></button>
+        <button class="z-button z-focusable" data-variant="solid" data-tone="primary" data-size="md"><span class="z-button__label">Primary</span></button>
+        <button class="z-button z-focusable" data-variant="solid" data-tone="danger" data-size="md"><span class="z-button__label">Danger</span></button>
+        <button class="z-button z-focusable" data-variant="solid" data-tone="primary" data-size="md" data-loading="true" data-disabled="true" disabled aria-busy="true">
+          <span class="z-button__spinner" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity="0.25"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+          <span class="z-button__label">Saving</span>
+        </button>
+        <button class="z-button z-focusable" data-variant="solid" data-tone="neutral" data-size="md" data-disabled="true" disabled><span class="z-button__label">Disabled</span></button>
+      </div>
+      <div class="row">
+        <button class="z-button z-focusable" data-variant="soft" data-tone="neutral" data-size="md"><span class="z-button__label">Neutral</span></button>
+        <button class="z-button z-focusable" data-variant="soft" data-tone="primary" data-size="md"><span class="z-button__label">Primary</span></button>
+        <button class="z-button z-focusable" data-variant="soft" data-tone="danger" data-size="md"><span class="z-button__label">Danger</span></button>
+        <button class="z-button z-focusable" data-variant="ghost" data-tone="neutral" data-size="md"><span class="z-button__label">Ghost</span></button>
+        <button class="z-button z-focusable" data-variant="ghost" data-tone="primary" data-size="md"><span class="z-button__label">Ghost</span></button>
+        <button class="z-button z-focusable" data-variant="link" data-tone="primary" data-size="md"><span class="z-button__label">Link</span></button>
+      </div>
+      <div class="row">
+        <button class="z-button z-focusable" data-variant="solid" data-tone="primary" data-size="sm"><span class="z-button__label">Small</span></button>
+        <button class="z-button z-focusable" data-variant="solid" data-tone="primary" data-size="md"><span class="z-button__label">Medium</span></button>
+        <button class="z-button z-focusable" data-variant="solid" data-tone="primary" data-size="lg"><span class="z-button__label">Large</span></button>
+      </div>
+    </div>
+
+    <h2>Badge</h2>
+    <div class="row">
+      <span class="z-badge" data-tone="neutral" data-variant="soft" data-size="md">Draft</span>
+      <span class="z-badge" data-tone="primary" data-variant="soft" data-size="md">In review</span>
+      <span class="z-badge" data-tone="success" data-variant="soft" data-size="md">Approved</span>
+      <span class="z-badge" data-tone="warning" data-variant="soft" data-size="md">Needs changes</span>
+      <span class="z-badge" data-tone="danger" data-variant="soft" data-size="md">Rejected</span>
+      <span class="z-badge" data-tone="success" data-variant="solid" data-size="md">Solid</span>
+      <span class="z-badge" data-tone="primary" data-variant="outline" data-size="md">Outline</span>
+      <span class="z-badge" data-tone="neutral" data-variant="soft" data-size="sm">Small</span>
+    </div>
+
+    <h2>Card</h2>
+    <div class="row" style="align-items: stretch">
+      <div class="z-card" data-variant="outlined" data-padding="md" style="width: 16rem">
+        <div class="z-card__header">Outlined</div>
+        <div class="z-card__body">Header, body and footer parts. Padding is per part.</div>
+        <div class="z-card__footer">
+          <button class="z-button z-focusable" data-variant="ghost" data-tone="neutral" data-size="sm"><span class="z-button__label">Cancel</span></button>
+          <button class="z-button z-focusable" data-variant="solid" data-tone="primary" data-size="sm"><span class="z-button__label">Approve</span></button>
+        </div>
+      </div>
+      <div class="z-card z-focusable" data-variant="elevated" data-padding="md" data-interactive="true" tabindex="0" style="width: 12rem">Elevated, interactive. Hover me.</div>
+      <div class="z-card" data-variant="sunken" data-padding="sm" style="width: 10rem">Sunken, small padding.</div>
+    </div>
+
+    <h2>TextField</h2>
+    <div class="col">
+      <div class="z-field" data-size="md">
+        <label class="z-field__label" for="f1-ID">Email<span class="z-field__required" aria-hidden="true"> *</span></label>
+        <div class="z-field__control"><input id="f1-ID" class="z-field__input z-focusable" placeholder="you@company.com" value="" /></div>
+        <p class="z-field__description">We only use this for receipts.</p>
+      </div>
+      <div class="z-field" data-size="md" data-invalid="true">
+        <label class="z-field__label" for="f2-ID">Amount</label>
+        <div class="z-field__control"><input id="f2-ID" class="z-field__input z-focusable" value="-40" aria-invalid="true" /></div>
+        <p class="z-field__error" role="alert">Amount must be positive.</p>
+      </div>
+      <div class="row">
+        <div class="z-field" data-size="sm" data-disabled="true"><label class="z-field__label" for="f3-ID">Disabled</label><div class="z-field__control"><input id="f3-ID" class="z-field__input z-focusable" value="Read me" disabled /></div></div>
+        <div class="z-field" data-size="lg" data-readonly="true"><label class="z-field__label" for="f4-ID">Read only, large</label><div class="z-field__control"><input id="f4-ID" class="z-field__input z-focusable" value="ZN-2041" readonly /></div></div>
+      </div>
+    </div>
+
+    <h2>Checkbox</h2>
+    <div class="col">
+      <div class="z-checkbox" data-size="md">
+        <span class="z-checkbox__box"><button type="button" role="checkbox" aria-checked="false" data-state="unchecked" class="z-checkbox__control z-focusable"><span class="z-checkbox__indicator"><svg viewBox="0 0 16 16" fill="none"><path class="z-checkbox__check" d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path class="z-checkbox__dash" d="M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button></span>
+        <div class="z-checkbox__text"><label class="z-checkbox__label">Notify the author</label><p class="z-checkbox__description">Sends an email when the review is complete, even if it wraps to a second line.</p></div>
+      </div>
+      <div class="z-checkbox" data-size="md">
+        <span class="z-checkbox__box"><button type="button" role="checkbox" aria-checked="true" data-state="checked" class="z-checkbox__control z-focusable"><span class="z-checkbox__indicator"><svg viewBox="0 0 16 16" fill="none"><path class="z-checkbox__check" d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path class="z-checkbox__dash" d="M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button></span>
+        <div class="z-checkbox__text"><label class="z-checkbox__label">Checked</label></div>
+      </div>
+      <div class="z-checkbox" data-size="md">
+        <span class="z-checkbox__box"><button type="button" role="checkbox" aria-checked="mixed" data-state="indeterminate" class="z-checkbox__control z-focusable"><span class="z-checkbox__indicator"><svg viewBox="0 0 16 16" fill="none"><path class="z-checkbox__check" d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path class="z-checkbox__dash" d="M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button></span>
+        <div class="z-checkbox__text"><label class="z-checkbox__label">Indeterminate</label></div>
+      </div>
+      <div class="z-checkbox" data-size="sm" data-disabled="true">
+        <span class="z-checkbox__box"><button type="button" role="checkbox" aria-checked="true" data-state="checked" class="z-checkbox__control z-focusable" disabled><span class="z-checkbox__indicator"><svg viewBox="0 0 16 16" fill="none"><path class="z-checkbox__check" d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path class="z-checkbox__dash" d="M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button></span>
+        <div class="z-checkbox__text"><label class="z-checkbox__label">Small, disabled, checked</label></div>
+      </div>
+    </div>
+
+    <h2>Dialog (open state, static) and Tooltip</h2>
+    <div class="dialog-demo">
+      <div class="z-dialog__overlay" data-state="open"></div>
+      <div class="z-dialog" data-state="open" data-size="sm" role="dialog">
+        <h2 class="z-dialog__title" style="margin: 0; text-transform: none; letter-spacing: 0; color: inherit">Reject this item?</h2>
+        <p class="z-dialog__description">The author will be notified and the item returns to the queue.</p>
+        <div class="z-dialog__footer">
+          <button class="z-button z-focusable" data-variant="ghost" data-tone="neutral" data-size="md"><span class="z-button__label">Cancel</span></button>
+          <button class="z-button z-focusable" data-variant="solid" data-tone="danger" data-size="md"><span class="z-button__label">Reject</span></button>
+        </div>
+        <button class="z-dialog__close z-focusable" aria-label="Close"><svg viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="z-tooltip" data-state="open" style="position: absolute; left: 24px; bottom: 24px; animation: none">Delete item</div>
+    </div>
+  </section>
+</template>
+</div>
+<script>
+  // Render the same section twice: once in the light theme, once forced dark.
+  const tpl = document.getElementById("section");
+  const host = document.querySelector(".demo");
+  for (const theme of ["light", "dark"]) {
+    const frag = tpl.content.cloneNode(true);
+    const section = frag.querySelector("section");
+    section.querySelector("h1").textContent = theme === "light" ? "Zengin default theme" : "Zengin dark theme";
+    section.innerHTML = section.innerHTML.replaceAll("-ID", `-${theme}`);
+    // Explicit on both sides, so the viewer's own color-scheme preference does not decide.
+    section.setAttribute("data-theme", theme);
+    section.style.background = "var(--color-surface)";
+    section.style.color = "var(--color-text)";
+    host.appendChild(section);
+  }
+</script>
+</body>
+</html>
