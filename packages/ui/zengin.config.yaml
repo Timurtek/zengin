@@ -7,7 +7,7 @@ system:
   sources: ["@zengin/ui"]
 
 scope:
-  include: ["src/**/*.{ts,tsx,css}"]
+  include: ["src/**/*.{ts,tsx,css}", "stories/**/*.tsx"]
   exclude: ["src/styles/generated/**"]
   foundations: ["src/styles/**"]
   ownership: ["src/components/**"]

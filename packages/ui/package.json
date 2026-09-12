@@ -4,26 +4,50 @@
   "description": "The Zengin reference design system: plain CSS, custom-property tokens, Radix behavior, and the definitions the engine enforces against.",
   "license": "MIT",
   "type": "module",
-  "keywords": ["design-system", "react", "components", "design-tokens", "zengin"],
-  "repository": { "type": "git", "url": "git+https://github.com/Timurtek/zengin.git", "directory": "packages/ui" },
+  "keywords": [
+    "design-system",
+    "react",
+    "components",
+    "design-tokens",
+    "zengin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Timurtek/zengin.git",
+    "directory": "packages/ui"
+  },
   "homepage": "https://github.com/Timurtek/zengin/tree/main/packages/ui#readme",
   "bugs": "https://github.com/Timurtek/zengin/issues",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./styles.css": "./dist/zengin.css",
     "./zengin/*": "./zengin/*",
     "./package.json": "./package.json"
   },
-  "files": ["dist", "zengin"],
-  "sideEffects": ["*.css"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist",
+    "zengin"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json && tsx scripts/build.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "tsx scripts/build.ts --tokens-only && vitest run"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.stories.json --noEmit",
+    "test": "tsx scripts/build.ts --tokens-only && vitest run",
+    "storybook": "tsx scripts/build.ts --tokens-only && storybook dev -p 6006 --no-open",
+    "build-storybook": "tsx scripts/build.ts --tokens-only && storybook build"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
@@ -36,6 +60,9 @@
     "@radix-ui/react-tooltip": "^1.2.16"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.0",
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/react-vite": "^10.6.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^22",
@@ -46,8 +73,10 @@
     "jsdom": "^30.0.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "storybook": "^10.6.0",
     "tsx": "^4.20.0",
     "typescript": "^5.9.2",
+    "vite": "^8.3.0",
     "vitest": "^5.0.0"
   }
 }

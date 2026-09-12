@@ -29,7 +29,7 @@ Themes attach to any element. `<html data-theme="dark">` switches the page; `<se
 
 | Group | Tokens |
 | --- | --- |
-| color | surface, surface-raised, surface-sunken, surface-overlay, text, text-muted, text-subtle, border, border-strong, focus, and for each of primary, danger, neutral: base, hover, active, soft, soft-hover, on-*. success and warning: base, soft, on-*. |
+| color | surface, surface-raised, surface-sunken, surface-overlay, text, text-muted, text-subtle, border, border-strong, focus, and for each of primary, danger, neutral: base, hover, active, soft, soft-hover, soft-foreground, on-*. success and warning: base, soft, soft-foreground, on-*. `soft-foreground` is the text on the soft tint, chosen for contrast rather than hue; a test holds every component pairing at WCAG AA in both themes. |
 | space | 0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16 (4px steps) |
 | radius | none, sm, md, lg, xl, full |
 | shadow | sm, md, lg |
@@ -66,15 +66,24 @@ Durations and easings are tokens. Buttons and cards transition on `--duration-fa
 
 The package carries a `zengin.config.yaml` and a test that runs the engine over its own source. Components are owned files, so the contract rules are off; the foundation rules stay on. The test passes only when every color and spacing value in every component stylesheet is a token reference. It caught a hardcoded `margin-top: 0.125rem` in the checkbox on the first run.
 
+## Storybook
+
+```bash
+pnpm storybook          # http://localhost:6006
+pnpm build-storybook    # static build, also run in CI
+```
+
+One story file per component under `stories/`. Controls, the variant matrices and the story-coverage test all read `zengin/components.json`, the same manifest the engine enforces against, so a manifest that disagrees with a component shows up in a story before it shows up as a wrong violation. The toolbar switches `data-theme`, exactly as a consumer would. The accessibility addon runs on every story; it found the soft-variant contrast defect that the contrast test now guards.
+
 ## Development
 
 ```bash
 pnpm build      # tsc, then tokens.json -> tokens.css, then the CSS bundle
-pnpm test       # rendering tests, manifest-against-implementation tests, and the engine on itself
+pnpm test       # rendering, manifest-against-implementation, contrast in both themes, and the engine on itself
 ```
 
 `demo/index.html` shows every component and state in both themes from static markup. Serve the package directory and open it; the repo's `.claude/launch.json` has a configuration for that.
 
 ## Not yet
 
-Select, Switch, Tabs, Toast, Menu. Storybook. A second brand theme beyond dark. The marketing page and application workflow that will decide which of those come first.
+Select, Switch, Tabs, Toast, Menu. A second brand theme beyond dark. The marketing page and application workflow that will decide which of those come first.

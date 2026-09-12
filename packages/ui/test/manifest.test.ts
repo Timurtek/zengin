@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadTokens, type ComponentManifest } from "@zengin/engine";
@@ -47,6 +47,16 @@ describe("components.json against the implementation", () => {
       for (const slot of m.slots ?? []) {
         if (/^[A-Z]/.test(slot)) expect(comp, `${m.name}.${slot}`).toHaveProperty(slot);
       }
+    }
+  });
+
+  it("every component has a story file, and every enum prop with more than one value has a matrix or size story", () => {
+    for (const m of manifests) {
+      const file = m.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+      const story = join(root, "stories", `${file}.stories.tsx`);
+      expect(existsSync(story), `${m.name}: stories/${file}.stories.tsx`).toBe(true);
+      const src = readFileSync(story, "utf8");
+      expect(src, `${m.name} story reads its manifest`).toContain(`argTypesFor("${m.name}")`);
     }
   });
 

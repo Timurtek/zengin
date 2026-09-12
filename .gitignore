@@ -4,3 +4,4 @@ dist/
 .DS_Store
 # Built from zengin/tokens*.json by packages/ui/scripts/build.ts
 packages/ui/src/styles/generated/
+storybook-static/
