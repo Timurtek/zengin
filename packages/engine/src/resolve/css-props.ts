@@ -141,6 +141,15 @@ export function tokenUtilityPrefix(base: string): string | undefined {
   return best;
 }
 
+/** Replaces several literals in a value with `var()` references in one pass, by offset, so earlier edits do not shift later ones. */
+export function rewriteAll(value: string, edits: { literal: string; offset: number; cssVar: string }[]): string {
+  let out = value;
+  for (const e of [...edits].sort((a, b) => b.offset - a.offset)) {
+    out = out.slice(0, e.offset) + `var(${e.cssVar})` + out.slice(e.offset + e.literal.length);
+  }
+  return out;
+}
+
 /** Rewrites an arbitrary-value utility to reference a theme key: `bg-[#3B82F6]` + `primary` -> `bg-primary`. */
 export function rewriteArbitrary(candidate: string, key: string): string | undefined {
   const m = /^(.*?)-\[[^\]]*\]$/.exec(candidate);

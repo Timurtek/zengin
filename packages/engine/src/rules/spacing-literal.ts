@@ -1,5 +1,5 @@
 import { offsetsToRange } from "../parse/css.js";
-import { findLengthLiterals, isSpacingProp, tokenUtilityPrefix } from "../resolve/css-props.js";
+import { findLengthLiterals, isSpacingProp, rewriteAll, tokenUtilityPrefix } from "../resolve/css-props.js";
 import type { Fix, Token, Violation } from "../types.js";
 import { rewriteKey, utilityUses, type ClassUse, type Rule, type RuleContext } from "./context.js";
 
@@ -61,16 +61,25 @@ export const spacingLiteral: Rule = {
       for (const attr of el.attrs) {
         for (const sp of attr.styleProps) {
           if (!isSpacingProp(sp.prop)) continue;
-          const lit = findLengthLiterals(sp.value)[0];
-          if (!lit) continue;
-          const m = match(ctx, lit.literal);
-          if (!m) continue;
+          const lits = findLengthLiterals(sp.value);
+          if (lits.length === 0) continue;
+          // One violation per property. The fix rewrites every literal in the value, so applying it
+          // once leaves nothing behind; confidence is the weakest of the individual matches.
+          const matches = lits.map((l) => ({ lit: l, m: match(ctx, l.literal) }));
+          const offScale = matches.filter((x) => x.m && x.m.confidence !== "exact");
+          const worst = offScale[0]?.m ?? matches[0]!.m;
+          if (!worst) continue;
+          const replaceable = matches.every((x) => x.m?.token);
+          const rewritten = replaceable ? rewriteAll(sp.value, matches.map((x) => ({ literal: x.lit.literal, offset: x.lit.offset, cssVar: x.m!.token!.cssVar }))) : null;
+          const px = offScale[0]?.m?.px ?? worst.px;
           out.push(
             ctx.report(ID, {
               range: sp.valueRange,
               found: sp.source,
-              message: `Arbitrary spacing value in inline style (${sp.prop}). ${m.px}px is not on the spacing scale.`,
-              fix: fixFor(m, m.token ? JSON.stringify(sp.value.replace(lit.literal, `var(${m.token.cssVar})`)) : null),
+              message: offScale.length
+                ? `Arbitrary spacing value in inline style (${sp.prop}). ${px}px is not on the spacing scale.`
+                : `Spacing literal in inline style (${sp.prop}) where a token reference is required. ${px}px matches ${worst.token!.name} but will not follow scale changes.`,
+              fix: fixFor(worst, rewritten ? JSON.stringify(rewritten) : null),
             }),
           );
         }

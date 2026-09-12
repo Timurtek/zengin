@@ -1,5 +1,5 @@
 import { offsetsToRange } from "../parse/css.js";
-import { findColorLiterals, findVarRefs, isColorProp, tokenUtilityPrefix } from "../resolve/css-props.js";
+import { findColorLiterals, findVarRefs, isColorProp, rewriteAll, tokenUtilityPrefix } from "../resolve/css-props.js";
 import type { Token, Fix, Violation } from "../types.js";
 import { rewriteKey, utilityUses, type ClassUse, type Rule, type RuleContext } from "./context.js";
 
@@ -105,15 +105,19 @@ export const colorLiteral: Rule = {
       for (const attr of el.attrs) {
         for (const sp of attr.styleProps) {
           if (!isColorProp(sp.prop)) continue;
-          const lit = findColorLiterals(sp.value)[0];
-          if (!lit) continue;
-          const m = describe(ctx, lit.literal);
+          const lits = findColorLiterals(sp.value);
+          if (lits.length === 0) continue;
+          // One violation per property; the fix rewrites every literal in the value at once.
+          const matches = lits.map((l) => ({ lit: l, m: describe(ctx, l.literal) }));
+          const worst = matches.find((x) => x.m.confidence === "none")?.m ?? matches.find((x) => x.m.confidence === "nearest")?.m ?? matches[0]!.m;
+          const replaceable = matches.every((x) => x.m.token);
+          const rewritten = replaceable ? rewriteAll(sp.value, matches.map((x) => ({ literal: x.lit.literal, offset: x.lit.offset, cssVar: x.m.token!.cssVar }))) : null;
           out.push(
             ctx.report(ID, {
               range: sp.valueRange,
               found: JSON.stringify(sp.value),
-              message: m.message.replace("Color literal", `Color literal in inline style (${sp.prop})`),
-              fix: fixFor(m, m.token ? JSON.stringify(sp.value.replace(lit.literal, `var(${m.token.cssVar})`)) : null),
+              message: worst.message.replace("Color literal", `Color literal in inline style (${sp.prop})`),
+              fix: fixFor(worst, rewritten ? JSON.stringify(rewritten) : null),
             }),
           );
         }
