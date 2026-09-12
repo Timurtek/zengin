@@ -1,0 +1,50 @@
+{
+  "name": "@zengin/cli",
+  "version": "0.0.1",
+  "description": "Command line for the Zengin conformance engine: the gate for pre-commit and CI.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "lint",
+    "conformance",
+    "coding-agents",
+    "zengin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Timurtek/zengin.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/Timurtek/zengin/tree/main/packages/cli#readme",
+  "bugs": "https://github.com/Timurtek/zengin/issues",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "zengin": "./dist/index.js"
+  },
+  "main": "./dist/check.js",
+  "types": "./dist/check.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@zengin/engine": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^5.9.2",
+    "vitest": "^5.0.0"
+  }
+}

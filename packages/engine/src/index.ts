@@ -8,3 +8,4 @@ export { StylesheetIndex } from "./resolve/stylesheet.js";
 export type { ClassResolver, Declaration, Resolution, UtilityResolver, StylesheetResolver } from "./resolve/resolver.js";
 export * from "./types.js";
 export { renderSummary, renderViolations, summarize, type Summary } from "./format.js";
+export { RULE_DOCS, FAMILY_NOTES, type RuleFamily } from "./docs.js";
