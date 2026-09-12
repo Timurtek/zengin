@@ -22,12 +22,12 @@ A project's own stylesheet wins over a utility of the same name. Literal values 
 | Rule | Family | Catches |
 | --- | --- | --- |
 | `color-literal` | foundation | Hex, rgb, oklch and named colors in classes, inline styles and CSS. Palette utilities like `bg-red-500` in `semantic` mode. |
-| `spacing-literal` | foundation | Arbitrary lengths on margin, padding, gap and inset. Default-scale utilities that resolve off the system scale. |
+| `spacing-literal` | foundation | Arbitrary lengths on margin, padding, gap and scroll offsets. Position offsets are coordinates and are not judged. With no system spacing tokens, Tailwind's scale is the scale and its steps are suggested. |
 | `token-reference` | foundation | Utilities and `var()` references to tokens that do not exist. |
 | `unknown-prop` | contract | Props a system component does not declare. |
 | `unknown-prop-value` | contract | Enum values a component does not accept, including values added in a newer version than the project pins. |
 | `classname-policy` | contract | `className` or `style` on a system component setting properties the component owns. |
-| `component-substitution` | substitution | Imports from packages the system shadows, and raw elements styled as a system component. |
+| `component-substitution` | substitution | Imports from packages the system shadows, raw elements styled as a system component, and raw elements styled with the system's own `xxxVariants()` function. |
 
 Rules have a scope dimension. Foundation rules run everywhere except theme files. Contract and substitution rules are off inside files the consumer has declared as owned.
 
@@ -103,6 +103,8 @@ const violations = engine.check(readProjectFiles(dir, resolved.scope.include, re
 - Sub-part elements like `Dialog.Content` are not contracted yet.
 - The raw-element substitution heuristic fires when a replaced intrinsic element carries two or more properties the system component owns. Its false positive rate is unmeasured.
 - Width and height on Tailwind's default multiplier scale are treated as layout and not reported.
+- A token group may declare `"$extensions": { "zengin": { "extendsDefault": true } }` to say the framework's default scale for that namespace remains on-system (Tailwind `extend` semantics). Without it, defining any token in a namespace makes the defaults in that namespace off-system.
+- Field-tested against a real shadcn codebase; see `docs/field-tests/`. Zero false positives after the fixes that run produced, on one codebase.
 - Stylesheet resolution indexes single-class selectors only. `.card .btn` and `.btn.primary` are invisible to className checks; their literals are still checked in the stylesheet.
 - CSS Modules resolve through the stylesheet index only when the class name in the file matches the one in the JSX, which is not the case for hashed class names. A CSS Modules adapter is a candidate for later.
 

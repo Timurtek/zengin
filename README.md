@@ -20,6 +20,10 @@ Everyone else serves context. Zengin serves constraints.
 
 [`examples/review-workspace`](examples/review-workspace) is a review queue built on `@zengin/ui` with the MCP server, hook and CLI wired in. Its [DEMO.md](examples/review-workspace/DEMO.md) replays the enforcement loop: an off-system component the way an agent writes it, the engine's 19 violations, the corrected component, zero violations, and both renders. The replay runs in CI with assertions.
 
+## Field tests
+
+`docs/field-tests/` records runs against real external codebases, every violation classified by hand, and the engine changes each run produced. First: [shadcn/taxonomy](docs/field-tests/2026-09-12-shadcn-taxonomy.md), 41 violations of which 10 were false positives, then 35 with none after the fixes.
+
 ## Development
 
 ```bash
