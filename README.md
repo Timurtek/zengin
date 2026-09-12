@@ -14,6 +14,7 @@ Everyone else serves context. Zengin serves constraints.
 | [`@zengin/mcp`](packages/mcp) | Phase 1, four tools | stdio MCP server: `zengin_check_code`, `zengin_get_violations`, `zengin_describe_system`, `zengin_explain_rules`. |
 | [`@zengin/hook`](packages/hook) | Phase 1 | Claude Code PostToolUse hook. Checks every file write; blocks with the violations as the reason. |
 | [`@zengin/cli`](packages/cli) | Phase 1 | `zengin check` for pre-commit and CI, with `--changed`, `--staged`, and GitHub annotations. `explain`, `init`. |
+| [`@zengin/adapter-shadcn`](packages/adapter-shadcn) | Phase 2 | `zengin init --from shadcn`: derives tokens, the component manifest and a config from a shadcn/ui project. Reproduces the taxonomy field test exactly. |
 | [`@zengin/ui`](packages/ui) | Phase 1, seven components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
 
 ## The demo
@@ -22,7 +23,7 @@ Everyone else serves context. Zengin serves constraints.
 
 ## Field tests
 
-`docs/field-tests/` records runs against real external codebases, every violation classified by hand, and the engine changes each run produced. First: [shadcn/taxonomy](docs/field-tests/2026-09-12-shadcn-taxonomy.md), 41 violations of which 10 were false positives, then 35 with none after the fixes.
+`docs/field-tests/` records runs against real external codebases, every violation classified by hand, and the engine changes each run produced. First: [shadcn/taxonomy](docs/field-tests/2026-09-12-shadcn-taxonomy.md), 41 violations of which 10 were false positives, then 35 with none after the fixes. The shadcn adapter now reproduces that run from one command.
 
 ## Development
 

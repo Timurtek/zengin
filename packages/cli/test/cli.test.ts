@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { DEFAULT_CHECK, findConfig, runCheck } from "../src/check.js";
 import { renderGithub, renderJson, renderPretty } from "../src/format-cli.js";
-import { init } from "../src/init.js";
+import { init, initFromShadcn } from "../src/init.js";
 import { explain, parseArgs } from "../src/index.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -118,6 +118,26 @@ describe("zengin init", () => {
     expect(existsSync(path)).toBe(true);
     expect(readFileSync(path, "utf8")).toContain("system:");
     expect(() => init(dir)).toThrow(/already exists/);
+  });
+
+  it("derives definitions from a shadcn project with --from shadcn, then checks it", async () => {
+    const shadcn = mkdtempSync(join(tmpdir(), "zengin-shadcn-"));
+    try {
+      cpSync(join(fixtures, "..", "..", "..", "adapter-shadcn", "test", "fixtures", "tw3"), shadcn, { recursive: true });
+      const report = initFromShadcn(shadcn, false);
+      expect(report).toMatch(/Wrote zengin\/tokens\.json, zengin\/components\.json, zengin\.config\.yaml, zengin\/tokens\.dark\.json/);
+      expect(report).toMatch(/Components: 5 from components\/ui/);
+      expect(() => initFromShadcn(shadcn, false)).toThrow(/--force/);
+      const r = await runCheck({ ...DEFAULT_CHECK, cwd: shadcn });
+      expect(r.summary.byRule).toEqual({ "unknown-prop-value": 1, "component-substitution": 1, "color-literal": 1 });
+    } finally {
+      rmSync(shadcn, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects an unknown --from", () => {
+    expect(() => parseArgs(["init", "--from", "mui"], "/x")).toThrow(/--from supports "shadcn"/);
+    expect(parseArgs(["init", "--from", "shadcn", "--dir", "../app", "--force"], "/x").init).toEqual({ from: "shadcn", dir: "../app", force: true });
   });
 });
 

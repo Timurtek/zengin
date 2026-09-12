@@ -1,5 +1,6 @@
 import { existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { deriveShadcn, renderReport, writeShadcn } from "@zengin/adapter-shadcn";
 
 export const CONFIG_TEMPLATE = `# Zengin policy for this project. The design system ships the definitions; this file says how strictly they apply.
 system:
@@ -36,4 +37,13 @@ export function init(dir: string): string {
   if (existsSync(path)) throw new Error(`${path} already exists. Delete it first if you want a fresh template.`);
   writeFileSync(path, CONFIG_TEMPLATE);
   return path;
+}
+
+/** Derives definitions and a config from a shadcn/ui project and writes them. Returns the report text. */
+export function initFromShadcn(dir: string, force: boolean): string {
+  const derivation = deriveShadcn(dir);
+  const { written } = writeShadcn(dir, derivation, force);
+  return `Wrote ${written.join(", ")}
+
+${renderReport(derivation)}`;
 }

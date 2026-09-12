@@ -1,0 +1,6 @@
+{
+  "name": "tw3-fixture",
+  "private": true,
+  "dependencies": { "react": "^18.2.0", "@radix-ui/react-dialog": "^1.0.0" },
+  "devDependencies": { "tailwindcss": "^3.3.1" }
+}

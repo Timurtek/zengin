@@ -59,4 +59,4 @@ cd taxonomy
 zengin check --format json --fail-on never > report.json
 ```
 
-The derivation script used for this run is not part of the repository; the shadcn adapter will replace it.
+The derivation script used for this run has since become `@zengin/adapter-shadcn`. Running `zengin init --from shadcn` on the same clone reproduces the second run exactly: the same 35 violations, from 36 derived components rather than the 22 hand-written ones.

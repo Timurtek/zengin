@@ -76,7 +76,13 @@ zengin explain classname-policy
 
 ## init
 
-Writes a commented `zengin.config.yaml` template. Refuses to overwrite an existing one.
+```bash
+zengin init                     # a commented zengin.config.yaml template
+zengin init --from shadcn       # derive zengin/tokens.json, zengin/components.json and a config from a shadcn/ui project
+zengin init --from shadcn --dir ../app --force
+```
+
+The template refuses to overwrite an existing config. The shadcn path reads the theme CSS, the Tailwind config and `components/ui`, writes the definitions, and prints the defaults worth reviewing. See [`@zengin/adapter-shadcn`](../adapter-shadcn).
 
 ## Not included, on purpose
 

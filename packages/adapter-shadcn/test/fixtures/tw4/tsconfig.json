@@ -1,0 +1,7 @@
+{
+  // paths map the alias to a directory
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": { "@/*": ["./src/*"] },
+  }
+}

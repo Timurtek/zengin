@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { resolve } from "node:path";
 import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity } from "@zengin/engine";
 import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check.js";
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
-import { init } from "./init.js";
+import { init, initFromShadcn } from "./init.js";
 
 const HELP = `zengin: design-system conformance, enforceable.
 
@@ -10,6 +11,12 @@ Usage:
   zengin check [paths...] [options]   check files (default: everything in scope)
   zengin explain [rule]               what each rule checks
   zengin init                         write a zengin.config.yaml in the current directory
+  zengin init --from shadcn           derive tokens, manifest and config from a shadcn/ui project
+
+Init options:
+  --from shadcn         read the theme CSS, Tailwind config and components/ui; write zengin/ and zengin.config.yaml
+  --dir <path>          project directory (default: cwd)
+  --force               overwrite existing zengin/ definitions and config
 
 Check options:
   --config <path>       zengin.config.yaml (default: nearest one above cwd)
@@ -28,6 +35,7 @@ interface Parsed {
   command: "check" | "explain" | "init" | "help";
   positional: string[];
   check: CheckOptions;
+  init: { from?: string; dir?: string; force: boolean };
 }
 
 export function parseArgs(argv: string[], cwd: string): Parsed {
@@ -35,6 +43,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
   const positional: string[] = [];
   let command: Parsed["command"] | undefined;
   const rules: RuleId[] = [];
+  const initOpts: Parsed["init"] = { force: false };
 
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
@@ -66,11 +75,17 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a.startsWith("--format=")) check.format = asFormat(a.slice(9));
     else if (a === "--max") check.max = asInt(value());
     else if (a.startsWith("--max=")) check.max = asInt(a.slice(6));
+    else if (a === "--from") initOpts.from = value();
+    else if (a.startsWith("--from=")) initOpts.from = a.slice(7);
+    else if (a === "--dir") initOpts.dir = value();
+    else if (a.startsWith("--dir=")) initOpts.dir = a.slice(6);
+    else if (a === "--force") initOpts.force = true;
     else throw new Error(`Unknown option ${a}. Try zengin --help.`);
   }
   if (rules.length) check.rules = rules;
   check.paths = command === "check" || command === undefined ? positional : [];
-  return { command: command ?? "check", positional, check };
+  if (initOpts.from && initOpts.from !== "shadcn") throw new Error(`--from supports "shadcn" (got ${initOpts.from}).`);
+  return { command: command ?? "check", positional, check, init: initOpts };
 }
 
 function asRule(s: string): RuleId {
@@ -116,7 +131,12 @@ async function main(): Promise<void> {
       process.stdout.write(explain(parsed.positional[0]) + "\n");
       return;
     case "init": {
-      const path = init(process.cwd());
+      const dir = parsed.init.dir ? resolve(process.cwd(), parsed.init.dir) : process.cwd();
+      if (parsed.init.from === "shadcn") {
+        process.stdout.write(initFromShadcn(dir, parsed.init.force) + "\n");
+        return;
+      }
+      const path = init(dir);
       process.stdout.write(`Wrote ${path}. Edit system.package to point at your design system, then run: zengin check\n`);
       return;
     }

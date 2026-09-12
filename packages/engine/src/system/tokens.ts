@@ -116,6 +116,12 @@ export function normalizeColor(v: string): string | undefined {
   }
   const rgb = /^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)\s*(?:[,/]\s*([\d.]+%?)\s*)?\)$/.exec(s);
   if (rgb) return toHex(Number(rgb[1]), Number(rgb[2]), Number(rgb[3]));
+  // hsl(210 40% 98%), hsl(210, 40%, 98%), and the bare shadcn triple "210 40% 98%".
+  const hsl = /^(?:hsla?\(\s*)?(-?[\d.]+)(?:deg)?[\s,]+([\d.]+)%[\s,]+([\d.]+)%\s*(?:[,/]\s*[\d.]+%?\s*)?\)?$/.exec(s);
+  if (hsl) {
+    const [r, g, b] = hslToRgb(Number(hsl[1]), Number(hsl[2]) / 100, Number(hsl[3]) / 100);
+    return toHex(r, g, b);
+  }
   const oklch = /^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*[\d.%]+)?\s*\)$/.exec(s);
   if (oklch) {
     const L = Number(oklch[1]) / (oklch[2] ? 100 : 1);
@@ -152,6 +158,21 @@ const NAMED_HEX: Record<string, string> = {
 function toHex(r: number, g: number, b: number): string {
   const to = (n: number) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, "0");
   return `#${to(r)}${to(g)}${to(b)}`;
+}
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  const hue = (((h % 360) + 360) % 360) / 360;
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  const channel = (t: number) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  return [channel(hue + 1 / 3) * 255, channel(hue) * 255, channel(hue - 1 / 3) * 255];
 }
 
 /** OKLCH -> sRGB (0..255), per the CSS Color 4 reference conversion. */
