@@ -1,4 +1,4 @@
-import { Badge } from "@zengin/ui";
+import { Badge, Table } from "@zengin/ui";
 import { FAMILY_NOTE, RULES } from "../content";
 
 const FAMILY_TONE = { foundation: "primary", contract: "neutral", substitution: "warning" } as const;
@@ -14,30 +14,28 @@ export function Rules() {
             <p className="lead">Foundation rules guard the tokens. Contract rules guard the components. The substitution rule catches the system being rebuilt by hand.</p>
           </div>
         </div>
-        <div className="rules">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Rule</th>
-                <th scope="col">Family</th>
-                <th scope="col">What it catches</th>
-              </tr>
-            </thead>
-            <tbody>
-              {RULES.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.id}</td>
-                  <td className="rules__family">
-                    <Badge tone={FAMILY_TONE[r.family]} size="sm">
-                      {r.family}
-                    </Badge>
-                  </td>
-                  <td>{r.description}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Table aria-label="The seven rule kinds" className="rules">
+          <Table.Head>
+            <Table.Row>
+              <Table.HeadCell>Rule</Table.HeadCell>
+              <Table.HeadCell>Family</Table.HeadCell>
+              <Table.HeadCell>What it catches</Table.HeadCell>
+            </Table.Row>
+          </Table.Head>
+          <Table.Body>
+            {RULES.map((r) => (
+              <Table.Row key={r.id}>
+                <Table.Cell className="rules__id">{r.id}</Table.Cell>
+                <Table.Cell className="rules__family">
+                  <Badge tone={FAMILY_TONE[r.family]} size="sm">
+                    {r.family}
+                  </Badge>
+                </Table.Cell>
+                <Table.Cell className="rules__what">{r.description}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
         <p className="rules__note">{FAMILY_NOTE}</p>
       </div>
     </section>

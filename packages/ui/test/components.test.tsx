@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Badge, Button, Card, Checkbox, Dialog, Tabs, TextField, Tooltip } from "../src/index.js";
+import { Avatar, Badge, Button, Card, Checkbox, Dialog, Menu, Popover, Progress, Select, Separator, Sheet, Skeleton, Switch, Table, Tabs, TextArea, TextField, Toast, Tooltip, initials, toast } from "../src/index.js";
 
 describe("Button", () => {
   it("renders defaults as data attributes the stylesheet keys on", () => {
@@ -236,5 +236,250 @@ describe("Tabs", () => {
     fireEvent.mouseDown(screen.getByRole("tab", { name: "B" }));
     expect(onChange).toHaveBeenCalledWith("b");
     expect(screen.getByRole("tabpanel")).toHaveTextContent("Panel A"); // still controlled by the parent
+  });
+});
+
+describe("Select", () => {
+  it("labels the trigger, shows the placeholder, and sizes the field", () => {
+    render(
+      <Select label="Environment" placeholder="Choose" size="lg" description="Where it deploys">
+        <Select.Item value="prod">Production</Select.Item>
+      </Select>,
+    );
+    const trigger = screen.getByRole("combobox", { name: "Environment" });
+    expect(trigger).toHaveTextContent("Choose");
+    expect(trigger).toHaveAccessibleDescription("Where it deploys");
+    expect(trigger.closest(".z-select")).toHaveAttribute("data-size", "lg");
+  });
+
+  it("marks invalid and disabled", () => {
+    render(
+      <Select label="Env" error="Required" disabled>
+        <Select.Item value="a">A</Select.Item>
+      </Select>,
+    );
+    const trigger = screen.getByRole("combobox", { name: "Env" });
+    expect(trigger).toHaveAttribute("aria-invalid", "true");
+    expect(trigger).toBeDisabled();
+    expect(screen.getByRole("alert")).toHaveTextContent("Required");
+  });
+});
+
+describe("Switch", () => {
+  it("toggles through the label and reports the change", () => {
+    const onChange = vi.fn();
+    render(<Switch label="Notify" description="Once per review" onCheckedChange={onChange} size="sm" />);
+    const control = screen.getByRole("switch", { name: "Notify" });
+    expect(control).toHaveAttribute("data-state", "unchecked");
+    expect(control).toHaveAccessibleDescription("Once per review");
+    fireEvent.click(screen.getByText("Notify"));
+    expect(onChange).toHaveBeenCalledWith(true);
+    expect(control.closest(".z-switch")).toHaveAttribute("data-size", "sm");
+  });
+});
+
+describe("Toast", () => {
+  it("shows a toast from anywhere, with its tone, and dismisses it", () => {
+    const { container } = render(<Toast.Provider position="top-left" />);
+    expect(screen.getByRole("region", { name: "Notifications" })).toBeInTheDocument();
+    expect(container.querySelector(".z-toast__viewport")).toHaveAttribute("data-position", "top-left");
+    act(() => {
+      toast({ title: "Saved", description: "Sent back to the author.", tone: "success" });
+    });
+    const item = screen.getByText("Saved").closest(".z-toast")!;
+    expect(item).toHaveAttribute("data-tone", "success");
+    expect(screen.getByText("Sent back to the author.")).toBeInTheDocument();
+    act(() => {
+      toast.dismiss();
+    });
+    expect(screen.queryByText("Saved")).toBeNull();
+  });
+});
+
+describe("Menu", () => {
+  it("opens from the trigger, lists items with tones, and selects one", () => {
+    const onSelect = vi.fn();
+    render(
+      <Menu>
+        <Menu.Trigger asChild>
+          <Button>Actions</Button>
+        </Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item onSelect={onSelect} shortcut="E">
+            Edit
+          </Menu.Item>
+          <Menu.Item tone="danger">Delete</Menu.Item>
+        </Menu.Content>
+      </Menu>,
+    );
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Actions" }), { button: 0, ctrlKey: false, pointerType: "mouse" });
+    const menu = screen.getByRole("menu");
+    expect(menu).toHaveClass("z-menu");
+    expect(screen.getByRole("menuitem", { name: /Delete/ })).toHaveAttribute("data-tone", "danger");
+    fireEvent.click(screen.getByRole("menuitem", { name: /Edit/ }));
+    expect(onSelect).toHaveBeenCalled();
+  });
+});
+
+describe("Table", () => {
+  it("renders the table pattern with density, alignment and selection as data attributes", () => {
+    render(
+      <Table density="sm" stickyHeader aria-label="Reviews" style={{ maxHeight: "10rem" }}>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeadCell>Title</Table.HeadCell>
+            <Table.HeadCell align="end" numeric>
+              Files
+            </Table.HeadCell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          <Table.Row selected interactive>
+            <Table.Cell>Rename tokens</Table.Cell>
+            <Table.Cell align="end" numeric>
+              12
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>,
+    );
+    const table = screen.getByRole("table", { name: "Reviews" });
+    const wrap = table.closest(".z-table")!;
+    expect(wrap).toHaveAttribute("data-density", "sm");
+    expect(wrap).toHaveAttribute("data-sticky", "true");
+    expect((wrap as HTMLElement).style.maxHeight).toBe("10rem");
+    expect(screen.getByRole("columnheader", { name: "Files" })).toHaveAttribute("data-align", "end");
+    const row = screen.getByRole("row", { name: /Rename tokens/ });
+    expect(row).toHaveAttribute("aria-selected", "true");
+    expect(row).toHaveAttribute("data-interactive", "true");
+    expect(screen.getByRole("cell", { name: "12" })).toHaveAttribute("data-numeric", "true");
+  });
+});
+
+describe("Avatar", () => {
+  it("falls back to initials with the name as its label", () => {
+    render(<Avatar name="Ada Lovelace" size="lg" shape="square" />);
+    const img = screen.getByRole("img", { name: "Ada Lovelace" });
+    expect(img).toHaveTextContent("AL");
+    expect(img.closest(".z-avatar")).toHaveAttribute("data-size", "lg");
+    expect(img.closest(".z-avatar")).toHaveAttribute("data-shape", "square");
+  });
+
+  it("computes initials", () => {
+    expect(initials("Ada Lovelace")).toBe("AL");
+    expect(initials("Acme")).toBe("A");
+    expect(initials("  ")).toBe("");
+    expect(initials("grace brewster murray hopper")).toBe("GH");
+  });
+});
+
+describe("Skeleton", () => {
+  it("is hidden from assistive tech and renders lines", () => {
+    const { container } = render(<Skeleton lines={3} />);
+    const lines = container.querySelectorAll(".z-skeleton");
+    expect(lines).toHaveLength(3);
+    expect(container.firstElementChild).toHaveAttribute("aria-hidden", "true");
+    expect((lines[2] as HTMLElement).style.width).toBe("60%");
+  });
+
+  it("takes a variant and dimensions", () => {
+    const { container } = render(<Skeleton variant="circle" width="2rem" height="2rem" />);
+    const el = container.firstElementChild as HTMLElement;
+    expect(el).toHaveAttribute("data-variant", "circle");
+    expect(el.style.width).toBe("2rem");
+  });
+});
+
+describe("Sheet", () => {
+  it("opens from the trigger on the chosen side and closes", () => {
+    render(
+      <Sheet side="left" size="lg">
+        <Sheet.Trigger asChild>
+          <Button>Open</Button>
+        </Sheet.Trigger>
+        <Sheet.Content>
+          <Sheet.Title>Filters</Sheet.Title>
+          <Sheet.Description>Narrow the queue.</Sheet.Description>
+          <Sheet.Footer>
+            <Sheet.Close asChild>
+              <Button variant="ghost">Done</Button>
+            </Sheet.Close>
+          </Sheet.Footer>
+        </Sheet.Content>
+      </Sheet>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Open" }));
+    const panel = screen.getByRole("dialog", { name: "Filters" });
+    expect(panel).toHaveAttribute("data-side", "left");
+    expect(panel).toHaveAttribute("data-size", "lg");
+    expect(panel).toHaveAccessibleDescription("Narrow the queue.");
+    fireEvent.click(screen.getByRole("button", { name: "Done" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+});
+
+describe("Popover", () => {
+  it("opens from the trigger with its size and closes from inside", () => {
+    render(
+      <Popover size="sm">
+        <Popover.Trigger asChild>
+          <Button>Filter</Button>
+        </Popover.Trigger>
+        <Popover.Content>
+          Options
+          <Popover.Close asChild>
+            <Button>Apply</Button>
+          </Popover.Close>
+        </Popover.Content>
+      </Popover>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
+    const panel = screen.getByRole("dialog");
+    expect(panel).toHaveClass("z-popover");
+    expect(panel).toHaveAttribute("data-size", "sm");
+    fireEvent.click(screen.getByRole("button", { name: "Apply" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+});
+
+describe("Progress", () => {
+  it("exposes the value, label and percentage", () => {
+    render(<Progress value={30} max={60} label="Storage" showValue tone="warning" size="sm" />);
+    const bar = screen.getByRole("progressbar", { name: "Storage" });
+    expect(bar).toHaveAttribute("aria-valuenow", "30");
+    expect(bar).toHaveAttribute("aria-valuemax", "60");
+    expect(screen.getByText("50%")).toBeInTheDocument();
+    expect(bar.closest(".z-progress")).toHaveAttribute("data-tone", "warning");
+    expect(bar.closest(".z-progress")).toHaveAttribute("data-size", "sm");
+  });
+
+  it("is indeterminate without a value", () => {
+    render(<Progress />);
+    expect(screen.getByRole("progressbar")).toHaveAttribute("data-state", "indeterminate");
+  });
+});
+
+describe("Separator", () => {
+  it("is decorative by default, semantic on request, and can carry a label", () => {
+    const { container, rerender } = render(<Separator />);
+    expect(container.querySelector(".z-separator")).toHaveAttribute("data-orientation", "horizontal");
+    expect(screen.queryByRole("separator")).toBeNull();
+    rerender(<Separator orientation="vertical" decorative={false} />);
+    expect(screen.getByRole("separator")).toHaveAttribute("aria-orientation", "vertical");
+    rerender(<Separator label="or" />);
+    expect(screen.getByText("or")).toHaveClass("z-separator__label");
+  });
+});
+
+describe("TextArea", () => {
+  it("associates label, description and error, and exposes size and resize", () => {
+    render(<TextArea label="Reason" description="Seen by the author" error="Required" size="lg" resize="none" rows={5} />);
+    const area = screen.getByRole("textbox", { name: "Reason" });
+    expect(area).toHaveAttribute("rows", "5");
+    expect(area).toHaveAttribute("aria-invalid", "true");
+    expect(area).toHaveAccessibleDescription("Seen by the author Required");
+    const wrap = area.closest(".z-textarea")!;
+    expect(wrap).toHaveAttribute("data-size", "lg");
+    expect(wrap).toHaveAttribute("data-resize", "none");
   });
 });

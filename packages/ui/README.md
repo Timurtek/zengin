@@ -51,6 +51,18 @@ Every component renders its variant props as `data-*` attributes and the stylesh
 | `Dialog` | `open`, `defaultOpen`, `onOpenChange`, `size` sm, md, lg, `modal`. Parts `Dialog.Trigger`, `Dialog.Content` (wraps portal and overlay), `Dialog.Title`, `Dialog.Description`, `Dialog.Footer`, `Dialog.Close`. | closed, open, with enter and exit motion |
 | `Tooltip` | `content`, `side`, `delay`, `open`, `onOpenChange`. Wrap the app in `Tooltip.Provider`. | closed, open |
 | `Tabs` | `variant` line, pill. `size` sm, md. `value`, `defaultValue`, `onValueChange`. Parts `Tabs.List`, `Tabs.Trigger`, `Tabs.Content`. Arrow keys move between tabs. | active, inactive, hover, focus-visible, disabled |
+| `Select` | `label`, `description`, `error`, `placeholder`, `size` sm, md, lg, plus Radix select props. Parts `Select.Item`, `Select.Group`, `Select.Label`, `Select.Separator`. | closed, open, hover, focus-visible, disabled, invalid |
+| `Switch` | `label`, `description`, `size` sm, md, plus Radix switch props. | unchecked, checked, hover, focus-visible, disabled |
+| `Toast` | `Toast.Provider` with `position` (four corners) and `duration`; `toast({ title, description, tone, duration, action })` from anywhere; `toast.dismiss(id?)`. | open, closed, swiping |
+| `Menu` | `open`, `defaultOpen`, `onOpenChange`, `modal`. Parts `Trigger`, `Content`, `Item` (`tone`, `leadingIcon`, `shortcut`), `CheckboxItem`, `RadioGroup`, `RadioItem`, `Label`, `Separator`, `Group`. | closed, open, highlighted, disabled |
+| `Table` | `density` sm, md. `stickyHeader`. `className` and `style` place the scroll container. Parts `Head`, `Body`, `Foot`, `Row` (`selected`, `interactive`), `Cell` and `HeadCell` (`align`, `numeric`). | default, selected, hover |
+| `Avatar` | `src`, `name` (alt text and initials), `size` sm, md, lg, xl, `shape` circle, square, `delay`. | loading, loaded, fallback |
+| `Skeleton` | `variant` text, rect, circle. `width`, `height`, `lines`. Hidden from assistive tech. | |
+| `Sheet` | `open`, `defaultOpen`, `onOpenChange`, `side` right, left, top, bottom, `size` sm, md, lg, `modal`. Same parts as Dialog. | closed, open, with slide motion |
+| `Popover` | `open`, `defaultOpen`, `onOpenChange`, `size` sm, md, lg, `modal`. Parts `Trigger`, `Anchor`, `Content` (`showArrow`), `Close`. | closed, open |
+| `Progress` | `value`, `max`, `label`, `showValue`, `size` sm, md, `tone` primary, neutral, success, warning, danger. Indeterminate without a value. | determinate, indeterminate |
+| `Separator` | `orientation` horizontal, vertical. `label`. `decorative`. | |
+| `TextArea` | `label`, `description`, `error`, `size` sm, md, lg, `resize` none, vertical, both, `rows`, plus every `<textarea>` prop. | hover, focus-visible, disabled, readonly, invalid |
 
 ### The customization contract, as the components implement it
 

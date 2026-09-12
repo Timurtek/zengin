@@ -85,6 +85,17 @@ describe("components.json against the implementation", () => {
       Checkbox: ["size"],
       Dialog: ["size"],
       Tabs: ["variant", "size"],
+      Select: ["size"],
+      Switch: ["size"],
+      Toast: ["position", "tone"],
+      Table: ["density"],
+      Avatar: ["size", "shape"],
+      Skeleton: ["variant"],
+      Sheet: ["side", "size"],
+      Popover: ["size"],
+      Progress: ["size", "tone"],
+      Separator: ["orientation"],
+      TextArea: ["size", "resize"],
     };
     for (const [comp, props] of Object.entries(styled)) {
       const m = manifests.find((x) => x.name === comp)!;

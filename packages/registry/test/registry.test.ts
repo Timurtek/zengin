@@ -14,7 +14,10 @@ afterAll(() => rmSync(tmp, { recursive: true, force: true }));
 describe("buildRegistry", () => {
   it("has every Zengin UI component, the shared items, and the three templates", () => {
     const by = (t: string) => registry.items.filter((i) => i.type === t).map((i) => i.name);
-    expect(by("component")).toEqual(["badge", "button", "card", "checkbox", "dialog", "tabs", "text-field", "tooltip"]);
+    expect(by("component")).toEqual([
+      "avatar", "badge", "button", "card", "checkbox", "dialog", "menu", "popover", "progress", "select",
+      "separator", "sheet", "skeleton", "switch", "table", "tabs", "text-area", "text-field", "toast", "tooltip",
+    ]);
     expect(by("template")).toEqual(["blank", "marketing", "review"]);
     expect(by("lib")).toEqual(["cx"]);
     expect(by("definitions")).toEqual(["foundation"]);
@@ -41,7 +44,7 @@ describe("buildRegistry", () => {
     expect(paths.some((p) => p.includes("generated"))).toBe(false);
     for (const f of marketing.files) expect(f.content, f.path).not.toMatch(/from "@zengin\/ui/); // prose may still name the package
     expect(marketing.files.find((f) => f.path === "src/main.tsx")!.content).toContain('import "./styles/index.css"');
-    expect(marketing.registryDependencies).toEqual(["foundation", "cx", "badge", "button", "card", "checkbox", "tabs", "text-field", "tooltip"]);
+    expect(marketing.registryDependencies).toEqual(["foundation", "cx", "badge", "button", "card", "checkbox", "table", "tabs", "text-field", "tooltip"]);
   });
 
   it("round-trips through static files", async () => {
@@ -73,7 +76,7 @@ describe("createProject", () => {
     const dir = join(tmp, "acme-site");
     const r = await createProject({ dir, template: "marketing", source: registryFromMemory(registry), local: root });
     expect(r.violations).toBe(0);
-    expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card", "Checkbox", "Tabs", "TextField", "Tooltip"]);
+    expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card", "Checkbox", "Table", "Tabs", "TextField", "Tooltip"]);
 
     const button = readFileSync(join(dir, "src/components/ui/button/button.tsx"), "utf8");
     expect(button.startsWith(`/* zengin-owned Button, forked from @zengin/ui@${registry.version} */`)).toBe(true);

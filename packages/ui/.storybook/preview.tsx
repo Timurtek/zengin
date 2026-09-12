@@ -44,9 +44,7 @@ const preview: Preview = {
     backgrounds: { disable: true },
     controls: { expanded: true },
     a11y: { test: "error" },
-    options: {
-      storySort: { order: ["Button", "Badge", "Card", "TextField", "Checkbox", "Dialog", "Tooltip"] },
-    },
+    options: { storySort: { method: "alphabetical" } },
   },
 };
 

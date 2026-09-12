@@ -9,3 +9,15 @@
 @import "../components/dialog/dialog.css";
 @import "../components/tooltip/tooltip.css";
 @import "../components/tabs/tabs.css";
+@import "../components/select/select.css";
+@import "../components/switch/switch.css";
+@import "../components/toast/toast.css";
+@import "../components/menu/menu.css";
+@import "../components/table/table.css";
+@import "../components/avatar/avatar.css";
+@import "../components/skeleton/skeleton.css";
+@import "../components/sheet/sheet.css";
+@import "../components/popover/popover.css";
+@import "../components/progress/progress.css";
+@import "../components/separator/separator.css";
+@import "../components/text-area/text-area.css";

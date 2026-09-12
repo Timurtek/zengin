@@ -554,5 +554,828 @@
       "focus-visible",
       "disabled"
     ]
+  },
+  {
+    "name": "Select",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Select"
+    },
+    "replaces": [
+      "select",
+      "@radix-ui/react-select#*",
+      "@headlessui/react#Listbox",
+      "@radix-ui/themes#Select"
+    ],
+    "props": {
+      "label": {
+        "type": "node"
+      },
+      "description": {
+        "type": "node"
+      },
+      "error": {
+        "type": "node"
+      },
+      "placeholder": {
+        "type": "node"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "value": {
+        "type": "string"
+      },
+      "defaultValue": {
+        "type": "string"
+      },
+      "onValueChange": {
+        "type": "function"
+      },
+      "open": {
+        "type": "boolean"
+      },
+      "defaultOpen": {
+        "type": "boolean"
+      },
+      "onOpenChange": {
+        "type": "function"
+      },
+      "disabled": {
+        "type": "boolean"
+      },
+      "required": {
+        "type": "boolean"
+      },
+      "name": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "color": null,
+      "border-radius": null,
+      "padding": "size",
+      "font": "size",
+      "box-shadow": null
+    },
+    "slots": [
+      "Item",
+      "Group",
+      "Label",
+      "Separator"
+    ],
+    "states": [
+      "closed",
+      "open",
+      "hover",
+      "focus-visible",
+      "disabled",
+      "invalid"
+    ]
+  },
+  {
+    "name": "Switch",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Switch"
+    },
+    "replaces": [
+      "@radix-ui/react-switch#*",
+      "@headlessui/react#Switch",
+      "@radix-ui/themes#Switch"
+    ],
+    "props": {
+      "label": {
+        "type": "node"
+      },
+      "description": {
+        "type": "node"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      },
+      "checked": {
+        "type": "boolean"
+      },
+      "defaultChecked": {
+        "type": "boolean"
+      },
+      "onCheckedChange": {
+        "type": "function"
+      },
+      "disabled": {
+        "type": "boolean"
+      },
+      "required": {
+        "type": "boolean"
+      },
+      "name": {
+        "type": "string"
+      },
+      "value": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "color": null,
+      "border-radius": null,
+      "font": "size"
+    },
+    "states": [
+      "unchecked",
+      "checked",
+      "hover",
+      "focus-visible",
+      "disabled"
+    ]
+  },
+  {
+    "name": "Toast",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Toast"
+    },
+    "replaces": [
+      "@radix-ui/react-toast#*",
+      "sonner#Toaster",
+      "react-hot-toast#Toaster"
+    ],
+    "props": {
+      "position": {
+        "type": "enum",
+        "values": [
+          "bottom-right",
+          "bottom-left",
+          "top-right",
+          "top-left"
+        ],
+        "default": "bottom-right"
+      },
+      "duration": {
+        "type": "number",
+        "default": 5000
+      },
+      "tone": {
+        "type": "enum",
+        "values": [
+          "neutral",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "default": "neutral"
+      }
+    },
+    "className": {
+      "allow": [
+        "position",
+        "display"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": "tone",
+      "color": null,
+      "border-radius": null,
+      "padding": null,
+      "font": null,
+      "box-shadow": null
+    },
+    "slots": [
+      "Provider"
+    ],
+    "states": [
+      "open",
+      "closed",
+      "swiping"
+    ]
+  },
+  {
+    "name": "Menu",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Menu"
+    },
+    "replaces": [
+      "@radix-ui/react-dropdown-menu#*",
+      "@headlessui/react#Menu",
+      "@radix-ui/themes#DropdownMenu"
+    ],
+    "props": {
+      "open": {
+        "type": "boolean"
+      },
+      "defaultOpen": {
+        "type": "boolean"
+      },
+      "onOpenChange": {
+        "type": "function"
+      },
+      "modal": {
+        "type": "boolean",
+        "default": true
+      },
+      "dir": {
+        "type": "string"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "color": null,
+      "border-radius": null,
+      "padding": null,
+      "font": null,
+      "box-shadow": null
+    },
+    "slots": [
+      "Trigger",
+      "Content",
+      "Item",
+      "CheckboxItem",
+      "RadioGroup",
+      "RadioItem",
+      "Label",
+      "Separator",
+      "Group"
+    ],
+    "states": [
+      "closed",
+      "open",
+      "highlighted",
+      "disabled"
+    ]
+  },
+  {
+    "name": "Table",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Table"
+    },
+    "replaces": [
+      "table",
+      "@radix-ui/themes#Table"
+    ],
+    "extends": "table",
+    "props": {
+      "density": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      },
+      "stickyHeader": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow",
+        "height"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "color": null,
+      "border-radius": null,
+      "padding": "density",
+      "font": "density"
+    },
+    "slots": [
+      "Head",
+      "Body",
+      "Foot",
+      "Row",
+      "Cell",
+      "HeadCell"
+    ],
+    "states": [
+      "default",
+      "selected",
+      "hover"
+    ]
+  },
+  {
+    "name": "Avatar",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Avatar"
+    },
+    "replaces": [
+      "@radix-ui/react-avatar#*",
+      "@radix-ui/themes#Avatar"
+    ],
+    "extends": "span",
+    "props": {
+      "src": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg",
+          "xl"
+        ],
+        "default": "md"
+      },
+      "shape": {
+        "type": "enum",
+        "values": [
+          "circle",
+          "square"
+        ],
+        "default": "circle"
+      },
+      "delay": {
+        "type": "number",
+        "default": 300
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "color": null,
+      "border-radius": "shape",
+      "width": "size",
+      "height": "size",
+      "font": "size"
+    },
+    "states": [
+      "loading",
+      "loaded",
+      "fallback"
+    ]
+  },
+  {
+    "name": "Skeleton",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Skeleton"
+    },
+    "replaces": [
+      "@radix-ui/themes#Skeleton",
+      "react-loading-skeleton#*"
+    ],
+    "extends": "span",
+    "props": {
+      "variant": {
+        "type": "enum",
+        "values": [
+          "text",
+          "rect",
+          "circle"
+        ],
+        "default": "text"
+      },
+      "width": {
+        "type": "string"
+      },
+      "height": {
+        "type": "string"
+      },
+      "lines": {
+        "type": "number",
+        "default": 1
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-radius": "variant"
+    },
+    "states": [
+      "default"
+    ]
+  },
+  {
+    "name": "Sheet",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Sheet"
+    },
+    "replaces": [
+      "vaul#Drawer",
+      "@radix-ui/themes#Sheet"
+    ],
+    "props": {
+      "open": {
+        "type": "boolean"
+      },
+      "defaultOpen": {
+        "type": "boolean"
+      },
+      "onOpenChange": {
+        "type": "function"
+      },
+      "side": {
+        "type": "enum",
+        "values": [
+          "right",
+          "left",
+          "top",
+          "bottom"
+        ],
+        "default": "right"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "modal": {
+        "type": "boolean",
+        "default": true
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "color": null,
+      "border-radius": null,
+      "padding": null,
+      "width": "size",
+      "height": "size",
+      "box-shadow": null
+    },
+    "slots": [
+      "Trigger",
+      "Content",
+      "Title",
+      "Description",
+      "Footer",
+      "Close"
+    ],
+    "states": [
+      "closed",
+      "open"
+    ]
+  },
+  {
+    "name": "Popover",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Popover"
+    },
+    "replaces": [
+      "@radix-ui/react-popover#*",
+      "@headlessui/react#Popover",
+      "@radix-ui/themes#Popover"
+    ],
+    "props": {
+      "open": {
+        "type": "boolean"
+      },
+      "defaultOpen": {
+        "type": "boolean"
+      },
+      "onOpenChange": {
+        "type": "function"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "modal": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "color": null,
+      "border-radius": null,
+      "padding": "size",
+      "width": "size",
+      "box-shadow": null
+    },
+    "slots": [
+      "Trigger",
+      "Anchor",
+      "Content",
+      "Close"
+    ],
+    "states": [
+      "closed",
+      "open"
+    ]
+  },
+  {
+    "name": "Progress",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Progress"
+    },
+    "replaces": [
+      "progress",
+      "@radix-ui/react-progress#*",
+      "@radix-ui/themes#Progress"
+    ],
+    "props": {
+      "value": {
+        "type": "number"
+      },
+      "max": {
+        "type": "number",
+        "default": 100
+      },
+      "label": {
+        "type": "node"
+      },
+      "showValue": {
+        "type": "boolean",
+        "default": false
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      },
+      "tone": {
+        "type": "enum",
+        "values": [
+          "primary",
+          "neutral",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "default": "primary"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": "tone",
+      "border-radius": null,
+      "height": "size",
+      "font": null
+    },
+    "states": [
+      "determinate",
+      "indeterminate"
+    ]
+  },
+  {
+    "name": "Separator",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Separator"
+    },
+    "replaces": [
+      "hr",
+      "@radix-ui/react-separator#*",
+      "@radix-ui/themes#Separator"
+    ],
+    "props": {
+      "orientation": {
+        "type": "enum",
+        "values": [
+          "horizontal",
+          "vertical"
+        ],
+        "default": "horizontal"
+      },
+      "label": {
+        "type": "node"
+      },
+      "decorative": {
+        "type": "boolean",
+        "default": true
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "color": null,
+      "width": "orientation",
+      "height": "orientation",
+      "font": null
+    },
+    "states": [
+      "default"
+    ]
+  },
+  {
+    "name": "TextArea",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "TextArea"
+    },
+    "replaces": [
+      "textarea",
+      "@headlessui/react#Textarea",
+      "@radix-ui/themes#TextArea"
+    ],
+    "extends": "textarea",
+    "props": {
+      "label": {
+        "type": "node"
+      },
+      "description": {
+        "type": "node"
+      },
+      "error": {
+        "type": "node"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "resize": {
+        "type": "enum",
+        "values": [
+          "none",
+          "vertical",
+          "both"
+        ],
+        "default": "vertical"
+      },
+      "rows": {
+        "type": "number",
+        "default": 3
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "background-color": null,
+      "border-color": null,
+      "color": null,
+      "border-radius": null,
+      "padding": "size",
+      "font": "size"
+    },
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "disabled",
+      "readonly",
+      "invalid"
+    ]
   }
 ]

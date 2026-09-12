@@ -7,7 +7,19 @@
 .z-checkbox,
 .z-dialog,
 .z-tooltip,
-.z-tabs {
+.z-tabs,
+.z-select,
+.z-switch,
+.z-toast,
+.z-menu,
+.z-table,
+.z-avatar,
+.z-skeleton,
+.z-sheet,
+.z-popover,
+.z-progress,
+.z-separator,
+.z-textarea {
   box-sizing: border-box;
   font-family: var(--font-sans);
   line-height: var(--leading-normal);
@@ -19,7 +31,19 @@
 .z-field *,
 .z-checkbox *,
 .z-dialog *,
-.z-tabs * {
+.z-tabs *,
+.z-select *,
+.z-switch *,
+.z-toast *,
+.z-menu *,
+.z-table *,
+.z-avatar *,
+.z-skeleton *,
+.z-sheet *,
+.z-popover *,
+.z-progress *,
+.z-separator *,
+.z-textarea * {
   box-sizing: border-box;
 }
 

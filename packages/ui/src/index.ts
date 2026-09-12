@@ -6,3 +6,15 @@ export { Checkbox, type CheckboxProps, type CheckboxSize } from "./components/ch
 export { Dialog, type DialogProps, type DialogContentProps, type DialogSize } from "./components/dialog/dialog.js";
 export { Tooltip, type TooltipProps, type TooltipSide } from "./components/tooltip/tooltip.js";
 export { Tabs, type TabsProps, type TabsListProps, type TabsTriggerProps, type TabsContentProps, type TabsVariant, type TabsSize } from "./components/tabs/tabs.js";
+export { Select, type SelectProps, type SelectItemProps, type SelectSize } from "./components/select/select.js";
+export { Switch, type SwitchProps, type SwitchSize } from "./components/switch/switch.js";
+export { Toast, toast, type ToastOptions, type ToastProviderProps, type ToastTone, type ToastPosition } from "./components/toast/toast.js";
+export { Menu, type MenuProps, type MenuContentProps, type MenuItemProps, type MenuItemTone } from "./components/menu/menu.js";
+export { Table, type TableProps, type TableRowProps, type TableCellProps, type TableHeadCellProps, type TableDensity, type TableAlign } from "./components/table/table.js";
+export { Avatar, initials, type AvatarProps, type AvatarSize, type AvatarShape } from "./components/avatar/avatar.js";
+export { Skeleton, type SkeletonProps, type SkeletonVariant } from "./components/skeleton/skeleton.js";
+export { Sheet, type SheetProps, type SheetContentProps, type SheetSide, type SheetSize } from "./components/sheet/sheet.js";
+export { Popover, type PopoverProps, type PopoverContentProps, type PopoverSize } from "./components/popover/popover.js";
+export { Progress, type ProgressProps, type ProgressSize, type ProgressTone } from "./components/progress/progress.js";
+export { Separator, type SeparatorProps, type SeparatorOrientation } from "./components/separator/separator.js";
+export { TextArea, type TextAreaProps, type TextAreaSize, type TextAreaResize } from "./components/text-area/text-area.js";
