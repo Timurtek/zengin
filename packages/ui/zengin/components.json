@@ -2,19 +2,71 @@
   {
     "name": "Button",
     "since": "0.1.0",
-    "export": { "from": "@zengin/ui", "name": "Button" },
-    "replaces": ["button", "@headlessui/react#Button", "@radix-ui/themes#Button"],
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Button"
+    },
+    "replaces": [
+      "button",
+      "@headlessui/react#Button",
+      "@radix-ui/themes#Button"
+    ],
     "extends": "button",
     "props": {
-      "variant": { "type": "enum", "values": ["solid", "soft", "ghost", "link"], "default": "solid" },
-      "tone": { "type": "enum", "values": ["neutral", "primary", "danger"], "default": "neutral" },
-      "size": { "type": "enum", "values": ["sm", "md", "lg"], "default": "md" },
-      "loading": { "type": "boolean", "default": false },
-      "leadingIcon": { "type": "node" },
-      "trailingIcon": { "type": "node" },
-      "asChild": { "type": "boolean", "default": false }
+      "variant": {
+        "type": "enum",
+        "values": [
+          "solid",
+          "soft",
+          "ghost",
+          "link"
+        ],
+        "default": "solid"
+      },
+      "tone": {
+        "type": "enum",
+        "values": [
+          "neutral",
+          "primary",
+          "danger"
+        ],
+        "default": "neutral"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "loading": {
+        "type": "boolean",
+        "default": false
+      },
+      "leadingIcon": {
+        "type": "node"
+      },
+      "trailingIcon": {
+        "type": "node"
+      },
+      "asChild": {
+        "type": "boolean",
+        "default": false
+      }
     },
-    "className": { "allow": ["margin", "width", "flex-item", "grid-item", "position"] },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
     "owns": {
       "background-color": "tone",
       "color": "tone",
@@ -24,21 +76,70 @@
       "font": "size",
       "box-shadow": null
     },
-    "slots": ["leadingIcon", "trailingIcon"],
-    "states": ["default", "hover", "active", "focus-visible", "disabled", "loading"]
+    "slots": [
+      "leadingIcon",
+      "trailingIcon"
+    ],
+    "states": [
+      "default",
+      "hover",
+      "active",
+      "focus-visible",
+      "disabled",
+      "loading"
+    ]
   },
   {
     "name": "Badge",
     "since": "0.1.0",
-    "export": { "from": "@zengin/ui", "name": "Badge" },
-    "replaces": ["@radix-ui/themes#Badge"],
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Badge"
+    },
+    "replaces": [
+      "@radix-ui/themes#Badge"
+    ],
     "extends": "span",
     "props": {
-      "tone": { "type": "enum", "values": ["neutral", "primary", "danger", "success", "warning"], "default": "neutral" },
-      "variant": { "type": "enum", "values": ["soft", "solid", "outline"], "default": "soft" },
-      "size": { "type": "enum", "values": ["sm", "md"], "default": "md" }
+      "tone": {
+        "type": "enum",
+        "values": [
+          "neutral",
+          "primary",
+          "danger",
+          "success",
+          "warning"
+        ],
+        "default": "neutral"
+      },
+      "variant": {
+        "type": "enum",
+        "values": [
+          "soft",
+          "solid",
+          "outline"
+        ],
+        "default": "soft"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      }
     },
-    "className": { "allow": ["margin", "flex-item", "grid-item", "position"] },
+    "className": {
+      "allow": [
+        "margin",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
     "owns": {
       "background-color": "tone",
       "color": "tone",
@@ -47,20 +148,58 @@
       "border-radius": null,
       "font": "size"
     },
-    "states": ["default"]
+    "states": [
+      "default"
+    ]
   },
   {
     "name": "Card",
     "since": "0.1.0",
-    "export": { "from": "@zengin/ui", "name": "Card" },
-    "replaces": ["@radix-ui/themes#Card"],
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Card"
+    },
+    "replaces": [
+      "@radix-ui/themes#Card"
+    ],
     "extends": "div",
     "props": {
-      "variant": { "type": "enum", "values": ["outlined", "elevated", "sunken"], "default": "outlined" },
-      "padding": { "type": "enum", "values": ["none", "sm", "md", "lg"], "default": "md" },
-      "interactive": { "type": "boolean", "default": false }
+      "variant": {
+        "type": "enum",
+        "values": [
+          "outlined",
+          "elevated",
+          "sunken"
+        ],
+        "default": "outlined"
+      },
+      "padding": {
+        "type": "enum",
+        "values": [
+          "none",
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "interactive": {
+        "type": "boolean",
+        "default": false
+      }
     },
-    "className": { "allow": ["margin", "width", "height", "flex-item", "grid-item", "position"] },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
     "owns": {
       "background-color": null,
       "border-color": "variant",
@@ -68,24 +207,67 @@
       "padding": "padding",
       "border-radius": null
     },
-    "slots": ["Header", "Body", "Footer"],
-    "states": ["default", "hover", "focus-visible"]
+    "slots": [
+      "Header",
+      "Body",
+      "Footer"
+    ],
+    "states": [
+      "default",
+      "hover",
+      "focus-visible"
+    ]
   },
   {
     "name": "TextField",
     "since": "0.1.0",
-    "export": { "from": "@zengin/ui", "name": "TextField" },
-    "replaces": ["input", "@headlessui/react#Input", "@radix-ui/themes#TextField"],
+    "export": {
+      "from": "@zengin/ui",
+      "name": "TextField"
+    },
+    "replaces": [
+      "input",
+      "@headlessui/react#Input",
+      "@radix-ui/themes#TextField"
+    ],
     "extends": "input",
     "props": {
-      "label": { "type": "node" },
-      "description": { "type": "node" },
-      "error": { "type": "node" },
-      "size": { "type": "enum", "values": ["sm", "md", "lg"], "default": "md" },
-      "leadingIcon": { "type": "node" },
-      "trailingIcon": { "type": "node" }
+      "label": {
+        "type": "node"
+      },
+      "description": {
+        "type": "node"
+      },
+      "error": {
+        "type": "node"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "leadingIcon": {
+        "type": "node"
+      },
+      "trailingIcon": {
+        "type": "node"
+      }
     },
-    "className": { "allow": ["margin", "width", "flex-item", "grid-item", "position"] },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
     "owns": {
       "background-color": null,
       "color": null,
@@ -94,28 +276,81 @@
       "border-radius": null,
       "font": "size"
     },
-    "slots": ["leadingIcon", "trailingIcon"],
-    "states": ["default", "hover", "focus-visible", "disabled", "invalid", "readonly"]
+    "slots": [
+      "leadingIcon",
+      "trailingIcon"
+    ],
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "disabled",
+      "invalid",
+      "readonly"
+    ]
   },
   {
     "name": "Checkbox",
     "since": "0.1.0",
-    "export": { "from": "@zengin/ui", "name": "Checkbox" },
-    "replaces": ["@headlessui/react#Checkbox", "@radix-ui/react-checkbox#*", "@radix-ui/themes#Checkbox"],
-    "props": {
-      "label": { "type": "node" },
-      "description": { "type": "node" },
-      "size": { "type": "enum", "values": ["sm", "md"], "default": "md" },
-      "checked": { "type": "boolean" },
-      "defaultChecked": { "type": "boolean" },
-      "onCheckedChange": { "type": "function" },
-      "disabled": { "type": "boolean" },
-      "required": { "type": "boolean" },
-      "name": { "type": "string" },
-      "value": { "type": "string" },
-      "id": { "type": "string" }
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Checkbox"
     },
-    "className": { "allow": ["margin", "flex-item", "grid-item", "position"] },
+    "replaces": [
+      "@headlessui/react#Checkbox",
+      "@radix-ui/react-checkbox#*",
+      "@radix-ui/themes#Checkbox"
+    ],
+    "props": {
+      "label": {
+        "type": "node"
+      },
+      "description": {
+        "type": "node"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      },
+      "checked": {
+        "type": "boolean"
+      },
+      "defaultChecked": {
+        "type": "boolean"
+      },
+      "onCheckedChange": {
+        "type": "function"
+      },
+      "disabled": {
+        "type": "boolean"
+      },
+      "required": {
+        "type": "boolean"
+      },
+      "name": {
+        "type": "string"
+      },
+      "value": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
     "owns": {
       "background-color": null,
       "border-color": null,
@@ -123,29 +358,72 @@
       "border-radius": null,
       "font": "size"
     },
-    "states": ["unchecked", "checked", "indeterminate", "hover", "focus-visible", "disabled"]
+    "states": [
+      "unchecked",
+      "checked",
+      "indeterminate",
+      "hover",
+      "focus-visible",
+      "disabled"
+    ]
   },
   {
     "name": "Dialog",
     "since": "0.1.0",
-    "export": { "from": "@zengin/ui", "name": "Dialog" },
-    "replaces": ["dialog", "@headlessui/react#Dialog", "@radix-ui/react-dialog#*", "@radix-ui/themes#Dialog"],
-    "props": {
-      "open": { "type": "boolean" },
-      "defaultOpen": { "type": "boolean" },
-      "onOpenChange": { "type": "function" },
-      "size": { "type": "enum", "values": ["sm", "md", "lg"], "default": "md" },
-      "modal": { "type": "boolean", "default": true }
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Dialog"
     },
-    "className": { "allow": [] },
+    "replaces": [
+      "dialog",
+      "@headlessui/react#Dialog",
+      "@radix-ui/react-dialog#*",
+      "@radix-ui/themes#Dialog"
+    ],
+    "props": {
+      "open": {
+        "type": "boolean"
+      },
+      "defaultOpen": {
+        "type": "boolean"
+      },
+      "onOpenChange": {
+        "type": "function"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "modal": {
+        "type": "boolean",
+        "default": true
+      }
+    },
+    "className": {
+      "allow": []
+    },
     "owns": {
       "background-color": null,
       "padding": "size",
       "border-radius": null,
       "box-shadow": null
     },
-    "slots": ["Trigger", "Content", "Title", "Description", "Close"],
-    "states": ["closed", "open"],
+    "slots": [
+      "Trigger",
+      "Content",
+      "Title",
+      "Description",
+      "Close"
+    ],
+    "states": [
+      "closed",
+      "open"
+    ],
     "migrations": {
       "@headlessui/react#Dialog": "Dialog.Panel becomes Dialog.Content; onClose becomes onOpenChange.",
       "@radix-ui/react-dialog#*": "Dialog.Content already wraps Portal and Overlay; drop them."
@@ -154,17 +432,45 @@
   {
     "name": "Tooltip",
     "since": "0.1.0",
-    "export": { "from": "@zengin/ui", "name": "Tooltip" },
-    "replaces": ["@radix-ui/react-tooltip#*", "@radix-ui/themes#Tooltip"],
-    "props": {
-      "content": { "type": "node" },
-      "side": { "type": "enum", "values": ["top", "right", "bottom", "left"], "default": "top" },
-      "delay": { "type": "number", "default": 300 },
-      "open": { "type": "boolean" },
-      "defaultOpen": { "type": "boolean" },
-      "onOpenChange": { "type": "function" }
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Tooltip"
     },
-    "className": { "allow": [] },
+    "replaces": [
+      "@radix-ui/react-tooltip#*",
+      "@radix-ui/themes#Tooltip"
+    ],
+    "props": {
+      "content": {
+        "type": "node"
+      },
+      "side": {
+        "type": "enum",
+        "values": [
+          "top",
+          "right",
+          "bottom",
+          "left"
+        ],
+        "default": "top"
+      },
+      "delay": {
+        "type": "number",
+        "default": 300
+      },
+      "open": {
+        "type": "boolean"
+      },
+      "defaultOpen": {
+        "type": "boolean"
+      },
+      "onOpenChange": {
+        "type": "function"
+      }
+    },
+    "className": {
+      "allow": []
+    },
     "owns": {
       "background-color": null,
       "color": null,
@@ -172,6 +478,9 @@
       "border-radius": null,
       "font": null
     },
-    "states": ["closed", "open"]
+    "states": [
+      "closed",
+      "open"
+    ]
   }
 ]

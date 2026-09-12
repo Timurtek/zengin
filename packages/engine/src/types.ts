@@ -99,6 +99,8 @@ export interface ZenginConfig {
   classes?: {
     /** Compile utility classes with Tailwind v4. `auto` (default) enables it when the project depends on tailwindcss. */
     tailwind?: "auto" | boolean;
+    /** Project stylesheets whose `@custom-variant` and `@utility` rules the Tailwind adapter must know about. */
+    css?: string[];
   };
   rules?: Partial<Record<RuleId, RuleConfig | Severity | "off">>;
 }
@@ -126,6 +128,8 @@ export interface ResolvedConfig {
   };
   classes: {
     tailwind: boolean;
+    /** Absolute paths. */
+    css: string[];
   };
   rules: Record<RuleId, ResolvedRuleConfig>;
 }

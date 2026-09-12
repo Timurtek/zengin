@@ -48,6 +48,7 @@ scope:
 
 classes:
   tailwind: auto                   # auto | true | false; auto = on when package.json depends on tailwindcss
+  css: ["app/globals.css"]         # stylesheets whose @custom-variant and @utility rules the class compiler must know
 
 rules:
   color-literal: { severity: error, allow: semantic, except: ["src/marketing/illustrations/**"] }
@@ -104,7 +105,9 @@ const violations = engine.check(readProjectFiles(dir, resolved.scope.include, re
 - The raw-element substitution heuristic fires when a replaced intrinsic element carries two or more properties the system component owns. Its false positive rate is unmeasured.
 - Width and height on Tailwind's default multiplier scale are treated as layout and not reported.
 - A token group may declare `"$extensions": { "zengin": { "extendsDefault": true } }` to say the framework's default scale for that namespace remains on-system (Tailwind `extend` semantics). Without it, defining any token in a namespace makes the defaults in that namespace off-system.
-- Field-tested against a real shadcn codebase; see `docs/field-tests/`. Zero false positives after the fixes that run produced, on one codebase.
+- `className.allow` categories: `margin`, `width`, `height`, `flex-item`, `grid-item`, `position`, `display`, `overflow`, or any CSS property name. Display and overflow are placement: showing, hiding and clipping are not restyling.
+- A component whose manifest declares no props and extends nothing is uncontracted: `unknown-prop` does not apply to it.
+- Field-tested against two real shadcn codebases (Tailwind 3 and Tailwind 4); see `docs/field-tests/`. Zero false positives after the fixes each run produced.
 - Stylesheet resolution indexes single-class selectors only. `.card .btn` and `.btn.primary` are invisible to className checks; their literals are still checked in the stylesheet.
 - CSS Modules resolve through the stylesheet index only when the class name in the file matches the one in the JSX, which is not the case for hashed class names. A CSS Modules adapter is a candidate for later.
 

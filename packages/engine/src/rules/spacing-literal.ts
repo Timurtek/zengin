@@ -42,6 +42,9 @@ export const spacingLiteral: Rule = {
 
       const lit = findLengthLiterals(decl.value)[0];
       if (lit) {
+        // A named step such as p-px resolves to a literal; it is arbitrary only when written as one.
+        const arbitrary = use.base.includes("[");
+        if (!arbitrary && !ctx.tokens.namespaces.has("spacing")) continue;
         const m = match(ctx, lit.literal);
         if (m) out.push(reportClass(ctx, use, m, `Arbitrary spacing value. ${m.px}px is not on the spacing scale.`));
         continue;

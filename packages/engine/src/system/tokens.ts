@@ -122,10 +122,12 @@ export function normalizeColor(v: string): string | undefined {
     const [r, g, b] = hslToRgb(Number(hsl[1]), Number(hsl[2]) / 100, Number(hsl[3]) / 100);
     return toHex(r, g, b);
   }
-  const oklch = /^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*[\d.%]+)?\s*\)$/.exec(s);
+  // Tailwind writes achromatic colors with `none` for the hue: oklch(55.6% 0 none).
+  const oklch = /^oklch\(\s*([\d.]+)(%?)\s+([\d.]+|none)\s+([\d.]+|none)(?:\s*\/\s*[\d.%]+)?\s*\)$/.exec(s);
   if (oklch) {
     const L = Number(oklch[1]) / (oklch[2] ? 100 : 1);
-    const [r, g, b] = oklchToRgb(L, Number(oklch[3]), Number(oklch[4]));
+    const num = (v: string) => (v === "none" ? 0 : Number(v));
+    const [r, g, b] = oklchToRgb(L, num(oklch[3]!), num(oklch[4]!));
     return toHex(r, g, b);
   }
   return undefined;

@@ -45,6 +45,32 @@ function describe(ctx: RuleContext, literal: string): Match {
   return { message: `Color literal where a token reference is required. ${literal} could not be matched to a token.`, confidence: "none" };
 }
 
+/** Palette families that carry a conventional meaning, and the token names that express it. */
+const ROLE_BY_HUE: [RegExp, string[]][] = [
+  [/^--color-(red|rose)-/, ["danger", "destructive", "error", "critical"]],
+  [/^--color-(green|emerald|lime|teal)-/, ["success", "positive"]],
+  [/^--color-(yellow|amber|orange)-/, ["warning", "caution"]],
+  [/^--color-(blue|sky|indigo)-/, ["info", "primary", "accent"]],
+];
+
+/** A semantic token for a palette variable, by role rather than value. Undefined when the system has none. */
+function describeByRole(ctx: RuleContext, paletteVar: string): Match | undefined {
+  const roles = ROLE_BY_HUE.find(([re]) => re.test(paletteVar))?.[1];
+  if (!roles) return undefined;
+  for (const role of roles) {
+    const token = ctx.tokens.colors.find((t) => t.key === role);
+    if (token) {
+      return {
+        message: "",
+        token,
+        confidence: "nearest",
+        note: `${role} is the system's token for this role. Chosen by role, not by value; verify it reads correctly here.`,
+      };
+    }
+  }
+  return undefined;
+}
+
 function fixFor(m: Match, replace: string | null): Fix {
   return {
     replace,
@@ -89,7 +115,7 @@ export const colorLiteral: Rule = {
         .find((r) => !ctx.tokens.byVar.has(r.literal) && ctx.resolver.defaultVars.has(r.literal) && r.literal.startsWith("--color-"));
       if (palette) {
         const value = ctx.resolver.defaultVarValues.get(palette.literal) ?? "";
-        const m = describe(ctx, value);
+        const m = describeByRole(ctx, palette.literal) ?? describe(ctx, value);
         out.push(
           ctx.report(ID, {
             range: use.range,

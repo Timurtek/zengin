@@ -27,6 +27,19 @@ export const tokenReference: Rule = {
 
       if (!use.decls) {
         if (!ctx.resolver.utilities) continue; // without a class compiler an unknown class is just a class
+        // The utility itself compiles: the variant in front of it is what does not exist.
+        if (use.base !== use.candidate && ctx.resolver.resolve(use.base)) {
+          const variant = use.candidate.slice(0, use.candidate.length - use.base.length - 1);
+          out.push(
+            ctx.report(ID, {
+              range: use.range,
+              found: use.candidate,
+              message: `Unknown variant "${variant}". The class renders nothing; the variant is not defined by Tailwind or by a @custom-variant in the project's CSS.`,
+              fix: { replace: null, confidence: "none" },
+            }),
+          );
+          continue;
+        }
         const key = use.base.slice(prefix.length + 1);
         const near = nearestKey(ctx, key);
         const candidate = near ? rewriteKey(use, prefix, near.key) : undefined;

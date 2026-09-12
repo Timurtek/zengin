@@ -80,6 +80,7 @@ export const componentSubstitution: Rule = {
         if (!comp.owns) continue;
         for (const use of ctx.classUses) {
           if (use.element !== el || !use.decls) continue;
+          if (use.base === "sr-only" || use.base === "not-sr-only") continue; // visually-hidden is not styling
           for (const d of use.decls) {
             const k = ownedKey(d.prop, comp.owns);
             if (k) owned.add(k);

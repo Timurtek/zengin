@@ -48,6 +48,7 @@ export function resolveConfig(config: ZenginConfig, projectDir: string): Resolve
     },
     classes: {
       tailwind: resolveTailwind(config.classes?.tailwind ?? "auto", projectDir),
+      css: (config.classes?.css ?? []).map((p) => resolve(projectDir, p)),
     },
     rules,
   };

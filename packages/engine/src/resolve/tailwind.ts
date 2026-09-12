@@ -6,13 +6,41 @@ import type { Declaration, UtilityResolver } from "./resolver.js";
 
 const require = createRequire(import.meta.url);
 
+/** Declarations inside `@property` rules. Bookkeeping, not styling. */
+const PROPERTY_RULE_DECLS = new Set(["syntax", "inherits", "initial-value"]);
+
 /**
  * Tailwind v4 adapter. Optional: loaded only when the consumer's project uses Tailwind. Utility classes
  * are compiled through Tailwind's own design system so resolution is exactly what their build produces.
  * `themeCss` is the `@theme` block generated from the system tokens; Tailwind's default theme is loaded
  * underneath it so the rules can tell "references the default palette" apart from "references nothing".
  */
-export async function createTailwindResolver(themeCss: string): Promise<UtilityResolver> {
+/** Extracts the at-rules a project adds to Tailwind that change what compiles: custom variants and utilities. */
+export function projectTailwindRules(css: string): string {
+  const out: string[] = [];
+  const re = /@(custom-variant|utility)\s+[^;{]+/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(css)) !== null) {
+    const start = m.index;
+    let i = start + m[0].length;
+    if (css[i] === ";") {
+      out.push(css.slice(start, i + 1));
+      continue;
+    }
+    if (css[i] !== "{") continue;
+    // Balanced braces: @utility bodies nest (&::-webkit-scrollbar { ... }).
+    let depth = 0;
+    for (; i < css.length; i++) {
+      if (css[i] === "{") depth++;
+      else if (css[i] === "}" && --depth === 0) break;
+    }
+    out.push(css.slice(start, i + 1));
+    re.lastIndex = i + 1;
+  }
+  return out.join("\n");
+}
+
+export async function createTailwindResolver(themeCss: string, projectRules = ""): Promise<UtilityResolver> {
   let tailwind: typeof import("tailwindcss");
   try {
     tailwind = await import("tailwindcss");
@@ -31,7 +59,7 @@ export async function createTailwindResolver(themeCss: string): Promise<UtilityR
     defaultVarValues.set(d.prop, d.value);
   });
 
-  const css = `@import "tailwindcss/theme.css";\n${themeCss}`;
+  const css = `@import "tailwindcss/theme.css";\n${themeCss}\n${projectRules}`;
   const designSystem = await tailwind.__unstable__loadDesignSystem(css, {
     base: dirname(themePath),
     loadStylesheet: async (id: string, base: string) => {
@@ -59,7 +87,7 @@ export async function createTailwindResolver(themeCss: string): Promise<UtilityR
         if (cssText) {
           const decls: Declaration[] = [];
           postcss.parse(cssText).walkDecls((d) => {
-            if (!d.prop.startsWith("--tw-")) decls.push({ prop: d.prop, value: d.value });
+            if (!d.prop.startsWith("--tw-") && !PROPERTY_RULE_DECLS.has(d.prop)) decls.push({ prop: d.prop, value: d.value });
           });
           result = decls;
         }

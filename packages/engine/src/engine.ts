@@ -1,11 +1,11 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseCss } from "./parse/css.js";
 import { parseTsx, type JsxElementInfo, type StringSpan } from "./parse/tsx.js";
 import { comparePos } from "./parse/positions.js";
 import { combineResolvers, type ClassResolver, type UtilityResolver } from "./resolve/resolver.js";
 import { StylesheetIndex } from "./resolve/stylesheet.js";
-import { baseUtility, createTailwindResolver, splitClasses } from "./resolve/tailwind.js";
+import { baseUtility, createTailwindResolver, projectTailwindRules, splitClasses } from "./resolve/tailwind.js";
 import { RULES } from "./rules/index.js";
 import { makeReporter, type ClassUse, type RuleContext } from "./rules/context.js";
 import { Scope } from "./scope.js";
@@ -39,8 +39,12 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
   const defs = definitions ?? loadDefinitions(config.system.definitionsDir);
   const tokens = new TokenIndex(defs.tokens);
   const components = new ComponentIndex(defs.components, config.system.sources, config.rules["component-substitution"].map);
+  const projectRules = config.classes.css
+    .filter((p) => existsSync(p))
+    .map((p) => projectTailwindRules(readFileSync(p, "utf8")))
+    .join("\n");
   const utility: UtilityResolver | undefined = config.classes.tailwind
-    ? await createTailwindResolver(toThemeCss(defs.tokens))
+    ? await createTailwindResolver(toThemeCss(defs.tokens), projectRules)
     : undefined;
   const scope = new Scope(config);
   const rules = RULES.filter((r) => config.rules[r.id].enabled);

@@ -255,7 +255,7 @@
       "replace": "bg-danger",
       "confidence": "nearest",
       "token": "color.danger",
-      "note": "Nearest by value: color.danger = #dc2626. Verify the semantic role before applying."
+      "note": "danger is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
     },
     "suppress": "// zengin-allow color-literal: <reason>"
   },

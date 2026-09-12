@@ -59,6 +59,8 @@ export const unknownProp: Rule = {
     for (const [el, comp] of ctx.systemElements) {
       if (el.tag.includes(".")) continue; // sub-parts are not contracted yet
       const known = Object.keys(comp.props ?? {});
+      // An uncontracted component (no declared props beyond asChild, nothing extended) cannot call a prop unknown.
+      if (!comp.extends && known.filter((k) => k !== "asChild").length === 0) continue;
       const passthrough = new Set([...ALWAYS, ...(comp.extends ? [...GLOBAL, ...(BY_TAG[comp.extends] ?? [])] : [])]);
       for (const attr of el.attrs) {
         if (known.includes(attr.name) || passthrough.has(attr.name) || ALWAYS_RE.test(attr.name)) continue;

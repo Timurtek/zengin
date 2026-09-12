@@ -48,6 +48,8 @@ export function categoryOf(prop: string): string {
   if (["flex", "flex-grow", "flex-shrink", "flex-basis", "align-self", "order"].includes(prop)) return "flex-item";
   if (prop.startsWith("grid-column") || prop.startsWith("grid-row") || prop === "grid-area" || prop === "justify-self" || prop === "place-self") return "grid-item";
   if (prop === "position" || prop === "z-index" || POSITION_EXACT.has(prop) || prop === "inset" || prop.startsWith("inset-")) return "position";
+  if (prop === "display" || prop === "visibility") return "display";
+  if (prop === "overflow" || prop.startsWith("overflow-")) return "overflow";
   return prop;
 }
 
