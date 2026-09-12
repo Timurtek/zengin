@@ -20,5 +20,5 @@ jobs:
       - run: pnpm test
       # The engine checks its own fixture projects and annotates the PR, as a consumer would.
       - name: zengin on the plain-css fixture
-        run: pnpm exec zengin check --format github --fail-on never
+        run: node "$GITHUB_WORKSPACE/packages/cli/dist/index.js" check --format github --fail-on never
         working-directory: packages/engine/test/fixtures/project-css
