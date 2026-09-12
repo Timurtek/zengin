@@ -5,6 +5,7 @@ import { installItems, STYLES_INDEX_HEAD, type InstallResult } from "./install.j
 import type { RegistrySource } from "./load.js";
 import { resolveItems } from "./resolve.js";
 import { LAYOUT } from "./schema.js";
+import { applyTheme } from "./theme.js";
 import { writeTokensCss } from "./tokens.js";
 
 export interface CreateOptions {
@@ -13,6 +14,8 @@ export interface CreateOptions {
   /** Package name; defaults to the directory's basename. */
   name?: string;
   template?: string;
+  /** A theme from the registry to apply after the template; the template's own brand file otherwise. */
+  theme?: string;
   source: RegistrySource;
   /** Write the Storybook config and the stories that come with the components. Default true. */
   storybook?: boolean;
@@ -94,6 +97,7 @@ export async function createProject(opts: CreateOptions): Promise<CreateResult> 
 
   write("package.json", packageJson({ name, install, storybook, local: opts.local }));
   write("README.md", README(name, template, install.components));
+  if (opts.theme) await applyTheme({ projectDir: dir, name: opts.theme, source: opts.source });
 
   const tokens = writeTokensCss(join(dir, LAYOUT.definitionsDir), join(dir, "src/styles/generated/tokens.css"));
 

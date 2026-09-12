@@ -44,6 +44,11 @@ describe("buildRegistry", () => {
     expect(paths.some((p) => p.includes("generated"))).toBe(false);
     for (const f of marketing.files) expect(f.content, f.path).not.toMatch(/from "@zengin\/ui/); // prose may still name the package
     expect(marketing.files.find((f) => f.path === "src/main.tsx")!.content).toContain('import "./styles/index.css"');
+    // Every template's entry point loads the brand file, or themes and brands would change nothing.
+    for (const name of ["blank", "marketing", "review"]) {
+      const main = registry.items.find((i) => i.name === name)!.files.find((f) => f.path === "src/main.tsx")!;
+      expect(main.content, `${name} main.tsx`).toContain('import "./theme/brand.css"');
+    }
     expect(marketing.registryDependencies).toEqual(["foundation", "cx", "badge", "button", "card", "checkbox", "table", "tabs", "text-field", "tooltip"]);
   });
 

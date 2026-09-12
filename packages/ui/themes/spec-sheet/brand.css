@@ -1,0 +1,109 @@
+/*
+ * The Zengin brand, as token overrides. This file is the only place on the site that may hold a literal
+ * (scope.foundations in zengin.config.yaml). Everything else references the tokens by name, so the
+ * components from @zengin/ui take on the brand without a line of their CSS changing.
+ *
+ * The brand: a specification sheet. Sharp corners, black rules, an expanded grotesk for headlines,
+ * a mono for labels, cobalt as the single accent. Same selectors as the generated tokens.css, loaded
+ * after it: an explicit data-theme wins, and without one the system preference decides.
+ */
+
+:root,
+[data-theme="light"] {
+  --font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Archivo", "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #F3F4F6;
+  --color-surface-sunken: #EAECF0;
+  --color-surface-overlay: #0B0F19CC;
+  --color-text: #0B0F19;
+  --color-text-muted: #4B5263;
+  --color-text-subtle: #8A90A0;
+  --color-border: #0B0F19;
+  --color-border-strong: #0B0F19;
+
+  --color-primary: #1B3FE4;
+  --color-primary-hover: #1532B8;
+  --color-primary-active: #0F268F;
+  --color-primary-soft: #DFE5FF;
+  --color-primary-soft-hover: #C6D1FF;
+  --color-primary-soft-foreground: #0F268F;
+  --color-on-primary: #FFFFFF;
+  --color-focus: #1B3FE4;
+
+  --color-neutral: #0B0F19;
+  --color-neutral-hover: #262B38;
+  --color-neutral-active: #0B0F19;
+  --color-neutral-soft: #EAECF0;
+  --color-neutral-soft-hover: #DCDFE6;
+  --color-neutral-soft-foreground: #0B0F19;
+}
+
+[data-theme="dark"] {
+  --color-surface: #0B0F19;
+  --color-surface-raised: #141927;
+  --color-surface-sunken: #05070D;
+  --color-surface-overlay: #05070DCC;
+  --color-text: #F2F4F7;
+  --color-text-muted: #A3A9B8;
+  --color-text-subtle: #6B7284;
+  --color-border: #F2F4F7;
+  --color-border-strong: #F2F4F7;
+
+  --color-primary: #7B90FF;
+  --color-primary-hover: #97A8FF;
+  --color-primary-active: #B4C0FF;
+  --color-primary-soft: #1A2A80;
+  --color-primary-soft-hover: #23379E;
+  --color-primary-soft-foreground: #C6D1FF;
+  --color-on-primary: #05070D;
+  --color-focus: #7B90FF;
+
+  --color-neutral: #F2F4F7;
+  --color-neutral-hover: #D9DDE6;
+  --color-neutral-active: #F2F4F7;
+  --color-neutral-soft: #1F2536;
+  --color-neutral-soft-hover: #2B3247;
+  --color-neutral-soft-foreground: #F2F4F7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-surface: #0B0F19;
+    --color-surface-raised: #141927;
+    --color-surface-sunken: #05070D;
+    --color-surface-overlay: #05070DCC;
+    --color-text: #F2F4F7;
+    --color-text-muted: #A3A9B8;
+    --color-text-subtle: #6B7284;
+    --color-border: #F2F4F7;
+    --color-border-strong: #F2F4F7;
+
+    --color-primary: #7B90FF;
+    --color-primary-hover: #97A8FF;
+    --color-primary-active: #B4C0FF;
+    --color-primary-soft: #1A2A80;
+    --color-primary-soft-hover: #23379E;
+    --color-primary-soft-foreground: #C6D1FF;
+    --color-on-primary: #05070D;
+    --color-focus: #7B90FF;
+
+    --color-neutral: #F2F4F7;
+    --color-neutral-hover: #D9DDE6;
+    --color-neutral-active: #F2F4F7;
+    --color-neutral-soft: #1F2536;
+    --color-neutral-soft-hover: #2B3247;
+    --color-neutral-soft-foreground: #F2F4F7;
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "title": "Default",
+  "description": "Zengin UI as shipped: Inter, a blue primary, slate neutrals, soft corners. The brand file is empty; every token is the system's own.",
+  "fonts": ["Inter"]
+}

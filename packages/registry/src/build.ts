@@ -106,6 +106,26 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
     }),
   );
 
+  // Themes: one directory each under packages/ui/themes, a theme.json beside a brand.css.
+  const themesDir = join(ui, "themes");
+  for (const dir of existsSync(themesDir) ? readdirSync(themesDir).sort() : []) {
+    const meta = join(themesDir, dir, "theme.json");
+    const css = join(themesDir, dir, "brand.css");
+    if (!existsSync(meta) || !existsSync(css)) continue;
+    const t = JSON.parse(read(meta)) as { title: string; description: string; fonts?: string[] };
+    items.push({
+      name: dir,
+      type: "theme",
+      title: t.title,
+      description: t.description,
+      dependencies: {},
+      devDependencies: {},
+      registryDependencies: [],
+      files: [{ path: "src/theme/brand.css", kind: "theme", content: read(css) }],
+      fonts: t.fonts ?? [],
+    });
+  }
+
   return { schema: REGISTRY_SCHEMA, name: "zengin", version, generatedAt: new Date().toISOString(), items };
 }
 
@@ -149,6 +169,13 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
         }
       }
       content = content.replace(/"@zengin\/ui\/styles\.css"/g, '"./styles/index.css"').replace(/"@zengin\/ui"/g, `"${LAYOUT.alias}"`);
+    }
+    // The entry point must load the brand file, or themes and brands change nothing. The examples that
+    // consume the package have no brand file; the project has one.
+    if (rel === "src/main.tsx" && !content.includes("theme/brand.css")) {
+      content = content.includes('import "./styles/index.css";')
+        ? content.replace('import "./styles/index.css";', 'import "./styles/index.css";\nimport "./theme/brand.css";')
+        : `import "./theme/brand.css";\n${content}`;
     }
     files.push({ path: rel, kind: "template", content });
   }

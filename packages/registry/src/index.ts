@@ -4,4 +4,8 @@ export { resolveItems } from "./resolve.js";
 export { installItems, type InstallResult } from "./install.js";
 export { createProject, VERSIONS, type CreateOptions, type CreateResult } from "./create.js";
 export { buildTokensCss, writeTokensCss } from "./tokens.js";
+export { applyTheme, listThemes, type ApplyThemeResult, type ThemeSummary } from "./theme.js";
+export { brandProject, derivePalette, paletteContrast, renderBrandCss, primaryFromSvg, faviconSvg, type BrandOptions, type BrandResult, type BrandRadius, type Palette } from "./brand.js";
+export { contrast, hexToOklch, oklchToHex, pushForContrast, type Oklch } from "./color.js";
+export { patchIndexHtml, fontsHref, type HtmlPatch } from "./html.js";
 export { LAYOUT, REGISTRY_SCHEMA, isRegistryIndex, type Registry, type RegistryIndex, type RegistryItem, type RegistryFile, type ItemType, type FileKind } from "./schema.js";

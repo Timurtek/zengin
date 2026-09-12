@@ -25,6 +25,8 @@ Everyone else serves context. Zengin serves constraints.
 npx zengin create acme --template marketing   # or: blank, review
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
+npx zengin theme plex                          # or: default, meadow, spec-sheet
+npx zengin brand --name Acme --logo logo.svg  # your own palette, favicon and wordmark from one color
 ```
 
 The project owns its components (`src/components/ui`, each file carrying the version it was copied from), its definitions (`zengin/`), a brand file, Storybook, and the MCP server and hook. The generator runs the engine on the result before it returns: a fresh project reports zero violations. Until the first npm release, run the CLI from a checkout with `--local <path>`.

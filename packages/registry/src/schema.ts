@@ -2,9 +2,9 @@ import type { ComponentManifest } from "@zengin/engine";
 
 export const REGISTRY_SCHEMA = "zengin-registry/1";
 
-export type ItemType = "component" | "template" | "lib" | "definitions";
+export type ItemType = "component" | "template" | "lib" | "definitions" | "theme";
 
-export type FileKind = "component" | "style" | "story" | "lib" | "template" | "definitions";
+export type FileKind = "component" | "style" | "story" | "lib" | "template" | "definitions" | "theme";
 
 export interface RegistryFile {
   /** Path relative to the project root the item installs into. */
@@ -27,6 +27,8 @@ export interface RegistryItem {
   files: RegistryFile[];
   /** For components: the manifest entry, with `export.from` already pointing at the project alias. */
   manifest?: ComponentManifest;
+  /** For themes: Google Fonts families the brand file expects, linked into index.html on apply. */
+  fonts?: string[];
 }
 
 /** The index: every item without its file contents, so a client can list and resolve before fetching. */

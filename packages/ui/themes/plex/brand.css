@@ -1,0 +1,100 @@
+/*
+ * Plex: IBM Plex Sans and Mono, square corners, a strong blue, cool greys stepped the way Carbon
+ * steps them. Token overrides only; every component wears it without a change.
+ */
+
+:root,
+[data-theme="light"] {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #F4F4F4;
+  --color-surface-sunken: #E0E0E0;
+  --color-surface-overlay: #161616CC;
+  --color-text: #161616;
+  --color-text-muted: #525252;
+  --color-text-subtle: #8D8D8D;
+  --color-border: #E0E0E0;
+  --color-border-strong: #A8A8A8;
+
+  --color-primary: #0F62FE;
+  --color-primary-hover: #0353E9;
+  --color-primary-active: #002D9C;
+  --color-primary-soft: #EDF5FF;
+  --color-primary-soft-hover: #D0E2FF;
+  --color-primary-soft-foreground: #0043CE;
+  --color-on-primary: #FFFFFF;
+  --color-focus: #0F62FE;
+
+  --color-neutral: #393939;
+  --color-neutral-hover: #4C4C4C;
+  --color-neutral-active: #262626;
+  --color-neutral-soft: #E0E0E0;
+  --color-neutral-soft-hover: #C6C6C6;
+  --color-neutral-soft-foreground: #161616;
+}
+
+[data-theme="dark"] {
+  --color-surface: #161616;
+  --color-surface-raised: #262626;
+  --color-surface-sunken: #0B0B0B;
+  --color-surface-overlay: #000000CC;
+  --color-text: #F4F4F4;
+  --color-text-muted: #C6C6C6;
+  --color-text-subtle: #8D8D8D;
+  --color-border: #393939;
+  --color-border-strong: #525252;
+
+  --color-primary: #78A9FF;
+  --color-primary-hover: #A6C8FF;
+  --color-primary-active: #D0E2FF;
+  --color-primary-soft: #001D6C;
+  --color-primary-soft-hover: #002D9C;
+  --color-primary-soft-foreground: #A6C8FF;
+  --color-on-primary: #001141;
+  --color-focus: #78A9FF;
+
+  --color-neutral: #F4F4F4;
+  --color-neutral-hover: #E0E0E0;
+  --color-neutral-active: #FFFFFF;
+  --color-neutral-soft: #393939;
+  --color-neutral-soft-hover: #4C4C4C;
+  --color-neutral-soft-foreground: #F4F4F4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-surface: #161616;
+    --color-surface-raised: #262626;
+    --color-surface-sunken: #0B0B0B;
+    --color-surface-overlay: #000000CC;
+    --color-text: #F4F4F4;
+    --color-text-muted: #C6C6C6;
+    --color-text-subtle: #8D8D8D;
+    --color-border: #393939;
+    --color-border-strong: #525252;
+
+    --color-primary: #78A9FF;
+    --color-primary-hover: #A6C8FF;
+    --color-primary-active: #D0E2FF;
+    --color-primary-soft: #001D6C;
+    --color-primary-soft-hover: #002D9C;
+    --color-primary-soft-foreground: #A6C8FF;
+    --color-on-primary: #001141;
+    --color-focus: #78A9FF;
+
+    --color-neutral: #F4F4F4;
+    --color-neutral-hover: #E0E0E0;
+    --color-neutral-active: #FFFFFF;
+    --color-neutral-soft: #393939;
+    --color-neutral-soft-hover: #4C4C4C;
+    --color-neutral-soft-foreground: #F4F4F4;
+  }
+}

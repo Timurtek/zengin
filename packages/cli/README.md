@@ -8,6 +8,8 @@ zengin explain [rule]       what each rule checks
 zengin init                 write a zengin.config.yaml in the current directory
 zengin create <dir>         a new project that owns its components, with the engine, MCP, hook and Storybook wired
 zengin add <items...>       components or templates from the registry into this project
+zengin theme [name]         list the registry's themes, or swap this project's brand for one
+zengin brand --name <name>  a brand from a name, a logo or a color: tokens, favicon, wordmark, index.html
 zengin tokens               zengin/tokens*.json to src/styles/generated/tokens.css
 zengin registry build       the registry, from a Zengin repository checkout
 zengin report, rollup       drift and adoption, per repository and across them
@@ -83,6 +85,19 @@ zengin tokens                                 # after editing zengin/tokens*.jso
 ```
 
 `create` writes the project, copies the template's components in with the owned pragma, merges their manifest entries into `zengin/components.json`, builds `tokens.css`, and runs the engine on the result before it prints. `add` does the same for further items and records any npm packages they need in `package.json`. See [@zengin/registry](../registry) for the layout and the registry format.
+
+## theme and brand
+
+```bash
+zengin theme                                  # list: default, meadow, plex, spec-sheet
+zengin theme plex                             # swap the brand file and the fonts link; nothing else changes
+zengin create acme --theme spec-sheet         # or at creation
+
+zengin brand --name "Acme Reviews" --logo logo.svg --font-display Archivo --font-sans Inter --radius round
+zengin brand --name Nova --primary "#7C3AED"  # from a color alone
+```
+
+`theme` replaces `src/theme/brand.css` with the theme's file and puts its Google Fonts link in `index.html` (one link, marked `data-zengin="fonts"`, replaced by the next theme). `brand` derives a whole palette from one color, in OKLCH so steps look even, and pushes every pairing the components rely on (text on surface, on-primary on primary, soft-foreground on soft, and so on) until it meets WCAG AA in both schemes. It writes the brand file, `zengin/brand.json` (the inputs, for re-running), the logo into `public/`, a favicon when there is no SVG logo, `src/brand.ts` and a `BrandMark` component, and patches the title, theme-color, icon and fonts in `index.html`. An SVG logo also supplies the primary; a PNG needs `--primary`. Both commands run the engine afterwards; the project stays clean because the brand file is a foundation.
 
 ## report and rollup
 

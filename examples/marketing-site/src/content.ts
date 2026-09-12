@@ -154,6 +154,7 @@ export const INSTALL = `# A new project: components copied in, engine, MCP, hook
 npx zengin create acme --template marketing
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
+npx zengin brand --name Acme --logo logo.svg   # palette, favicon, wordmark from one color
 
 # An existing project: derive the definitions, then check
 zengin init --from shadcn

@@ -1,0 +1,11 @@
+/*
+ * The default theme: nothing overridden. Every token is Zengin UI's own (zengin/tokens.json and
+ * tokens.dark.json). Add overrides here to make the brand yours, or run `zengin brand` to generate them.
+ */
+
+:root,
+[data-theme="light"] {
+}
+
+[data-theme="dark"] {
+}

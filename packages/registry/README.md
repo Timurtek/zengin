@@ -41,6 +41,13 @@ Items are built, never hand-written. Components come from `packages/ui/src/compo
 | `template` | `blank`, `marketing`, `review` | App files under `src/` plus `index.html`; depends on the components it uses |
 | `lib` | `cx` | `src/lib/cx.ts` |
 | `definitions` | `foundation` | `zengin/tokens.json`, `zengin/tokens.dark.json`, `src/styles/base.css` |
+| `theme` | `default`, `meadow`, `plex`, `spec-sheet` | `src/theme/brand.css`, replacing the current one, plus the theme's fonts link in `index.html` |
+
+## Themes and brands
+
+A theme is a brand file in the registry (`packages/ui/themes/<name>/brand.css` with a `theme.json` naming its fonts). `zengin theme <name>` swaps it in; `zengin create --theme <name>` applies it at creation. A theme is the whole brand: applying one replaces the file, so the previous brand is gone, which is what a swap means.
+
+`zengin brand` generates a brand file instead of picking one: `derivePalette(hex)` builds both schemes from one color in OKLCH and pushes every component pairing to WCAG AA; `renderBrandCss` writes it with the fonts and radii; `brandProject` adds the logo, favicon, wordmark and `index.html` patches. Both are exported for programmatic use.
 
 ## Programmatic use
 

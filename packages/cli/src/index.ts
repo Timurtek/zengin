@@ -5,7 +5,7 @@ import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { init, initFromShadcn } from "./init.js";
 import { renderRollup, runReport, runRollup } from "./report.js";
-import { runAdd, runCreate, runRegistryBuild, runTokens, type ScaffoldOptions } from "./scaffold.js";
+import { runAdd, runBrand, runCreate, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
 import { writeFileSync } from "node:fs";
 
 const HELP = `zengin: design-system conformance, enforceable.
@@ -19,6 +19,8 @@ Usage:
   zengin rollup <snapshots...>        drift and adoption across repositories, from report snapshots
   zengin create <dir>                 a new project on Zengin UI: components copied in, engine, MCP, hook, Storybook wired
   zengin add <items...>               components or templates from the registry into this project
+  zengin theme [name]                 list the registry's themes, or swap this project's brand for one
+  zengin brand --name <name>          a brand from a name, a logo or a color: tokens, favicon, wordmark, index.html
   zengin tokens                       zengin/tokens*.json to src/styles/generated/tokens.css
   zengin registry build --out <dir>   build the registry from a Zengin repository checkout
 
@@ -29,12 +31,22 @@ Init options:
 
 Create and add options:
   --template <name>     blank | marketing | review (create; default: blank)
+  --theme <name>        apply a registry theme after the template (create)
   --name <name>         package name (create; default: the directory name)
   --registry <dir|url>  where items come from (default: $ZENGIN_REGISTRY or the public registry)
   --no-storybook        skip the Storybook config and stories (create)
   --local <repo>        link the Zengin packages from a repository checkout instead of npm (create)
   --dir <path>          project directory (add, tokens; default: cwd)
   --force               overwrite files that already exist (add)
+
+Brand options:
+  --name <name>         the product's name (required)
+  --logo <file>         SVG, PNG, JPEG or WebP; an SVG also supplies the primary color
+  --primary <hex>       the primary color; wins over the logo
+  --font-display <f>    Google Fonts family for headlines
+  --font-sans <f>       Google Fonts family for text
+  --font-mono <f>       Google Fonts family for code
+  --radius <r>          sharp | soft | round (default: soft, the system's own radii)
 
 Registry options:
   --root <path>         the Zengin repository (default: found above cwd)
@@ -64,7 +76,7 @@ Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 us
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "help";
+  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "brand" | "help";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
@@ -81,7 +93,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
   const initOpts: Parsed["init"] = { force: false };
   const reportOpts: Parsed["report"] = { includeViolations: false };
   const rollupOpts: Parsed["rollup"] = { format: "markdown" };
-  const scaffold: ScaffoldOptions = { storybook: true, force: false };
+  const scaffold: ScaffoldOptions = { storybook: true, force: false, list: false };
   let rawFormat: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
@@ -92,7 +104,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       return v;
     };
     if (!a.startsWith("-") && !command) {
-      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "help") command = a;
+      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "brand" || a === "help") command = a;
       else {
         command = "check";
         positional.push(a);
@@ -119,6 +131,21 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a === "--dir") initOpts.dir = scaffold.dir = value();
     else if (a.startsWith("--dir=")) initOpts.dir = scaffold.dir = a.slice(6);
     else if (a === "--force") initOpts.force = scaffold.force = true;
+    else if (a === "--theme") scaffold.theme = value();
+    else if (a.startsWith("--theme=")) scaffold.theme = a.slice(8);
+    else if (a === "--list") scaffold.list = true;
+    else if (a === "--logo") scaffold.logo = value();
+    else if (a.startsWith("--logo=")) scaffold.logo = a.slice(7);
+    else if (a === "--primary") scaffold.primary = value();
+    else if (a.startsWith("--primary=")) scaffold.primary = a.slice(10);
+    else if (a === "--font-display") scaffold.fontDisplay = value();
+    else if (a.startsWith("--font-display=")) scaffold.fontDisplay = a.slice(15);
+    else if (a === "--font-sans") scaffold.fontSans = value();
+    else if (a.startsWith("--font-sans=")) scaffold.fontSans = a.slice(12);
+    else if (a === "--font-mono") scaffold.fontMono = value();
+    else if (a.startsWith("--font-mono=")) scaffold.fontMono = a.slice(12);
+    else if (a === "--radius") scaffold.radius = asRadius(value());
+    else if (a.startsWith("--radius=")) scaffold.radius = asRadius(a.slice(9));
     else if (a === "--template") scaffold.template = value();
     else if (a.startsWith("--template=")) scaffold.template = a.slice(11);
     else if (a === "--name") scaffold.name = value();
@@ -153,6 +180,10 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
   return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold };
 }
 
+function asRadius(s: string): "sharp" | "soft" | "round" {
+  if (!["sharp", "soft", "round"].includes(s)) throw new Error(`--radius must be sharp, soft or round (got ${s}).`);
+  return s as "sharp" | "soft" | "round";
+}
 function asRule(s: string): RuleId {
   if (!(RULE_IDS as readonly string[]).includes(s)) throw new Error(`Unknown rule "${s}". Rules: ${RULE_IDS.join(", ")}.`);
   return s as RuleId;
@@ -210,6 +241,12 @@ async function main(): Promise<void> {
       return;
     case "add":
       process.stdout.write((await runAdd(parsed.positional, parsed.scaffold, process.cwd())) + "\n");
+      return;
+    case "theme":
+      process.stdout.write((await runTheme(parsed.positional[0], parsed.scaffold, process.cwd())) + "\n");
+      return;
+    case "brand":
+      process.stdout.write((await runBrand(parsed.scaffold, process.cwd())) + "\n");
       return;
     case "tokens":
       process.stdout.write(runTokens(parsed.scaffold, process.cwd()) + "\n");

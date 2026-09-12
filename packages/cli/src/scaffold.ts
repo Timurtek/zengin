@@ -1,10 +1,11 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
-import { buildRegistry, createProject, installItems, LAYOUT, openRegistry, resolveItems, writeRegistry, writeTokensCss } from "@zengin/registry";
+import { applyTheme, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, type BrandRadius } from "@zengin/registry";
 
 export interface ScaffoldOptions {
   registry?: string;
   template?: string;
+  theme?: string;
   name?: string;
   storybook: boolean;
   local?: string;
@@ -12,15 +13,51 @@ export interface ScaffoldOptions {
   out?: string;
   root?: string;
   dir?: string;
+  list: boolean;
+  logo?: string;
+  primary?: string;
+  fontDisplay?: string;
+  fontSans?: string;
+  fontMono?: string;
+  radius?: BrandRadius;
+}
+
+/** `zengin theme [name]`: list the registry's themes, or apply one to the current project. */
+export async function runTheme(name: string | undefined, opts: ScaffoldOptions, cwd: string): Promise<string> {
+  const source = openRegistry(opts.registry);
+  if (!name || opts.list) {
+    const themes = await listThemes(source);
+    const width = Math.max(...themes.map((t) => t.name.length));
+    return [`Themes in ${source.location}:`, ...themes.map((t) => `  ${t.name.padEnd(width)}  ${t.description}${t.fonts.length ? ` Fonts: ${t.fonts.join(", ")}.` : ""}`), "", "Apply one: zengin theme <name>"].join("\n");
+  }
+  const projectDir = opts.dir ? resolve(cwd, opts.dir) : cwd;
+  const r = await applyTheme({ projectDir, name, source });
+  const lines = [`Applied the ${r.name} theme from ${source.location}.`, ...r.files.map((f) => `  wrote   ${f}`)];
+  if (r.fonts.length) lines.push(`  fonts   ${r.fonts.join(", ")}${r.html ? " (linked in index.html)" : " (no index.html to link them in)"}`);
+  lines.push("", "Every component wears it now. Run the dev server, or zengin brand to make it yours.");
+  return lines.join("\n");
+}
+
+/** `zengin brand --name <name> [--logo] [--primary] [--font-*] [--radius]`: a brand from one color. */
+export async function runBrand(opts: ScaffoldOptions, cwd: string): Promise<string> {
+  if (!opts.name) throw new Error("zengin brand needs --name <product name>. Optional: --logo <file>, --primary <hex>, --font-display, --font-sans, --font-mono, --radius sharp|soft|round.");
+  const projectDir = opts.dir ? resolve(cwd, opts.dir) : cwd;
+  const r = await brandProject({ projectDir, name: opts.name, logo: opts.logo, primary: opts.primary, fontDisplay: opts.fontDisplay, fontSans: opts.fontSans, fontMono: opts.fontMono, radius: opts.radius });
+  const source = { option: "from --primary", logo: "from the logo", system: "the system default" }[r.primarySource];
+  const lines = [`Branded ${r.name}: primary ${r.primary} (${source}).`, ...r.files.map((f) => `  wrote   ${f}`), "", "Contrast:"];
+  for (const c of r.contrast) lines.push(`  ${c.ratio.toFixed(2).padStart(5)}  ${c.pair}`);
+  for (const w of r.warnings) lines.push("", `Note: ${w}`);
+  lines.push("", `zengin check: ${r.violations} violations. Use <BrandMark /> from src/components/brand-mark.tsx for the wordmark.`);
+  return lines.join("\n");
 }
 
 /** `zengin create <dir>`: a new project on the registry's components, checked by the engine before it prints. */
 export async function runCreate(dirArg: string | undefined, opts: ScaffoldOptions, cwd: string): Promise<string> {
   if (!dirArg) throw new Error("zengin create needs a directory: zengin create my-app [--template marketing]");
   const source = openRegistry(opts.registry);
-  const r = await createProject({ dir: resolve(cwd, dirArg), name: opts.name, template: opts.template, source, storybook: opts.storybook, local: opts.local });
+  const r = await createProject({ dir: resolve(cwd, dirArg), name: opts.name, template: opts.template, theme: opts.theme, source, storybook: opts.storybook, local: opts.local });
   const lines = [
-    `Created ${r.name} in ${relative(cwd, r.dir) || "."} from the ${r.template} template (Zengin UI ${r.version}, registry ${source.location}).`,
+    `Created ${r.name} in ${relative(cwd, r.dir) || "."} from the ${r.template} template${opts.theme ? ` with the ${opts.theme} theme` : ""} (Zengin UI ${r.version}, registry ${source.location}).`,
     `  ${r.install.components.length} components in ${LAYOUT.componentsDir}: ${r.install.components.join(", ")}`,
     `  tokens.css: ${r.tokens.light} tokens, ${r.tokens.dark} dark overrides`,
     `  zengin check: ${r.violations} violations`,
@@ -75,9 +112,9 @@ export function runRegistryBuild(opts: ScaffoldOptions, cwd: string): string {
   const out = resolve(cwd, opts.out);
   const registry = buildRegistry({ root });
   const written = writeRegistry(registry, out);
-  const counts = { component: 0, template: 0, lib: 0, definitions: 0 };
+  const counts = { component: 0, template: 0, theme: 0, lib: 0, definitions: 0 };
   for (const i of registry.items) counts[i.type]++;
-  return `Wrote ${written.length} files to ${relative(cwd, out) || "."}: ${counts.component} components, ${counts.template} templates, ${counts.lib + counts.definitions} shared items (Zengin UI ${registry.version}).`;
+  return `Wrote ${written.length} files to ${relative(cwd, out) || "."}: ${counts.component} components, ${counts.template} templates, ${counts.theme} themes, ${counts.lib + counts.definitions} shared items (Zengin UI ${registry.version}).`;
 }
 
 /** Packages an item needs that the project's package.json does not list. */
