@@ -1,4 +1,4 @@
-import type { RuleId, Severity, Violation } from "@zengin/engine";
+import type { RuleId, Severity, Violation } from "./types.js";
 
 export interface Summary {
   total: number;
