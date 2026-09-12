@@ -10,16 +10,17 @@ Everyone else serves context. Zengin serves constraints.
 
 | Package | Status | Purpose |
 | --- | --- | --- |
-| [`@zengin/engine`](packages/engine) | Phase 1, seven rule kinds | The rule engine. Parses TSX and CSS, resolves Tailwind utilities through Tailwind's own compiler, checks against a system's tokens and component manifest. |
-| `@zengin/mcp` | not started | `check_code` and `get_violations` over MCP. |
+| [`@zengin/engine`](packages/engine) | Phase 1, seven rule kinds | The rule engine. Parses TSX and CSS, resolves class names through the project's own stylesheets (or an optional Tailwind adapter), checks declarations against a system's tokens and component manifest. |
+| [`@zengin/mcp`](packages/mcp) | Phase 1, four tools | stdio MCP server: `zengin_check_code`, `zengin_get_violations`, `zengin_describe_system`, `zengin_explain_rules`. |
 | `@zengin/hook` | not started | Claude Code PostToolUse hook. |
 | `@zengin/cli` | not started | CLI and CI action. |
-| `@zengin/ui` | not started | The reference component system the engine is proven against. |
+| `@zengin/ui` | not started | The reference component system the engine is proven against. Plain CSS and custom properties, no styling framework. |
 
 ## Development
 
 ```bash
 pnpm install
+pnpm build
 pnpm test
 pnpm typecheck
 ```
