@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "zengin": {
+      "command": "node",
+      "args": ["../../packages/mcp/dist/index.js"],
+      "env": { "ZENGIN_CONFIG": "zengin.config.yaml" }
+    }
+  }
+}

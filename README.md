@@ -16,6 +16,10 @@ Everyone else serves context. Zengin serves constraints.
 | [`@zengin/cli`](packages/cli) | Phase 1 | `zengin check` for pre-commit and CI, with `--changed`, `--staged`, and GitHub annotations. `explain`, `init`. |
 | [`@zengin/ui`](packages/ui) | Phase 1, seven components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
 
+## The demo
+
+[`examples/review-workspace`](examples/review-workspace) is a review queue built on `@zengin/ui` with the MCP server, hook and CLI wired in. Its [DEMO.md](examples/review-workspace/DEMO.md) replays the enforcement loop: an off-system component the way an agent writes it, the engine's 19 violations, the corrected component, zero violations, and both renders. The replay runs in CI with assertions.
+
 ## Development
 
 ```bash

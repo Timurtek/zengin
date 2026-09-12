@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "review-workspace",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "review-workspace", "dev"],
+      "port": 5173
+    },
+    {
       "name": "ui-demo",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "4173", "--directory", "packages/ui"],

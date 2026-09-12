@@ -1,0 +1,78 @@
+/* Layout only. Every value is a token; the components own their own appearance. */
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-surface-sunken);
+  color: var(--color-text);
+}
+
+.app {
+  min-height: 100vh;
+  padding: var(--spacing-8);
+  background-color: var(--color-surface-sunken);
+  color: var(--color-text);
+}
+
+.app__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  max-width: 56rem;
+  margin: 0 auto var(--spacing-6);
+}
+
+.app__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.app__title h1 {
+  margin: 0;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+.app__tools {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-4);
+}
+
+.app__queue {
+  display: grid;
+  gap: var(--spacing-4);
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.app__empty {
+  margin: var(--spacing-8) 0;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.review-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.review-card__title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+.review-card__summary {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}

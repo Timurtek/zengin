@@ -1,0 +1,31 @@
+{
+  "name": "review-workspace",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Zengin demo: a review-and-approval workspace built on @zengin/ui, with the enforcement loop replayable end to end.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check": "zengin check",
+    "demo": "node demo/replay.mjs",
+    "test": "node demo/replay.mjs --assert"
+  },
+  "dependencies": {
+    "@zengin/ui": "workspace:*",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@zengin/cli": "workspace:*",
+    "@zengin/hook": "workspace:*",
+    "@zengin/mcp": "workspace:*",
+    "puppeteer-core": "^25.10.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.3.0"
+  }
+}
