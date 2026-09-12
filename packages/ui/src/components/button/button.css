@@ -64,19 +64,19 @@
 /* Soft: tinted background, toned text. */
 .z-button[data-variant="soft"][data-tone="neutral"] {
   background-color: var(--color-neutral-soft);
-  color: var(--color-text);
+  color: var(--color-neutral-soft-foreground);
 }
 .z-button[data-variant="soft"][data-tone="neutral"]:hover { background-color: var(--color-neutral-soft-hover); }
 
 .z-button[data-variant="soft"][data-tone="primary"] {
   background-color: var(--color-primary-soft);
-  color: var(--color-primary);
+  color: var(--color-primary-soft-foreground);
 }
 .z-button[data-variant="soft"][data-tone="primary"]:hover { background-color: var(--color-primary-soft-hover); }
 
 .z-button[data-variant="soft"][data-tone="danger"] {
   background-color: var(--color-danger-soft);
-  color: var(--color-danger);
+  color: var(--color-danger-soft-foreground);
 }
 .z-button[data-variant="soft"][data-tone="danger"]:hover { background-color: var(--color-danger-soft-hover); }
 
