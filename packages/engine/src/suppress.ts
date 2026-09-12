@@ -2,7 +2,7 @@ import type { Comment } from "./parse/tsx.js";
 import type { RuleId, Violation } from "./types.js";
 import { RULE_IDS } from "./types.js";
 
-interface Suppression {
+export interface Suppression {
   rules: Set<string>;
   reason: string | undefined;
   line: number;

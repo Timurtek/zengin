@@ -4,6 +4,8 @@ import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity } from "@
 import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check.js";
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { init, initFromShadcn } from "./init.js";
+import { renderRollup, runReport, runRollup } from "./report.js";
+import { writeFileSync } from "node:fs";
 
 const HELP = `zengin: design-system conformance, enforceable.
 
@@ -12,11 +14,23 @@ Usage:
   zengin explain [rule]               what each rule checks
   zengin init                         write a zengin.config.yaml in the current directory
   zengin init --from shadcn           derive tokens, manifest and config from a shadcn/ui project
+  zengin report [--out file]          one repository's snapshot: violations plus inventory, as JSON, for the rollup
+  zengin rollup <snapshots...>        drift and adoption across repositories, from report snapshots
 
 Init options:
   --from shadcn         read the theme CSS, Tailwind config and components/ui; write zengin/ and zengin.config.yaml
   --dir <path>          project directory (default: cwd)
   --force               overwrite existing zengin/ definitions and config
+
+Report options:
+  --repo <name>         repository name in the snapshot (default: from the git remote, else the directory)
+  --include-violations  keep the full violation list in the snapshot (counts only by default)
+  --out <file>          write the snapshot here instead of stdout
+
+Rollup options:
+  --previous <file>     a previous rollup JSON, for deltas and rising-drift attention
+  --format <fmt>        markdown | json | html (default: markdown)
+  --out <file>          write the rollup here instead of stdout
 
 Check options:
   --config <path>       zengin.config.yaml (default: nearest one above cwd)
@@ -32,10 +46,12 @@ Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 us
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "help";
+  command: "check" | "explain" | "init" | "report" | "rollup" | "help";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
+  report: { repo?: string; includeViolations: boolean; out?: string };
+  rollup: { previous?: string; format: "markdown" | "json" | "html"; out?: string };
 }
 
 export function parseArgs(argv: string[], cwd: string): Parsed {
@@ -44,6 +60,9 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
   let command: Parsed["command"] | undefined;
   const rules: RuleId[] = [];
   const initOpts: Parsed["init"] = { force: false };
+  const reportOpts: Parsed["report"] = { includeViolations: false };
+  const rollupOpts: Parsed["rollup"] = { format: "markdown" };
+  let rawFormat: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
@@ -53,7 +72,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       return v;
     };
     if (!a.startsWith("-") && !command) {
-      if (a === "check" || a === "explain" || a === "init" || a === "help") command = a;
+      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "help") command = a;
       else {
         command = "check";
         positional.push(a);
@@ -71,8 +90,8 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a.startsWith("--severity=")) check.severity = asSeverity(a.slice(11));
     else if (a === "--fail-on") check.failOn = asFailOn(value());
     else if (a.startsWith("--fail-on=")) check.failOn = asFailOn(a.slice(10));
-    else if (a === "--format") check.format = asFormat(value());
-    else if (a.startsWith("--format=")) check.format = asFormat(a.slice(9));
+    else if (a === "--format") rawFormat = value();
+    else if (a.startsWith("--format=")) rawFormat = a.slice(9);
     else if (a === "--max") check.max = asInt(value());
     else if (a.startsWith("--max=")) check.max = asInt(a.slice(6));
     else if (a === "--from") initOpts.from = value();
@@ -80,12 +99,27 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a === "--dir") initOpts.dir = value();
     else if (a.startsWith("--dir=")) initOpts.dir = a.slice(6);
     else if (a === "--force") initOpts.force = true;
+    else if (a === "--repo") reportOpts.repo = value();
+    else if (a.startsWith("--repo=")) reportOpts.repo = a.slice(7);
+    else if (a === "--include-violations") reportOpts.includeViolations = true;
+    else if (a === "--out") reportOpts.out = rollupOpts.out = value();
+    else if (a.startsWith("--out=")) reportOpts.out = rollupOpts.out = a.slice(6);
+    else if (a === "--previous") rollupOpts.previous = value();
+    else if (a.startsWith("--previous=")) rollupOpts.previous = a.slice(11);
     else throw new Error(`Unknown option ${a}. Try zengin --help.`);
   }
   if (rules.length) check.rules = rules;
   check.paths = command === "check" || command === undefined ? positional : [];
+  if (rawFormat !== undefined) {
+    if (command === "rollup") {
+      if (!["markdown", "json", "html"].includes(rawFormat)) throw new Error(`--format must be markdown, json or html for rollup (got ${rawFormat}).`);
+      rollupOpts.format = rawFormat as Parsed["rollup"]["format"];
+    } else {
+      check.format = asFormat(rawFormat);
+    }
+  }
   if (initOpts.from && initOpts.from !== "shadcn") throw new Error(`--from supports "shadcn" (got ${initOpts.from}).`);
-  return { command: command ?? "check", positional, check, init: initOpts };
+  return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts };
 }
 
 function asRule(s: string): RuleId {
@@ -138,6 +172,28 @@ async function main(): Promise<void> {
       }
       const path = init(dir);
       process.stdout.write(`Wrote ${path}. Edit system.package to point at your design system, then run: zengin check\n`);
+      return;
+    }
+    case "report": {
+      const snapshot = await runReport({ config: parsed.check.config, cwd: process.cwd(), repo: parsed.report.repo, includeViolations: parsed.report.includeViolations });
+      const text = JSON.stringify(snapshot, null, 2);
+      if (parsed.report.out) {
+        writeFileSync(resolve(process.cwd(), parsed.report.out), text + "\n");
+        process.stdout.write(`Wrote ${parsed.report.out}: ${snapshot.summary.total} violations, ${snapshot.inventory.suppressions} suppressions, ${snapshot.inventory.ownedFiles} owned files, ${Object.keys(snapshot.inventory.components).length} components in use.\n`);
+      } else {
+        process.stdout.write(text + "\n");
+      }
+      return;
+    }
+    case "rollup": {
+      const result = runRollup({ cwd: process.cwd(), snapshots: parsed.positional, previous: parsed.rollup.previous });
+      const text = renderRollup(result, parsed.rollup.format);
+      if (parsed.rollup.out) {
+        writeFileSync(resolve(process.cwd(), parsed.rollup.out), text + (text.endsWith("\n") ? "" : "\n"));
+        process.stdout.write(`Wrote ${parsed.rollup.out}: ${result.totals.repos} repositories, ${result.totals.violations} violations.\n`);
+      } else {
+        process.stdout.write(text + "\n");
+      }
       return;
     }
     case "check": {

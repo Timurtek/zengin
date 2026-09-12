@@ -41,7 +41,8 @@
   },
   "dependencies": {
     "@zengin/adapter-shadcn": "workspace:*",
-    "@zengin/engine": "workspace:*"
+    "@zengin/engine": "workspace:*",
+    "@zengin/rollup": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22",

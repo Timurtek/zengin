@@ -67,6 +67,16 @@ jobs:
 
 `--format github` emits workflow commands, so each violation appears as an inline annotation on the changed line with the fix in the message. The job fails on `error` severity unless `--fail-on` says otherwise.
 
+## report and rollup
+
+```bash
+zengin report --out zengin-report.json                      # in each consuming repository, in CI
+zengin rollup reports/*.json --previous last.json           # across repositories; markdown by default
+zengin rollup reports/*.json --format html --out rollup.html
+```
+
+`report` is the check plus an inventory: component usage (adoption), suppressions with and without reasons, owned forks with their versions, uncontracted components, and the pinned system version. `rollup` ranks repositories by drift, shows violations per 100 files so sizes compare, flags who is behind the latest version, computes deltas against a previous rollup, and lists what needs attention in priority order. See [`@zengin/rollup`](../rollup) for the workflow recipe.
+
 ## explain
 
 ```bash

@@ -7,6 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { DEFAULT_CHECK, findConfig, runCheck } from "../src/check.js";
 import { renderGithub, renderJson, renderPretty } from "../src/format-cli.js";
 import { init, initFromShadcn } from "../src/init.js";
+import { renderRollup, runReport, runRollup } from "../src/report.js";
 import { explain, parseArgs } from "../src/index.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -138,6 +139,55 @@ describe("zengin init", () => {
   it("rejects an unknown --from", () => {
     expect(() => parseArgs(["init", "--from", "mui"], "/x")).toThrow(/--from supports "shadcn"/);
     expect(parseArgs(["init", "--from", "shadcn", "--dir", "../app", "--force"], "/x").init).toEqual({ from: "shadcn", dir: "../app", force: true });
+  });
+});
+
+describe("zengin report and rollup", () => {
+  it("builds a snapshot for a project and rolls two snapshots up with deltas", async () => {
+    const tailwind = await runReport({ cwd: project.replace("project-css", "project"), repo: "acme/tailwind", includeViolations: false });
+    const css = await runReport({ cwd: project, repo: "acme/css", includeViolations: false });
+    expect(tailwind.schema).toBe("zengin-report/1");
+    expect(tailwind.summary.total).toBe(21);
+    expect(tailwind.inventory.suppressions).toBe(2);
+    expect(css.inventory.components["Button"]).toBeDefined();
+
+    const dir = mkdtempSync(join(tmpdir(), "zengin-rollup-"));
+    try {
+      writeFileSync(join(dir, "a.json"), JSON.stringify(tailwind));
+      writeFileSync(join(dir, "b.json"), JSON.stringify(css));
+      const first = runRollup({ cwd: dir, snapshots: ["a.json", "b.json"] });
+      expect(first.totals.repos).toBe(2);
+      expect(first.totals.violations).toBe(tailwind.summary.total + css.summary.total);
+      expect(first.system.versionsInUse).toEqual(["1.2.0"]);
+      writeFileSync(join(dir, "prev.json"), renderRollup(first, "json"));
+
+      const md = renderRollup(runRollup({ cwd: dir, snapshots: ["a.json", "b.json"], previous: "prev.json" }), "markdown");
+      expect(md).toContain("| acme/tailwind |");
+      expect(md).toContain("| 21 (0) |"); // delta against the identical previous rollup
+      expect(md).toContain("acme/tailwind: 1 zengin-allow comment without a reason.");
+      const html = renderRollup(first, "html");
+      expect(html).toContain("<!doctype html>");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("parses the report and rollup options", () => {
+    expect(parseArgs(["report", "--repo", "acme/x", "--include-violations", "--out", "r.json"], "/x")).toMatchObject({ command: "report", report: { repo: "acme/x", includeViolations: true, out: "r.json" } });
+    expect(parseArgs(["rollup", "a.json", "b.json", "--previous", "p.json", "--format", "html"], "/x")).toMatchObject({ command: "rollup", positional: ["a.json", "b.json"], rollup: { previous: "p.json", format: "html" } });
+    expect(() => parseArgs(["rollup", "a.json", "--format", "github"], "/x")).toThrow(/markdown, json or html/);
+    expect(parseArgs(["check", "--format", "github"], "/x").check.format).toBe("github");
+  });
+
+  it("rejects files that are not snapshots", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zengin-rollup-bad-"));
+    try {
+      writeFileSync(join(dir, "x.json"), "{}");
+      expect(() => runRollup({ cwd: dir, snapshots: ["x.json"] })).toThrow(/not a zengin report snapshot/);
+      expect(() => runRollup({ cwd: dir, snapshots: [] })).toThrow(/at least one snapshot/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 

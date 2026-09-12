@@ -15,6 +15,7 @@ Everyone else serves context. Zengin serves constraints.
 | [`@zengin/hook`](packages/hook) | Phase 1 | Claude Code PostToolUse hook. Checks every file write; blocks with the violations as the reason. |
 | [`@zengin/cli`](packages/cli) | Phase 1 | `zengin check` for pre-commit and CI, with `--changed`, `--staged`, and GitHub annotations. `explain`, `init`. |
 | [`@zengin/adapter-shadcn`](packages/adapter-shadcn) | Phase 2 | `zengin init --from shadcn`: derives tokens, the component manifest and a config from a shadcn/ui project. Reproduces the taxonomy field test exactly. |
+| [`@zengin/rollup`](packages/rollup) | Phase 2 | `zengin report` in each consuming repo, `zengin rollup` across them: drift, adoption, suppressions, owned forks, pinned versions, deltas. Markdown, JSON, or a self-contained HTML page. |
 | [`@zengin/ui`](packages/ui) | Phase 1, seven components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
 
 ## The demo

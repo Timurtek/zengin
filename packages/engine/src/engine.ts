@@ -12,7 +12,9 @@ import { Scope } from "./scope.js";
 import { applySuppressions } from "./suppress.js";
 import { ComponentIndex } from "./system/components.js";
 import { loadTokens, toThemeCss, TokenIndex } from "./system/tokens.js";
-import type { ComponentManifest, FileInput, FileKind, ResolvedConfig, SystemDefinitions, Violation } from "./types.js";
+import type { ComponentManifest, FileInput, FileInventory, FileKind, Inventory, InventoryTotals, ResolvedConfig, SystemDefinitions, Violation } from "./types.js";
+import { parseSuppressions } from "./suppress.js";
+import { readOwnedPragma } from "./scope.js";
 import { RULE_IDS } from "./types.js";
 
 export interface Engine {
@@ -26,6 +28,8 @@ export interface Engine {
   loadStylesheets(files: FileInput[]): void;
   /** How scope classifies a file: consumer, owned, foundation, or excluded. */
   kindOf(file: FileInput): FileKind;
+  /** What the files do with the system: suppressions, owned components, component usage. Excluded files are skipped. */
+  inventory(files: FileInput[]): Inventory;
 }
 
 /** Reads `tokens.json` and `components.json` from a definitions directory. */
@@ -105,6 +109,53 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
         .flatMap((f) => checkWith(f, resolver));
     },
     kindOf: (file) => scope.kindOf(normalize(file.path), file.content),
+    inventory(files) {
+      const perFile: FileInventory[] = [];
+      for (const f of [...files].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))) {
+        const path = normalize(f.path);
+        const kind = scope.kindOf(path, f.content);
+        if (kind === "excluded") continue;
+        const entry: FileInventory = { file: path, kind, suppressions: [], components: {} };
+        if (kind === "owned") {
+          const pragma = readOwnedPragma(f.content);
+          entry.owned = { file: path, ...(pragma?.component ? { component: pragma.component } : {}), ...(pragma?.forkedFrom ? { forkedFrom: pragma.forkedFrom } : {}) };
+        }
+        let comments: { text: string; line: number; endLine: number }[] = [];
+        if (/\.(tsx|jsx|ts|js)$/.test(path)) {
+          const tsx = parseTsx(f.content);
+          comments = tsx.comments;
+          for (const [, comp] of resolveSystemElements(tsx.elements, tsx.imports, components)) {
+            entry.components[comp.name] = (entry.components[comp.name] ?? 0) + 1;
+          }
+        } else if (/\.css$/.test(path)) {
+          comments = parseCss(f.content).comments;
+        } else {
+          continue;
+        }
+        for (const s of parseSuppressions(comments)) {
+          entry.suppressions.push({ file: path, line: s.line, rules: [...s.rules], ...(s.reason ? { reason: s.reason } : {}) });
+        }
+        perFile.push(entry);
+      }
+
+      const totals: InventoryTotals = { files: perFile.length, consumerFiles: 0, ownedFiles: 0, suppressions: 0, suppressionsWithoutReason: 0, components: {}, uncontracted: [] };
+      const uncontracted = new Set<string>();
+      for (const e of perFile) {
+        if (e.kind === "consumer") totals.consumerFiles++;
+        if (e.kind === "owned") totals.ownedFiles++;
+        totals.suppressions += e.suppressions.length;
+        totals.suppressionsWithoutReason += e.suppressions.filter((s) => !s.reason).length;
+        for (const [name, uses] of Object.entries(e.components)) {
+          const c = (totals.components[name] ??= { uses: 0, files: 0 });
+          c.uses += uses;
+          c.files += 1;
+          const m = components.byName.get(name);
+          if (m && !m.extends && Object.keys(m.props ?? {}).filter((k) => k !== "asChild").length === 0) uncontracted.add(name);
+        }
+      }
+      totals.uncontracted = [...uncontracted].sort();
+      return { files: perFile, totals };
+    },
   };
 }
 

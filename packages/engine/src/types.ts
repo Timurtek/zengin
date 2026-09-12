@@ -66,6 +66,50 @@ export interface FileInput {
 export type FileKind = "consumer" | "owned" | "foundation" | "excluded";
 
 // ---------------------------------------------------------------------------
+// Inventory: what a codebase does with the system, beyond what it gets wrong.
+// ---------------------------------------------------------------------------
+
+export interface SuppressionUse {
+  file: string;
+  line: number;
+  rules: string[];
+  /** Absent when the comment had no reason, in which case it suppressed nothing. */
+  reason?: string;
+}
+
+export interface OwnedFile {
+  file: string;
+  component?: string;
+  forkedFrom?: string;
+}
+
+export interface FileInventory {
+  file: string;
+  kind: FileKind;
+  suppressions: SuppressionUse[];
+  owned?: OwnedFile;
+  /** System component name -> uses in this file. */
+  components: Record<string, number>;
+}
+
+export interface InventoryTotals {
+  files: number;
+  consumerFiles: number;
+  ownedFiles: number;
+  suppressions: number;
+  suppressionsWithoutReason: number;
+  /** System component name -> uses and the number of files using it. */
+  components: Record<string, { uses: number; files: number }>;
+  /** System components used whose manifest declares no props and extends nothing. */
+  uncontracted: string[];
+}
+
+export interface Inventory {
+  files: FileInventory[];
+  totals: InventoryTotals;
+}
+
+// ---------------------------------------------------------------------------
 // Config (consumer-authored policy)
 // ---------------------------------------------------------------------------
 
