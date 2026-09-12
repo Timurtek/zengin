@@ -1,0 +1,4 @@
+/* LineChart draws with the chart foundation (src/styles/chart.css). Only its own hooks live here. */
+.z-chart[data-kind="line"] .z-chart__svg {
+  cursor: crosshair;
+}

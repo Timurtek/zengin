@@ -9,3 +9,5 @@ storybook-static/
 examples/marketing-site/public/r/
 # Built by examples/marketing-site/scripts/build-previews.mjs
 examples/marketing-site/public/templates/
+# Rendered by examples/saas/demo/look.mjs
+examples/saas/demo/*.png

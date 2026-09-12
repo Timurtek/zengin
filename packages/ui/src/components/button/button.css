@@ -20,6 +20,10 @@
     transform var(--duration-fast) var(--ease-standard);
 }
 
+/* Align owns where the content sits: centred, or at the start for full-width navigation buttons. */
+.z-button[data-align="center"] { justify-content: center; }
+.z-button[data-align="start"] { justify-content: flex-start; }
+
 /* Size owns padding and type. */
 .z-button[data-size="sm"] {
   min-height: 2rem;

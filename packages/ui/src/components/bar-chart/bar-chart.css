@@ -1,0 +1,5 @@
+/* BarChart draws with the chart foundation (src/styles/chart.css). Only its own hooks live here. */
+.z-chart[data-kind="bar"] .z-chart__group:hover .z-chart__bar,
+.z-chart[data-kind="bar"] .z-chart__group[data-hover] .z-chart__bar {
+  opacity: 0.8;
+}

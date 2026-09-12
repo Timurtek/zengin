@@ -43,7 +43,7 @@ Every component renders its variant props as `data-*` attributes and the stylesh
 
 | Component | Props | States |
 | --- | --- | --- |
-| `Button` | `variant` solid, soft, ghost, link. `tone` neutral, primary, danger. `size` sm, md, lg. `loading`, `leadingIcon`, `trailingIcon`, `asChild`. | hover, active, focus-visible, disabled, loading (spinner, width preserved) |
+| `Button` | `variant` solid, soft, ghost, link. `tone` neutral, primary, danger. `size` sm, md, lg. `align` center, start. `loading`, `leadingIcon`, `trailingIcon`, `asChild`. | hover, active, focus-visible, disabled, loading (spinner, width preserved) |
 | `Badge` | `tone` neutral, primary, danger, success, warning. `variant` soft, solid, outline. `size` sm, md. | |
 | `Card` | `variant` outlined, elevated, sunken. `padding` none, sm, md, lg. `interactive`. Parts `Card.Header`, `Card.Body`, `Card.Footer`. | hover and focus-visible when interactive |
 | `TextField` | `label`, `description`, `error`, `size` sm, md, lg, `leadingIcon`, `trailingIcon`, plus every `<input>` prop. | hover, focus-visible, disabled, readonly, invalid |
@@ -63,6 +63,9 @@ Every component renders its variant props as `data-*` attributes and the stylesh
 | `Progress` | `value`, `max`, `label`, `showValue`, `size` sm, md, `tone` primary, neutral, success, warning, danger. Indeterminate without a value. | determinate, indeterminate |
 | `Separator` | `orientation` horizontal, vertical. `label`. `decorative`. | |
 | `TextArea` | `label`, `description`, `error`, `size` sm, md, lg, `resize` none, vertical, both, `rows`, plus every `<textarea>` prop. | hover, focus-visible, disabled, readonly, invalid |
+| `LineChart` | `series` (name, values, tone), `labels`, `height`, `area`, `curve` linear, smooth, `showGrid`, `showAxis`, `formatValue`, `aria-label`. Hover shows every series at the nearest point. | default, hover |
+| `BarChart` | `series`, `labels`, `height`, `showGrid`, `showAxis`, `formatValue`, `aria-label`. Several series draw grouped bars. | default, hover |
+| `Sparkline` | `values`, `tone`, `height`, `area`, `aria-label`. Sets `data-trend` up, down or flat. | |
 
 ### The customization contract, as the components implement it
 
@@ -78,6 +81,10 @@ Durations and easings are tokens. Buttons and cards transition on `--duration-fa
 ## Zengin on itself
 
 The package carries a `zengin.config.yaml` and a test that runs the engine over its own source. Components are owned files, so the contract rules are off; the foundation rules stay on. The test passes only when every color and spacing value in every component stylesheet is a token reference. It caught a hardcoded `margin-top: 0.125rem` in the checkbox on the first run.
+
+## Charts, motion and breakpoints
+
+The charts are SVG drawn at the container's real width, with colors from the tone tokens and no charting library; `src/styles/chart.css` is their shared foundation. `src/styles/motion.css` holds the enter presets: `z-enter-fade`, `z-enter-rise`, `z-enter-scale`, and `z-stagger` for children arriving in order, all on the duration and easing tokens and all collapsing to a fade under reduced motion. `breakpoint.sm` to `breakpoint.xl` in `tokens.json` are the widths layouts change at; media queries cannot read custom properties, so they document the values to write.
 
 ## Storybook
 

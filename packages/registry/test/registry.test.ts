@@ -15,11 +15,16 @@ describe("buildRegistry", () => {
   it("has every Zengin UI component, the shared items, and the three templates", () => {
     const by = (t: string) => registry.items.filter((i) => i.type === t).map((i) => i.name);
     expect(by("component")).toEqual([
-      "avatar", "badge", "button", "card", "checkbox", "dialog", "menu", "popover", "progress", "select",
-      "separator", "sheet", "skeleton", "switch", "table", "tabs", "text-area", "text-field", "toast", "tooltip",
+      "avatar", "badge", "bar-chart", "button", "card", "checkbox", "dialog", "line-chart", "menu", "popover", "progress", "select",
+      "separator", "sheet", "skeleton", "sparkline", "switch", "table", "tabs", "text-area", "text-field", "toast", "tooltip",
     ]);
-    expect(by("template")).toEqual(["blank", "marketing", "review"]);
-    expect(by("lib")).toEqual(["cx"]);
+    expect(by("template")).toEqual(["blank", "marketing", "review", "saas"]);
+    expect(by("lib")).toEqual(["chart", "cx"]);
+    // A chart component depends on the chart helper as well as cx, and imports both through the alias.
+    const line = registry.items.find((i) => i.name === "line-chart")!;
+    expect(line.registryDependencies).toEqual(expect.arrayContaining(["foundation", "chart", "cx"]));
+    expect(line.files.find((f) => f.kind === "component")!.content).toContain('from "@/lib/chart"');
+    expect(registry.items.find((i) => i.name === "foundation")!.files.map((f) => f.path)).toEqual(expect.arrayContaining(["src/styles/chart.css", "src/styles/motion.css"]));
     expect(by("definitions")).toEqual(["foundation"]);
     expect(registry.version).toMatch(/^\d+\.\d+\.\d+/);
   });
@@ -139,6 +144,6 @@ describe("createProject", () => {
   it("refuses a non-empty directory and an unknown template", async () => {
     const source = registryFromMemory(registry);
     await expect(createProject({ dir: join(tmp, "blank-app"), source })).rejects.toThrow(/not empty/);
-    await expect(createProject({ dir: join(tmp, "nope"), template: "saas", source })).rejects.toThrow(/Templates: blank, marketing, review/);
+    await expect(createProject({ dir: join(tmp, "nope"), template: "shop", source })).rejects.toThrow(/Templates: blank, marketing, review, saas/);
   });
 });

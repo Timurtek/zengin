@@ -19,7 +19,9 @@
 .z-popover,
 .z-progress,
 .z-separator,
-.z-textarea {
+.z-textarea,
+.z-chart,
+.z-sparkline {
   box-sizing: border-box;
   font-family: var(--font-sans);
   line-height: var(--leading-normal);
@@ -43,7 +45,8 @@
 .z-popover *,
 .z-progress *,
 .z-separator *,
-.z-textarea * {
+.z-textarea *,
+.z-chart * {
   box-sizing: border-box;
 }
 

@@ -17,12 +17,12 @@ Everyone else serves context. Zengin serves constraints.
 | [`@zengin/adapter-shadcn`](packages/adapter-shadcn) | Phase 2 | `zengin init --from shadcn`: derives tokens, the component manifest and a config from a shadcn/ui project. Reproduces the taxonomy field test exactly. |
 | [`@zengin/rollup`](packages/rollup) | Phase 2 | `zengin report` in each consuming repo, `zengin rollup` across them: drift, adoption, suppressions, owned forks, pinned versions, deltas. Markdown, JSON, or a self-contained HTML page. |
 | [`@zengin/registry`](packages/registry) | Phase 3 | The registry and the generator: `zengin create` scaffolds a project that owns its components shadcn-style, `zengin add` brings in more, `zengin tokens` compiles the token JSON. Items are built from `packages/ui` and `examples/`; the marketing site serves the public registry. |
-| [`@zengin/ui`](packages/ui) | Phase 1, twenty components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
+| [`@zengin/ui`](packages/ui) | Phase 1, twenty-three components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
 
 ## Start a project
 
 ```bash
-npx zengin create acme --template marketing   # or: blank, review
+npx zengin create acme --template saas        # or: blank, marketing, review
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
 npx zengin theme plex                          # or: default, meadow, spec-sheet
@@ -37,7 +37,7 @@ The vision asks for one marketing page and one application workflow from the sam
 
 [`examples/review-workspace`](examples/review-workspace) is a review queue with the MCP server, hook and CLI wired in, in the default theme. Its [DEMO.md](examples/review-workspace/DEMO.md) replays the enforcement loop: an off-system component the way an agent writes it, the engine's 19 violations, the corrected component, zero violations, and both renders. The replay runs in CI with assertions.
 
-[`examples/blank`](examples/blank) is the blank template, one card and one button. [`examples/marketing-site`](examples/marketing-site) is Zengin's own marketing page, and it shows the templates as live previews with a theme picker, built from these example apps and served beside the page. Its brand is one file of token overrides (an expanded grotesk for headlines, square corners, black rules, cobalt as the single accent, both color schemes); the components have no idea. The hero panel renders real engine output for a sample file, the four surfaces sit in a `Tabs` component, and the page's own check passes with zero violations and zero suppressions. Building the page is what added `Tabs`, the display typeface token, display text sizes and the larger spacing steps to Zengin UI.
+[`examples/saas`](examples/saas) is the SaaS dashboard template: an overview with stat cards and charts, a customers table with row actions and a detail sheet, billing with quotas, settings that save with a toast; sidebar, top bar, both schemes. It is what brought the charts, the motion presets and the breakpoint tokens into Zengin UI. [`examples/blank`](examples/blank) is the blank template, one card and one button. [`examples/marketing-site`](examples/marketing-site) is Zengin's own marketing page, and it shows the templates as live previews with a theme picker, built from these example apps and served beside the page. Its brand is one file of token overrides (an expanded grotesk for headlines, square corners, black rules, cobalt as the single accent, both color schemes); the components have no idea. The hero panel renders real engine output for a sample file, the four surfaces sit in a `Tabs` component, and the page's own check passes with zero violations and zero suppressions. Building the page is what added `Tabs`, the display typeface token, display text sizes and the larger spacing steps to Zengin UI.
 
 ## Field tests
 

@@ -78,7 +78,7 @@ describe("components.json against the implementation", () => {
       cssByComponent[m.name] = readFileSync(join(root, "src", "components", file, `${file}.css`), "utf8");
     }
     const styled: Record<string, string[]> = {
-      Button: ["variant", "tone", "size"],
+      Button: ["variant", "tone", "size", "align"],
       Badge: ["variant", "tone", "size"],
       Card: ["variant", "padding"],
       TextField: ["size"],
@@ -96,6 +96,7 @@ describe("components.json against the implementation", () => {
       Progress: ["size", "tone"],
       Separator: ["orientation"],
       TextArea: ["size", "resize"],
+      Sparkline: ["tone"],
     };
     for (const [comp, props] of Object.entries(styled)) {
       const m = manifests.find((x) => x.name === comp)!;

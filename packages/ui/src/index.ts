@@ -1,4 +1,4 @@
-export { Button, type ButtonProps, type ButtonVariant, type ButtonTone, type ButtonSize } from "./components/button/button.js";
+export { Button, type ButtonProps, type ButtonVariant, type ButtonTone, type ButtonSize, type ButtonAlign } from "./components/button/button.js";
 export { Badge, type BadgeProps, type BadgeTone, type BadgeVariant, type BadgeSize } from "./components/badge/badge.js";
 export { Card, type CardProps, type CardVariant, type CardPadding } from "./components/card/card.js";
 export { TextField, type TextFieldProps, type TextFieldSize } from "./components/text-field/text-field.js";
@@ -18,3 +18,7 @@ export { Popover, type PopoverProps, type PopoverContentProps, type PopoverSize 
 export { Progress, type ProgressProps, type ProgressSize, type ProgressTone } from "./components/progress/progress.js";
 export { Separator, type SeparatorProps, type SeparatorOrientation } from "./components/separator/separator.js";
 export { TextArea, type TextAreaProps, type TextAreaSize, type TextAreaResize } from "./components/text-area/text-area.js";
+export { LineChart, type LineChartProps, type LineChartCurve } from "./components/line-chart/line-chart.js";
+export { BarChart, type BarChartProps } from "./components/bar-chart/bar-chart.js";
+export { Sparkline, type SparklineProps } from "./components/sparkline/sparkline.js";
+export type { ChartTone, Series as ChartSeries } from "./internal/chart.js";

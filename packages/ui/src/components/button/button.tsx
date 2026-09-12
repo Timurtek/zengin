@@ -5,6 +5,7 @@ import { cx } from "../../internal/cx.js";
 export type ButtonVariant = "solid" | "soft" | "ghost" | "link";
 export type ButtonTone = "neutral" | "primary" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonAlign = "center" | "start";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual weight. `solid` for the primary action in a group, `soft` for secondary, `ghost` for tertiary, `link` for inline. */
@@ -12,6 +13,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Semantic color. `danger` for destructive actions only. */
   tone?: ButtonTone;
   size?: ButtonSize;
+  /** Where the content sits. `start` for full-width buttons in a navigation column. */
+  align?: ButtonAlign;
   /** Shows a spinner, disables interaction, and keeps the button's width so the layout does not jump. */
   loading?: boolean;
   leadingIcon?: ReactNode;
@@ -21,7 +24,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = "solid", tone = "neutral", size = "md", loading = false, leadingIcon, trailingIcon, asChild = false, className, disabled, children, type, ...rest },
+  { variant = "solid", tone = "neutral", size = "md", align = "center", loading = false, leadingIcon, trailingIcon, asChild = false, className, disabled, children, type, ...rest },
   ref,
 ) {
   const Comp = asChild ? Slot : "button";
@@ -33,6 +36,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       data-variant={variant}
       data-tone={tone}
       data-size={size}
+      data-align={align}
       data-loading={loading || undefined}
       data-disabled={isDisabled || undefined}
       aria-busy={loading || undefined}

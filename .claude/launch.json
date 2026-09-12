@@ -52,6 +52,16 @@
         "dev"
       ],
       "port": 5175
+    },
+    {
+      "name": "saas",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "saas",
+        "dev"
+      ],
+      "port": 5176
     }
   ]
 }

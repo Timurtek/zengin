@@ -17,16 +17,25 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
 
   const items: RegistryItem[] = [];
 
-  items.push({
-    name: "cx",
-    type: "lib",
-    title: "cx",
-    description: "Joins class names, dropping falsy values. Every component imports it.",
-    dependencies: {},
-    devDependencies: {},
-    registryDependencies: [],
-    files: [{ path: `${LAYOUT.libDir}/cx.ts`, kind: "lib", content: read(join(ui, "src", "internal", "cx.ts")) }],
-  });
+  // Every file in src/internal is a lib item; components depend on the ones they import.
+  const LIB_DESCRIPTIONS: Record<string, string> = {
+    cx: "Joins class names, dropping falsy values. Every component imports it.",
+    chart: "Scales, paths and the width hook the chart components share.",
+  };
+  for (const file of readdirSync(join(ui, "src", "internal")).sort()) {
+    if (!file.endsWith(".ts")) continue;
+    const name = file.replace(/\.ts$/, "");
+    items.push({
+      name,
+      type: "lib",
+      title: name,
+      description: LIB_DESCRIPTIONS[name] ?? `${name} helpers from Zengin UI.`,
+      dependencies: {},
+      devDependencies: {},
+      registryDependencies: [],
+      files: [{ path: `${LAYOUT.libDir}/${file}`, kind: "lib", content: read(join(ui, "src", "internal", file)) }],
+    });
+  }
 
   items.push({
     name: "foundation",
@@ -40,6 +49,8 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       { path: `${LAYOUT.definitionsDir}/tokens.json`, kind: "definitions", content: read(join(ui, "zengin", "tokens.json")) },
       { path: `${LAYOUT.definitionsDir}/tokens.dark.json`, kind: "definitions", content: read(join(ui, "zengin", "tokens.dark.json")) },
       { path: "src/styles/base.css", kind: "style", content: read(join(ui, "src", "styles", "base.css")) },
+      { path: "src/styles/chart.css", kind: "style", content: read(join(ui, "src", "styles", "chart.css")) },
+      { path: "src/styles/motion.css", kind: "style", content: read(join(ui, "src", "styles", "motion.css")) },
     ],
   });
 
@@ -58,7 +69,8 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       if (!v) throw new Error(`packages/ui/package.json has no version for ${pkg}, used by ${dir}`);
       dependencies[pkg] = v;
     }
-    const registryDependencies = ["cx", "foundation"];
+    const registryDependencies = ["foundation"];
+    for (const m of tsx.matchAll(/from\s+"\.\.\/\.\.\/internal\/([\w-]+)\.js"/g)) registryDependencies.push(m[1]!);
     for (const m of tsx.matchAll(/from\s+"\.\.\/([\w-]+)\/[\w-]+\.js"/g)) registryDependencies.push(m[1]!);
 
     const files: RegistryFile[] = [
@@ -117,6 +129,17 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
     }),
   );
 
+  items.push(
+    templateFrom({
+      root: opts.root,
+      dir: "examples/saas",
+      name: "saas",
+      title: "SaaS dashboard",
+      description: "An admin app: overview with stat cards and charts, a customers table with row actions and a detail sheet, billing with quotas, settings that save with a toast. Sidebar, top bar, both schemes.",
+      rootFiles: ["index.html"],
+      componentNames,
+    }),
+  );
   // Themes: one directory each under packages/ui/themes, a theme.json beside a brand.css.
   const themesDir = join(ui, "themes");
   for (const dir of existsSync(themesDir) ? readdirSync(themesDir).sort() : []) {
@@ -213,7 +236,7 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
 
 /** Package-relative imports become project-alias imports; `.js` suffixes on relative imports go. */
 function rewriteComponent(tsx: string): string {
-  return tsx.replace(/"\.\.\/\.\.\/internal\/cx\.js"/g, '"@/lib/cx"').replace(/from\s+"(\.\.?\/[^"]+)\.js"/g, 'from "$1"');
+  return tsx.replace(/"\.\.\/\.\.\/internal\/([\w-]+)\.js"/g, '"@/lib/$1"').replace(/from\s+"(\.\.?\/[^"]+)\.js"/g, 'from "$1"');
 }
 
 function rewriteStory(tsx: string): string {

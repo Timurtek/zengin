@@ -98,6 +98,8 @@ function addBarrelExport(projectDir: string, name: string): void {
 export const STYLES_INDEX_HEAD = `/* Order matters: tokens, then foundation, then components. \`zengin add\` appends component stylesheets here. */
 @import "generated/tokens.css";
 @import "base.css";
+@import "chart.css";
+@import "motion.css";
 `;
 
 export const BARREL_HEAD = `/* Every component the project owns. \`zengin add\` appends to this file; the engine treats "${LAYOUT.alias}" as the system. */

@@ -1,6 +1,8 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Avatar, Badge, Button, Card, Checkbox, Dialog, Menu, Popover, Progress, Select, Separator, Sheet, Skeleton, Switch, Table, Tabs, TextArea, TextField, Toast, Tooltip, initials, toast } from "../src/index.js";
+import { Avatar, Badge, BarChart, Button, Card, Checkbox, Dialog, LineChart, Menu, Popover, Progress, Select, Separator, Sheet, Skeleton, Sparkline, Switch, Table, Tabs, TextArea, TextField, Toast, Tooltip, initials, toast } from "../src/index.js";
+import { axisLabelIndexes } from "../src/components/line-chart/line-chart.js";
+import { extent, linePath, defaultFormat } from "../src/internal/chart.js";
 
 describe("Button", () => {
   it("renders defaults as data attributes the stylesheet keys on", () => {
@@ -481,5 +483,52 @@ describe("TextArea", () => {
     const wrap = area.closest(".z-textarea")!;
     expect(wrap).toHaveAttribute("data-size", "lg");
     expect(wrap).toHaveAttribute("data-resize", "none");
+  });
+});
+
+describe("charts", () => {
+  it("describes the data for assistive tech and tones each series", () => {
+    const { container } = render(
+      <LineChart series={[{ name: "Revenue", values: [1, 2, 3] }, { name: "Refunds", values: [1, 1, 2], tone: "danger" }]} labels={["a", "b", "c"]} aria-label="Revenue" />,
+    );
+    const root = container.querySelector(".z-chart")!;
+    expect(root).toHaveAttribute("aria-label", "Revenue");
+    expect(root).toHaveAttribute("data-kind", "line");
+    expect(root.querySelector(".z-sr-only")).toHaveTextContent("Revenue: 3 points from 1 to 3, latest 3. Refunds: 3 points from 1 to 2, latest 2");
+    // Two series get a legend; the second keeps its explicit tone, the first takes the cycle's.
+    const legend = root.querySelectorAll(".z-chart__legend li");
+    expect(legend).toHaveLength(2);
+    expect(legend[0]).toHaveAttribute("data-tone", "primary");
+    expect(legend[1]).toHaveAttribute("data-tone", "danger");
+  });
+
+  it("renders bars and sparklines with their kinds and trends", () => {
+    const { container } = render(
+      <>
+        <BarChart series={[{ name: "Signups", values: [5, 3] }]} labels={["Free", "Team"]} aria-label="Signups" />
+        <Sparkline values={[1, 2, 3]} tone="success" aria-label="Up" />
+        <Sparkline values={[3, 2, 1]} aria-label="Down" />
+        <Sparkline values={[]} aria-label="Empty" />
+      </>,
+    );
+    expect(container.querySelector(".z-chart[data-kind='bar']")).toHaveAttribute("aria-label", "Signups");
+    const sparks = container.querySelectorAll(".z-sparkline");
+    expect(sparks[0]).toHaveAttribute("data-trend", "up");
+    expect(sparks[0]).toHaveAttribute("data-tone", "success");
+    expect(sparks[1]).toHaveAttribute("data-trend", "down");
+    expect(sparks[2]).toHaveAttribute("data-trend", "flat");
+    expect(sparks[2]!.querySelector(".z-sr-only")).toHaveTextContent("no data");
+  });
+
+  it("computes tidy extents, paths, labels and formats", () => {
+    expect(extent([{ name: "a", values: [3, 47, 12] }])).toEqual({ min: 0, max: 60, ticks: [0, 20, 40, 60] });
+    expect(extent([{ name: "a", values: [-5, 5] }]).min).toBeLessThanOrEqual(-5);
+    expect(linePath([[0, 0], [10, 10]], false)).toBe("M0.0 0.0 L10.0 10.0");
+    expect(linePath([[0, 0], [10, 10], [20, 0]], true)).toMatch(/^M0\.0 0\.0 C/);
+    expect(axisLabelIndexes(30, 5)).toEqual([0, 7, 15, 22, 29]);
+    expect(axisLabelIndexes(1, 5)).toEqual([0]);
+    expect(defaultFormat(1234)).toBe("1.2k");
+    expect(defaultFormat(2_500_000)).toBe("2.5M");
+    expect(defaultFormat(7)).toBe("7");
   });
 });

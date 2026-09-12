@@ -54,6 +54,14 @@
       "asChild": {
         "type": "boolean",
         "default": false
+      },
+      "align": {
+        "type": "enum",
+        "values": [
+          "center",
+          "start"
+        ],
+        "default": "center"
       }
     },
     "className": {
@@ -1376,6 +1384,198 @@
       "disabled",
       "readonly",
       "invalid"
+    ]
+  },
+  {
+    "name": "LineChart",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "LineChart"
+    },
+    "replaces": [
+      "recharts#LineChart",
+      "recharts#AreaChart",
+      "@tremor/react#LineChart",
+      "@tremor/react#AreaChart"
+    ],
+    "props": {
+      "series": {
+        "type": "array"
+      },
+      "labels": {
+        "type": "array"
+      },
+      "height": {
+        "type": "number",
+        "default": 220
+      },
+      "area": {
+        "type": "boolean",
+        "default": false
+      },
+      "curve": {
+        "type": "enum",
+        "values": [
+          "linear",
+          "smooth"
+        ],
+        "default": "smooth"
+      },
+      "showGrid": {
+        "type": "boolean",
+        "default": true
+      },
+      "showAxis": {
+        "type": "boolean",
+        "default": true
+      },
+      "formatValue": {
+        "type": "function"
+      },
+      "aria-label": {
+        "type": "string"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "color": null,
+      "font": null,
+      "background-color": null
+    },
+    "states": [
+      "default",
+      "hover"
+    ]
+  },
+  {
+    "name": "BarChart",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "BarChart"
+    },
+    "replaces": [
+      "recharts#BarChart",
+      "@tremor/react#BarChart"
+    ],
+    "props": {
+      "series": {
+        "type": "array"
+      },
+      "labels": {
+        "type": "array"
+      },
+      "height": {
+        "type": "number",
+        "default": 220
+      },
+      "showGrid": {
+        "type": "boolean",
+        "default": true
+      },
+      "showAxis": {
+        "type": "boolean",
+        "default": true
+      },
+      "formatValue": {
+        "type": "function"
+      },
+      "aria-label": {
+        "type": "string"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "color": null,
+      "font": null,
+      "background-color": null
+    },
+    "states": [
+      "default",
+      "hover"
+    ]
+  },
+  {
+    "name": "Sparkline",
+    "since": "0.2.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Sparkline"
+    },
+    "replaces": [
+      "@tremor/react#SparkAreaChart",
+      "@tremor/react#SparkLineChart"
+    ],
+    "props": {
+      "values": {
+        "type": "array"
+      },
+      "tone": {
+        "type": "enum",
+        "values": [
+          "primary",
+          "success",
+          "warning",
+          "danger",
+          "neutral"
+        ],
+        "default": "primary"
+      },
+      "height": {
+        "type": "number",
+        "default": 32
+      },
+      "area": {
+        "type": "boolean",
+        "default": true
+      },
+      "aria-label": {
+        "type": "string"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "color": "tone",
+      "background-color": null
+    },
+    "states": [
+      "up",
+      "down",
+      "flat"
     ]
   }
 ]
