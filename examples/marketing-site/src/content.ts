@@ -6,6 +6,7 @@ export const NAV: { href: string; label: string; external?: boolean }[] = [
   { href: "#how", label: "How it works" },
   { href: "#templates", label: "Templates" },
   { href: "/storybook/index.html", label: "Storybook", external: true },
+  { href: "/rollup/index.html", label: "Rollup", external: true },
   { href: "#surfaces", label: "Surfaces" },
   { href: "#rules", label: "Rules" },
   { href: "#system", label: "Reference system" },
@@ -104,26 +105,28 @@ export const SURFACES: Surface[] = [
   {
     id: "rollup",
     label: "Rollup",
-    title: "Drift and adoption across every repository",
-    body: "Each consuming repository writes a snapshot in CI: violations, suppressions, forked components, which system components it uses and which version it pins. The rollup ranks them, computes deltas against the last run, and says what needs attention first.",
+    title: "Drift and adoption across every repository, over time",
+    body: "Each consuming repository files a snapshot in CI: violations, suppressions, forked components, which system components it uses and which version it pins. Keep every run in a directory and the rollup reads it as history: the newest run per repository is the current state, the one before is the delta, the whole series is the trend. Zengin's own examples report on every push; the result is hosted at /rollup/.",
     points: [
-      "Violations per 100 files, so repositories of different sizes compare",
+      "zengin report --into reports files each run as <repo>/<time>.json; zengin rollup reports reads them all",
+      "Violations per 100 files, so repositories of different sizes compare; sparklines and totals over time",
       "Suppressions without a reason, new suppressions, stale versions, uncontracted use",
-      "Markdown for a pull request or a channel, JSON for the next run, HTML for a dashboard",
-      "Refuses to mix systems, so the numbers always mean one thing",
+      "Markdown for a pull request or a channel, JSON for tooling, HTML for a hosted page with no scripts",
     ],
     code: {
-      title: "zengin rollup reports/*.json --previous last.json",
+      title: "zengin rollup reports/",
       text: `# @zengin/ui across 3 repositories
 
-| Repository | Version | Files | Violations | /100 | Suppressed | Owned | Adoption |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| acme/checkout | 0.1.0 | 200 | 30 (+10) | 15 | 1 | 2 | 45 uses, 2 components |
-| acme/admin | 0.0.9 behind | 50 | 4 (-5) | 8 | 1 | 2 | 45 uses, 2 components |
-| acme/marketing | 0.1.0 | 40 | 0 | 0 | 3 | 0 | 7 uses, 1 component |
+| Repository | Version | Files | Violations | /100 | Suppressed | Owned | Adoption | Trend |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| acme/checkout | 0.1.0 | 200 | 30 (+10) | 15 | 1 | 2 | 45 uses, 2 components | 26 → 20 → 30 |
+| acme/admin | 0.0.9 behind | 50 | 4 (-5) | 8 | 1 | 2 | 45 uses, 2 components | 12 → 9 → 4 |
+| acme/marketing | 0.1.0 | 40 | 0 | 0 | 3 | 0 | 7 uses, 1 component | 0 → 0 → 0 |
+
+Over 3 moments since 2026-08-31: violations 38 to 34, component uses 61 to 97, suppressions 2 to 5.
 
 ## Needs attention
-- acme/checkout: violations up by 10 since the last rollup (30 now).
+- acme/checkout: violations up by 10 since the previous run (30 now).
 - acme/marketing: 2 zengin-allow comments without a reason.
 - acme/admin: pins 0.0.9, behind 0.1.0.`,
     },

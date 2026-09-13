@@ -1,0 +1,77 @@
+{
+  "schema": "zengin-report/1",
+  "generatedAt": "2026-09-12T22:46:11.000Z",
+  "repo": {
+    "name": "examples/marketing-site",
+    "commit": "cbc2984c1c4e490dd1795809f88f9ccd0292f905",
+    "ref": "main"
+  },
+  "system": {
+    "package": "@zengin/ui",
+    "version": "0.0.1"
+  },
+  "filesChecked": 17,
+  "summary": {
+    "total": 1,
+    "bySeverity": {
+      "error": 1,
+      "warn": 0,
+      "info": 0
+    },
+    "byRule": {
+      "component-substitution": 1
+    },
+    "byFile": {
+      "src/components/CheckPanel.tsx": 1
+    }
+  },
+  "violations": [],
+  "inventory": {
+    "files": 17,
+    "consumerFiles": 16,
+    "ownedFiles": 0,
+    "suppressions": 0,
+    "suppressionsWithoutReason": 0,
+    "components": {
+      "Tooltip": {
+        "uses": 2,
+        "files": 2
+      },
+      "Badge": {
+        "uses": 11,
+        "files": 4
+      },
+      "Button": {
+        "uses": 13,
+        "files": 6
+      },
+      "Tabs": {
+        "uses": 8,
+        "files": 2
+      },
+      "Skeleton": {
+        "uses": 3,
+        "files": 1
+      },
+      "Table": {
+        "uses": 11,
+        "files": 1
+      },
+      "Card": {
+        "uses": 1,
+        "files": 1
+      },
+      "TextField": {
+        "uses": 1,
+        "files": 1
+      },
+      "Checkbox": {
+        "uses": 1,
+        "files": 1
+      }
+    },
+    "uncontracted": []
+  },
+  "suppressions": [],
+  "owned": []
+}

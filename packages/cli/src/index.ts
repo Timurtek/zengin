@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-import { resolve } from "node:path";
+import { dirname, relative, resolve } from "node:path";
 import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity } from "@zengin/engine";
 import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check.js";
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { init, initFromPackage, initFromShadcn } from "./init.js";
-import { renderRollup, runReport, runRollup } from "./report.js";
+import { historyPath, renderRollup, runReport, runRollup } from "./report.js";
 import { runAdd, runBrand, runCreate, runFigma, runMock, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
-import { writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 
 const HELP = `zengin: design-system conformance, enforceable.
 
@@ -17,7 +17,8 @@ Usage:
   zengin init --from shadcn           derive tokens, manifest and config from a shadcn/ui project
   zengin init --from package <name>   derive them from an installed package: its CSS variables and type declarations
   zengin report [--out file]          one repository's snapshot: violations plus inventory, as JSON, for the rollup
-  zengin rollup <snapshots...>        drift and adoption across repositories, from report snapshots
+  zengin report --into <dir>          the same, filed as <dir>/<repo>/<time>.json so the directory is the history
+  zengin rollup <snapshots|dirs...>   drift, adoption and trends across repositories, from report snapshots
   zengin create <dir>                 a new project on Zengin UI: components copied in, engine, MCP, hook, Storybook wired
   zengin add <items...>               components or templates from the registry into this project
   zengin theme [name]                 list the registry's themes, or swap this project's brand for one
@@ -77,7 +78,9 @@ Report options:
   --out <file>          write the snapshot here instead of stdout
 
 Rollup options:
-  --previous <file>     a previous rollup JSON, for deltas and rising-drift attention
+  --into <dir>          report: file the snapshot under <dir>/<repo>/<time>.json; rollup reads the directory
+  --at <iso>            report: the snapshot's moment, with --commit and --ref, when backfilling from an older commit
+  --previous <file>     a previous rollup JSON, for deltas; with a history directory the prior run is the default
   --format <fmt>        markdown | json | html (default: markdown)
   --out <file>          write the rollup here instead of stdout
 
@@ -99,7 +102,7 @@ interface Parsed {
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
-  report: { repo?: string; includeViolations: boolean; out?: string };
+  report: { repo?: string; includeViolations: boolean; out?: string; into?: string; at?: string; commit?: string; ref?: string };
   rollup: { previous?: string; format: "markdown" | "json" | "html"; out?: string };
   scaffold: ScaffoldOptions;
 }
@@ -190,6 +193,14 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a === "--repo") reportOpts.repo = value();
     else if (a.startsWith("--repo=")) reportOpts.repo = a.slice(7);
     else if (a === "--include-violations") reportOpts.includeViolations = true;
+    else if (a === "--into") reportOpts.into = value();
+    else if (a.startsWith("--into=")) reportOpts.into = a.slice(7);
+    else if (a === "--at") reportOpts.at = value();
+    else if (a.startsWith("--at=")) reportOpts.at = a.slice(5);
+    else if (a === "--commit") reportOpts.commit = value();
+    else if (a.startsWith("--commit=")) reportOpts.commit = a.slice(9);
+    else if (a === "--ref") reportOpts.ref = value();
+    else if (a.startsWith("--ref=")) reportOpts.ref = a.slice(6);
     else if (a === "--out") reportOpts.out = rollupOpts.out = scaffold.out = value();
     else if (a.startsWith("--out=")) reportOpts.out = rollupOpts.out = scaffold.out = a.slice(6);
     else if (a === "--previous") rollupOpts.previous = value();
@@ -299,7 +310,14 @@ async function main(): Promise<void> {
       return;
     }
     case "report": {
-      const snapshot = await runReport({ config: parsed.check.config, cwd: process.cwd(), repo: parsed.report.repo, includeViolations: parsed.report.includeViolations });
+      const snapshot = await runReport({ config: parsed.check.config, cwd: process.cwd(), repo: parsed.report.repo, includeViolations: parsed.report.includeViolations, at: parsed.report.at, commit: parsed.report.commit, ref: parsed.report.ref });
+      if (parsed.report.into) {
+        const target = historyPath(resolve(process.cwd(), parsed.report.into), snapshot);
+        mkdirSync(dirname(target), { recursive: true });
+        writeFileSync(target, JSON.stringify(snapshot, null, 2) + "\n");
+        process.stdout.write(`Wrote ${relative(process.cwd(), target).replace(/\\/g, "/")}: ${snapshot.summary.total} violations, ${snapshot.inventory.suppressions} suppressions, ${Object.keys(snapshot.inventory.components).length} components in use.\n`);
+        return;
+      }
       const text = JSON.stringify(snapshot, null, 2);
       if (parsed.report.out) {
         writeFileSync(resolve(process.cwd(), parsed.report.out), text + "\n");
@@ -313,6 +331,7 @@ async function main(): Promise<void> {
       const result = runRollup({ cwd: process.cwd(), snapshots: parsed.positional, previous: parsed.rollup.previous });
       const text = renderRollup(result, parsed.rollup.format);
       if (parsed.rollup.out) {
+        mkdirSync(dirname(resolve(process.cwd(), parsed.rollup.out)), { recursive: true });
         writeFileSync(resolve(process.cwd(), parsed.rollup.out), text + (text.endsWith("\n") ? "" : "\n"));
         process.stdout.write(`Wrote ${parsed.rollup.out}: ${result.totals.repos} repositories, ${result.totals.violations} violations.\n`);
       } else {

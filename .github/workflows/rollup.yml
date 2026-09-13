@@ -1,0 +1,45 @@
+name: rollup
+# Zengin's own rollup history. On every push to main, snapshot each example app with `zengin report` and
+# file it under reports/<name>/<time>.json. The commit back to main carries [skip ci]; the marketing site's
+# Vercel build rolls the directory up into /rollup/, so the hosted trends move with every push.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "reports/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rollup-history
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: snapshot every example
+        run: node scripts/report-examples.mjs
+      - name: roll up, for the run log
+        run: node packages/cli/dist/index.js rollup reports --format markdown >> "$GITHUB_STEP_SUMMARY"
+      - name: file the snapshots
+        run: |
+          git config user.name "zengin-rollup[bot]"
+          git config user.email "zengin-rollup[bot]@users.noreply.github.com"
+          git add reports
+          git diff --cached --quiet && exit 0
+          git commit -m "reports: snapshots for ${GITHUB_SHA::7} [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main

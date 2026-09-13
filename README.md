@@ -47,6 +47,10 @@ The vision asks for one marketing page and one application workflow from the sam
 
 `docs/field-tests/` records runs against real external codebases, every violation classified by hand, and the engine changes each run produced. First: [shadcn/taxonomy](docs/field-tests/2026-09-12-shadcn-taxonomy.md), 41 violations of which 10 were false positives, then 35 with none after the fixes; the shadcn adapter reproduces that run from one command. Second: [vercel/ai-chatbot](docs/field-tests/2026-09-12-vercel-ai-chatbot.md) on Tailwind 4, 128 then 109 with none, no hand-authored definitions, and a migration bug found that nobody had noticed. Third: [umami](docs/field-tests/2026-09-12-umami.md), the first non-shadcn system (`@umami/react-zen`, read from the package by `zengin init --from package`), 255 then 147 with none, an invalid DOM attribute and a `var()` whose fallback is what renders, both real.
 
+## Rollup, hosted
+
+Every example app is a consumer of Zengin UI and reports on every push to main (`.github/workflows/rollup.yml`, `scripts/report-examples.mjs`); the snapshots live in [`reports/`](reports) and the marketing site rolls them up at build time into [zengin-marketing-site.vercel.app/rollup/](https://zengin-marketing-site.vercel.app/rollup/): drift, adoption and suppressions over time, a sparkline per repository. The same two commands, `zengin report --into` and `zengin rollup <dir>`, do it for any set of repositories.
+
 ## Development
 
 ```bash

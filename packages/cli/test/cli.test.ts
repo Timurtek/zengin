@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,7 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { DEFAULT_CHECK, findConfig, runCheck } from "../src/check.js";
 import { renderGithub, renderJson, renderPretty } from "../src/format-cli.js";
 import { init, initFromShadcn } from "../src/init.js";
-import { renderRollup, runReport, runRollup } from "../src/report.js";
+import { historyPath, renderRollup, runReport, runRollup } from "../src/report.js";
 import { explain, parseArgs } from "../src/index.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -172,7 +172,32 @@ describe("zengin report and rollup", () => {
     }
   });
 
+  it("files snapshots as a history and rolls a directory up with trends", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "zengin-history-"));
+    try {
+      const older = await runReport({ cwd: project, repo: "acme/css", includeViolations: false, at: "2026-09-01T06:00:00Z", commit: "aaaaaaa", ref: "main" });
+      const newer = await runReport({ cwd: project, repo: "acme/css", includeViolations: false, at: "2026-09-08T06:00:00Z" });
+      for (const s of [older, newer]) {
+        const target = historyPath(join(dir, "reports"), s);
+        mkdirSync(dirname(target), { recursive: true });
+        writeFileSync(target, JSON.stringify(s));
+      }
+      expect(historyPath("reports", older).replace(/\\/g, "/")).toBe("reports/acme-css/2026-09-01T06-00-00Z.json");
+      expect(older.repo.commit).toBe("aaaaaaa");
+      expect(older.generatedAt).toBe("2026-09-01T06:00:00.000Z");
+      writeFileSync(join(dir, "reports", "latest.html"), "<!doctype html>"); // the rollup's own output beside the runs is ignored
+      const r = runRollup({ cwd: dir, snapshots: ["reports"] });
+      expect(r.history.repos["acme/css"]!.map((p) => p.at.slice(0, 10))).toEqual(["2026-09-01", "2026-09-08"]);
+      expect(r.repos[0]!.delta).toEqual({ violations: 0, suppressions: 0, adoptionUses: 0 });
+      expect(renderRollup(r, "html")).toContain("Over time");
+      expect(() => runRollup({ cwd: dir, snapshots: ["reports/latest.html"] })).toThrow(/not a zengin report snapshot/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("parses the report and rollup options", () => {
+    expect(parseArgs(["report", "--into", "reports", "--at", "2026-09-01T00:00:00Z", "--commit", "abc", "--ref", "main"], "/x")).toMatchObject({ command: "report", report: { into: "reports", at: "2026-09-01T00:00:00Z", commit: "abc", ref: "main" } });
     expect(parseArgs(["report", "--repo", "acme/x", "--include-violations", "--out", "r.json"], "/x")).toMatchObject({ command: "report", report: { repo: "acme/x", includeViolations: true, out: "r.json" } });
     expect(parseArgs(["rollup", "a.json", "b.json", "--previous", "p.json", "--format", "html"], "/x")).toMatchObject({ command: "rollup", positional: ["a.json", "b.json"], rollup: { previous: "p.json", format: "html" } });
     expect(() => parseArgs(["rollup", "a.json", "--format", "github"], "/x")).toThrow(/markdown, json or html/);

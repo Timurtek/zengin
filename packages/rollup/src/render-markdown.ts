@@ -1,3 +1,4 @@
+import { trendText } from "./history.js";
 import type { RollupResult } from "./aggregate.js";
 
 /** Markdown for a pull request comment, an issue, or a chat message. Tables first, attention list second. */
@@ -9,15 +10,23 @@ export function renderMarkdown(r: RollupResult): string {
   lines.push(`${t.violations} violations in ${t.filesChecked} files. ${t.suppressions} suppressions (${t.suppressionsWithoutReason} without a reason). ${t.ownedFiles} owned component files. ${t.adoptionUses} uses of system components. Latest version ${r.system.latestVersion}${r.system.versionsInUse.length > 1 ? `, versions in use: ${r.system.versionsInUse.join(", ")}` : ""}.`);
   lines.push("");
 
-  lines.push("| Repository | Version | Files | Violations | Per 100 files | Suppressions | Owned | Adoption |");
-  lines.push("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |");
+  const trended = Object.values(r.history.repos).some((p) => p.length > 1);
+  lines.push(`| Repository | Version | Files | Violations | Per 100 files | Suppressions | Owned | Adoption |${trended ? " Trend |" : ""}`);
+  lines.push(`| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |${trended ? " --- |" : ""}`);
   for (const repo of r.repos) {
     const delta = repo.delta ? ` (${signed(repo.delta.violations)})` : "";
     const version = repo.behindLatest ? `${repo.systemVersion} behind` : repo.systemVersion;
     const supp = repo.suppressionsWithoutReason ? `${repo.suppressions} (${repo.suppressionsWithoutReason} no reason)` : String(repo.suppressions);
-    lines.push(`| ${repo.name} | ${version} | ${repo.filesChecked} | ${repo.violations}${delta} | ${repo.density} | ${supp} | ${repo.ownedFiles} | ${repo.adoption.uses} uses, ${repo.adoption.components} components |`);
+    const trend = trended ? ` ${trendText((r.history.repos[repo.name] ?? []).map((p) => p.violations))} |` : "";
+    lines.push(`| ${repo.name} | ${version} | ${repo.filesChecked} | ${repo.violations}${delta} | ${repo.density} | ${supp} | ${repo.ownedFiles} | ${repo.adoption.uses} uses, ${repo.adoption.components} components |${trend}`);
   }
   lines.push("");
+  if (trended) {
+    const first = r.history.totals[0]!;
+    const last = r.history.totals[r.history.totals.length - 1]!;
+    lines.push(`Over ${r.history.totals.length} moments since ${first.at.slice(0, 10)}: violations ${first.violations} to ${last.violations}, component uses ${first.adoptionUses} to ${last.adoptionUses}, suppressions ${first.suppressions} to ${last.suppressions}.`);
+    lines.push("");
+  }
 
   const rules = Object.entries(t.byRule).sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0));
   if (rules.length) {

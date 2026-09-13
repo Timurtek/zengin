@@ -6,7 +6,8 @@ Two commands, both in the CLI:
 
 ```bash
 zengin report --out zengin-report.json            # in each consuming repository, in CI
-zengin rollup reports/*.json --format html --out rollup.html   # wherever the snapshots are collected
+zengin report --into reports                        # or: filed as reports/<repo>/<time>.json, so the directory is the history
+zengin rollup reports --format html --out rollup.html   # wherever the snapshots are collected; a directory reads as history
 ```
 
 ## report
@@ -32,6 +33,18 @@ Reads any number of snapshots and produces one view: a row per repository ranked
 The **needs attention** list is deterministic and in priority order: rising drift since the last rollup, suppressions without a reason, new suppressions, repositories behind the latest version, uncontracted components in use, and the repository carrying the most drift.
 
 Formats: `markdown` for a pull request comment, an issue or a chat message; `json` for tooling and for the next `--previous`; `html` for a self-contained page with no scripts and no external resources, in both color schemes.
+
+## History and trends
+
+Keep every run and the rollup reads them as history. `zengin report --into reports` files each snapshot as `reports/<repo>/<time>.json`, and `zengin rollup reports` takes the directory: the newest run per repository is the current row, the one before it is what the deltas compare against (no `--previous` needed), and the whole series is the trend. The result carries `history`: every run per repository, and the system's totals as of each moment any repository reported, each repository's newest run at that moment summed.
+
+The HTML page then shows violations, component uses and suppressions over time, and a sparkline per repository. The markdown gets a trend column (`30 → 28 → 19`) and one sentence on the span. With one run per repository the page is what it was before; nothing is drawn from a single point.
+
+Backfilling is honest too: `zengin report --at <iso> --commit <sha> --ref main` stamps a snapshot taken from an older checkout with that moment, so a history can start before the first scheduled run. `scripts/report-examples.mjs --backfill 25` in the Zengin repository does exactly that for its own examples. A backfill is the old code judged by today's engine and today's definitions, which is the useful reading (a component that replaces `<pre>` today flags the raw `<pre>` of last month), not a record of what the engine said then.
+
+## Hosting
+
+The directory is the collector. Zengin hosts its own: [zengin-marketing-site.vercel.app/rollup/](https://zengin-marketing-site.vercel.app/rollup/) is `reports/` in the repository rolled up at site build time, and `.github/workflows/rollup.yml` files a new snapshot of every example on each push to main and commits it back. Any static host works the same way: run `zengin rollup reports --format html --out public/rollup/index.html` in the build and serve the directory.
 
 ## Collecting snapshots
 
@@ -82,5 +95,4 @@ console.log(renderMarkdown(rollup));
 
 ## Not in this version
 
-- Trend charts over more than two points. Keep the rollup JSONs; the data is there.
-- A hosted collector. Files and CI artifacts are enough until they are not.
+- A collector that receives snapshots over HTTP. A directory in a repository, an artifact store or a bucket holds the same files; sync it into the build and roll it up.

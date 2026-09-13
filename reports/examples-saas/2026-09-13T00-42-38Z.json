@@ -1,0 +1,117 @@
+{
+  "schema": "zengin-report/1",
+  "generatedAt": "2026-09-13T00:42:38.000Z",
+  "repo": {
+    "name": "examples/saas",
+    "commit": "70e4c85979299735f07ff7570bb5a2b3ce4c620d",
+    "ref": "main"
+  },
+  "system": {
+    "package": "@zengin/ui",
+    "version": "0.0.1"
+  },
+  "filesChecked": 12,
+  "summary": {
+    "total": 0,
+    "bySeverity": {
+      "error": 0,
+      "warn": 0,
+      "info": 0
+    },
+    "byRule": {},
+    "byFile": {}
+  },
+  "violations": [],
+  "inventory": {
+    "files": 12,
+    "consumerFiles": 12,
+    "ownedFiles": 0,
+    "suppressions": 0,
+    "suppressionsWithoutReason": 0,
+    "components": {
+      "Tooltip": {
+        "uses": 2,
+        "files": 2
+      },
+      "Toast": {
+        "uses": 1,
+        "files": 1
+      },
+      "Sheet": {
+        "uses": 10,
+        "files": 2
+      },
+      "Button": {
+        "uses": 21,
+        "files": 5
+      },
+      "TextField": {
+        "uses": 4,
+        "files": 3
+      },
+      "Popover": {
+        "uses": 3,
+        "files": 1
+      },
+      "Badge": {
+        "uses": 8,
+        "files": 5
+      },
+      "Avatar": {
+        "uses": 4,
+        "files": 3
+      },
+      "Menu": {
+        "uses": 15,
+        "files": 2
+      },
+      "Card": {
+        "uses": 10,
+        "files": 5
+      },
+      "Sparkline": {
+        "uses": 3,
+        "files": 2
+      },
+      "Dialog": {
+        "uses": 16,
+        "files": 2
+      },
+      "Select": {
+        "uses": 20,
+        "files": 3
+      },
+      "Separator": {
+        "uses": 2,
+        "files": 2
+      },
+      "Switch": {
+        "uses": 4,
+        "files": 2
+      },
+      "Progress": {
+        "uses": 2,
+        "files": 2
+      },
+      "Table": {
+        "uses": 47,
+        "files": 3
+      },
+      "LineChart": {
+        "uses": 1,
+        "files": 1
+      },
+      "BarChart": {
+        "uses": 1,
+        "files": 1
+      },
+      "TextArea": {
+        "uses": 1,
+        "files": 1
+      }
+    },
+    "uncontracted": []
+  },
+  "suppressions": [],
+  "owned": []
+}

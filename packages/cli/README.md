@@ -154,3 +154,13 @@ The template refuses to overwrite an existing config. The shadcn path reads the 
 ## Not included, on purpose
 
 `zengin fix` would apply `exact` fixes automatically. It is a small addition, and it is left out for now because the first milestone's non-goals exclude tools that edit code. It is a candidate for later once the false-positive rate of the rules is measured on a real codebase.
+
+## History
+
+```bash
+zengin report --into reports          # files reports/<repo>/<time>.json instead of one --out file
+zengin rollup reports --format html --out public/rollup/index.html
+zengin report --into reports --at 2026-09-01T06:00:00Z --commit abc1234 --ref main   # backfill from an older checkout
+```
+
+`zengin rollup` accepts directories and reads every snapshot under them as history: the newest run per repository is the row, the one before is the delta, the series is the trend. See [`@zengin/rollup`](../rollup#history-and-trends).

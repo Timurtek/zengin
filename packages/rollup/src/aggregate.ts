@@ -1,4 +1,5 @@
 import { compareVersions, RULE_IDS, type RuleId } from "@zengin/engine";
+import { buildHistory, groupByRepo, type History } from "./history.js";
 import type { ReportSnapshot } from "./snapshot.js";
 
 /** One row per repository in the rollup. */
@@ -44,6 +45,8 @@ export interface RollupResult {
   /** Things the design system owner should look at, in priority order. */
   attention: string[];
   previousGeneratedAt?: string;
+  /** Every run kept, per repository and as-of totals, when the snapshots carry more than the current state. */
+  history: History;
 }
 
 export interface AggregateOptions {
@@ -51,11 +54,18 @@ export interface AggregateOptions {
   now?: Date;
 }
 
-export function aggregate(snapshots: ReportSnapshot[], opts: AggregateOptions = {}): RollupResult {
-  if (snapshots.length === 0) throw new Error("No snapshots to roll up.");
-  const pkg = snapshots[0]!.system.package;
-  const mixed = snapshots.filter((s) => s.system.package !== pkg).map((s) => `${s.repo.name} (${s.system.package})`);
+export function aggregate(all: ReportSnapshot[], opts: AggregateOptions = {}): RollupResult {
+  if (all.length === 0) throw new Error("No snapshots to roll up.");
+  const pkg = all[0]!.system.package;
+  const mixed = all.filter((s) => s.system.package !== pkg).map((s) => `${s.repo.name} (${s.system.package})`);
   if (mixed.length) throw new Error(`All snapshots must report on the same system. ${pkg} expected; found ${mixed.join(", ")}.`);
+
+  // Several snapshots of one repository are its history: the newest is the current state, the one before
+  // it is what deltas compare against when no previous rollup is given.
+  const groups = groupByRepo(all);
+  const snapshots = [...groups.values()].map((list) => list.at(-1)!);
+  const priorByName = new Map([...groups.entries()].filter(([, list]) => list.length > 1).map(([name, list]) => [name, list.at(-2)!]));
+  const history = buildHistory(groups);
 
   const versions = [...new Set(snapshots.map((s) => s.system.version))].sort(compareVersions);
   const latest = versions[versions.length - 1]!;
@@ -64,7 +74,12 @@ export function aggregate(snapshots: ReportSnapshot[], opts: AggregateOptions = 
   const repos: RepoRow[] = snapshots
     .map((s) => {
       const adoptionUses = Object.values(s.inventory.components).reduce((n, c) => n + c.uses, 0);
-      const prev = prevByName.get(s.repo.name);
+      const prior = priorByName.get(s.repo.name);
+      const prev: Pick<RepoRow, "violations" | "suppressions" | "adoption"> | undefined =
+        prevByName.get(s.repo.name) ??
+        (prior
+          ? { violations: prior.summary.total, suppressions: prior.inventory.suppressions, adoption: { uses: Object.values(prior.inventory.components).reduce((n, c) => n + c.uses, 0), components: 0 } }
+          : undefined);
       const row: RepoRow = {
         name: s.repo.name,
         ...(s.repo.commit ? { commit: s.repo.commit } : {}),
@@ -115,16 +130,17 @@ export function aggregate(snapshots: ReportSnapshot[], opts: AggregateOptions = 
     repos,
     totals,
     attention: attentionFor(repos, latest),
-    ...(opts.previous ? { previousGeneratedAt: opts.previous.generatedAt } : {}),
+    ...(opts.previous ? { previousGeneratedAt: opts.previous.generatedAt } : priorByName.size ? { previousGeneratedAt: [...priorByName.values()].map((s) => s.generatedAt).sort().at(-1)! } : {}),
+    history,
   };
 }
 
 /** Deterministic, in priority order: rising drift, bypassed rules, stale versions, uncontracted use, then the worst repo. */
 function attentionFor(repos: RepoRow[], latest: string): string[] {
   const out: string[] = [];
-  for (const r of repos.filter((r) => r.delta && r.delta.violations > 0)) out.push(`${r.name}: violations up by ${r.delta!.violations} since the last rollup (${r.violations} now).`);
+  for (const r of repos.filter((r) => r.delta && r.delta.violations > 0)) out.push(`${r.name}: violations up by ${r.delta!.violations} since the previous run (${r.violations} now).`);
   for (const r of repos.filter((r) => r.suppressionsWithoutReason > 0)) out.push(`${r.name}: ${r.suppressionsWithoutReason} zengin-allow comment${r.suppressionsWithoutReason === 1 ? "" : "s"} without a reason. They suppress nothing and should be fixed or removed.`);
-  for (const r of repos.filter((r) => r.delta && r.delta.suppressions > 0)) out.push(`${r.name}: ${r.delta!.suppressions} new suppression${r.delta!.suppressions === 1 ? "" : "s"} since the last rollup. Suppressions are drift with a note attached.`);
+  for (const r of repos.filter((r) => r.delta && r.delta.suppressions > 0)) out.push(`${r.name}: ${r.delta!.suppressions} new suppression${r.delta!.suppressions === 1 ? "" : "s"} since the previous run. Suppressions are drift with a note attached.`);
   for (const r of repos.filter((r) => r.behindLatest)) out.push(`${r.name}: pins ${r.systemVersion}, behind ${latest}.`);
   for (const r of repos.filter((r) => r.uncontracted.length)) out.push(`${r.name}: uses ${r.uncontracted.join(", ")} with no contract; the engine cannot check their props.`);
   const worst = repos.find((r) => r.violations > 0);

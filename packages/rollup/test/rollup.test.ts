@@ -107,7 +107,7 @@ describe("aggregate", () => {
     expect(checkout.delta).toEqual({ violations: 10, suppressions: 0, adoptionUses: 0 });
     expect(r.repos.find((x) => x.name === "acme/admin")!.delta!.violations).toBe(-5);
     expect(r.repos.find((x) => x.name === "acme/marketing")!.delta).toBeUndefined();
-    expect(r.attention[0]).toBe("acme/checkout: violations up by 10 since the last rollup (30 now).");
+    expect(r.attention[0]).toBe("acme/checkout: violations up by 10 since the previous run (30 now).");
     expect(r.previousGeneratedAt).toBe("2026-09-05T12:00:00.000Z");
   });
 
@@ -139,5 +139,59 @@ describe("renderers", () => {
     expect(html).toContain("acme/&lt;script&gt;");
     expect(html).not.toMatch(/src=|href=/);
     expect(html).toContain("prefers-color-scheme: dark");
+  });
+});
+
+describe("history", () => {
+  const runs = [
+    snapshot({ name: "acme/checkout", violations: 30, generatedAt: "2026-09-01T00:00:00.000Z" }),
+    snapshot({ name: "acme/admin", violations: 4, generatedAt: "2026-09-01T06:00:00.000Z" }),
+    snapshot({ name: "acme/checkout", violations: 28, generatedAt: "2026-09-08T00:00:00.000Z" }),
+    snapshot({ name: "acme/checkout", violations: 19, generatedAt: "2026-09-12T00:00:00.000Z" }),
+  ];
+
+  it("takes the newest snapshot per repository as the row and the one before as the delta", () => {
+    const r = aggregate(runs, { now: NOW });
+    expect(r.repos.map((x) => [x.name, x.violations, x.delta?.violations])).toEqual([
+      ["acme/checkout", 19, -9],
+      ["acme/admin", 4, undefined],
+    ]);
+    expect(r.previousGeneratedAt).toBe("2026-09-08T00:00:00.000Z");
+    expect(r.history.repos["acme/checkout"]!.map((p) => p.violations)).toEqual([30, 28, 19]);
+  });
+
+  it("sums totals as of each moment, carrying each repository's newest run forward", () => {
+    const r = aggregate(runs, { now: NOW });
+    expect(r.history.totals.map((p) => [p.at.slice(0, 10), p.violations])).toEqual([
+      ["2026-09-01", 30],
+      ["2026-09-01", 34],
+      ["2026-09-08", 32],
+      ["2026-09-12", 23],
+    ]);
+    expect(r.history.totals.at(-1)!.adoptionUses).toBe(90);
+  });
+
+  it("a previous rollup still wins over the prior snapshot for deltas", () => {
+    const previous = aggregate([snapshot({ name: "acme/checkout", violations: 10 })], { now: NOW });
+    const r = aggregate(runs, { previous, now: NOW });
+    expect(r.repos[0]!.delta?.violations).toBe(9);
+    expect(r.attention[0]).toMatch(/up by 9 since the previous run/);
+  });
+
+  it("renders trends in html and markdown only when a repository has more than one run", () => {
+    const r = aggregate(runs, { now: NOW });
+    const html = renderHtml(r);
+    expect(html).toContain("Over time");
+    expect(html).toContain('class="spark"');
+    expect(html).toContain("3 runs");
+    expect(html).toContain('aria-label="Violations over time, 4 moments, from 30 to 23"');
+    const md = renderMarkdown(r);
+    expect(md).toContain("| Trend |");
+    expect(md).toContain("| 30 → 28 → 19 |");
+    expect(md).toContain("violations 30 to 23");
+
+    const single = aggregate([runs[0]!, runs[1]!], { now: NOW });
+    expect(renderHtml(single)).not.toContain("Over time");
+    expect(renderMarkdown(single)).not.toContain("| Trend |");
   });
 });
