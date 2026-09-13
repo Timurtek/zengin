@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/registry",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "The Zengin registry: components, templates and definitions as installable items, plus the project generator behind `zengin create` and `zengin add`.",
   "license": "MIT",
   "type": "module",

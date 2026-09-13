@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/mock",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Typed, seeded mock data for a Zengin project: presets for the entities apps show, a small schema for the rest, generated as plain TypeScript with no runtime dependency.",
   "license": "MIT",
   "type": "module",
