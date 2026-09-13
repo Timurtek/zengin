@@ -1,0 +1,45 @@
+{
+  "schema": "zengin-report/1",
+  "generatedAt": "2026-09-13T03:12:27.436Z",
+  "repo": {
+    "name": "examples/blank",
+    "ref": "main",
+    "commit": "4374ef72a6226518220b2853345b8c2b1e4402ee"
+  },
+  "system": {
+    "package": "@zengin/ui",
+    "version": "0.0.1"
+  },
+  "filesChecked": 4,
+  "summary": {
+    "total": 0,
+    "bySeverity": {
+      "error": 0,
+      "warn": 0,
+      "info": 0
+    },
+    "byRule": {},
+    "byFile": {}
+  },
+  "violations": [],
+  "inventory": {
+    "files": 4,
+    "consumerFiles": 4,
+    "ownedFiles": 0,
+    "suppressions": 0,
+    "suppressionsWithoutReason": 0,
+    "components": {
+      "Card": {
+        "uses": 1,
+        "files": 1
+      },
+      "Button": {
+        "uses": 1,
+        "files": 1
+      }
+    },
+    "uncontracted": []
+  },
+  "suppressions": [],
+  "owned": []
+}
