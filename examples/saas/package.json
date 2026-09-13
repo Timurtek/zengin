@@ -10,7 +10,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check": "node ../../packages/cli/dist/index.js check",
     "test": "node ../../packages/cli/dist/index.js check",
-    "screenshot": "node demo/look.mjs"
+    "screenshot": "node demo/look.mjs",
+    "mock": "node ../../packages/cli/dist/index.js mock --schema mock.json"
   },
   "dependencies": {
     "@zengin/ui": "workspace:*",

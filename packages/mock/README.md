@@ -13,6 +13,8 @@ import { customers } from "@/mock/customers";
 customers[0]; // { id: "CUS-1000", name: "Ada Okafor", company: "Northwind", plan: "Team", mrr: 396, status: "active", usage: [...], ... }
 ```
 
+The SaaS template runs on it: `examples/saas/mock.json` declares customers, invoices, events, signups and a daily metric, `npm run mock` regenerates `src/mock`, and `src/data.ts` derives what a backend would (MRR from plan and seats, signups by month, relative times) on top of the rows.
+
 ## Presets
 
 `users`, `customers`, `companies`, `products`, `orders`, `invoices`, `events`, `messages`, `metrics`. Each is a schema with the fields an app shows for that thing; the generated module exports the type, a `make<Name>(index, rng)` factory, and the array.

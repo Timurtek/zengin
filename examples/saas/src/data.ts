@@ -1,71 +1,73 @@
-/** Mock data for the dashboard, generated deterministically so every run and every preview looks the same. */
+/**
+ * The dashboard's data, read from the modules `zengin mock` generated in src/mock from mock.json. This file
+ * is the seam between generated rows and what the pages show: it derives what a backend would derive (MRR
+ * from plan and seats, signups by month, relative times) and formats what a screen formats. Regenerate the
+ * rows with `npm run mock`; change a count or the seed in mock.json and every screen follows.
+ */
 
-function rng(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+import { customers as rows, type Customer as Row } from "./mock/customers";
+import { events } from "./mock/events";
+import { invoices as invoiceRows } from "./mock/invoices";
+import { metrics } from "./mock/metrics";
+import { signups } from "./mock/signups";
 
-const rand = rng(20260912);
+/** The mock's fixed "now": the generated dates are relative to it, so the labels are too. */
+const NOW = Date.UTC(2026, 8, 12);
+const DAY = 86400000;
 
-export const DAYS = Array.from({ length: 30 }, (_, i) => {
-  const d = new Date(2026, 7, 14 + i);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-});
+const short = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+const long = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+const parse = (iso: string) => new Date(`${iso}T00:00:00Z`);
 
-export const revenue = DAYS.map((_, i) => Math.round(18400 + i * 310 + Math.sin(i / 2.6) * 2100 + rand() * 900));
-export const refunds = DAYS.map((_, i) => Math.round(620 + Math.cos(i / 3.1) * 260 + (i % 7 === 5 ? 540 : 0) + rand() * 180));
-export const activeUsers = DAYS.map((_, i) => Math.round(2900 + i * 14 + Math.sin(i / 4) * 120 + rand() * 60));
-export const conversion = DAYS.map((_, i) => Number((3.1 + Math.sin(i / 5) * 0.4 + rand() * 0.2).toFixed(2)));
-export const churn = DAYS.map((_, i) => Number((1.9 - i * 0.012 + Math.cos(i / 3) * 0.2 + rand() * 0.1).toFixed(2)));
+export const DAYS = Array.from({ length: 30 }, (_, i) => short(new Date(NOW - (29 - i) * DAY)));
+
+const metric = metrics[0]!;
+export const revenue = metric.revenue;
+export const refunds = metric.refunds;
+export const activeUsers = metric.activeUsers;
+export const conversion = metric.conversionBps.map((n) => n / 100);
+export const churn = metric.churnBps.map((n) => n / 100);
 
 export const PLANS = ["Free", "Starter", "Team", "Business", "Enterprise"] as const;
 export type Plan = (typeof PLANS)[number];
-export const signupsByPlan = { thisMonth: [842, 396, 251, 88, 14], lastMonth: [781, 372, 233, 79, 11] };
 
-export type CustomerStatus = "active" | "trial" | "past-due" | "churned";
+/** Signups grouped by plan for the last 30 days and the 30 before, from the signup rows. */
+export const signupsByPlan = (() => {
+  const thisMonth = PLANS.map(() => 0);
+  const lastMonth = PLANS.map(() => 0);
+  for (const s of signups) {
+    const age = (NOW - parse(s.at).getTime()) / DAY;
+    const bucket = age < 30 ? thisMonth : age < 60 ? lastMonth : undefined;
+    if (bucket) bucket[PLANS.indexOf(s.plan)]!++;
+  }
+  return { thisMonth, lastMonth };
+})();
 
-export interface Customer {
-  id: string;
-  name: string;
-  company: string;
-  email: string;
-  plan: Plan;
+export type CustomerStatus = Row["status"];
+
+export interface Customer extends Row {
+  /** Monthly recurring revenue: the plan's price per seat block, nothing for churned or free. */
   mrr: number;
-  status: CustomerStatus;
-  seats: number;
-  usage: number[];
+  /** `since`, formatted for a screen. */
   joined: string;
 }
 
-const FIRST = ["Ada", "Grace", "Linus", "Mina", "Jonas", "Priya", "Tomás", "Yuki", "Farah", "Noah", "Ines", "Kwame", "Sofia", "Emil", "Leila", "Marcus", "Hana", "Diego", "Aisha", "Olu", "Petra", "Ravi", "Zoe", "Bram"];
-const LAST = ["Okafor", "Lindqvist", "Raman", "Brewster", "Sato", "Haddad", "Mendes", "Novak", "Achebe", "Costa", "Weber", "Ivanova", "Delacroix", "Osei", "Nakamura", "Fischer", "Rossi", "Kaur", "Berg", "Moreau", "Silva", "Andersen", "Tanaka", "Dubois"];
-const COMPANIES = ["Northwind", "Lumen Labs", "Halyard", "Tessel", "Quarry", "Brightline", "Ferro", "Oakline", "Meridian", "Pipeworks", "Sable", "Kestrel", "Ridgeway", "Alder", "Vantage", "Cobalt Works", "Harbor", "Slate", "Fathom", "Juniper", "Beacon", "Marlow", "Cinder", "Trellis"];
-const STATUS: CustomerStatus[] = ["active", "active", "active", "active", "trial", "past-due", "active", "churned"];
-const MRR: Record<Plan, number> = { Free: 0, Starter: 29, Team: 99, Business: 349, Enterprise: 1490 };
+const PRICE: Record<Plan, number> = { Free: 0, Starter: 29, Team: 99, Business: 349, Enterprise: 1490 };
+/** Seats a plan can hold; the mock draws 1 to 60 and the plan says where that lands. */
+const SEATS: Record<Plan, [number, number]> = { Free: [1, 1], Starter: [1, 5], Team: [2, 15], Business: [5, 40], Enterprise: [40, 120] };
 
-export const customers: Customer[] = FIRST.map((first, i) => {
-  const plan = PLANS[Math.min(4, Math.floor(rand() * 6))]!;
-  const status = STATUS[Math.floor(rand() * STATUS.length)]!;
-  const seats = plan === "Free" ? 1 : plan === "Enterprise" ? 40 + Math.floor(rand() * 80) : 2 + Math.floor(rand() * 14);
-  const base = 20 + rand() * 60;
-  const joined = new Date(2026, Math.floor(rand() * 8), 1 + Math.floor(rand() * 27));
+const seatsFor = (plan: Plan, raw: number): number => {
+  const [min, max] = SEATS[plan];
+  return min + Math.round(((raw - 1) / 59) * (max - min));
+};
+
+export const customers: Customer[] = rows.map((c) => {
+  const seats = seatsFor(c.plan, c.seats);
   return {
-    id: `CUS-${1040 + i}`,
-    name: `${first} ${LAST[i]}`,
-    company: COMPANIES[i]!,
-    email: `${first.toLowerCase().normalize("NFD").replace(/[^a-z]/g, "")}@${COMPANIES[i]!.toLowerCase().replace(/\s+/g, "")}.com`,
-    plan,
-    mrr: status === "churned" ? 0 : MRR[plan] * (plan === "Enterprise" ? 1 : Math.max(1, Math.round(seats / 3))),
-    status,
+    ...c,
     seats,
-    usage: Array.from({ length: 12 }, (_, k) => Math.round(base + Math.sin(k / 2 + i) * 12 + rand() * 10)),
-    joined: joined.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    mrr: c.status === "churned" ? 0 : PRICE[c.plan] * (c.plan === "Enterprise" ? 1 : Math.max(1, Math.round(seats / 3))),
+    joined: long(parse(c.since)),
   };
 });
 
@@ -74,33 +76,43 @@ export interface Activity {
   who: string;
   what: string;
   when: string;
-  kind: "signup" | "upgrade" | "invoice" | "support" | "churn";
+  kind: (typeof events)[number]["kind"];
 }
 
-export const activity: Activity[] = [
-  { id: "a1", who: "Priya Haddad", what: "upgraded Halyard to Business", when: "12 min ago", kind: "upgrade" },
-  { id: "a2", who: "Tomás Mendes", what: "signed up for Team, 6 seats", when: "41 min ago", kind: "signup" },
-  { id: "a3", who: "Northwind", what: "invoice INV-2381 paid", when: "2 h ago", kind: "invoice" },
-  { id: "a4", who: "Yuki Novak", what: "opened a support ticket: SSO login loop", when: "3 h ago", kind: "support" },
-  { id: "a5", who: "Sable", what: "cancelled Starter at period end", when: "Yesterday", kind: "churn" },
-  { id: "a6", who: "Ines Weber", what: "signed up for Free", when: "Yesterday", kind: "signup" },
-];
+const WHAT: Record<Activity["kind"], (c: Customer) => string> = {
+  signup: (c) => `signed up for ${c.plan}${c.seats > 1 ? `, ${c.seats} seats` : ""}`,
+  upgrade: (c) => `upgraded ${c.company} to ${c.plan}`,
+  invoice: (c) => `paid an invoice for ${c.company}`,
+  support: (c) => `opened a support ticket for ${c.company}`,
+  churn: (c) => `cancelled ${c.plan} at period end`,
+};
+
+const relative = (iso: string): string => {
+  const days = Math.round((NOW - parse(iso).getTime()) / DAY);
+  return days <= 0 ? "Today" : days === 1 ? "Yesterday" : `${days} days ago`;
+};
+
+const byId = new Map(customers.map((c) => [c.id, c]));
+
+export const activity: Activity[] = [...events]
+  .sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0))
+  .map((e) => {
+    const c = byId.get(e.customer)!;
+    return { id: e.id, who: c.name, what: WHAT[e.kind](c), when: relative(e.at), kind: e.kind };
+  });
 
 export interface Invoice {
   id: string;
   date: string;
   amount: number;
-  status: "paid" | "open" | "failed";
+  status: (typeof invoiceRows)[number]["status"];
 }
 
-export const invoices: Invoice[] = [
-  { id: "INV-2381", date: "Sep 1, 2026", amount: 349, status: "paid" },
-  { id: "INV-2290", date: "Aug 1, 2026", amount: 349, status: "paid" },
-  { id: "INV-2204", date: "Jul 1, 2026", amount: 349, status: "paid" },
-  { id: "INV-2117", date: "Jun 1, 2026", amount: 299, status: "paid" },
-  { id: "INV-2031", date: "May 1, 2026", amount: 299, status: "failed" },
-];
+export const invoices: Invoice[] = [...invoiceRows]
+  .sort((a, b) => (a.issued < b.issued ? 1 : a.issued > b.issued ? -1 : 0))
+  .map((inv) => ({ id: inv.id, date: long(parse(inv.issued)), amount: inv.amount, status: inv.status }));
 
+/** Plan limits are configuration, not rows. */
 export const quotas = [
   { name: "Seats", used: 38, limit: 50, unit: "" },
   { name: "API calls", used: 1_840_000, limit: 2_500_000, unit: "" },

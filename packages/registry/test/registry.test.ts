@@ -150,3 +150,21 @@ describe("createProject", () => {
     await expect(createProject({ dir: join(tmp, "nope"), template: "shop", source })).rejects.toThrow(/Templates: blank, marketing, review, saas/);
   });
 });
+
+describe("the saas template on mock data", () => {
+  it("ships its mock schema and generated rows, and a created project can regenerate them", async () => {
+    const saas = registry.items.find((i) => i.name === "saas" && i.type === "template")!;
+    const paths = saas.files.map((f) => f.path);
+    expect(paths).toContain("mock.json");
+    expect(paths).toEqual(expect.arrayContaining(["src/mock/rng.ts", "src/mock/customers.ts", "src/mock/metrics.ts", "src/data.ts"]));
+    expect(saas.files.find((f) => f.path === "src/mock/events.ts")!.content).toContain('import { customers } from "./customers";');
+
+    const dir = join(tmp, "saas-app");
+    const r = await createProject({ dir, template: "saas", source: registryFromMemory(registry), storybook: false });
+    expect(r.violations).toBe(0);
+    const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8")) as { scripts: Record<string, string> };
+    expect(pkg.scripts["mock"]).toBe("zengin mock --schema mock.json");
+    expect(existsSync(join(dir, "mock.json"))).toBe(true);
+    expect(readFileSync(join(dir, "src/mock/customers.ts"), "utf8")).toContain("export const customers: Customer[]");
+  });
+});

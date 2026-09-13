@@ -26,6 +26,7 @@ Everyone else serves context. Zengin serves constraints.
 
 ```bash
 npx zengin create acme --template saas        # or: chat, blank, marketing, review
+npm run mock                                  # regenerate the SaaS template's rows from mock.json
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
 npx zengin theme plex                          # or: default, meadow, spec-sheet, brutal

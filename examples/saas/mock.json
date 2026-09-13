@@ -1,0 +1,62 @@
+{
+  "$description": "The data the dashboard shows, as a zengin mock schema. `npm run mock` regenerates src/mock from it; change a count or the seed and every screen follows.",
+  "seed": 20260912,
+  "entities": [
+    {
+      "name": "Customer",
+      "count": 40,
+      "fields": {
+        "id": { "type": "id", "prefix": "CUS" },
+        "name": "fullName",
+        "company": "company",
+        "email": "email",
+        "plan": { "type": "enum", "values": ["Free", "Starter", "Team", "Business", "Enterprise"], "weights": [4, 3, 3, 2, 1] },
+        "status": { "type": "enum", "values": ["active", "trial", "past-due", "churned"], "weights": [6, 2, 1, 1] },
+        "seats": { "type": "int", "min": 1, "max": 60 },
+        "usage": { "type": "series", "length": 12, "min": 10, "max": 90, "trend": "up" },
+        "since": { "type": "date", "pastDays": 700 }
+      }
+    },
+    {
+      "name": "Invoice",
+      "count": 6,
+      "fields": {
+        "id": { "type": "id", "prefix": "INV" },
+        "amount": { "type": "money", "min": 299, "max": 349 },
+        "status": { "type": "enum", "values": ["paid", "open", "failed"], "weights": [7, 1, 1] },
+        "issued": { "type": "date", "pastDays": 180 }
+      }
+    },
+    {
+      "name": "Event",
+      "count": 8,
+      "fields": {
+        "id": { "type": "id", "prefix": "EVT" },
+        "customer": { "type": "ref", "entity": "customers" },
+        "kind": { "type": "enum", "values": ["signup", "upgrade", "invoice", "support", "churn"], "weights": [4, 2, 3, 2, 1] },
+        "at": { "type": "date", "pastDays": 3 }
+      }
+    },
+    {
+      "name": "Signup",
+      "count": 400,
+      "fields": {
+        "id": { "type": "id", "prefix": "SGN" },
+        "plan": { "type": "enum", "values": ["Free", "Starter", "Team", "Business", "Enterprise"], "weights": [10, 5, 3, 1, 0.2] },
+        "at": { "type": "date", "pastDays": 60 }
+      }
+    },
+    {
+      "name": "Metric",
+      "count": 1,
+      "fields": {
+        "id": { "type": "id", "prefix": "MET" },
+        "revenue": { "type": "series", "length": 30, "min": 18000, "max": 27000, "trend": "up" },
+        "refunds": { "type": "series", "length": 30, "min": 400, "max": 1300 },
+        "activeUsers": { "type": "series", "length": 30, "min": 2800, "max": 3500, "trend": "up" },
+        "conversionBps": { "type": "series", "length": 30, "min": 260, "max": 380 },
+        "churnBps": { "type": "series", "length": 30, "min": 130, "max": 220, "trend": "down" }
+      }
+    }
+  ]
+}

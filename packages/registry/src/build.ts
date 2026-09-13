@@ -137,7 +137,7 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       name: "saas",
       title: "SaaS dashboard",
       description: "An admin app: overview with stat cards and charts, a customers table with row actions and a detail sheet, billing with quotas, settings that save with a toast. Sidebar, top bar, both schemes.",
-      rootFiles: ["index.html"],
+      rootFiles: ["index.html", "mock.json"],
       componentNames,
     }),
   );

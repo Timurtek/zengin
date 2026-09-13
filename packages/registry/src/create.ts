@@ -95,7 +95,7 @@ export async function createProject(opts: CreateOptions): Promise<CreateResult> 
   const items = await resolveItems(opts.source, [template]);
   const install = installItems({ projectDir: dir, items: storybook ? items : items.map((i) => ({ ...i, files: i.files.filter((f) => f.kind !== "story") })), version, force: true });
 
-  write("package.json", packageJson({ name, install, storybook, local: opts.local }));
+  write("package.json", packageJson({ name, install, storybook, local: opts.local, mock: items.some((i) => i.type === "template" && i.files.some((f) => f.path === "mock.json")) }));
   write("README.md", README(name, template, install.components));
   if (opts.theme) await applyTheme({ projectDir: dir, name: opts.theme, source: opts.source });
 
@@ -111,7 +111,7 @@ export async function createProject(opts: CreateOptions): Promise<CreateResult> 
   return { dir, name, template, version, install, tokens, violations };
 }
 
-function packageJson(opts: { name: string; install: InstallResult; storybook: boolean; local?: string }): string {
+function packageJson(opts: { name: string; install: InstallResult; storybook: boolean; local?: string; mock?: boolean }): string {
   // `link:` symlinks the checkout's package and uses its own node_modules, so workspace deps resolve. pnpm honors it; npm needs the release.
   const z = (pkg: string): string => (opts.local ? `link:${resolve(opts.local, "packages", pkg).replace(/\\/g, "/")}` : VERSIONS.zengin);
   const dependencies = sortKeys({ react: VERSIONS.react, "react-dom": VERSIONS["react-dom"], ...opts.install.dependencies });
@@ -141,6 +141,7 @@ function packageJson(opts: { name: string; install: InstallResult; storybook: bo
     tokens: "zengin tokens",
     check: "zengin check",
     add: "zengin add",
+    ...(opts.mock ? { mock: "zengin mock --schema mock.json" } : {}),
     ...(opts.storybook ? { storybook: "zengin tokens && storybook dev -p 6006 --no-open", "build-storybook": "zengin tokens && storybook build" } : {}),
   };
   return JSON.stringify({ name: opts.name, private: true, version: "0.1.0", type: "module", scripts, dependencies, devDependencies }, null, 2) + "\n";

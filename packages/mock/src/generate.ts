@@ -39,7 +39,10 @@ function renderEntity(entity: EntitySchema, seed: number, countOverride: number 
   const refs = [...new Set(Object.values(entity.fields).map(resolveField).filter((f) => f.type === "ref").map((f) => f.entity ?? ""))];
   const typeLines = Object.entries(entity.fields).map(([name, spec]) => `  ${name}: ${fieldType(spec)};`);
   const valueLines = Object.entries(entity.fields).map(([name, spec]) => `    ${name}: ${expression(spec, name)},`);
-  const imports = [`import { createRng, email, phone, pools, url, type Rng } from "./rng";`, ...refs.map((r) => `import { ${r} } from "./${r}";`)];
+  const body = valueLines.join("\n");
+  // Only the helpers the module uses: names and companies come from the pools, email/phone/url are functions.
+  const helpers = ["createRng", ...["email", "phone", "url"].filter((h) => new RegExp(`\\b${h}\\b`).test(body)), ...(needsName || needsCompany ? ["pools"] : []), "type Rng"];
+  const imports = [`import { ${helpers.join(", ")} } from "./rng";`, ...refs.map((r) => `import { ${r} } from "./${r}";`)];
 
   return `${imports.join("\n")}
 
