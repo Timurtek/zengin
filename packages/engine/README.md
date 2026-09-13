@@ -61,7 +61,7 @@ rules:
     severity: error
     map: { "@headlessui/react#Dialog": Dialog }
 
-surfaces:                          # optional; parts of the project that are a different design on purpose
+profiles:                          # optional; parts of the project that are a different design on purpose
   - name: marketing
     include: ["src/marketing/**"]
     tokens: zengin/tokens.marketing.json    # layered over the base tokens: only what differs
@@ -72,21 +72,24 @@ surfaces:                          # optional; parts of the project that are a d
         owns: { border-radius: shape }
 ```
 
-## Surfaces
+## Profiles
 
 A marketing page and an application are not the same design, and a system that cannot say so forces the
-difference to be spelled as drift: either two systems, or a suppression on every line. A surface says it in
+difference to be spelled as drift: either two systems, or a suppression on every line. A profile says it in
 the definitions instead, so the difference is declared and still enforced.
 
-Each file is checked against the first surface whose `include` matches it, and against the base system when
-none does. A surface may change token values and a component's `props`, `owns` and `className` policy, all
+Each file is checked against the first profile whose `include` matches it, and against the base system when
+none does. A profile may change token values and a component's `props`, `owns` and `className` policy, all
 merged over the base by name, so it states only what differs. It may not add or remove a component: a
 different set of components is a different system, not a different look, and the engine refuses the config
 rather than checking half of one.
 
-What this buys is narrow and worth being exact about. `shape="pill"` on the marketing surface is correct and
-the same attribute in the application is still a violation, with the rule naming the surface's own valid list.
-The inventory records which surface checked each file, so a rollup can show the split rather than averaging it.
+What this buys is narrow and worth being exact about. `shape="pill"` on the marketing profile is correct and
+the same attribute in the application is still a violation, with the rule naming the profile's own valid list.
+The inventory records which profile checked each file, so a rollup can show the split rather than averaging it.
+
+The key was called `surfaces` in 0.2.0, which collided with the four surfaces above. A config that still says
+`surfaces:` is refused by name.
 
 ## Violations
 

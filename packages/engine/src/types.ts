@@ -86,8 +86,8 @@ export interface OwnedFile {
 export interface FileInventory {
   file: string;
   kind: FileKind;
-  /** The surface whose definitions checked this file. Absent when it was the base system. */
-  surface?: string;
+  /** The profile whose definitions checked this file. Absent when it was the base system. */
+  profile?: string;
   suppressions: SuppressionUse[];
   owned?: OwnedFile;
   /** System component name -> uses in this file. */
@@ -153,24 +153,24 @@ export interface ZenginConfig {
    * Parts of the project that are legitimately a different design, in order: the first whose `include`
    * matches a file decides it. A marketing page and an application are not the same design, and without
    * this the only ways to say so are two systems or a suppression, which both spell the difference as
-   * drift. A surface says it in the definitions instead, so it is still enforced, just enforced differently.
+   * drift. A profile says it in the definitions instead, so it is still enforced, just enforced differently.
    */
-  surfaces?: SurfaceConfig[];
+  profiles?: ProfileConfig[];
 }
 
-export interface SurfaceConfig {
+export interface ProfileConfig {
   name: string;
   /** Globs, against project-relative paths. */
   include: string[];
   /** A token file layered over the base tokens: same shape as tokens.json, and only what differs. */
   tokens?: string;
-  /** Contract changes for this surface, merged over the base manifest entry by name. */
+  /** Contract changes for this profile, merged over the base manifest entry by name. */
   components?: Record<string, ComponentOverlay>;
 }
 
 /**
- * What a surface may change about a component. Props are merged by name, so a surface adds a variant or
- * widens an enum without restating the contract; `owns` likewise. A surface cannot rename or remove a
+ * What a profile may change about a component. Props are merged by name, so a profile adds a variant or
+ * widens an enum without restating the contract; `owns` likewise. A profile cannot rename or remove a
  * component, because then it would be a different system rather than a different look.
  */
 export interface ComponentOverlay {
@@ -207,13 +207,13 @@ export interface ResolvedConfig {
   };
   rules: Record<RuleId, ResolvedRuleConfig>;
   /** In declaration order; the first match wins. Empty when the project has one design, which is the default. */
-  surfaces: ResolvedSurface[];
+  profiles: ResolvedProfile[];
 }
 
-export interface ResolvedSurface {
+export interface ResolvedProfile {
   name: string;
   include: string[];
-  /** Absolute path to the overlay token file, when the surface names one. */
+  /** Absolute path to the overlay token file, when the profile names one. */
   tokensPath?: string;
   components: Record<string, ComponentOverlay>;
 }

@@ -12,7 +12,7 @@ const systemDir = join(here, "fixtures", "system");
 let dir: string;
 
 beforeAll(() => {
-  dir = mkdtempSync(join(tmpdir(), "zengin-surfaces-"));
+  dir = mkdtempSync(join(tmpdir(), "zengin-profiles-"));
   mkdirSync(join(dir, "zengin"), { recursive: true });
   mkdirSync(join(dir, "src", "app"), { recursive: true });
   mkdirSync(join(dir, "src", "marketing"), { recursive: true });
@@ -50,10 +50,10 @@ describe("a project with one design", () => {
   });
 });
 
-describe("a surface declares a legitimate difference", () => {
-  const withSurface: ZenginConfig = {
+describe("a profile declares a legitimate difference", () => {
+  const withProfile: ZenginConfig = {
     ...BASE,
-    surfaces: [
+    profiles: [
       {
         name: "marketing",
         include: ["src/marketing/**"],
@@ -62,20 +62,20 @@ describe("a surface declares a legitimate difference", () => {
     ],
   };
 
-  it("accepts the prop on the surface that declares it", async () => {
-    const v = await check(withSurface, [PILL]);
+  it("accepts the prop on the profile that declares it", async () => {
+    const v = await check(withProfile, [PILL]);
     expect(v.filter((x) => x.rule === "unknown-prop")).toEqual([]);
   });
 
   it("still rejects it everywhere else, so the difference is declared rather than global", async () => {
-    const v = await check(withSurface, [APP]);
+    const v = await check(withProfile, [APP]);
     const unknown = v.filter((x) => x.rule === "unknown-prop");
     expect(unknown).toHaveLength(1);
     expect(unknown[0]!.file).toBe("src/app/Toolbar.tsx");
   });
 
-  it("checks an enum value against the surface's own list", async () => {
-    const v = await check(withSurface, [
+  it("checks an enum value against the profile's own list", async () => {
+    const v = await check(withProfile, [
       { path: "src/marketing/Bad.tsx", content: `import { Button } from "@zenginui/ui";\nexport const Bad = () => <Button shape="round">Go</Button>;\n` },
     ]);
     const bad = v.filter((x) => x.rule === "unknown-prop-value");
@@ -84,23 +84,23 @@ describe("a surface declares a legitimate difference", () => {
   });
 
   it("keeps the base contract for props it does not mention", async () => {
-    const v = await check(withSurface, [
+    const v = await check(withProfile, [
       { path: "src/marketing/Bad2.tsx", content: `import { Button } from "@zenginui/ui";\nexport const Bad2 = () => <Button variant="ghostly">Go</Button>;\n` },
     ]);
     expect(v.filter((x) => x.rule === "unknown-prop-value")).toHaveLength(1);
   });
 
-  it("names the surface in the inventory, so a rollup can see the split", async () => {
-    const engine = await createEngine(resolveConfig(withSurface, dir));
+  it("names the profile in the inventory, so a rollup can see the split", async () => {
+    const engine = await createEngine(resolveConfig(withProfile, dir));
     const inv = engine.inventory([PILL, APP]);
-    expect(inv.files.find((f) => f.file === "src/marketing/Hero.tsx")?.surface).toBe("marketing");
-    expect(inv.files.find((f) => f.file === "src/app/Toolbar.tsx")?.surface).toBeUndefined();
+    expect(inv.files.find((f) => f.file === "src/marketing/Hero.tsx")?.profile).toBe("marketing");
+    expect(inv.files.find((f) => f.file === "src/app/Toolbar.tsx")?.profile).toBeUndefined();
   });
 
-  it("takes the first matching surface when two could claim a file", async () => {
+  it("takes the first matching profile when two could claim a file", async () => {
     const two: ZenginConfig = {
       ...BASE,
-      surfaces: [
+      profiles: [
         { name: "first", include: ["src/marketing/**"], components: { Button: { props: { shape: { type: "enum", values: ["pill"] } } } } },
         { name: "second", include: ["src/**"], components: { Button: { props: { shape: { type: "enum", values: ["square"] } } } } },
       ],
@@ -110,44 +110,50 @@ describe("a surface declares a legitimate difference", () => {
   });
 });
 
-describe("a surface with its own token values", () => {
+describe("a profile with its own token values", () => {
   const overlayPath = "zengin/tokens.marketing.json";
 
   beforeAll(() => {
-    // Only what differs: the marketing surface has a wider step on the spacing scale. 20px is deliberately
-    // a value the base scale does not carry, so it is a token on one surface and an arbitrary length on the other.
+    // Only what differs: the marketing profile has a wider step on the spacing scale. 20px is deliberately
+    // a value the base scale does not carry, so it is a token on one profile and an arbitrary length on the other.
     const base = JSON.parse(readFileSync(join(systemDir, "tokens.json"), "utf8")) as Record<string, unknown>;
     const space = (base["space"] ?? {}) as Record<string, unknown>;
     writeFileSync(join(dir, overlayPath), JSON.stringify({ space: { ...space, 5: { $value: "20px" } } }, null, 2));
   });
 
   it("resolves a token the overlay adds without adding it to the base", async () => {
-    const config: ZenginConfig = { ...BASE, surfaces: [{ name: "marketing", include: ["src/marketing/**"], tokens: overlayPath }] };
+    const config: ZenginConfig = { ...BASE, profiles: [{ name: "marketing", include: ["src/marketing/**"], tokens: overlayPath }] };
     const engine = await createEngine(resolveConfig(config, dir));
     const marketing = engine.check([{ path: "src/marketing/Card.css", content: ".hero { padding: 20px; }" }]);
     const app = engine.check([{ path: "src/app/Card.css", content: ".panel { padding: 20px; }" }]);
-    // 20px names a token on the marketing surface, and is an arbitrary length in the app.
+    // 20px names a token on the marketing profile, and is an arbitrary length in the app.
     expect(marketing.some((v) => v.fix.token === "space.5")).toBe(true);
     expect(app.some((v) => v.fix.token === "space.5")).toBe(false);
     expect(app.some((v) => v.rule === "spacing-literal")).toBe(true);
   });
 });
 
-describe("what a surface may not do", () => {
+describe("what a profile may not do", () => {
   it("refuses to introduce a component the system does not have", async () => {
     const config: ZenginConfig = {
       ...BASE,
-      surfaces: [{ name: "marketing", include: ["src/marketing/**"], components: { Carousel: { props: {} } } }],
+      profiles: [{ name: "marketing", include: ["src/marketing/**"], components: { Carousel: { props: {} } } }],
     };
     await expect(createEngine(resolveConfig(config, dir))).rejects.toThrow(/does not have/);
   });
 
-  it("refuses a surface with no include patterns", () => {
-    expect(() => resolveConfig({ ...BASE, surfaces: [{ name: "x", include: [] }] }, dir)).toThrow(/no include/);
+  it("refuses a profile with no include patterns", () => {
+    expect(() => resolveConfig({ ...BASE, profiles: [{ name: "x", include: [] }] }, dir)).toThrow(/no include/);
+  });
+
+  it("refuses the old `surfaces` key by name, rather than ignoring it", () => {
+    // Silently ignoring it would check every file against the base system and look like the feature
+    // simply not working, which is the worse failure.
+    expect(() => resolveConfig({ ...BASE, surfaces: [{ name: "x", include: ["src/**"] }] } as ZenginConfig, dir)).toThrow(/`surfaces:` is now `profiles:`/);
   });
 
   it("refuses a token file that is not there", async () => {
-    const config: ZenginConfig = { ...BASE, surfaces: [{ name: "x", include: ["src/**"], tokens: "zengin/missing.json" }] };
+    const config: ZenginConfig = { ...BASE, profiles: [{ name: "x", include: ["src/**"], tokens: "zengin/missing.json" }] };
     await expect(createEngine(resolveConfig(config, dir))).rejects.toThrow(/does not exist/);
   });
 });

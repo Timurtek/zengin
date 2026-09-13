@@ -172,7 +172,7 @@ error  unknown-prop        Threshold has no prop "wobble".
     ],
     code: {
       title: "zengin.config.yaml",
-      text: `surfaces:
+      text: `profiles:
   - name: marketing
     include: ["src/marketing/**"]
     tokens: zengin/tokens.marketing.json
@@ -185,7 +185,7 @@ error  unknown-prop        Threshold has no prop "wobble".
 ];
 
 export const GROWTH_NOTE =
-  'shape="pill" is correct on the part of the project that declares it, and the same attribute in the application is still a violation, named against that surface\'s own list. The point is not to loosen the rule. It is to say which rule applies where, once, in a file everyone can read.';
+  'shape="pill" is correct on the part of the project that declares it, and the same attribute in the application is still a violation, named against that profile\'s own list. The point is not to loosen the rule. It is to say which rule applies where, once, in a file everyone can read.';
 
 export const RULES: RuleRow[] = [
   { id: "color-literal", family: "foundation", description: "A color literal (hex, rgb, oklch, named) in a class, inline style or CSS where a token reference is required. A literal that equals a token's value is still a violation: it will not follow theme changes." },

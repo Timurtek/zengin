@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { dirname, resolve, join } from "node:path";
 import { parse as parseYaml } from "yaml";
-import type { RuleId, ResolvedConfig, ResolvedRuleConfig, RuleConfig, Severity, ZenginConfig } from "./types.js";
+import type { RuleId, ResolvedConfig, ResolvedProfile, ResolvedRuleConfig, RuleConfig, Severity, ZenginConfig } from "./types.js";
 import { RULE_IDS } from "./types.js";
 
 const DEFAULT_INCLUDE = ["src/**/*.{ts,tsx,js,jsx,css}"];
@@ -51,17 +51,29 @@ export function resolveConfig(config: ZenginConfig, projectDir: string): Resolve
       css: (config.classes?.css ?? []).map((p) => resolve(projectDir, p)),
     },
     rules,
-    surfaces: (config.surfaces ?? []).map((s, i) => {
-      if (!s.name) throw new Error(`zengin config: surfaces[${i}] has no name`);
-      if (!s.include?.length) throw new Error(`zengin config: surface "${s.name}" has no include patterns`);
-      return {
-        name: s.name,
-        include: s.include,
-        ...(s.tokens ? { tokensPath: resolve(projectDir, s.tokens) } : {}),
-        components: s.components ?? {},
-      };
-    }),
+    profiles: readProfiles(config, projectDir),
   };
+}
+
+/**
+ * `profiles` was briefly called `surfaces`, which collided with the four surfaces the engine reaches you
+ * through. A config that still says `surfaces:` is refused by name rather than silently ignored, which would
+ * check every file against the base system and look like the feature simply not working.
+ */
+function readProfiles(config: ZenginConfig, projectDir: string): ResolvedProfile[] {
+  if ((config as { surfaces?: unknown }).surfaces) {
+    throw new Error("zengin config: `surfaces:` is now `profiles:`. Rename the key; nothing else changed.");
+  }
+  return (config.profiles ?? []).map((p, i) => {
+    if (!p.name) throw new Error(`zengin config: profiles[${i}] has no name`);
+    if (!p.include?.length) throw new Error(`zengin config: profile "${p.name}" has no include patterns`);
+    return {
+      name: p.name,
+      include: p.include,
+      ...(p.tokens ? { tokensPath: resolve(projectDir, p.tokens) } : {}),
+      components: p.components ?? {},
+    };
+  });
 }
 
 /** `auto` enables the Tailwind adapter when the project's package.json depends on tailwindcss. */

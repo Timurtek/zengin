@@ -19,8 +19,8 @@ scope:
 classes:
   tailwind: auto                  # auto | true | false; auto enables the adapter when package.json depends on tailwindcss
 
-# surfaces:                      # parts of the project that are a different design on purpose; first match wins
-#   - name: marketing            # a surface may change token values and a component's props, owns and
+# profiles:                      # parts of the project that are a different design on purpose; first match wins
+#   - name: marketing            # a profile may change token values and a component's props, owns and
 #     include: ["src/marketing/**"]  # className policy. It may not add or remove components.
 #     tokens: zengin/tokens.marketing.json
 #     components:

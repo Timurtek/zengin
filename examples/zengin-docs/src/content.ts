@@ -713,7 +713,7 @@ A marketing page and an application are not the same design. The marketing butto
 Until you can say that, the only ways to express it are to run two systems or to suppress a rule on every line, and both spell a deliberate difference as drift.
 
 \`\`\`yaml
-surfaces:
+profiles:
   - name: marketing
     include: ["src/marketing/**"]
     tokens: zengin/tokens.marketing.json
@@ -740,7 +740,7 @@ Add or remove a component. A different set of components is a different system, 
 
 ## In the rollup
 
-The inventory records which part checked each file, so a rollup shows the split rather than averaging two designs into one misleading number.
+The inventory records which profile checked each file, so a rollup shows the split rather than averaging two designs into one misleading number.
 
 ## Next
 
@@ -877,7 +877,7 @@ rules:
     severity: error
     map: { "@headlessui/react#Dialog": Dialog }
 
-surfaces:
+profiles:
   - name: marketing
     include: ["src/marketing/**"]
     tokens: zengin/tokens.marketing.json
@@ -903,9 +903,9 @@ See [Scope and ownership](#scope). \`foundations\` is where literals are allowed
 
 Each rule takes a severity, or \`off\`, or an object. Common options are \`allow: semantic|palette\` on \`color-literal\`, \`except: [globs]\` on any rule, and \`map\` on \`component-substitution\`.
 
-## surfaces
+## profiles
 
-See [A different design in one place](#declared-differences). Optional, and empty by default, which is the single-design case.`,
+See [A different design in one place](#declared-differences). Optional, and empty by default, which is the single-design case. The key was called \`surfaces\` in 0.2.0, which collided with the four surfaces the engine reaches you through; a config that still says \`surfaces:\` is refused by name.`,
   },
 ];
 

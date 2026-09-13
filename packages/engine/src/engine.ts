@@ -12,7 +12,7 @@ import { Scope } from "./scope.js";
 import { applySuppressions } from "./suppress.js";
 import { ComponentIndex } from "./system/components.js";
 import { loadTokens, toThemeCss, TokenIndex } from "./system/tokens.js";
-import { resolveSurfaces, type SurfaceView } from "./system/surfaces.js";
+import { resolveProfiles, type ProfileView } from "./system/profiles.js";
 import type { ComponentManifest, FileInput, FileInventory, FileKind, Inventory, InventoryTotals, ResolvedConfig, SystemDefinitions, Violation } from "./types.js";
 import { parseSuppressions } from "./suppress.js";
 import { readOwnedPragma } from "./scope.js";
@@ -42,19 +42,19 @@ export function loadDefinitions(dir: string): SystemDefinitions {
 
 export async function createEngine(config: ResolvedConfig, definitions?: SystemDefinitions): Promise<Engine> {
   const defs = definitions ?? loadDefinitions(config.system.definitionsDir);
-  // A project with surfaces checks each file against the definitions for the surface that claims it, so the
-  // indexes are built per view rather than once. A project without surfaces has exactly one view, the base,
+  // A project with profiles checks each file against the definitions for the profile that claims it, so the
+  // indexes are built per view rather than once. A project without profiles has exactly one view, the base,
   // and pays nothing for the machinery.
-  const surfaces = resolveSurfaces(config, defs);
-  const indexes = new Map<SurfaceView, { tokens: TokenIndex; components: ComponentIndex }>();
-  for (const view of surfaces.views) {
+  const profiles = resolveProfiles(config, defs);
+  const indexes = new Map<ProfileView, { tokens: TokenIndex; components: ComponentIndex }>();
+  for (const view of profiles.views) {
     indexes.set(view, {
       tokens: new TokenIndex(view.definitions.tokens),
       components: new ComponentIndex(view.definitions.components, config.system.sources, config.rules["component-substitution"].map),
     });
   }
-  const indexFor = (view: SurfaceView) => indexes.get(view) ?? indexes.get(surfaces.base)!;
-  const { tokens, components } = indexFor(surfaces.base);
+  const indexFor = (view: ProfileView) => indexes.get(view) ?? indexes.get(profiles.base)!;
+  const { tokens, components } = indexFor(profiles.base);
   const projectRules = config.classes.css
     .filter((p) => existsSync(p))
     .map((p) => projectTailwindRules(readFileSync(p, "utf8")))
@@ -62,11 +62,11 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
   const utility: UtilityResolver | undefined = config.classes.tailwind
     ? await createTailwindResolver(toThemeCss(defs.tokens), projectRules)
     : undefined;
-  // Utilities compile from the theme, so a surface with its own tokens compiles its own.
-  const utilityFor = new Map<SurfaceView, UtilityResolver | undefined>([[surfaces.base, utility]]);
+  // Utilities compile from the theme, so a profile with its own tokens compiles its own.
+  const utilityFor = new Map<ProfileView, UtilityResolver | undefined>([[profiles.base, utility]]);
   if (config.classes.tailwind) {
-    for (const view of surfaces.views) {
-      if (view === surfaces.base) continue;
+    for (const view of profiles.views) {
+      if (view === profiles.base) continue;
       utilityFor.set(view, view.definitions.tokens === defs.tokens ? utility : await createTailwindResolver(toThemeCss(view.definitions.tokens), projectRules));
     }
   }
@@ -78,12 +78,12 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
   const external = StylesheetIndex.from(config.classes.css.filter((p) => existsSync(p)).map((p) => ({ path: normalize(p), content: readFileSync(p, "utf8") })));
   let loaded = new StylesheetIndex();
 
-  const checkWith = (file: FileInput, resolverFor: (view: SurfaceView) => ClassResolver): Violation[] => {
+  const checkWith = (file: FileInput, resolverFor: (view: ProfileView) => ClassResolver): Violation[] => {
     const path = normalize(file.path);
     const kind = scope.kindOf(path, file.content);
     if (kind === "excluded") return [];
 
-    const view = surfaces.viewFor(path);
+    const view = profiles.viewFor(path);
     const index = indexFor(view);
     const resolver = resolverFor(view);
     const ctx: RuleContext = {
@@ -131,8 +131,8 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
     check(files) {
       const batch = StylesheetIndex.from(files.map((f) => ({ ...f, path: normalize(f.path) })));
       const merged = loaded.merge(batch);
-      const cache = new Map<SurfaceView, ClassResolver>();
-      const resolverFor = (view: SurfaceView): ClassResolver => {
+      const cache = new Map<ProfileView, ClassResolver>();
+      const resolverFor = (view: ProfileView): ClassResolver => {
         let r = cache.get(view);
         if (!r) {
           r = combineResolvers(merged, utilityFor.get(view) ?? utility, external);
@@ -151,8 +151,8 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
         const path = normalize(f.path);
         const kind = scope.kindOf(path, f.content);
         if (kind === "excluded") continue;
-        const surface = surfaces.viewFor(path).name;
-        const entry: FileInventory = { file: path, kind, ...(surface ? { surface } : {}), suppressions: [], components: {} };
+        const profile = profiles.viewFor(path).name;
+        const entry: FileInventory = { file: path, kind, ...(profile ? { profile } : {}), suppressions: [], components: {} };
         if (kind === "owned") {
           const pragma = readOwnedPragma(f.content);
           entry.owned = { file: path, ...(pragma?.component ? { component: pragma.component } : {}), ...(pragma?.forkedFrom ? { forkedFrom: pragma.forkedFrom } : {}) };
