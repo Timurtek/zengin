@@ -1,0 +1,26 @@
+{
+  "title": "Archivo Black and Public Sans",
+  "description": "Archivo Black for headlines, Public Sans for text, Space Mono for code. Loud on purpose; the brutal theme's own.",
+  "display": {
+    "family": "Archivo Black",
+    "weights": [
+      400
+    ]
+  },
+  "sans": {
+    "family": "Public Sans",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "mono": {
+    "family": "Space Mono",
+    "weights": [
+      400,
+      700
+    ]
+  }
+}

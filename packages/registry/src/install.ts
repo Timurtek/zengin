@@ -43,8 +43,8 @@ export function installItems(opts: { projectDir: string; items: RegistryItem[]; 
       write(f.path, content);
     }
 
-    if (item.type === "component" && item.manifest) {
-      mergeManifest(projectDir, { ...item.manifest, export: { ...item.manifest.export, from: LAYOUT.alias } });
+    if (item.manifest) {
+      mergeManifest(projectDir, { ...item.manifest, export: item.type === "component" ? { ...item.manifest.export, from: LAYOUT.alias } : item.manifest.export });
       const css = item.files.find((f) => f.kind === "style" && f.path.startsWith(LAYOUT.componentsDir));
       if (css) addStyleImport(projectDir, css.path);
       addBarrelExport(projectDir, item.name);

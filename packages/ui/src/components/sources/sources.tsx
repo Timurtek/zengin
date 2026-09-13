@@ -1,5 +1,6 @@
 import { forwardRef, useState, type HTMLAttributes } from "react";
 import { cx } from "../../internal/cx.js";
+import { Icon } from "../../internal/icons.js";
 
 export interface Source {
   url: string;
@@ -19,9 +20,7 @@ export const Sources = forwardRef<HTMLDivElement, SourcesProps>(function Sources
     <div ref={ref} className={cx("z-sources", className)} data-open={open || undefined} {...rest}>
       <button type="button" className="z-sources__summary z-focusable" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
         {sources.length} source{sources.length === 1 ? "" : "s"}
-        <svg className="z-sources__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <Icon.ChevronDown className="z-sources__chevron" />
       </button>
       {open && (
         <ol className="z-sources__list">

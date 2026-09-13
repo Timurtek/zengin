@@ -93,6 +93,12 @@ zengin tokens                                 # after editing zengin/tokens*.jso
 ```bash
 zengin theme                                  # list: brutal, default, meadow, plex, spec-sheet, zengin
 zengin theme plex                             # swap the brand file and the fonts link; nothing else changes
+zengin fonts                                  # list: archivo, brutal, dm, fraunces, geist, inter, manrope, playfair, plex, space
+zengin fonts fraunces                         # the three font tokens and the fonts link; palette untouched
+zengin fonts geist --self-host                # woff2 files into public/fonts, @font-face in src/theme/fonts.css
+zengin brand --name Acme --fonts plex         # a pairing instead of --font-display/--font-sans/--font-mono
+zengin icons                                  # list: lucide, tabler, phosphor, heroicons, feather, radix, material, bootstrap
+zengin icons tabler                           # every <Icon.Name /> draws from Tabler; direct icon-package imports become violations
 zengin create acme --theme spec-sheet         # or at creation
 
 zengin brand --name "Acme Reviews" --logo logo.svg --font-display Archivo --font-sans Inter --radius round

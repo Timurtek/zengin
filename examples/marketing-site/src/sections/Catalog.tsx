@@ -9,6 +9,7 @@ interface Item {
   description: string;
   registryDependencies: string[];
   fonts?: string[];
+  pairing?: { display: { family: string }; sans: { family: string }; mono: { family: string } };
 }
 
 interface Index {
@@ -29,6 +30,8 @@ export function Catalog() {
   const [index, setIndex] = useState<Index | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [theme, setTheme] = useState(AUTHORED);
+  const [fonts, setFonts] = useState(AUTHORED);
+  const [icons, setIcons] = useState(AUTHORED);
   const embedded = typeof window !== "undefined" && window.self !== window.top;
 
   useEffect(() => {
@@ -40,7 +43,10 @@ export function Catalog() {
 
   const templates = index?.items.filter((i) => i.type === "template") ?? [];
   const themes = index?.items.filter((i) => i.type === "theme") ?? [];
-  const suffix = theme === AUTHORED ? "" : `?theme=${theme}`;
+  const pairings = index?.items.filter((i) => i.type === "fonts") ?? [];
+  const iconSets = index?.items.filter((i) => i.type === "icons") ?? [];
+  const query = [theme === AUTHORED ? "" : `theme=${theme}`, fonts === AUTHORED ? "" : `fonts=${fonts}`, icons === AUTHORED ? "" : `icons=${icons}`].filter(Boolean).join("&");
+  const suffix = query ? `?${query}` : "";
 
   return (
     <section className="section" id="templates">
@@ -51,7 +57,7 @@ export function Catalog() {
             <h2 className="title">Start from something real</h2>
             <p className="lead">
               Every template is a working app on Zengin UI, served here from the same registry the CLI reads. Pick a theme and every preview changes, because a brand is one
-              file.
+              file. Pick a pairing and the type changes on its own, because fonts are three tokens. Pick an icon set and every glyph follows, because icons are names.
             </p>
           </div>
         </div>
@@ -69,13 +75,39 @@ export function Catalog() {
           </Tabs>
         )}
 
+        {index && pairings.length > 0 && (
+          <Tabs value={fonts} onValueChange={setFonts} variant="line" className="catalog__themes">
+            <Tabs.List aria-label="Font pairing for the previews">
+              <Tabs.Trigger value={AUTHORED}>Theme's fonts</Tabs.Trigger>
+              {pairings.map((p) => (
+                <Tabs.Trigger key={p.name} value={p.name.replace(/^fonts-/, "")}>
+                  {p.title}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+          </Tabs>
+        )}
+
+        {index && iconSets.length > 0 && (
+          <Tabs value={icons} onValueChange={setIcons} variant="line" className="catalog__themes">
+            <Tabs.List aria-label="Icon set for the previews">
+              <Tabs.Trigger value={AUTHORED}>Zengin icons</Tabs.Trigger>
+              {iconSets.map((s) => (
+                <Tabs.Trigger key={s.name} value={s.name.replace(/^icons-/, "")}>
+                  {s.title}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+          </Tabs>
+        )}
+
         {error && <p className="catalog__error">The previews need the registry this site serves at /r, and {error}. On the deployed site they are live.</p>}
 
         <div className="catalog">
           {index
             ? templates.map((t) => (
                 // index.html spelled out: a dev server's SPA fallback would answer the bare directory with this page.
-                <TemplateCard key={t.name} template={t} src={`/templates/${t.name}/index.html${suffix}`} theme={theme === AUTHORED ? undefined : theme} embedded={embedded} />
+                <TemplateCard key={t.name} template={t} src={`/templates/${t.name}/index.html${suffix}`} theme={theme === AUTHORED ? undefined : theme} fonts={fonts === AUTHORED ? undefined : fonts} icons={icons === AUTHORED ? undefined : icons} embedded={embedded} />
               ))
             : !error && [0, 1, 2].map((i) => <SkeletonCard key={i} />)}
         </div>
@@ -84,7 +116,7 @@ export function Catalog() {
   );
 }
 
-function TemplateCard({ template, src, theme, embedded }: { template: Item; src: string; theme?: string; embedded: boolean }) {
+function TemplateCard({ template, src, theme, fonts, icons, embedded }: { template: Item; src: string; theme?: string; fonts?: string; icons?: string; embedded: boolean }) {
   const frame = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.4);
 
@@ -100,7 +132,7 @@ function TemplateCard({ template, src, theme, embedded }: { template: Item; src:
   }, []);
 
   const components = template.registryDependencies.filter((d) => d !== "cx" && d !== "foundation").length;
-  const command = `npx zengin create my-app --template ${template.name}${theme ? ` --theme ${theme}` : ""}`;
+  const command = `npx zengin create my-app --template ${template.name}${theme ? ` --theme ${theme}` : ""}${fonts || icons ? ` && cd my-app` : ""}${fonts ? ` && npx zengin fonts ${fonts}` : ""}${icons ? ` && npx zengin icons ${icons}` : ""}`;
 
   return (
     <article className="catalog__card">

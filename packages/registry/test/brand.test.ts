@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, describe, expect, it } from "vitest";
-import { applyTheme, brandProject, buildRegistry, contrast, createProject, derivePalette, fontsHref, hexToOklch, listThemes, oklchToHex, patchIndexHtml, primaryFromSvg, registryFromMemory, renderBrandCss } from "../src/index.js";
+import { applyFonts, applyPairingToCss, applyTheme, brandProject, buildRegistry, contrast, createProject, derivePalette, fontsHref, hexToOklch, listThemes, oklchToHex, patchIndexHtml, primaryFromSvg, registryFromMemory, listFonts, pairingFamilies, renderBrandCss } from "../src/index.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const registry = buildRegistry({ root });
@@ -158,5 +158,61 @@ describe("brandProject", () => {
     expect(s.primarySource).toBe("system");
     expect(s.primary).toBe("#2563EB");
     await expect(brandProject({ projectDir: dir, name: "Nova", primary: "blue" })).rejects.toThrow(/hex color/);
+  });
+});
+
+describe("fonts", () => {
+  it("are in the registry as pairings with three roles", async () => {
+    const pairings = await listFonts(source);
+    expect(pairings.map((p) => p.name)).toEqual(["archivo", "brutal", "dm", "fraunces", "geist", "inter", "manrope", "playfair", "plex", "space"]);
+    const inter = pairings.find((p) => p.name === "inter")!.pairing;
+    expect(inter.display).toEqual({ family: "Inter Tight", weights: [600, 700, 800] });
+    expect(inter.mono.family).toBe("JetBrains Mono");
+    expect(pairingFamilies(inter)).toEqual(["Inter Tight:600;700;800", "Inter:400;500;600;700", "JetBrains Mono:400;500"]);
+    expect(fontsHref(pairingFamilies(inter))).toBe("https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+  });
+
+  it("rewrite the three font tokens in a brand file, in every block, and add them when absent", () => {
+    const fraunces = { display: { family: "Fraunces", weights: [600, 700], serif: true }, sans: { family: "Source Sans 3", weights: [400, 700] }, mono: { family: "Source Code Pro", weights: [400] } };
+    const css = ":root,\n[data-theme=\"light\"] {\n  --font-sans: \"Inter\", sans-serif;\n  --color-primary: #000;\n}\n[data-theme=\"dark\"] {\n  --font-sans: \"Inter\", sans-serif;\n}\n";
+    const out = applyPairingToCss(css, fraunces);
+    expect(out.match(/--font-sans: "Source Sans 3", ui-sans-serif/g)).toHaveLength(2);
+    expect(out).toContain('--font-display: "Fraunces", "Source Sans 3", ui-serif, Georgia');
+    expect(out).toContain('--font-mono: "Source Code Pro", ui-monospace');
+    expect(out).toContain("--color-primary: #000;");
+    expect(out.indexOf("--font-display")).toBeLessThan(out.indexOf("--color-primary")); // added to the first block
+  });
+
+  it("apply to a created project: the tokens change, the palette stays, the link is pinned to the roles' weights", async () => {
+    const dir = join(tmp, "fonted");
+    await createProject({ dir, template: "blank", source, storybook: false, theme: "plex" });
+    const r = await applyFonts({ projectDir: dir, name: "fraunces", source });
+    expect(r.files).toEqual(["src/theme/brand.css", "index.html"]);
+    const css = readFileSync(join(dir, "src/theme/brand.css"), "utf8");
+    expect(css).toContain('--font-display: "Fraunces", "Source Sans 3", ui-serif');
+    expect(css).toContain("--color-primary: #0F62FE;"); // plex's palette is untouched
+    const html = readFileSync(join(dir, "index.html"), "utf8");
+    expect(html).toContain("family=Fraunces:wght@600;700");
+    expect(html).not.toContain("IBM+Plex");
+    expect(html.match(/data-zengin="fonts"/g)).toHaveLength(1);
+    await expect(applyFonts({ projectDir: dir, name: "nope", source })).rejects.toThrow(/Pairings: archivo, brutal/);
+  });
+
+  it("self-host: downloads the files Google serves and writes @font-face rules the app imports", async () => {
+    const dir = join(tmp, "hosted");
+    await createProject({ dir, template: "blank", source, storybook: false });
+    const fetcher = (async (url: string | URL | Request) => {
+      const u = String(url);
+      if (u.startsWith("https://fonts.googleapis.com/")) {
+        return new Response("@font-face { font-family: 'Geist'; src: url(https://fonts.gstatic.com/s/geist/v1/abc.woff2) format('woff2'); }\n", { status: 200 });
+      }
+      return new Response(new Uint8Array([0, 1, 2]), { status: 200 });
+    }) as typeof fetch;
+    const r = await applyFonts({ projectDir: dir, name: "geist", source, selfHost: true, fetcher });
+    expect(r.downloaded).toEqual(["public/fonts/v1-abc.woff2"]);
+    expect(r.files).toEqual(["src/theme/brand.css", "src/theme/fonts.css", "src/main.tsx", "index.html"]);
+    expect(readFileSync(join(dir, "src/theme/fonts.css"), "utf8")).toContain("url(/fonts/v1-abc.woff2)");
+    expect(readFileSync(join(dir, "src/main.tsx"), "utf8")).toContain('import "./theme/fonts.css";');
+    expect(readFileSync(join(dir, "index.html"), "utf8")).not.toContain("fonts.googleapis.com");
   });
 });

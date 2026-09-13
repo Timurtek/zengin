@@ -1,7 +1,8 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import type { ComponentManifest } from "@zengin/engine";
-import { LAYOUT, REGISTRY_SCHEMA, type Registry, type RegistryFile, type RegistryIndex, type RegistryItem } from "./schema.js";
+import { LAYOUT, REGISTRY_SCHEMA, type Registry, type RegistryFile, type RegistryIndex, type RegistryItem, type FontRole } from "./schema.js";
+import { ICON_SETS, REACT_ICONS_VERSION, renderIconsModule } from "./icons.js";
 import { buildTokensCss } from "./tokens.js";
 
 /**
@@ -20,12 +21,15 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
   // Every file in src/internal is a lib item; components depend on the ones they import.
   const LIB_DESCRIPTIONS: Record<string, string> = {
     cx: "Joins class names, dropping falsy values. Every component imports it.",
+    icons: "The icon vocabulary: one component per name, drawn by Zengin UI until zengin icons <set> points the names at a react-icons set.",
     chart: "Scales, paths and the width hook the chart components share.",
     markdown: "The markdown subset models produce, parsed into blocks for the Markdown component.",
   };
   for (const file of readdirSync(join(ui, "src", "internal")).sort()) {
-    if (!file.endsWith(".ts")) continue;
-    const name = file.replace(/\.ts$/, "");
+    if (!/\.tsx?$/.test(file)) continue;
+    const name = file.replace(/\.tsx?$/, "");
+    // The icons lib carries the Icon manifest: it shadows the icon packages, so the project draws from the vocabulary.
+    const manifest = name === "icons" ? manifests.find((m) => m.name === "Icon") : undefined;
     items.push({
       name: `lib-${name}`,
       type: "lib",
@@ -34,7 +38,8 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       dependencies: {},
       devDependencies: {},
       registryDependencies: [],
-      files: [{ path: `${LAYOUT.libDir}/${file}`, kind: "lib", content: read(join(ui, "src", "internal", file)) }],
+      files: [{ path: `${LAYOUT.libDir}/${file}`, kind: "lib", content: rewriteComponent(read(join(ui, "src", "internal", file))) }],
+      ...(manifest ? { manifest: { ...manifest, export: { from: "@/lib/icons", name: "Icon" } } } : {}),
     });
   }
 
@@ -175,6 +180,40 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       registryDependencies: [],
       files: [{ path: "src/theme/brand.css", kind: "theme", content }],
       fonts: t.fonts ?? [],
+    });
+  }
+
+  // Font pairings: one directory each under packages/ui/fonts, a fonts.json naming the three roles.
+  const fontsDir = join(ui, "fonts");
+  for (const dir of existsSync(fontsDir) ? readdirSync(fontsDir).sort() : []) {
+    const meta = join(fontsDir, dir, "fonts.json");
+    if (!existsSync(meta)) continue;
+    const f = JSON.parse(read(meta)) as { title: string; description: string; display: FontRole; sans: FontRole; mono: FontRole };
+    items.push({
+      name: `fonts-${dir}`,
+      type: "fonts",
+      title: f.title,
+      description: f.description,
+      dependencies: {},
+      devDependencies: {},
+      registryDependencies: [],
+      files: [],
+      pairing: { display: f.display, sans: f.sans, mono: f.mono },
+    });
+  }
+
+  // Icon sets: the vocabulary drawn by a react-icons module. Installing one replaces src/lib/icons.tsx.
+  for (const [name, set] of Object.entries(ICON_SETS)) {
+    items.push({
+      name: `icons-${name}`,
+      type: "icons",
+      title: set.title,
+      description: set.description,
+      dependencies: { "react-icons": REACT_ICONS_VERSION },
+      devDependencies: {},
+      registryDependencies: [],
+      files: [{ path: `${LAYOUT.libDir}/icons.tsx`, kind: "lib", content: renderIconsModule(name, set) }],
+      iconSet: { module: set.module, names: set.names },
     });
   }
 

@@ -1,0 +1,28 @@
+{
+  "title": "Geist",
+  "description": "Geist for headlines and text, Geist Mono for code. The current developer-tool voice.",
+  "display": {
+    "family": "Geist",
+    "weights": [
+      600,
+      700,
+      800
+    ]
+  },
+  "sans": {
+    "family": "Geist",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "mono": {
+    "family": "Geist Mono",
+    "weights": [
+      400,
+      500
+    ]
+  }
+}

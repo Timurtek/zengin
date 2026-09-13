@@ -1,6 +1,7 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { forwardRef, type ComponentPropsWithoutRef, type ElementRef, type ReactNode } from "react";
 import { cx } from "../../internal/cx.js";
+import { Icon } from "../../internal/icons.js";
 
 export type DialogSize = "sm" | "md" | "lg";
 
@@ -52,9 +53,7 @@ const Content = forwardRef<ElementRef<typeof RadixDialog.Content>, DialogContent
         {children}
         {showClose && (
           <RadixDialog.Close className="z-dialog__close z-focusable" aria-label="Close">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-            </svg>
+            <Icon.Close />
           </RadixDialog.Close>
         )}
       </RadixDialog.Content>

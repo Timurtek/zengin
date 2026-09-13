@@ -46,10 +46,15 @@ export function patchIndexHtml(projectDir: string, patch: HtmlPatch): boolean {
   return true;
 }
 
-/** The Google Fonts css2 href for the families, at the four weights components use. */
+/** The Google Fonts css2 href for the families, at the four weights components use unless `Family:400;700` pins them. */
 export function fontsHref(families: string[]): string {
   const unique = [...new Set(families.map((f) => f.trim()).filter(Boolean))];
-  const params = unique.map((f) => `family=${encodeURIComponent(f).replace(/%20/g, "+")}:wght@400;500;600;700`).join("&");
+  const params = unique
+    .map((f) => {
+      const [family, weights] = f.split(":");
+      return `family=${encodeURIComponent(family!.trim()).replace(/%20/g, "+")}:wght@${(weights ?? "400;500;600;700").trim()}`;
+    })
+    .join("&");
   return `https://fonts.googleapis.com/css2?${params}&display=swap`;
 }
 

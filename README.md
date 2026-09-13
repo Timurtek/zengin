@@ -29,7 +29,9 @@ npx zengin create acme --template saas        # or: chat, blank, marketing, revi
 npm run mock                                  # regenerate the SaaS template's rows from mock.json
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
-npx zengin theme plex                          # or: default, meadow, spec-sheet, brutal
+npx zengin theme plex                          # or: default, meadow, spec-sheet, brutal, zengin
+npx zengin fonts fraunces                      # a font pairing: headlines, text, code; --self-host keeps Google out of the runtime
+npx zengin icons tabler                        # the icon vocabulary drawn by a react-icons set; the names in your code stay
 npx zengin brand --name Acme --logo logo.svg  # your own palette, favicon and wordmark from one color
 ```
 

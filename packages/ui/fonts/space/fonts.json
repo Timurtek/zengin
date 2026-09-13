@@ -1,0 +1,27 @@
+{
+  "title": "Space Grotesk",
+  "description": "Space Grotesk for headlines and text, Space Mono for code. Rounded, slightly odd, memorable.",
+  "display": {
+    "family": "Space Grotesk",
+    "weights": [
+      600,
+      700
+    ]
+  },
+  "sans": {
+    "family": "Space Grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "mono": {
+    "family": "Space Mono",
+    "weights": [
+      400,
+      700
+    ]
+  }
+}

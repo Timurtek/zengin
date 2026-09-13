@@ -255,7 +255,7 @@ system:
 scope:
   include: ["src/**/*.{ts,tsx,css}"]
   foundations: ["src/theme/**", "src/styles/**"]   # literals live here and nowhere else
-  ownership: ["${LAYOUT.componentsDir}/**"]           # yours to style; the foundation rules still apply inside
+  ownership: ["${LAYOUT.componentsDir}/**", "${LAYOUT.libDir}/**"]   # yours; the foundation rules still apply inside
 
 rules:
   color-literal: { severity: error, allow: semantic }

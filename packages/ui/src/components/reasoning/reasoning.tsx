@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useState, type HTMLAttributes } from "react";
 import { cx } from "../../internal/cx.js";
+import { Icon } from "../../internal/icons.js";
 import { Markdown } from "../markdown/markdown.js";
 
 export interface ReasoningProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
@@ -35,9 +36,7 @@ export const Reasoning = forwardRef<HTMLDivElement, ReasoningProps>(function Rea
       >
         <span className="z-reasoning__dot" aria-hidden="true" />
         {summary}
-        <svg className="z-reasoning__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <Icon.ChevronDown className="z-reasoning__chevron" />
       </button>
       {open && (
         <div className="z-reasoning__body">

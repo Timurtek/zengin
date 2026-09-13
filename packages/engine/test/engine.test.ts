@@ -207,6 +207,18 @@ describe("color literals", () => {
   });
 });
 
+describe("shadowed sources", () => {
+  it("match globs, so one manifest entry covers every react-icons module", async () => {
+    const { ComponentIndex } = await import("../src/system/components.js");
+    const idx = new ComponentIndex([{ name: "Icon", export: { from: "@/lib/icons", name: "Icon" }, replaces: ["react-icons/*#*", "lucide-react#*"] }], ["@/components/ui"]);
+    expect(idx.replacementFor("react-icons/lu", "LuSearch")?.component.name).toBe("Icon");
+    expect(idx.replacementFor("react-icons/hi2", "HiOutlineXMark")?.component.name).toBe("Icon");
+    expect(idx.replacementFor("lucide-react", "Search")?.component.name).toBe("Icon");
+    expect(idx.replacementFor("react-icons", "IconBase")).toBeUndefined();
+    expect(idx.replacementFor("@tabler/icons-react", "IconX")).toBeUndefined();
+  });
+});
+
 describe("config", () => {
   it("compares semver triples", () => {
     expect(compareVersions("1.3.0", "1.2.0")).toBeGreaterThan(0);

@@ -12,7 +12,7 @@ export class ComponentIndex {
   /** intrinsic element -> component that replaces it */
   readonly intrinsic = new Map<string, ComponentManifest>();
   /** `source#Name` or `source#*` -> component */
-  private readonly externals: { source: string; name: string; component: ComponentManifest }[] = [];
+  private readonly externals: { source: string; matches: (s: string) => boolean; name: string; component: ComponentManifest }[] = [];
   private readonly isSystemSource: (s: string) => boolean;
 
   constructor(
@@ -37,7 +37,8 @@ export class ComponentIndex {
     if (hash === -1) {
       this.intrinsic.set(pattern, component);
     } else {
-      this.externals.push({ source: pattern.slice(0, hash), name: pattern.slice(hash + 1), component });
+      const source = pattern.slice(0, hash);
+      this.externals.push({ source, matches: source.includes("*") ? picomatch(source) : (s: string) => s === source, name: pattern.slice(hash + 1), component });
     }
   }
 
@@ -50,7 +51,7 @@ export class ComponentIndex {
   /** Resolves an import to the system component that replaces it, when the source is shadowed. */
   replacementFor(source: string, importedName: string): SubstitutionTarget | undefined {
     for (const e of this.externals) {
-      if (e.source !== source) continue;
+      if (!e.matches(source)) continue;
       if (e.name === "*" || e.name === importedName) {
         const migration =
           e.component.migrations?.[`${source}#${importedName}`] ?? e.component.migrations?.[`${source}#*`];

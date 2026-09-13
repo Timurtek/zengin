@@ -1,0 +1,28 @@
+{
+  "title": "Fraunces and Source Sans",
+  "description": "A soft serif with character for headlines, Source Sans 3 for text, Source Code Pro for code. Editorial.",
+  "display": {
+    "family": "Fraunces",
+    "weights": [
+      600,
+      700
+    ],
+    "serif": true
+  },
+  "sans": {
+    "family": "Source Sans 3",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "mono": {
+    "family": "Source Code Pro",
+    "weights": [
+      400,
+      500
+    ]
+  }
+}

@@ -4,17 +4,38 @@
   "description": "The Zengin registry: components, templates and definitions as installable items, plus the project generator behind `zengin create` and `zengin add`.",
   "license": "MIT",
   "type": "module",
-  "keywords": ["design-system", "registry", "scaffold", "generator", "zengin"],
-  "repository": { "type": "git", "url": "git+https://github.com/Timurtek/zengin.git", "directory": "packages/registry" },
+  "keywords": [
+    "design-system",
+    "registry",
+    "scaffold",
+    "generator",
+    "zengin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Timurtek/zengin.git",
+    "directory": "packages/registry"
+  },
   "homepage": "https://github.com/Timurtek/zengin/tree/main/packages/registry#readme",
   "bugs": "https://github.com/Timurtek/zengin/issues",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
-  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -25,6 +46,7 @@
   },
   "devDependencies": {
     "@types/node": "^22",
+    "react-icons": "^5.7.0",
     "typescript": "^5.9.2",
     "vitest": "^5.0.0"
   }

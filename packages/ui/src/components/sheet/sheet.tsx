@@ -1,6 +1,7 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { createContext, forwardRef, useContext, type ComponentPropsWithoutRef, type ElementRef, type ReactNode } from "react";
 import { cx } from "../../internal/cx.js";
+import { Icon } from "../../internal/icons.js";
 
 export type SheetSide = "right" | "left" | "top" | "bottom";
 export type SheetSize = "sm" | "md" | "lg";
@@ -49,9 +50,7 @@ const Content = forwardRef<ElementRef<typeof RadixDialog.Content>, SheetContentP
         {children}
         {showClose && (
           <RadixDialog.Close className="z-sheet__close z-focusable" aria-label="Close">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-            </svg>
+            <Icon.Close />
           </RadixDialog.Close>
         )}
       </RadixDialog.Content>

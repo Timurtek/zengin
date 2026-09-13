@@ -1,6 +1,7 @@
 import * as RadixSelect from "@radix-ui/react-select";
 import { forwardRef, useId, type ComponentPropsWithoutRef, type ElementRef, type ReactNode } from "react";
 import { cx } from "../../internal/cx.js";
+import { Icon } from "../../internal/icons.js";
 
 export type SelectSize = "sm" | "md" | "lg";
 
@@ -52,9 +53,7 @@ const Root = forwardRef<HTMLButtonElement, SelectProps>(function Select(
             <RadixSelect.Value placeholder={placeholder} />
           </span>
           <RadixSelect.Icon className="z-select__chevron" aria-hidden="true">
-            <svg viewBox="0 0 16 16" fill="none">
-              <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <Icon.ChevronDown />
           </RadixSelect.Icon>
         </RadixSelect.Trigger>
         <RadixSelect.Portal>
@@ -85,9 +84,7 @@ const Root = forwardRef<HTMLButtonElement, SelectProps>(function Select(
 
 function Chevron({ up = false }: { up?: boolean }) {
   return (
-    <svg viewBox="0 0 16 16" fill="none" style={up ? { transform: "rotate(180deg)" } : undefined}>
-      <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    up ? <Icon.ChevronUp /> : <Icon.ChevronDown />
   );
 }
 
@@ -98,9 +95,7 @@ const Item = forwardRef<ElementRef<typeof RadixSelect.Item>, SelectItemProps>(fu
     <RadixSelect.Item ref={ref} className={cx("z-select__item", className)} {...rest}>
       <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
       <RadixSelect.ItemIndicator className="z-select__indicator" aria-hidden="true">
-        <svg viewBox="0 0 16 16" fill="none">
-          <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <Icon.Check strokeWidth={2} />
       </RadixSelect.ItemIndicator>
     </RadixSelect.Item>
   );

@@ -20,7 +20,7 @@ describe("buildRegistry", () => {
       "tabs", "text-area", "text-field", "toast", "tool-call", "tooltip",
     ]);
     expect(by("template")).toEqual(["blank", "marketing", "review", "saas", "chat"]);
-    expect(by("lib")).toEqual(["lib-chart", "lib-cx", "lib-markdown"]);
+    expect(by("lib")).toEqual(["lib-chart", "lib-cx", "lib-icons", "lib-markdown"]);
     // A component that composes others depends on them, so `zengin add markdown` brings code-block and table.
     expect(registry.items.find((i) => i.name === "markdown")!.registryDependencies).toEqual(expect.arrayContaining(["lib-markdown", "code-block", "table"]));
     // A chart component depends on the chart helper as well as cx, and imports both through the alias.
@@ -131,7 +131,7 @@ describe("createProject", () => {
     const added = installItems({ projectDir: dir, items, version: registry.version });
     expect(added.written).toContain("src/components/ui/dialog/dialog.tsx");
     expect(added.skipped).toContain("src/lib/cx.ts"); // already there from create
-    expect(added.components.sort()).toEqual(["Button", "Card", "Dialog"]);
+    expect(added.components.sort()).toEqual(["Button", "Card", "Dialog", "Icon"]);
     expect(added.dependencies["@radix-ui/react-dialog"]).toBeDefined();
 
     // Still clean after the addition, with the new component contracted.

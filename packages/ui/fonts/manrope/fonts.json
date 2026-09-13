@@ -1,0 +1,28 @@
+{
+  "title": "Manrope",
+  "description": "Manrope for headlines and text, Fira Code for code. Geometric and warm; reads well small.",
+  "display": {
+    "family": "Manrope",
+    "weights": [
+      600,
+      700,
+      800
+    ]
+  },
+  "sans": {
+    "family": "Manrope",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "mono": {
+    "family": "Fira Code",
+    "weights": [
+      400,
+      500
+    ]
+  }
+}

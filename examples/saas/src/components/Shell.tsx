@@ -1,13 +1,12 @@
-import { Avatar, Badge, Button, Menu, Popover, Sheet, TextField, Tooltip } from "@zengin/ui";
+import { Avatar, Badge, Button, Menu, Popover, Sheet, TextField, Tooltip, Icon } from "@zengin/ui";
 import { useState, type ComponentType, type ReactNode } from "react";
-import { Icon } from "../icons";
 
 export type Page = "overview" | "customers" | "billing" | "settings";
 
 const NAV: { page: Page; label: string; icon: ComponentType }[] = [
-  { page: "overview", label: "Overview", icon: Icon.Overview },
-  { page: "customers", label: "Customers", icon: Icon.Customers },
-  { page: "billing", label: "Billing", icon: Icon.Billing },
+  { page: "overview", label: "Overview", icon: Icon.Grid },
+  { page: "customers", label: "Customers", icon: Icon.Users },
+  { page: "billing", label: "Billing", icon: Icon.CreditCard },
   { page: "settings", label: "Settings", icon: Icon.Settings },
 ];
 

@@ -33,3 +33,4 @@ export { Sources, type SourcesProps, type Source } from "./components/sources/so
 export { Suggestions, type SuggestionsProps } from "./components/suggestions/suggestions.js";
 export { Loader, type LoaderProps, type LoaderSize } from "./components/loader/loader.js";
 export { parseMarkdown, type Block as MarkdownBlock, type Inline as MarkdownInline } from "./internal/markdown.js";
+export { Icon, iconNames, setIconSet, type IconComponent, type IconName, type IconProps, type IconSet } from "./internal/icons.js";

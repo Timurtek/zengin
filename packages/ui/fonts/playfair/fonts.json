@@ -1,0 +1,29 @@
+{
+  "title": "Playfair and Lora",
+  "description": "Serif on serif: Playfair Display for headlines, Lora for text, IBM Plex Mono for code. For the long read.",
+  "display": {
+    "family": "Playfair Display",
+    "weights": [
+      600,
+      700
+    ],
+    "serif": true
+  },
+  "sans": {
+    "family": "Lora",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "serif": true
+  },
+  "mono": {
+    "family": "IBM Plex Mono",
+    "weights": [
+      400,
+      500
+    ]
+  }
+}

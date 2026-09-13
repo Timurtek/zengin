@@ -1,6 +1,5 @@
-import { Badge, Button, Card, Dialog, Progress, Select, Separator, Switch, Table, toast } from "@zengin/ui";
+import { Badge, Button, Card, Dialog, Progress, Select, Separator, Switch, Table, toast, Icon } from "@zengin/ui";
 import { useState } from "react";
-import { Icon } from "../icons";
 import { invoices, money, quotas } from "../data";
 
 const INVOICE_TONE = { paid: "success", open: "primary", failed: "danger" } as const;

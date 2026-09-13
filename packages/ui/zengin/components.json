@@ -2095,5 +2095,41 @@
     "states": [
       "default"
     ]
+  },
+  {
+    "name": "Icon",
+    "since": "0.1.0",
+    "export": {
+      "from": "@zengin/ui",
+      "name": "Icon"
+    },
+    "replaces": [
+      "react-icons/*#*",
+      "lucide-react#*",
+      "@tabler/icons-react#*",
+      "@phosphor-icons/react#*",
+      "@heroicons/react/*#*",
+      "@radix-ui/react-icons#*"
+    ],
+    "props": {},
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {},
+    "states": [
+      "default"
+    ],
+    "migrations": {
+      "react-icons/*#*": "Draw from the vocabulary: <Icon.Search />. Pick the set for the whole project with zengin icons <set>; the names stay."
+    }
   }
 ]

@@ -1,0 +1,27 @@
+{
+  "title": "DM Serif and DM Sans",
+  "description": "DM Serif Display for headlines, DM Sans for text, DM Mono for code. A serif headline without the newspaper.",
+  "display": {
+    "family": "DM Serif Display",
+    "weights": [
+      400
+    ],
+    "serif": true
+  },
+  "sans": {
+    "family": "DM Sans",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "mono": {
+    "family": "DM Mono",
+    "weights": [
+      400,
+      500
+    ]
+  }
+}

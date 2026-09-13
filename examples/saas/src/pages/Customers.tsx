@@ -1,6 +1,5 @@
-import { Avatar, Badge, Button, Card, Menu, Progress, Select, Sheet, Sparkline, Table, TextField, toast } from "@zengin/ui";
+import { Avatar, Badge, Button, Card, Menu, Progress, Select, Sheet, Sparkline, Table, TextField, toast, Icon } from "@zengin/ui";
 import { useMemo, useState } from "react";
-import { Icon } from "../icons";
 import { customers, money, PLANS, type Customer, type CustomerStatus } from "../data";
 
 const STATUS_TONE: Record<CustomerStatus, "success" | "primary" | "warning" | "neutral"> = { active: "success", trial: "primary", "past-due": "warning", churned: "neutral" };

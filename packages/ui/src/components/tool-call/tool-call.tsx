@@ -1,5 +1,6 @@
 import { forwardRef, useState, type HTMLAttributes } from "react";
 import { cx } from "../../internal/cx.js";
+import { Icon } from "../../internal/icons.js";
 import { Badge } from "../badge/badge.js";
 import { CodeBlock } from "../code-block/code-block.js";
 
@@ -48,9 +49,7 @@ export const ToolCall = forwardRef<HTMLDivElement, ToolCallProps>(function ToolC
         <Badge tone={TONE[state]} size="sm">
           {LABEL[state]}
         </Badge>
-        <svg className="z-toolcall__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <Icon.ChevronDown className="z-toolcall__chevron" />
       </button>
       {open && (
         <div className="z-toolcall__body">

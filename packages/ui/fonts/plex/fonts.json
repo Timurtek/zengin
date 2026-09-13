@@ -1,0 +1,27 @@
+{
+  "title": "IBM Plex",
+  "description": "One family for everything: Plex Sans for headlines and text, Plex Mono for code. Engineering, without the coldness.",
+  "display": {
+    "family": "IBM Plex Sans",
+    "weights": [
+      600,
+      700
+    ]
+  },
+  "sans": {
+    "family": "IBM Plex Sans",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "mono": {
+    "family": "IBM Plex Mono",
+    "weights": [
+      400,
+      500
+    ]
+  }
+}

@@ -2,7 +2,22 @@ import type { ComponentManifest } from "@zengin/engine";
 
 export const REGISTRY_SCHEMA = "zengin-registry/1";
 
-export type ItemType = "component" | "template" | "lib" | "definitions" | "theme";
+export type ItemType = "component" | "template" | "lib" | "definitions" | "theme" | "fonts" | "icons";
+
+/** One typographic role: a Google Fonts family at the weights the components use. */
+export interface FontRole {
+  family: string;
+  weights: number[];
+  /** A serif face gets a serif fallback stack. */
+  serif?: boolean;
+}
+
+/** A pairing: headlines, text and code. */
+export interface FontPairing {
+  display: FontRole;
+  sans: FontRole;
+  mono: FontRole;
+}
 
 export type FileKind = "component" | "style" | "story" | "lib" | "template" | "definitions" | "theme";
 
@@ -27,8 +42,12 @@ export interface RegistryItem {
   files: RegistryFile[];
   /** For components: the manifest entry, with `export.from` already pointing at the project alias. */
   manifest?: ComponentManifest;
-  /** For themes: Google Fonts families the brand file expects, linked into index.html on apply. */
+  /** For themes: Google Fonts families the brand file expects, linked into index.html on apply. `Family:400;700` pins weights. */
   fonts?: string[];
+  /** For fonts items: the pairing. */
+  pairing?: FontPairing;
+  /** For icons items: the react-icons module and the vocabulary name -> export name map. */
+  iconSet?: { module: string; names: Record<string, string> };
   /** For templates: the repository directory the template is derived from, which the site builds as its live preview. */
   source?: string;
 }

@@ -3,7 +3,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaVariables, writePlugin } from "@zengin/figma";
 import type { ComponentManifest } from "@zengin/engine";
 import { generateMock, PRESETS, schemaFromPresets, type MockSchema } from "@zengin/mock";
-import { applyTheme, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, type BrandRadius } from "@zengin/registry";
+import { applyFonts, applyIcons, applyTheme, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zengin/registry";
 
 export interface ScaffoldOptions {
   registry?: string;
@@ -21,6 +21,10 @@ export interface ScaffoldOptions {
   primary?: string;
   fontDisplay?: string;
   fontSans?: string;
+  /** A registry pairing name, for brand. */
+  fonts?: string;
+  /** fonts: download the files into public/fonts instead of linking Google Fonts. */
+  selfHost?: boolean;
   fontMono?: string;
   radius?: BrandRadius;
   write: boolean;
@@ -47,11 +51,59 @@ export async function runTheme(name: string | undefined, opts: ScaffoldOptions, 
   return lines.join("\n");
 }
 
+/** `zengin fonts [name] [--self-host]`: list the registry's pairings, or set this project's three font tokens to one. */
+export async function runFonts(name: string | undefined, opts: ScaffoldOptions, cwd: string): Promise<string> {
+  const source = openRegistry(opts.registry);
+  if (!name || opts.list) {
+    const pairings = await listFonts(source);
+    const width = Math.max(...pairings.map((p) => p.name.length));
+    return [
+      `Pairings in ${source.location}:`,
+      ...pairings.map((p) => `  ${p.name.padEnd(width)}  ${p.pairing.display.family} / ${p.pairing.sans.family} / ${p.pairing.mono.family}. ${p.description}`),
+      "",
+      "Apply one: zengin fonts <name>   (--self-host downloads the files into public/fonts)",
+    ].join("\n");
+  }
+  const projectDir = opts.dir ? resolve(cwd, opts.dir) : cwd;
+  const r = await applyFonts({ projectDir, name, source, selfHost: opts.selfHost });
+  const lines = [`Set the ${r.name} pairing: ${r.pairing.display.family} for headlines, ${r.pairing.sans.family} for text, ${r.pairing.mono.family} for code.`, ...r.files.map((f) => `  wrote   ${f}`)];
+  if (r.downloaded.length) lines.push(`  fonts   ${r.downloaded.length} files in public/fonts, served from this project`);
+  else lines.push(r.html ? "  fonts   linked from Google Fonts in index.html" : "  fonts   no index.html to link them in; add the Google Fonts link yourself or pass --self-host");
+  lines.push("", "The palette, radii and shadows are untouched. zengin theme replaces all of it; zengin brand starts over from a color.");
+  return lines.join("\n");
+}
+
+/** `zengin icons [set]`: list the registry's icon sets, or point this project's icon vocabulary at one. */
+export async function runIcons(name: string | undefined, opts: ScaffoldOptions, cwd: string): Promise<string> {
+  const source = openRegistry(opts.registry);
+  if (!name || opts.list) {
+    const sets = await listIconSets(source);
+    const width = Math.max(...sets.map((s) => s.name.length));
+    return [`Icon sets in ${source.location}:`, ...sets.map((s) => `  ${s.name.padEnd(width)}  ${s.description} (${s.module})`), "", "Apply one: zengin icons <set>   The names stay: <Icon.Search /> draws from the set you pick."].join("\n");
+  }
+  const projectDir = opts.dir ? resolve(cwd, opts.dir) : cwd;
+  const r = await applyIcons({ projectDir, name, source });
+  const lines = [`Icons from ${r.name} (${r.module}).`, ...r.files.map((f) => `  ${r.replaced ? "rewrote" : "wrote  "} ${f}`)];
+  const deps = Object.entries(r.dependencies).map(([k, v]) => `${k}@${v}`);
+  if (deps.length) lines.push(`  needs   ${deps.join(", ")}: run npm install (or pnpm install)`);
+  lines.push("", "Every <Icon.Name /> in the project now draws from the set. Direct imports from an icon package are a component-substitution violation.");
+  return lines.join("\n");
+}
+
 /** `zengin brand --name <name> [--logo] [--primary] [--font-*] [--radius]`: a brand from one color. */
 export async function runBrand(opts: ScaffoldOptions, cwd: string): Promise<string> {
   if (!opts.name) throw new Error("zengin brand needs --name <product name>. Optional: --logo <file>, --primary <hex>, --font-display, --font-sans, --font-mono, --radius sharp|soft|round.");
   const projectDir = opts.dir ? resolve(cwd, opts.dir) : cwd;
-  const r = await brandProject({ projectDir, name: opts.name, logo: opts.logo, primary: opts.primary, fontDisplay: opts.fontDisplay, fontSans: opts.fontSans, fontMono: opts.fontMono, radius: opts.radius });
+  let { fontDisplay, fontSans, fontMono } = opts;
+  if (opts.fonts) {
+    // A pairing name from the registry stands in for the three families.
+    const pairing = (await listFonts(openRegistry(opts.registry))).find((p) => p.name === opts.fonts);
+    if (!pairing) throw new Error(`No pairing "${opts.fonts}". List them with: zengin fonts`);
+    fontDisplay ??= pairing.pairing.display.family;
+    fontSans ??= pairing.pairing.sans.family;
+    fontMono ??= pairing.pairing.mono.family;
+  }
+  const r = await brandProject({ projectDir, name: opts.name, logo: opts.logo, primary: opts.primary, fontDisplay, fontSans, fontMono, radius: opts.radius });
   const source = { option: "from --primary", logo: "from the logo", system: "the system default" }[r.primarySource];
   const lines = [`Branded ${r.name}: primary ${r.primary} (${source}).`, ...r.files.map((f) => `  wrote   ${f}`), "", "Contrast:"];
   for (const c of r.contrast) lines.push(`  ${c.ratio.toFixed(2).padStart(5)}  ${c.pair}`);
@@ -121,7 +173,7 @@ export function runRegistryBuild(opts: ScaffoldOptions, cwd: string): string {
   const out = resolve(cwd, opts.out);
   const registry = buildRegistry({ root });
   const written = writeRegistry(registry, out);
-  const counts = { component: 0, template: 0, theme: 0, lib: 0, definitions: 0 };
+  const counts = { component: 0, template: 0, theme: 0, lib: 0, definitions: 0, fonts: 0, icons: 0 };
   for (const i of registry.items) counts[i.type]++;
   return `Wrote ${written.length} files to ${relative(cwd, out) || "."}: ${counts.component} components, ${counts.template} templates, ${counts.theme} themes, ${counts.lib + counts.definitions} shared items (Zengin UI ${registry.version}).`;
 }

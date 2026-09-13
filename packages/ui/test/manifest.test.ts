@@ -74,6 +74,7 @@ describe("components.json against the implementation", () => {
     // A variant the CSS does not style is a variant that does nothing.
     const cssByComponent: Record<string, string> = {};
     for (const m of manifests) {
+      if (m.name === "Icon") continue; // drawn, not styled: the vocabulary lives in src/internal/icons.tsx
       const file = m.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
       cssByComponent[m.name] = readFileSync(join(root, "src", "components", file, `${file}.css`), "utf8");
     }

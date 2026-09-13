@@ -1,6 +1,7 @@
 import * as RadixToast from "@radix-ui/react-toast";
 import { useEffect, useState, type ReactNode } from "react";
 import { cx } from "../../internal/cx.js";
+import { Icon } from "../../internal/icons.js";
 
 export type ToastTone = "neutral" | "success" | "warning" | "danger";
 export type ToastPosition = "bottom-right" | "bottom-left" | "top-right" | "top-left";
@@ -87,9 +88,7 @@ function Provider({ position = "bottom-right", duration = 5000, className, child
             </RadixToast.Action>
           )}
           <RadixToast.Close className="z-toast__close z-focusable" aria-label="Dismiss">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-            </svg>
+            <Icon.Close />
           </RadixToast.Close>
         </RadixToast.Root>
       ))}

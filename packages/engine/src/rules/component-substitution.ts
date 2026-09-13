@@ -45,7 +45,9 @@ export const componentSubstitution: Rule = {
       if (replaced.length === 0) continue;
       const first = replaced[0]!;
       const names = [...new Set(replaced.map((r) => r.target.component.name))];
-      const systemImport = `import { ${names.join(", ")} } from "${pkg}";`;
+      // A component that lives outside the package (Icon from @/lib/icons) says where it is imported from.
+      const from = first.target.component.export.from || pkg;
+      const systemImport = `import { ${names.join(", ")} } from "${from}";`;
       const keep = remaining.length
         ? `import { ${remaining.map((r) => (r.imported === r.local ? r.local : `${r.imported} as ${r.local}`)).join(", ")} } from "${first.imp.source}";\n`
         : "";
@@ -54,7 +56,7 @@ export const componentSubstitution: Rule = {
         ctx.report(ID, {
           range: first.imp.declarationRange,
           found: first.imp.declarationSource,
-          message: `${first.imp.source} ${replaced.map((r) => r.imp.imported).join(", ")} is shadowed by the system. Use ${names.join(", ")} from ${pkg}.`,
+          message: `${first.imp.source} ${replaced.map((r) => r.imp.imported).join(", ")} is shadowed by the system. Use ${names.join(", ")} from ${from}.`,
           fix: {
             replace: keep + systemImport,
             confidence: remaining.length ? "nearest" : "exact",

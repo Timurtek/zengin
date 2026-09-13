@@ -1,0 +1,28 @@
+{
+  "title": "Inter Tight and Inter",
+  "description": "The house pairing: Inter Tight for headlines, Inter for text, JetBrains Mono for code. Tight, even, quiet.",
+  "display": {
+    "family": "Inter Tight",
+    "weights": [
+      600,
+      700,
+      800
+    ]
+  },
+  "sans": {
+    "family": "Inter",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "mono": {
+    "family": "JetBrains Mono",
+    "weights": [
+      400,
+      500
+    ]
+  }
+}

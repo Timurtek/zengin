@@ -5,7 +5,7 @@ import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { init, initFromPackage, initFromShadcn } from "./init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "./report.js";
-import { runAdd, runBrand, runCreate, runFigma, runMock, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
+import { runAdd, runBrand, runCreate, runFigma, runFonts, runIcons, runMock, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
 import { mkdirSync, writeFileSync } from "node:fs";
 
 const HELP = `zengin: design-system conformance, enforceable.
@@ -22,6 +22,8 @@ Usage:
   zengin create <dir>                 a new project on Zengin UI: components copied in, engine, MCP, hook, Storybook wired
   zengin add <items...>               components or templates from the registry into this project
   zengin theme [name]                 list the registry's themes, or swap this project's brand for one
+  zengin fonts [name]                 list the registry's font pairings, or set this project's three font tokens to one
+  zengin icons [set]                  list the registry's icon sets, or draw this project's icon vocabulary from one (react-icons)
   zengin brand --name <name>          a brand from a name, a logo or a color: tokens, favicon, wordmark, index.html
   zengin tokens                       zengin/tokens*.json to src/styles/generated/tokens.css
   zengin mock <presets...>            typed, seeded mock data modules into src/mock (users, customers, invoices, ...)
@@ -55,6 +57,10 @@ Brand options:
   --font-sans <f>       Google Fonts family for text
   --font-mono <f>       Google Fonts family for code
   --radius <r>          sharp | soft | round (default: soft, the system's own radii)
+  --fonts <pairing>     a registry pairing instead of the three --font-* families
+
+Fonts options:
+  --self-host           download the woff2 files into public/fonts and write src/theme/fonts.css; no Google Fonts at runtime
 
 Mock options:
   --schema <json>       your own entities instead of presets
@@ -98,7 +104,7 @@ Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 us
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "brand" | "figma" | "mock" | "help";
+  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "brand" | "figma" | "mock" | "help";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
@@ -126,7 +132,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       return v;
     };
     if (!a.startsWith("-") && !command) {
-      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "brand" || a === "figma" || a === "mock" || a === "help") command = a;
+      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "fonts" || a === "icons" || a === "brand" || a === "figma" || a === "mock" || a === "help") command = a;
       else {
         command = "check";
         positional.push(a);
@@ -171,6 +177,9 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a.startsWith("--logo=")) scaffold.logo = a.slice(7);
     else if (a === "--primary") scaffold.primary = value();
     else if (a.startsWith("--primary=")) scaffold.primary = a.slice(10);
+    else if (a === "--fonts") scaffold.fonts = value();
+    else if (a.startsWith("--fonts=")) scaffold.fonts = a.slice(8);
+    else if (a === "--self-host") scaffold.selfHost = true;
     else if (a === "--font-display") scaffold.fontDisplay = value();
     else if (a.startsWith("--font-display=")) scaffold.fontDisplay = a.slice(15);
     else if (a === "--font-sans") scaffold.fontSans = value();
@@ -294,6 +303,12 @@ async function main(): Promise<void> {
       return;
     case "figma":
       process.stdout.write(runFigma(parsed.positional[0], parsed.positional.slice(1), parsed.scaffold, process.cwd()) + "\n");
+      return;
+    case "icons":
+      process.stdout.write((await runIcons(parsed.positional[0], parsed.scaffold, process.cwd())) + "\n");
+      return;
+    case "fonts":
+      process.stdout.write((await runFonts(parsed.positional[0], parsed.scaffold, process.cwd())) + "\n");
       return;
     case "theme":
       process.stdout.write((await runTheme(parsed.positional[0], parsed.scaffold, process.cwd())) + "\n");

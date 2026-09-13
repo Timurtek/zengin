@@ -1,6 +1,7 @@
 import * as RadixMenu from "@radix-ui/react-dropdown-menu";
 import { forwardRef, type ComponentPropsWithoutRef, type ElementRef, type ReactNode } from "react";
 import { cx } from "../../internal/cx.js";
+import { Icon } from "../../internal/icons.js";
 
 export type MenuItemTone = "neutral" | "danger";
 
@@ -49,9 +50,7 @@ const CheckboxItem = forwardRef<ElementRef<typeof RadixMenu.CheckboxItem>, Compo
   return (
     <RadixMenu.CheckboxItem ref={ref} className={cx("z-menu__item z-menu__item--check", className)} {...rest}>
       <RadixMenu.ItemIndicator className="z-menu__indicator" aria-hidden="true">
-        <svg viewBox="0 0 16 16" fill="none">
-          <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <Icon.Check strokeWidth={2} />
       </RadixMenu.ItemIndicator>
       <span className="z-menu__text">{children}</span>
     </RadixMenu.CheckboxItem>
