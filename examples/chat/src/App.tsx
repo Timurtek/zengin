@@ -2,6 +2,7 @@ import { useChat } from "@ai-sdk/react";
 import { Avatar, Button, Conversation, Loader, Markdown, Message, PromptInput, Reasoning, Select, Sources, Suggestions, Toast, ToolCall, Tooltip, toast } from "@zengin/ui";
 import type { UIMessage } from "ai";
 import { useEffect, useMemo, useState } from "react";
+import { THREADS } from "./data";
 import { SUGGESTIONS } from "./script";
 import { ScriptedTransport } from "./transport";
 
@@ -19,12 +20,6 @@ function useTheme(): [Theme, () => void] {
   }, [theme]);
   return [theme, () => setTheme((t) => (t === "light" ? "dark" : "light"))];
 }
-
-const THREADS = [
-  { id: "t1", title: "Rules and fixes", when: "Now" },
-  { id: "t2", title: "Theming the dashboard", when: "Yesterday" },
-  { id: "t3", title: "Rollup for the platform team", when: "Mon" },
-];
 
 export function App() {
   const [theme, toggleTheme] = useTheme();

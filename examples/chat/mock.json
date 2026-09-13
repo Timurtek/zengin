@@ -1,0 +1,15 @@
+{
+  "$description": "The sidebar's conversations, as a zengin mock schema. `npm run mock` regenerates src/mock from it; src/data.ts pairs each row with a title from its catalog and turns the date into a label.",
+  "seed": 9012,
+  "entities": [
+    {
+      "name": "Thread",
+      "count": 6,
+      "fields": {
+        "id": { "type": "id", "prefix": "THR" },
+        "at": { "type": "date", "pastDays": 12 },
+        "turns": { "type": "int", "min": 2, "max": 14 }
+      }
+    }
+  ]
+}

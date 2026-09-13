@@ -13,7 +13,7 @@ import { customers } from "@/mock/customers";
 customers[0]; // { id: "CUS-1000", name: "Ada Okafor", company: "Northwind", plan: "Team", mrr: 396, status: "active", usage: [...], ... }
 ```
 
-The SaaS template runs on it: `examples/saas/mock.json` declares customers, invoices, events, signups and a daily metric, `npm run mock` regenerates `src/mock`, and `src/data.ts` derives what a backend would (MRR from plan and seats, signups by month, relative times) on top of the rows.
+Three templates run on it. The review queue and the chat sidebar draw their rows (who, when, status, length) from `mock.json` and pair them with a catalog of prose in `src/data.ts`, since a sentence from a word pool is not a review title. The SaaS template runs on it end to end: `examples/saas/mock.json` declares customers, invoices, events, signups and a daily metric, `npm run mock` regenerates `src/mock`, and `src/data.ts` derives what a backend would (MRR from plan and seats, signups by month, relative times) on top of the rows.
 
 ## Presets
 

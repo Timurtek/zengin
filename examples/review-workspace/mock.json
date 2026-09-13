@@ -1,0 +1,16 @@
+{
+  "$description": "The review queue's rows, as a zengin mock schema. `npm run mock` regenerates src/mock from it; src/data.ts pairs each row with a change from its catalog.",
+  "seed": 2041,
+  "entities": [
+    {
+      "name": "Review",
+      "count": 8,
+      "fields": {
+        "id": { "type": "id", "prefix": "ZN" },
+        "author": "fullName",
+        "status": { "type": "enum", "values": ["pending", "approved", "rejected", "changes"], "weights": [5, 2, 1, 2] },
+        "submitted": { "type": "date", "pastDays": 6 }
+      }
+    }
+  ]
+}

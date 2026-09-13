@@ -130,7 +130,7 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       name: "review",
       title: "Review workspace",
       description: "An application workflow: a review queue with filtering, status badges, a confirmation dialog, and a theme toggle.",
-      rootFiles: ["index.html"],
+      rootFiles: ["index.html", "mock.json"],
       componentNames,
     }),
   );
@@ -153,7 +153,7 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       name: "chat",
       title: "AI chat",
       description: "An assistant: conversation with streamed markdown, reasoning, tool calls and sources, a prompt with suggestions, a model picker. On the Vercel AI SDK, with a scripted transport so it runs without a key.",
-      rootFiles: ["index.html"],
+      rootFiles: ["index.html", "mock.json"],
       componentNames,
     }),
   );

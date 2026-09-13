@@ -158,6 +158,10 @@ describe("the saas template on mock data", () => {
     expect(paths).toContain("mock.json");
     expect(paths).toEqual(expect.arrayContaining(["src/mock/rng.ts", "src/mock/customers.ts", "src/mock/metrics.ts", "src/data.ts"]));
     expect(saas.files.find((f) => f.path === "src/mock/events.ts")!.content).toContain('import { customers } from "./customers";');
+    for (const name of ["chat", "review"]) {
+      const t = registry.items.find((i) => i.name === name && i.type === "template")!;
+      expect(t.files.map((f) => f.path), name).toEqual(expect.arrayContaining(["mock.json", "src/mock/rng.ts", "src/data.ts"]));
+    }
 
     const dir = join(tmp, "saas-app");
     const r = await createProject({ dir, template: "saas", source: registryFromMemory(registry), storybook: false });
