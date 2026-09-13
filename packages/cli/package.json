@@ -43,6 +43,7 @@
     "@zengin/adapter-shadcn": "workspace:*",
     "@zengin/engine": "workspace:*",
     "@zengin/figma": "workspace:*",
+    "@zengin/mock": "workspace:*",
     "@zengin/registry": "workspace:*",
     "@zengin/rollup": "workspace:*"
   },

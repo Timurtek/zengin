@@ -3,26 +3,25 @@ import { CheckPanel } from "../components/CheckPanel";
 
 /** The facts on the sheet. Each is a number the repository can back. */
 const SPEC = [
+  ["Components", "33"],
+  ["Templates", "5"],
   ["Rule kinds", "7"],
-  ["Surfaces", "4"],
   ["Models in the loop", "0"],
-  ["License", "MIT"],
 ] as const;
 
-/** The band runs in the opposite theme to the page: the same tokens, attached to one element. */
-export function Hero({ theme }: { theme: "light" | "dark" }) {
+export function Hero() {
   return (
-    <section className="hero" id="top" data-theme={theme === "light" ? "dark" : "light"}>
+    <section className="hero" id="top">
       <div className="wrap">
         <div className="hero__grid">
           <div className="hero__copy">
-            <span className="eyebrow">Design-system conformance for coding agents</span>
+            <span className="eyebrow">Authored systems</span>
             <h1 className="hero__title">
-              The agent writes the code. <em>Zengin keeps it on the system.</em>
+              Your system. <em>Every change.</em>
             </h1>
             <p className="lead">
-              A deterministic rule engine that catches color literals, off-scale spacing, rogue props and hand-rolled components as they are written, and hands back the fix. It runs
-              inside the MCP server, the edit hook, the CLI and CI, against definitions your design system already has.
+              A design system you own. Built to stay yours. One command creates it with the components copied in; an engine checks every edit after that, whether a person or an
+              agent made it, and hands back the fix.
             </p>
             <div className="hero__actions">
               <Button asChild tone="primary" size="lg">

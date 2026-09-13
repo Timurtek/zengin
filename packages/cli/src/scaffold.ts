@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaVariables, writePlugin } from "@zengin/figma";
 import type { ComponentManifest } from "@zengin/engine";
+import { generateMock, PRESETS, schemaFromPresets, type MockSchema } from "@zengin/mock";
 import { applyTheme, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, type BrandRadius } from "@zengin/registry";
 
 export interface ScaffoldOptions {
@@ -25,6 +26,9 @@ export interface ScaffoldOptions {
   write: boolean;
   map?: string;
   collection?: string;
+  schema?: string;
+  count?: number;
+  seed?: number;
 }
 
 /** `zengin theme [name]`: list the registry's themes, or apply one to the current project. */
@@ -213,4 +217,35 @@ export function runFigma(sub: string | undefined, args: string[], opts: Scaffold
     default:
       throw new Error("zengin figma supports: export [--out file] [--collection name], import <local.json> [--write], connect [--map urls.json] [--out dir], plugin [--out dir]");
   }
+}
+
+/** `zengin mock <presets...> | --schema file`: typed, seeded fixture modules into src/mock. */
+export function runMock(names: string[], opts: ScaffoldOptions, cwd: string): string {
+  const projectDir = opts.dir ? resolve(cwd, opts.dir) : cwd;
+  let schema: MockSchema;
+  if (opts.schema) {
+    const parsed = JSON.parse(readFileSync(resolve(cwd, opts.schema), "utf8")) as MockSchema;
+    if (!parsed || !Array.isArray(parsed.entities)) throw new Error(`${opts.schema} is not a mock schema (expected { entities: [...] }).`);
+    schema = { seed: opts.seed ?? parsed.seed, entities: parsed.entities.map((e) => ({ ...e, count: opts.count ?? e.count })) };
+  } else {
+    if (!names.length) throw new Error(`zengin mock needs preset names or --schema <file>. Presets: ${Object.keys(PRESETS).join(", ")}.`);
+    schema = schemaFromPresets(names, { seed: opts.seed, count: opts.count });
+  }
+  const files = generateMock(schema, { dir: opts.out ?? "src/mock" });
+  const written: string[] = [];
+  for (const [rel, text] of Object.entries(files)) {
+    const abs = resolve(projectDir, rel);
+    mkdirSync(dirname(abs), { recursive: true });
+    writeFileSync(abs, text);
+    written.push(rel);
+  }
+  const entities = schema.entities.map((e) => `${e.name} (${e.count ?? 20})`).join(", ");
+  return [`Wrote ${written.length} files: ${entities}, seed ${schema.seed ?? 7}.`, ...written.map((w) => `  wrote   ${w}`), "", `import { ${schema.entities[0] ? pluralName(schema.entities[0].name) : "rows"} } from "@/mock/${schema.entities[0] ? pluralName(schema.entities[0].name) : "rows"}"; the same data every run.`].join("\n");
+}
+
+function pluralName(name: string): string {
+  const lower = name.charAt(0).toLowerCase() + name.slice(1);
+  if (/[^aeiou]y$/.test(lower)) return `${lower.slice(0, -1)}ies`;
+  if (/(s|x|z|ch|sh)$/.test(lower)) return `${lower}es`;
+  return `${lower}s`;
 }

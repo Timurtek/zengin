@@ -38,7 +38,7 @@ export function App() {
       <div className="site">
         <Nav theme={theme} onToggleTheme={toggleTheme} />
         <main>
-          <Hero theme={theme} />
+          <Hero />
           <HowItWorks />
           <Catalog />
           <Surfaces />

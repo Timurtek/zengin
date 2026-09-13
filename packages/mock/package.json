@@ -1,0 +1,28 @@
+{
+  "name": "@zengin/mock",
+  "version": "0.0.1",
+  "description": "Typed, seeded mock data for a Zengin project: presets for the entities apps show, a small schema for the rest, generated as plain TypeScript with no runtime dependency.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": ["mock-data", "fixtures", "generator", "zengin"],
+  "repository": { "type": "git", "url": "git+https://github.com/Timurtek/zengin.git", "directory": "packages/mock" },
+  "homepage": "https://github.com/Timurtek/zengin/tree/main/packages/mock#readme",
+  "bugs": "https://github.com/Timurtek/zengin/issues",
+  "engines": { "node": ">=20" },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist"],
+  "sideEffects": false,
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^5.9.2",
+    "vitest": "^5.0.0"
+  }
+}

@@ -12,6 +12,7 @@ zengin theme [name]         list the registry's themes, or swap this project's b
 zengin brand --name <name>  a brand from a name, a logo or a color: tokens, favicon, wordmark, index.html
 zengin tokens               zengin/tokens*.json to src/styles/generated/tokens.css
 zengin figma export|import|connect|plugin   tokens to Figma variables and back, Code Connect, the plugin
+zengin mock <presets...>    typed, seeded mock data modules into src/mock
 zengin registry build       the registry, from a Zengin repository checkout
 zengin report, rollup       drift and adoption, per repository and across them
 ```
@@ -99,6 +100,16 @@ zengin brand --name Nova --primary "#7C3AED"  # from a color alone
 ```
 
 `theme` replaces `src/theme/brand.css` with the theme's file and puts its Google Fonts link in `index.html` (one link, marked `data-zengin="fonts"`, replaced by the next theme). `brand` derives a whole palette from one color, in OKLCH so steps look even, and pushes every pairing the components rely on (text on surface, on-primary on primary, soft-foreground on soft, and so on) until it meets WCAG AA in both schemes. It writes the brand file, `zengin/brand.json` (the inputs, for re-running), the logo into `public/`, a favicon when there is no SVG logo, `src/brand.ts` and a `BrandMark` component, and patches the title, theme-color, icon and fonts in `index.html`. An SVG logo also supplies the primary; a PNG needs `--primary`. Both commands run the engine afterwards; the project stays clean because the brand file is a foundation.
+
+## mock
+
+```bash
+zengin mock customers invoices            # presets: users, customers, companies, products, orders, invoices, events, messages, metrics
+zengin mock users --count 50 --seed 3
+zengin mock --schema mock.json            # your own entities; see @zengin/mock for the field kinds
+```
+
+Writes `src/mock/rng.ts` (a seeded generator and the pools, no dependency) and one typed module per entity exporting the type, a factory and the array. The same seed gives the same data on every run, so screenshots and previews do not drift. See [@zengin/mock](../mock).
 
 ## figma
 

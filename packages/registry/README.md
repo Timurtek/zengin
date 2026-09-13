@@ -41,7 +41,7 @@ Items are built, never hand-written. Components come from `packages/ui/src/compo
 | `template` | `blank`, `marketing`, `review`, `saas`, `chat` | App files under `src/` plus `index.html`; depends on the components it uses |
 | `lib` | `lib-cx`, `lib-chart`, `lib-markdown` | `src/lib/<name>.ts`; every file in `packages/ui/src/internal` is one, named `lib-<file>` so it cannot collide with a component, and components depend on the ones they import |
 | `definitions` | `foundation` | `zengin/tokens.json`, `zengin/tokens.dark.json`, `src/styles/base.css` |
-| `theme` | `default`, `meadow`, `plex`, `spec-sheet` | `src/theme/brand.css`, replacing the current one, plus the theme's fonts link in `index.html` |
+| `theme` | `default`, `meadow`, `plex`, `spec-sheet`, `zengin` | `src/theme/brand.css`, replacing the current one, plus the theme's fonts link in `index.html` |
 
 ## Themes and brands
 

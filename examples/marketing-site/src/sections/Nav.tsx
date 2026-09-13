@@ -7,7 +7,10 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
       <div className="wrap nav__inner">
         <a className="nav__mark" href="#top" aria-label="Zengin, top of page">
           <Mark />
-          Zengin
+          <span className="nav__wordmark">
+            Zengin
+            <small>Authored systems</small>
+          </span>
         </a>
         <nav aria-label="Sections">
           <ul className="nav__links">
@@ -33,12 +36,13 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
   );
 }
 
-/** Two brackets and a rule: the shape of a contract. */
+/** The Z: three modules, a bar, a diagonal, a bar. Simple modules, stronger systems. */
 function Mark() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M8 4H5v16h3M16 4h3v16h-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9 12h6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <polygon points="12,6 62,6 54,20 4,20" fill="currentColor" />
+      <polygon points="44,22 58,22 20,42 6,42" fill="currentColor" />
+      <polygon points="10,44 60,44 52,58 2,58" fill="currentColor" />
     </svg>
   );
 }

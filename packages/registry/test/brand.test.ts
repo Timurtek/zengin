@@ -101,7 +101,7 @@ describe("renderBrandCss and the html patch", () => {
 describe("themes", () => {
   it("are in the registry with their fonts", async () => {
     const themes = await listThemes(source);
-    expect(themes.map((t) => t.name)).toEqual(["default", "meadow", "plex", "spec-sheet"]);
+    expect(themes.map((t) => t.name)).toEqual(["default", "meadow", "plex", "spec-sheet", "zengin"]);
     expect(themes.find((t) => t.name === "spec-sheet")!.fonts).toEqual(["Archivo", "Schibsted Grotesk", "JetBrains Mono"]);
   });
 
@@ -118,7 +118,7 @@ describe("themes", () => {
     expect(html).toContain("family=Archivo");
     expect(html).not.toContain("family=IBM+Plex+Sans");
     expect(html.match(/data-zengin="fonts"/g)).toHaveLength(1);
-    await expect(applyTheme({ projectDir: dir, name: "nope", source })).rejects.toThrow(/Themes: default, meadow, plex, spec-sheet/);
+    await expect(applyTheme({ projectDir: dir, name: "nope", source })).rejects.toThrow(/Themes: default, meadow, plex, spec-sheet, zengin/);
   });
 });
 

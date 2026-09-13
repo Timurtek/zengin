@@ -236,6 +236,9 @@ importers:
       '@zengin/figma':
         specifier: workspace:*
         version: link:../figma
+      '@zengin/mock':
+        specifier: workspace:*
+        version: link:../mock
       '@zengin/registry':
         specifier: workspace:*
         version: link:../registry
@@ -330,6 +333,18 @@ importers:
       zod:
         specifier: ^4.6.2
         version: 4.6.2
+    devDependencies:
+      '@types/node':
+        specifier: ^22
+        version: 22.20.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vitest:
+        specifier: ^5.0.0
+        version: 5.0.0(@types/node@22.20.2)(jsdom@30.0.1)(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
+
+  packages/mock:
     devDependencies:
       '@types/node':
         specifier: ^22
