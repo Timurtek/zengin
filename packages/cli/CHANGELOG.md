@@ -1,5 +1,13 @@
 # @zenginui/cli
 
+## 0.1.1
+
+### Patch Changes
+
+- [`f712538`](https://github.com/Timurtek/zengin/commit/f7125387b4fb21bb58b46c67b855962df0c48c1d) Thanks [@Timurtek](https://github.com/Timurtek)! - The public registry moved to https://zengin.timurtek.com/r, the site's own domain. The old vercel.app address keeps serving the registry for installed copies.
+- Updated dependencies [[`f712538`](https://github.com/Timurtek/zengin/commit/f7125387b4fb21bb58b46c67b855962df0c48c1d)]:
+  - @zenginui/registry@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes
