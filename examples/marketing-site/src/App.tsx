@@ -7,6 +7,7 @@ import { Hero } from "./sections/Hero";
 import { HowItWorks } from "./sections/HowItWorks";
 import { Nav } from "./sections/Nav";
 import { Proof } from "./sections/Proof";
+import { Growth } from "./sections/Growth";
 import { Rules } from "./sections/Rules";
 import { Surfaces } from "./sections/Surfaces";
 import { System } from "./sections/System";
@@ -43,6 +44,7 @@ export function App() {
           <Catalog />
           <Surfaces />
           <Rules />
+          <Growth />
           <System />
           <Proof />
           <GetStarted />

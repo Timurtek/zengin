@@ -895,3 +895,65 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* Growth: two cards, each an argument plus the code that makes it. */
+.growth {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-6);
+}
+
+@media (max-width: 60rem) {
+  .growth {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.growth__card {
+  display: grid;
+  align-content: start;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.growth__card h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  letter-spacing: -0.01em;
+}
+
+.growth__card p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.growth__points {
+  display: grid;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.growth__points li {
+  padding-left: var(--spacing-4);
+  border-left: 2px solid var(--color-border);
+}
+
+.growth__code {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.growth__code-title {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}

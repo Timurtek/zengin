@@ -10,6 +10,7 @@ export const NAV: { href: string; label: string; external?: boolean }[] = [
   { href: "/rollup/", label: "Rollup", external: true },
   { href: "#surfaces", label: "Surfaces" },
   { href: "#rules", label: "Rules" },
+  { href: "#growth", label: "Growth" },
   { href: "#system", label: "Reference system" },
   { href: "#proof", label: "Field tests" },
 ];
@@ -137,6 +138,54 @@ Over 3 moments since 2026-08-31: violations 38 to 34, component uses 61 to 97, s
 export type RuleRow = { id: string; family: "foundation" | "contract" | "substitution"; description: string };
 
 /** packages/engine/src/docs.ts, shortened for the table; `zengin explain` prints the full text. */
+export type GrowthCard = { id: string; title: string; body: string; points: string[]; code: { title: string; text: string } };
+
+export const GROWTH: GrowthCard[] = [
+  {
+    id: "define",
+    title: "A component you wrote joins the rules",
+    body: "A component you own is yours to style, so the contract rules are off inside its own file. That used to leave the rest of the project unable to be held to it: a misspelled prop or an invented variant on your own component passed. zengin define reads what the component already declares and writes it into the manifest.",
+    points: [
+      "Props from its TypeScript types, with named enums opened",
+      "Defaults from the destructuring in its own signature",
+      "owns from its stylesheet: a property under [data-tone] is controlled by tone",
+      "Never removes. A disagreement with the manifest is reported, not resolved",
+    ],
+    code: {
+      title: "the rest of the project, after define",
+      text: `error  unknown-prop-value  Threshold has no tone "scarcity".
+                           Valid: neutral, primary, danger.
+error  unknown-prop        Threshold has no prop "wobble".
+                           Props: label, size, tone, showValue.`,
+    },
+  },
+  {
+    id: "declared-difference",
+    title: "A different design, declared rather than drifted",
+    body: "A marketing page and an application are not the same design. Saying so used to mean running two systems or suppressing a rule on every line, and both spell a deliberate difference as drift. Name the part of the project instead, and the difference lives in the definitions where it is still enforced.",
+    points: [
+      "Token values layered over the base: only what differs",
+      "A component's props, owns and className policy, merged by name",
+      "It cannot add or remove a component; that would be a different system",
+      "The inventory records which one checked each file, so a rollup shows the split",
+    ],
+    code: {
+      title: "zengin.config.yaml",
+      text: `surfaces:
+  - name: marketing
+    include: ["src/marketing/**"]
+    tokens: zengin/tokens.marketing.json
+    components:
+      Button:
+        props:
+          shape: { type: enum, values: [pill, square] }`,
+    },
+  },
+];
+
+export const GROWTH_NOTE =
+  'shape="pill" is correct on the part of the project that declares it, and the same attribute in the application is still a violation, named against that surface\'s own list. The point is not to loosen the rule. It is to say which rule applies where, once, in a file everyone can read.';
+
 export const RULES: RuleRow[] = [
   { id: "color-literal", family: "foundation", description: "A color literal (hex, rgb, oklch, named) in a class, inline style or CSS where a token reference is required. A literal that equals a token's value is still a violation: it will not follow theme changes." },
   { id: "spacing-literal", family: "foundation", description: "An arbitrary length on margin, padding, gap or scroll offsets that is not on the spacing scale. Position offsets are coordinates and are not judged." },
@@ -162,6 +211,7 @@ npm create zengin@latest acme -- --template marketing
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
 npx zengin brand --name Acme --logo logo.svg   # palette, favicon, wordmark from one color
+npx zengin define                               # a component you wrote joins the manifest
 
 # An existing project: derive the definitions, then check
 zengin init --from shadcn                       # or: --from package @your/design-system
