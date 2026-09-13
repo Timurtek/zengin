@@ -72,6 +72,36 @@
         "dev"
       ],
       "port": 5177
+    },
+    {
+      "name": "auth",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "auth",
+        "dev"
+      ],
+      "port": 5178
+    },
+    {
+      "name": "docs",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "docs",
+        "dev"
+      ],
+      "port": 5179
+    },
+    {
+      "name": "storefront",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "storefront",
+        "dev"
+      ],
+      "port": 5180
     }
   ]
 }

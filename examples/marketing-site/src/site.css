@@ -713,8 +713,15 @@ body {
 }
 
 /* Templates: live previews in ruled cards, scaled from desktop width. */
-.catalog__themes {
+.catalog__pickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
   margin-bottom: var(--spacing-8);
+}
+
+.catalog__picker {
+  width: 14rem;
 }
 
 .catalog__error {

@@ -79,7 +79,8 @@ jobs:
 ## create and add
 
 ```bash
-zengin create acme --template marketing       # blank | marketing | review
+zengin create acme --template marketing       # blank | marketing | review | saas | chat | auth | docs | storefront
+zengin create acme --template saas --framework next   # the App Router under src/app; the template mounted client-side from page.tsx
 zengin create acme --no-storybook
 zengin create acme --registry ./r --local ../zengin   # a local registry, packages linked from a checkout
 cd acme && zengin add dialog tooltip          # more items; --force overwrites files that exist
@@ -87,6 +88,17 @@ zengin tokens                                 # after editing zengin/tokens*.jso
 ```
 
 `create` writes the project, copies the template's components in with the owned pragma, merges their manifest entries into `zengin/components.json`, builds `tokens.css`, and runs the engine on the result before it prints. `add` does the same for further items and records any npm packages they need in `package.json`. See [@zengin/registry](../registry) for the layout and the registry format.
+
+## upgrade
+
+```bash
+zengin upgrade                 # a report: what the registry changed since each owned file was copied, and what you changed
+zengin upgrade --write         # take every upstream change the project did not touch; move the pinned version
+zengin upgrade button card     # only these items
+zengin upgrade --write --force # take upstream over a conflict too
+```
+
+Every owned file carries the hash of what was copied in its pragma (`/* zengin-owned Button, forked from @zengin/ui@0.1.0, sha 3f9a1c0b2d4e */`). Comparing that hash with the file now says whether you edited it; comparing it with the registry says whether the system moved. Four answers per file: `current`, `upstream` (taken with `--write`), `local` (yours, left alone), `conflict` (both moved: the report shows the diff, `--force` takes upstream). Files copied before hashes existed show as `unknown` when they differ. When nothing is left behind, `zengin.config.yaml` is moved to the registry's version.
 
 ## theme and brand
 

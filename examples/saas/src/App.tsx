@@ -1,10 +1,10 @@
 import { Toast, Tooltip } from "@zengin/ui";
 import { useEffect, useState, type ComponentType } from "react";
 import { Shell, type Page } from "./components/Shell";
-import { Billing } from "./pages/Billing";
-import { Customers } from "./pages/Customers";
-import { Overview } from "./pages/Overview";
-import { Settings } from "./pages/Settings";
+import { Billing } from "./views/Billing";
+import { Customers } from "./views/Customers";
+import { Overview } from "./views/Overview";
+import { Settings } from "./views/Settings";
 
 type Theme = "light" | "dark";
 

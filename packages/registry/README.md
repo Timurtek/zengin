@@ -38,7 +38,7 @@ Items are built, never hand-written. Components come from `packages/ui/src/compo
 | Item type | Examples | Installs |
 | --- | --- | --- |
 | `component` | `button`, `dialog`, `tabs` | TSX and CSS under `src/components/ui`, the story, the manifest entry, the barrel export, the stylesheet import |
-| `template` | `blank`, `marketing`, `review`, `saas`, `chat` | App files under `src/` plus `index.html`; depends on the components it uses |
+| `template` | `blank`, `marketing`, `review`, `saas`, `chat`, `auth`, `docs`, `storefront` | App files under `src/` plus `index.html`; depends on the components it uses |
 | `lib` | `lib-cx`, `lib-chart`, `lib-markdown` | `src/lib/<name>.ts`; every file in `packages/ui/src/internal` is one, named `lib-<file>` so it cannot collide with a component, and components depend on the ones they import |
 | `definitions` | `foundation` | `zengin/tokens.json`, `zengin/tokens.dark.json`, `src/styles/base.css` |
 | `theme` | `brutal`, `default`, `meadow`, `plex`, `spec-sheet`, `zengin` | `src/theme/brand.css`, replacing the current one, plus the theme's fonts link in `index.html` |
@@ -76,6 +76,14 @@ zengin icons tabler           # src/lib/icons.tsx rewritten: the same Icon objec
 The manifest carries an `Icon` entry that shadows `react-icons/*`, `lucide-react`, `@tabler/icons-react`, `@phosphor-icons/react`, `@heroicons/react/*` and `@radix-ui/react-icons`: an app file importing a glyph from any of them is a `component-substitution` violation with the fix `import { Icon } from "@/lib/icons"`. `src/lib/**` is owned, so the rewritten file itself is exempt. On the marketing site the catalog's icon picker passes `?icons=<set>` to every preview; the preview loads the set on demand and swaps the drawings at runtime with `setIconSet`, which a project never needs.
 
 A set maps every vocabulary name to a real export of its react-icons module; the registry's tests import each module and check every name. Radix has no glyph for a few names (folder, database, terminal) and reuses the closest one; the others map one to one.
+
+## Upgrading owned components
+
+`zengin upgrade` compares three things per owned file: the hash in its pragma (what was copied), the file now (what the project did), and the registry's file (what the system did). Upstream-only changes are taken with `--write`; local-only changes are left alone; both changed is a conflict with a diff in the report and `--force` to take upstream. The pinned version in `zengin.config.yaml` moves when nothing is held. Libs under `src/lib` follow the same comparison. Stories are the project's from the start and are never touched.
+
+## Next.js
+
+`zengin create acme --framework next` writes the App Router under `src/app` instead of `index.html`, `src/main.tsx` and a Vite config: `layout.tsx` carries the template's stylesheet imports, its title as metadata and its fonts link in `<head>`; `page.tsx` mounts the template's `App` client-side with `next/dynamic` and `ssr: false`, since the templates read `window` and `document` in hooks the way an SPA does. `zengin theme`, `zengin fonts` and `zengin brand` patch the layout's head exactly as they patch `index.html`. Everything else, the components, the definitions, the engine, the hook and the MCP server, is the same project.
 
 ## Programmatic use
 

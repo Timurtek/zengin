@@ -158,6 +158,40 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
     }),
   );
 
+  items.push(
+    templateFrom({
+      root: opts.root,
+      dir: "examples/auth",
+      name: "auth",
+      title: "Auth",
+      description: "Sign in, create account, reset and verify, one card on @zengin/ui with real validation against mock accounts.",
+      rootFiles: ["index.html", "mock.json"],
+      componentNames,
+    }),
+  );
+  items.push(
+    templateFrom({
+      root: opts.root,
+      dir: "examples/docs",
+      name: "docs",
+      title: "Docs",
+      description: "A sidebar of sections, markdown pages with code and tables, an on-this-page outline, search, previous and next, on @zengin/ui.",
+      rootFiles: ["index.html", "mock.json"],
+      componentNames,
+    }),
+  );
+  items.push(
+    templateFrom({
+      root: opts.root,
+      dir: "examples/storefront",
+      name: "storefront",
+      title: "Storefront",
+      description: "A product grid with search, filters and sort, a cart sheet with quantities and totals, and a checkout dialog that places the order, on @zengin/ui.",
+      rootFiles: ["index.html", "mock.json"],
+      componentNames,
+    }),
+  );
+
   // Themes: one directory each under packages/ui/themes, a theme.json beside a brand.css.
   const themesDir = join(ui, "themes");
   for (const dir of existsSync(themesDir) ? readdirSync(themesDir).sort() : []) {

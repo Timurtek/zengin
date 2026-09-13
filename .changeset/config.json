@@ -13,10 +13,13 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
+    "auth",
     "blank",
     "chat",
+    "docs",
     "marketing-site",
     "review-workspace",
-    "saas"
+    "saas",
+    "storefront"
   ]
 }

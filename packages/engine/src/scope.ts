@@ -6,14 +6,16 @@ const OWNED_PRAGMA = /zengin-owned\b/;
 export interface OwnedPragma {
   component?: string;
   forkedFrom?: string;
+  /** Hash of the file as it was copied, so `zengin upgrade` can tell a local edit from an upstream change. */
+  sha?: string;
 }
 
-/** Reads `/* zengin-owned Button, forked from @zengin/ui@1.2.0 *\/` when present. */
+/** Reads `/* zengin-owned Button, forked from @zengin/ui@1.2.0, sha 3f9a1c0b2d4e *\/` when present; the sha is optional. */
 export function readOwnedPragma(content: string): OwnedPragma | undefined {
   const head = content.slice(0, 2000);
-  const m = /zengin-owned\s+([\w.]+)?(?:,\s*forked from\s+(\S+))?/.exec(head);
+  const m = /zengin-owned\s+([\w.]+)?(?:,\s*forked from\s+([^\s,*]+))?(?:,\s*sha\s+([0-9a-f]+))?/.exec(head);
   if (!m) return undefined;
-  return { component: m[1], forkedFrom: m[2]?.replace(/\*\/$/, "").trim() };
+  return { component: m[1], forkedFrom: m[2], ...(m[3] ? { sha: m[3] } : {}) };
 }
 
 export class Scope {

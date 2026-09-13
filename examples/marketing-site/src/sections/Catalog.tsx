@@ -1,4 +1,4 @@
-import { Badge, Button, Skeleton, Tabs } from "@zengin/ui";
+import { Badge, Button, Select, Skeleton } from "@zengin/ui";
 import { useEffect, useRef, useState } from "react";
 import { CodeBlock } from "../components/CodeBlock";
 
@@ -62,43 +62,39 @@ export function Catalog() {
           </div>
         </div>
 
-        {index && themes.length > 0 && (
-          <Tabs value={theme} onValueChange={setTheme} variant="line" className="catalog__themes">
-            <Tabs.List aria-label="Theme for the previews">
-              <Tabs.Trigger value={AUTHORED}>As authored</Tabs.Trigger>
-              {themes.map((t) => (
-                <Tabs.Trigger key={t.name} value={t.name}>
-                  {t.title}
-                </Tabs.Trigger>
-              ))}
-            </Tabs.List>
-          </Tabs>
-        )}
-
-        {index && pairings.length > 0 && (
-          <Tabs value={fonts} onValueChange={setFonts} variant="line" className="catalog__themes">
-            <Tabs.List aria-label="Font pairing for the previews">
-              <Tabs.Trigger value={AUTHORED}>Theme's fonts</Tabs.Trigger>
-              {pairings.map((p) => (
-                <Tabs.Trigger key={p.name} value={p.name.replace(/^fonts-/, "")}>
-                  {p.title}
-                </Tabs.Trigger>
-              ))}
-            </Tabs.List>
-          </Tabs>
-        )}
-
-        {index && iconSets.length > 0 && (
-          <Tabs value={icons} onValueChange={setIcons} variant="line" className="catalog__themes">
-            <Tabs.List aria-label="Icon set for the previews">
-              <Tabs.Trigger value={AUTHORED}>Zengin icons</Tabs.Trigger>
-              {iconSets.map((s) => (
-                <Tabs.Trigger key={s.name} value={s.name.replace(/^icons-/, "")}>
-                  {s.title}
-                </Tabs.Trigger>
-              ))}
-            </Tabs.List>
-          </Tabs>
+        {index && (
+          <div className="catalog__pickers">
+            {themes.length > 0 && (
+              <Select className="catalog__picker" size="sm" label="Theme" value={theme} onValueChange={setTheme}>
+                <Select.Item value={AUTHORED}>As authored</Select.Item>
+                {themes.map((t) => (
+                  <Select.Item key={t.name} value={t.name}>
+                    {t.title}
+                  </Select.Item>
+                ))}
+              </Select>
+            )}
+            {pairings.length > 0 && (
+              <Select className="catalog__picker" size="sm" label="Fonts" value={fonts} onValueChange={setFonts}>
+                <Select.Item value={AUTHORED}>Theme's fonts</Select.Item>
+                {pairings.map((p) => (
+                  <Select.Item key={p.name} value={p.name.replace(/^fonts-/, "")}>
+                    {p.title}
+                  </Select.Item>
+                ))}
+              </Select>
+            )}
+            {iconSets.length > 0 && (
+              <Select className="catalog__picker" size="sm" label="Icons" value={icons} onValueChange={setIcons}>
+                <Select.Item value={AUTHORED}>Zengin icons</Select.Item>
+                {iconSets.map((s) => (
+                  <Select.Item key={s.name} value={s.name.replace(/^icons-/, "")}>
+                    {s.title}
+                  </Select.Item>
+                ))}
+              </Select>
+            )}
+          </div>
         )}
 
         {error && <p className="catalog__error">The previews need the registry this site serves at /r, and {error}. On the deployed site they are live.</p>}

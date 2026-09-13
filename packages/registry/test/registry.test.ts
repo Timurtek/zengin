@@ -19,7 +19,7 @@ describe("buildRegistry", () => {
       "popover", "progress", "prompt-input", "reasoning", "select", "separator", "sheet", "skeleton", "sources", "sparkline", "suggestions", "switch", "table",
       "tabs", "text-area", "text-field", "toast", "tool-call", "tooltip",
     ]);
-    expect(by("template")).toEqual(["blank", "marketing", "review", "saas", "chat"]);
+    expect(by("template")).toEqual(["blank", "marketing", "review", "saas", "chat", "auth", "docs", "storefront"]);
     expect(by("lib")).toEqual(["lib-chart", "lib-cx", "lib-icons", "lib-markdown"]);
     // A component that composes others depends on them, so `zengin add markdown` brings code-block and table.
     expect(registry.items.find((i) => i.name === "markdown")!.registryDependencies).toEqual(expect.arrayContaining(["lib-markdown", "code-block", "table"]));
@@ -102,7 +102,7 @@ describe("createProject", () => {
     expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card", "Checkbox", "CodeBlock", "Skeleton", "Table", "Tabs", "TextField", "Tooltip"]);
 
     const button = readFileSync(join(dir, "src/components/ui/button/button.tsx"), "utf8");
-    expect(button.startsWith(`/* zengin-owned Button, forked from @zengin/ui@${registry.version} */`)).toBe(true);
+    expect(button).toMatch(/^\/\* zengin-owned Button, forked from @zengin\/ui@[\d.]+, sha [0-9a-f]{12} \*\//);
     expect(readFileSync(join(dir, "src/components/ui/index.ts"), "utf8")).toContain('export * from "./button/button";');
     expect(readFileSync(join(dir, "src/styles/index.css"), "utf8")).toContain('@import "../components/ui/button/button.css";');
     expect(existsSync(join(dir, "src/styles/generated/tokens.css"))).toBe(true);
@@ -158,7 +158,7 @@ describe("the saas template on mock data", () => {
     expect(paths).toContain("mock.json");
     expect(paths).toEqual(expect.arrayContaining(["src/mock/rng.ts", "src/mock/customers.ts", "src/mock/metrics.ts", "src/data.ts"]));
     expect(saas.files.find((f) => f.path === "src/mock/events.ts")!.content).toContain('import { customers } from "./customers";');
-    for (const name of ["chat", "review"]) {
+    for (const name of ["chat", "review", "auth", "docs", "storefront"]) {
       const t = registry.items.find((i) => i.name === name && i.type === "template")!;
       expect(t.files.map((f) => f.path), name).toEqual(expect.arrayContaining(["mock.json", "src/mock/rng.ts", "src/data.ts"]));
     }
@@ -172,3 +172,49 @@ describe("the saas template on mock data", () => {
     expect(readFileSync(join(dir, "src/mock/customers.ts"), "utf8")).toContain("export const customers: Customer[]");
   });
 });
+
+describe("createProject on Next.js", () => {
+  it("writes the App Router instead of index.html and main.tsx, carries the template's head and styles into the layout, and stays clean", async () => {
+    const dir = join(tmp, "next-app");
+    const r = await createProject({ dir, template: "saas", source: registryFromMemory(registry), storybook: false, framework: "next", theme: "plex" });
+    expect(r.framework).toBe("next");
+    expect(r.violations).toBe(0);
+    expect(existsSync(join(dir, "index.html"))).toBe(false);
+    expect(existsSync(join(dir, "src/main.tsx"))).toBe(false);
+    expect(existsSync(join(dir, "vite.config.ts"))).toBe(false);
+    expect(existsSync(join(dir, "next.config.ts"))).toBe(true);
+    // Next treats src/pages as the Pages Router; a template must never ship files there.
+    for (const t of registry.items.filter((i) => i.type === "template")) expect(t.files.filter((f) => f.path.startsWith("src/pages/")).map((f) => f.path), t.name).toEqual([]);
+    const page = readFileSync(join(dir, "src/app/page.tsx"), "utf8");
+    expect(page).toContain('"use client"');
+    expect(page).toContain('import("@/App")');
+    const layout = readFileSync(join(dir, "src/app/layout.tsx"), "utf8");
+    expect(layout).toContain('import "@/styles/index.css";');
+    expect(layout).toContain('import "@/theme/brand.css";');
+    expect(layout).toContain('import "@/app.css";');
+    expect(layout).toContain("export const metadata");
+    // The template imports Icon from the alias; the barrel must re-export the vocabulary or a bundler fails where the engine cannot see.
+    expect(readFileSync(join(dir, "src/components/ui/index.ts"), "utf8")).toContain('export * from "../../lib/icons";');
+    expect(layout).toContain("family=IBM+Plex+Sans"); // the theme patched the layout's head, not an index.html
+    expect(layout.match(/data-zengin="fonts"/g)).toHaveLength(1);
+    const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8")) as { scripts: Record<string, string>; dependencies: Record<string, string>; devDependencies: Record<string, string> };
+    expect(pkg.scripts["dev"]).toBe("zengin tokens && next dev");
+    expect(pkg.scripts["start"]).toBe("next start");
+    expect(pkg.dependencies["next"]).toMatch(/^\^16/);
+    expect(pkg.devDependencies["vite"]).toBeUndefined();
+    const tsconfig = JSON.parse(readFileSync(join(dir, "tsconfig.json"), "utf8")) as { compilerOptions: { jsx: string; plugins: { name: string }[] } };
+    expect(tsconfig.compilerOptions.jsx).toBe("react-jsx");
+    expect(layout).toMatch(/rel="stylesheet"[^>]*precedence="default"/);
+    expect(tsconfig.compilerOptions.plugins).toEqual([{ name: "next" }]);
+
+    // The other patchers reach the layout too.
+    const fonts = await applyFontsForTest(dir);
+    expect(fonts).toContain("family=Fraunces");
+  });
+});
+
+async function applyFontsForTest(dir: string): Promise<string> {
+  const { applyFonts } = await import("../src/index.js");
+  await applyFonts({ projectDir: dir, name: "fraunces", source: registryFromMemory(registry) });
+  return readFileSync(join(dir, "src/app/layout.tsx"), "utf8");
+}

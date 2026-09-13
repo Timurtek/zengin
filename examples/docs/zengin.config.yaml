@@ -1,0 +1,16 @@
+# The whole configuration a consumer of @zengin/ui needs. Definitions and version come from the installed package.
+system:
+  package: "@zengin/ui"
+
+scope:
+  include: ["src/**/*.{ts,tsx,css}"]
+  foundations: ["src/theme/**"]
+
+rules:
+  color-literal: { severity: error, allow: semantic }
+  spacing-literal: error
+  token-reference: error
+  unknown-prop: error
+  unknown-prop-value: error
+  classname-policy: error
+  component-substitution: error

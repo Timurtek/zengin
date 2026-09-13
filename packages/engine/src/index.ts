@@ -9,3 +9,4 @@ export type { ClassResolver, Declaration, Resolution, UtilityResolver, Styleshee
 export * from "./types.js";
 export { renderSummary, renderViolations, summarize, type Summary } from "./format.js";
 export { RULE_DOCS, FAMILY_NOTES, type RuleFamily } from "./docs.js";
+export { readOwnedPragma, type OwnedPragma } from "./scope.js";

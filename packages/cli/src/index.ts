@@ -5,7 +5,7 @@ import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { init, initFromPackage, initFromShadcn } from "./init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "./report.js";
-import { runAdd, runBrand, runCreate, runFigma, runFonts, runIcons, runMock, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
+import { runAdd, runBrand, runCreate, runFigma, runFonts, runIcons, runMock, runUpgrade, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
 import { mkdirSync, writeFileSync } from "node:fs";
 
 const HELP = `zengin: design-system conformance, enforceable.
@@ -21,6 +21,7 @@ Usage:
   zengin rollup <snapshots|dirs...>   drift, adoption and trends across repositories, from report snapshots
   zengin create <dir>                 a new project on Zengin UI: components copied in, engine, MCP, hook, Storybook wired
   zengin add <items...>               components or templates from the registry into this project
+  zengin upgrade [items...]           what changed upstream since the components were copied; --write takes it
   zengin theme [name]                 list the registry's themes, or swap this project's brand for one
   zengin fonts [name]                 list the registry's font pairings, or set this project's three font tokens to one
   zengin icons [set]                  list the registry's icon sets, or draw this project's icon vocabulary from one (react-icons)
@@ -40,14 +41,16 @@ Init options:
   --force               overwrite existing zengin/ definitions and config
 
 Create and add options:
-  --template <name>     blank | marketing | review (create; default: blank)
+  --template <name>     blank | marketing | review | saas | chat | auth | docs | storefront (create; default: blank)
   --theme <name>        apply a registry theme after the template (create)
   --name <name>         package name (create; default: the directory name)
   --registry <dir|url>  where items come from (default: $ZENGIN_REGISTRY or the public registry)
   --no-storybook        skip the Storybook config and stories (create)
+  --framework <name>    vite (default) | next: the App Router under src/app, the template mounted client-side (create)
   --local <repo>        link the Zengin packages from a repository checkout instead of npm (create)
   --dir <path>          project directory (add, tokens; default: cwd)
-  --force               overwrite files that already exist (add)
+  --force               overwrite files that already exist (add); take upstream over a conflict (upgrade)
+  --write               upgrade: apply the plan (a report only, otherwise)
 
 Brand options:
   --name <name>         the product's name (required)
@@ -104,7 +107,7 @@ Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 us
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "brand" | "figma" | "mock" | "help";
+  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "help";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
@@ -132,7 +135,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       return v;
     };
     if (!a.startsWith("-") && !command) {
-      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "fonts" || a === "icons" || a === "brand" || a === "figma" || a === "mock" || a === "help") command = a;
+      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "fonts" || a === "icons" || a === "upgrade" || a === "brand" || a === "figma" || a === "mock" || a === "help") command = a;
       else {
         command = "check";
         positional.push(a);
@@ -195,6 +198,8 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a === "--registry") scaffold.registry = value();
     else if (a.startsWith("--registry=")) scaffold.registry = a.slice(11);
     else if (a === "--no-storybook") scaffold.storybook = false;
+    else if (a === "--framework") scaffold.framework = asFramework(value());
+    else if (a.startsWith("--framework=")) scaffold.framework = asFramework(a.slice(12));
     else if (a === "--local") scaffold.local = value();
     else if (a.startsWith("--local=")) scaffold.local = a.slice(8);
     else if (a === "--root") scaffold.root = value();
@@ -304,6 +309,9 @@ async function main(): Promise<void> {
     case "figma":
       process.stdout.write(runFigma(parsed.positional[0], parsed.positional.slice(1), parsed.scaffold, process.cwd()) + "\n");
       return;
+    case "upgrade":
+      process.stdout.write((await runUpgrade(parsed.positional, parsed.scaffold, process.cwd())) + "\n");
+      return;
     case "icons":
       process.stdout.write((await runIcons(parsed.positional[0], parsed.scaffold, process.cwd())) + "\n");
       return;
@@ -368,3 +376,8 @@ main().catch((e: unknown) => {
   process.stderr.write(`zengin: ${e instanceof Error ? e.message : String(e)}\n`);
   process.exitCode = 2;
 });
+
+function asFramework(v: string): "vite" | "next" {
+  if (v !== "vite" && v !== "next") throw new Error(`--framework must be vite or next (got ${v}).`);
+  return v;
+}

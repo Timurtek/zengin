@@ -1,0 +1,192 @@
+/* Layout only. Every value is a token; the components own their own appearance. */
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-surface-sunken);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.auth *,
+.auth *::before,
+.auth *::after {
+  box-sizing: border-box;
+}
+
+.auth h1,
+.auth p,
+.auth dl,
+.auth dd {
+  margin: 0;
+}
+
+.auth {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+.auth__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-4) var(--spacing-6);
+}
+
+.auth__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: inherit;
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+}
+
+.auth__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6) var(--spacing-4) var(--spacing-12);
+}
+
+.auth__card {
+  width: 100%;
+  max-width: 26rem;
+}
+
+.auth__hint {
+  max-width: 26rem;
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.auth__hint code {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.auth__foot {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-6);
+  padding: var(--spacing-6);
+  font-size: var(--text-sm);
+}
+
+.auth__foot a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.auth__foot a:hover {
+  color: var(--color-text);
+}
+
+/* The form: a heading block, the alternative, the fields, the primary action, the switch line. */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.form__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.form__head h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+}
+
+.form__head p {
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.form__alt {
+  display: grid;
+}
+
+.form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.form__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.form__submit {
+  width: 100%;
+}
+
+.form__switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* Password strength: three segments, filled by level. */
+.strength {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.strength__bar {
+  display: inline-flex;
+  gap: var(--spacing-1);
+}
+
+.strength__bar i {
+  display: block;
+  width: var(--spacing-5);
+  height: var(--spacing-1);
+  border-radius: var(--radius-full);
+  background-color: var(--color-border);
+}
+
+.strength[data-level="1"] .strength__bar i:nth-child(1) { background-color: var(--color-danger); }
+.strength[data-level="2"] .strength__bar i:nth-child(-n + 2) { background-color: var(--color-warning); }
+.strength[data-level="3"] .strength__bar i { background-color: var(--color-success); }
+
+/* Signed in. */
+.done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4);
+  text-align: center;
+}
+
+.done__facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing-1) var(--spacing-4);
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-sunken);
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.done__facts dt {
+  color: var(--color-text-muted);
+}

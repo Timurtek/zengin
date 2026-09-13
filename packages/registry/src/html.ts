@@ -18,13 +18,19 @@ const MARK = "data-zengin";
  * is no index.html to patch.
  */
 export function patchIndexHtml(projectDir: string, patch: HtmlPatch): boolean {
-  const p = join(projectDir, "index.html");
+  // A Vite project has index.html; a Next project has the root layout, whose <head> holds the same tags.
+  const p = existsSync(join(projectDir, "index.html")) ? join(projectDir, "index.html") : join(projectDir, "src", "app", "layout.tsx");
   if (!existsSync(p)) return false;
+  const layout = p.endsWith("layout.tsx");
   let html = readFileSync(p, "utf8");
 
   if (patch.title !== undefined) {
-    const title = `<title>${escapeHtml(patch.title)}</title>`;
-    html = /<title>[\s\S]*?<\/title>/.test(html) ? html.replace(/<title>[\s\S]*?<\/title>/, title) : insertInHead(html, title);
+    if (layout) {
+      html = html.replace(/(export const metadata[^=]*=\s*\{[^}]*title:\s*)"[^"]*"/, `$1${JSON.stringify(patch.title)}`);
+    } else {
+      const title = `<title>${escapeHtml(patch.title)}</title>`;
+      html = /<title>[\s\S]*?<\/title>/.test(html) ? html.replace(/<title>[\s\S]*?<\/title>/, title) : insertInHead(html, title);
+    }
   }
   if (patch.themeColor !== undefined) {
     const meta = `<meta name="theme-color" content="${patch.themeColor}" />`;
@@ -38,7 +44,8 @@ export function patchIndexHtml(projectDir: string, patch: HtmlPatch): boolean {
     const owned = new RegExp(`\\s*<link[^>]*${MARK}="fonts"[^>]*>`, "g");
     html = html.replace(owned, "");
     if (patch.fonts) {
-      const link = `<link rel="stylesheet" href="${patch.fonts}" ${MARK}="fonts" />`;
+      // In a React 19 layout a stylesheet link needs `precedence`, or Next's prerender fails on the hoisting.
+      const link = `<link rel="stylesheet" href="${patch.fonts}" ${MARK}="fonts"${layout ? ' precedence="default"' : ""} />`;
       html = insertInHead(html, link);
     }
   }

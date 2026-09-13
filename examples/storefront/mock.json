@@ -1,0 +1,36 @@
+{
+  "$description": "What changes per product from day to day: stock, rating, review count, whether it is on sale. The catalog itself (names, prices, copy) is in src/data.ts. `npm run mock` regenerates src/mock.",
+  "seed": 1204,
+  "entities": [
+    {
+      "name": "Listing",
+      "count": 12,
+      "fields": {
+        "id": {
+          "type": "id",
+          "prefix": "SKU"
+        },
+        "stock": {
+          "type": "int",
+          "min": 0,
+          "max": 120
+        },
+        "rating": {
+          "type": "float",
+          "min": 3.6,
+          "max": 5,
+          "digits": 1
+        },
+        "reviews": {
+          "type": "int",
+          "min": 3,
+          "max": 900
+        },
+        "sale": {
+          "type": "boolean",
+          "p": 0.3
+        }
+      }
+    }
+  ]
+}

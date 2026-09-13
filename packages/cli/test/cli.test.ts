@@ -199,6 +199,9 @@ describe("zengin report and rollup", () => {
   it("parses the report and rollup options", () => {
     expect(parseArgs(["fonts", "geist", "--self-host"], "/x")).toMatchObject({ command: "fonts", positional: ["geist"], scaffold: { selfHost: true } });
     expect(parseArgs(["icons", "tabler"], "/x")).toMatchObject({ command: "icons", positional: ["tabler"] });
+    expect(parseArgs(["create", "app", "--framework", "next"], "/x")).toMatchObject({ command: "create", scaffold: { framework: "next" } });
+    expect(() => parseArgs(["create", "app", "--framework", "remix"], "/x")).toThrow(/vite or next/);
+    expect(parseArgs(["upgrade", "button", "--write", "--force"], "/x")).toMatchObject({ command: "upgrade", positional: ["button"], scaffold: { write: true, force: true } });
     expect(parseArgs(["brand", "--name", "Acme", "--fonts", "plex"], "/x")).toMatchObject({ command: "brand", scaffold: { name: "Acme", fonts: "plex" } });
     expect(parseArgs(["report", "--into", "reports", "--at", "2026-09-01T00:00:00Z", "--commit", "abc", "--ref", "main"], "/x")).toMatchObject({ command: "report", report: { into: "reports", at: "2026-09-01T00:00:00Z", commit: "abc", ref: "main" } });
     expect(parseArgs(["report", "--repo", "acme/x", "--include-violations", "--out", "r.json"], "/x")).toMatchObject({ command: "report", report: { repo: "acme/x", includeViolations: true, out: "r.json" } });

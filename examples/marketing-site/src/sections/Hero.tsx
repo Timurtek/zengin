@@ -4,7 +4,7 @@ import { CheckPanel } from "../components/CheckPanel";
 /** The facts on the sheet. Each is a number the repository can back. */
 const SPEC = [
   ["Components", "33"],
-  ["Templates", "5"],
+  ["Templates", "8"],
   ["Rule kinds", "7"],
   ["Models in the loop", "0"],
 ] as const;

@@ -1,0 +1,26 @@
+{
+  "$description": "Per-page metadata for the docs: who touched it last, when, how often it is read. The pages themselves are prose in src/data.ts. `npm run mock` regenerates src/mock.",
+  "seed": 7731,
+  "entities": [
+    {
+      "name": "Page",
+      "count": 10,
+      "fields": {
+        "id": {
+          "type": "id",
+          "prefix": "DOC"
+        },
+        "author": "fullName",
+        "updated": {
+          "type": "date",
+          "pastDays": 90
+        },
+        "views": {
+          "type": "int",
+          "min": 40,
+          "max": 6000
+        }
+      }
+    }
+  ]
+}

@@ -24,12 +24,18 @@ export interface CreateOptions {
    * pulled from npm, which is how the generator is exercised before the first release.
    */
   local?: string;
+  /**
+   * `vite` (default): an SPA with index.html and src/main.tsx. `next`: the App Router under src/app, the
+   * template's App mounted client-side from page.tsx, its head in layout.tsx. Everything else is the same.
+   */
+  framework?: "vite" | "next";
 }
 
 export interface CreateResult {
   dir: string;
   name: string;
   template: string;
+  framework: "vite" | "next";
   version: string;
   install: InstallResult;
   tokens: { light: number; dark: number };
@@ -46,6 +52,7 @@ export const VERSIONS = {
   "@vitejs/plugin-react": "^6.1.1",
   typescript: "^5.9.2",
   vite: "^8.3.0",
+  next: "^16.1.0",
   storybook: "^10.6.0",
   "@storybook/react-vite": "^10.6.0",
   "@storybook/addon-docs": "^10.6.0",
@@ -58,6 +65,7 @@ export async function createProject(opts: CreateOptions): Promise<CreateResult> 
   const name = opts.name ?? basename(dir);
   const template = opts.template ?? "blank";
   const storybook = opts.storybook ?? true;
+  const framework = opts.framework ?? "vite";
   if (existsSync(dir) && readdirSync(dir).length > 0) throw new Error(`${dir} exists and is not empty.`);
   if (!/^[a-z0-9][a-z0-9._-]*$/.test(name)) throw new Error(`"${name}" is not a valid package name. Use lowercase letters, digits, dots, dashes.`);
 
@@ -76,13 +84,18 @@ export async function createProject(opts: CreateOptions): Promise<CreateResult> 
   };
 
   // Base files first; the template may overwrite any of them (its own main.tsx, brand.css, index.html).
-  write("index.html", INDEX_HTML(name));
-  write("src/main.tsx", MAIN_TSX);
+  if (framework === "vite") {
+    write("index.html", INDEX_HTML(name));
+    write("src/main.tsx", MAIN_TSX);
+    write("vite.config.ts", VITE_CONFIG);
+  } else {
+    write("next.config.ts", NEXT_CONFIG);
+    write("src/app/page.tsx", NEXT_PAGE);
+  }
   write("src/theme/brand.css", BRAND_CSS);
   write(LAYOUT.stylesIndex, STYLES_INDEX_HEAD);
-  write("vite.config.ts", VITE_CONFIG);
-  write("tsconfig.json", TSCONFIG(storybook));
-  write(".gitignore", GITIGNORE);
+  write("tsconfig.json", framework === "vite" ? TSCONFIG(storybook) : TSCONFIG_NEXT(storybook));
+  write(".gitignore", framework === "vite" ? GITIGNORE : GITIGNORE + ".next/\nnext-env.d.ts\n");
   write("zengin.config.yaml", ZENGIN_CONFIG(version));
   write(".mcp.json", MCP_JSON);
   write(".claude/settings.json", CLAUDE_SETTINGS);
@@ -92,11 +105,20 @@ export async function createProject(opts: CreateOptions): Promise<CreateResult> 
     write(`${LAYOUT.storiesDir}/manifest.ts`, STORIES_MANIFEST);
   }
 
-  const items = await resolveItems(opts.source, [template]);
+  const resolved0 = await resolveItems(opts.source, [template]);
+  // On Next the template's entry point and page become the root layout and the page: the same imports,
+  // the same title and fonts link, the App mounted client-side so the SPA-style templates run unchanged.
+  const items = framework === "next" ? resolved0.map((i) => (i.type === "template" ? { ...i, files: i.files.filter((f) => f.path !== "index.html" && f.path !== "src/main.tsx") } : i)) : resolved0;
   const install = installItems({ projectDir: dir, items: storybook ? items : items.map((i) => ({ ...i, files: i.files.filter((f) => f.kind !== "story") })), version, force: true });
+  if (framework === "next") {
+    const tpl = resolved0.find((i) => i.type === "template");
+    const html = tpl?.files.find((f) => f.path === "index.html")?.content ?? INDEX_HTML(name);
+    const main = tpl?.files.find((f) => f.path === "src/main.tsx")?.content ?? MAIN_TSX;
+    write("src/app/layout.tsx", NEXT_LAYOUT({ name, html, main }));
+  }
 
-  write("package.json", packageJson({ name, install, storybook, local: opts.local, mock: items.some((i) => i.type === "template" && i.files.some((f) => f.path === "mock.json")) }));
-  write("README.md", README(name, template, install.components));
+  write("package.json", packageJson({ name, install, storybook, local: opts.local, framework, mock: items.some((i) => i.type === "template" && i.files.some((f) => f.path === "mock.json")) }));
+  write("README.md", README(name, template, install.components, framework));
   if (opts.theme) await applyTheme({ projectDir: dir, name: opts.theme, source: opts.source });
 
   const tokens = writeTokensCss(join(dir, LAYOUT.definitionsDir), join(dir, "src/styles/generated/tokens.css"));
@@ -108,22 +130,23 @@ export async function createProject(opts: CreateOptions): Promise<CreateResult> 
   const files = readProjectFiles(projectDir, resolved.scope.include, resolved.scope.exclude);
   const violations = engine.check(files).length;
 
-  return { dir, name, template, version, install, tokens, violations };
+  return { dir, name, template, framework, version, install, tokens, violations };
 }
 
-function packageJson(opts: { name: string; install: InstallResult; storybook: boolean; local?: string; mock?: boolean }): string {
+function packageJson(opts: { name: string; install: InstallResult; storybook: boolean; local?: string; mock?: boolean; framework?: "vite" | "next" }): string {
+  const next = opts.framework === "next";
   // `link:` symlinks the checkout's package and uses its own node_modules, so workspace deps resolve. pnpm honors it; npm needs the release.
   const z = (pkg: string): string => (opts.local ? `link:${resolve(opts.local, "packages", pkg).replace(/\\/g, "/")}` : VERSIONS.zengin);
-  const dependencies = sortKeys({ react: VERSIONS.react, "react-dom": VERSIONS["react-dom"], ...opts.install.dependencies });
+  const dependencies = sortKeys({ react: VERSIONS.react, "react-dom": VERSIONS["react-dom"], ...(next ? { next: VERSIONS.next } : {}), ...opts.install.dependencies });
   const devDependencies = sortKeys({
     "@types/react": VERSIONS["@types/react"],
     "@types/react-dom": VERSIONS["@types/react-dom"],
-    "@vitejs/plugin-react": VERSIONS["@vitejs/plugin-react"],
+    ...(!next || opts.storybook ? { "@vitejs/plugin-react": VERSIONS["@vitejs/plugin-react"] } : {}),
     "@zengin/cli": z("cli"),
     "@zengin/hook": z("hook"),
     "@zengin/mcp": z("mcp"),
     typescript: VERSIONS.typescript,
-    vite: VERSIONS.vite,
+    ...(!next || opts.storybook ? { vite: VERSIONS.vite } : {}),
     ...(opts.storybook
       ? {
           storybook: VERSIONS.storybook,
@@ -135,9 +158,9 @@ function packageJson(opts: { name: string; install: InstallResult; storybook: bo
     ...opts.install.devDependencies,
   });
   const scripts: Record<string, string> = {
-    dev: "zengin tokens && vite",
-    build: "zengin tokens && tsc -p tsconfig.json --noEmit && vite build",
-    preview: "vite preview",
+    dev: next ? "zengin tokens && next dev" : "zengin tokens && vite",
+    build: next ? "zengin tokens && next build" : "zengin tokens && tsc -p tsconfig.json --noEmit && vite build",
+    ...(next ? { start: "next start" } : { preview: "vite preview" }),
     tokens: "zengin tokens",
     check: "zengin check",
     add: "zengin add",
@@ -380,13 +403,13 @@ export function classNameAllow(component: string): string {
 }
 `;
 
-const README = (name: string, template: string, components: string[]): string => `# ${name}
+const README = (name: string, template: string, components: string[], framework: "vite" | "next" = "vite"): string => `# ${name}
 
-Created with \`zengin create\` from the **${template}** template. The components in \`src/components/ui\` are yours: edit them, the engine keeps everything else on the system they define.
+Created with \`zengin create\` from the **${template}** template${framework === "next" ? ", on Next.js (App Router, \`src/app\`)" : ""}. The components in \`src/components/ui\` are yours: edit them, the engine keeps everything else on the system they define.
 
 \`\`\`bash
 npm install
-npm run dev          # http://localhost:5173
+npm run dev          # http://localhost:${framework === "next" ? "3000" : "5173"}
 npm run storybook    # http://localhost:6006
 npm run check        # zengin check: every file in src against zengin/
 npm run add -- select switch   # more components from the registry
@@ -403,3 +426,86 @@ npm run add -- select switch   # more components from the registry
 | \`zengin.config.yaml\` | The policy. Every rule at error. |
 | \`.mcp.json\`, \`.claude/settings.json\` | The MCP server and the edit hook, so agents working here are checked as they write. |
 `;
+
+const NEXT_CONFIG = `import type { NextConfig } from "next";
+
+// "@" is src through tsconfig paths; Next reads them. Nothing else to configure.
+const config: NextConfig = { reactStrictMode: true };
+
+export default config;
+`;
+
+/** The template's App, mounted on the client. The templates read window and document in hooks, which is what an SPA does; ssr: false keeps that honest. */
+const NEXT_PAGE = `"use client";
+import dynamic from "next/dynamic";
+
+const App = dynamic(() => import("@/App").then((m) => m.App), { ssr: false });
+
+export default function Page() {
+  return <App />;
+}
+`;
+
+/**
+ * The root layout from the template's index.html and main.tsx: the same stylesheet imports (the tokens,
+ * the brand, the template's own css), the title as metadata, and a <head> with the fonts link so that
+ * `zengin theme`, `zengin fonts` and `zengin brand` patch it the way they patch index.html.
+ */
+const NEXT_LAYOUT = (opts: { name: string; html: string; main: string }): string => {
+  const title = /<title>([^<]*)<\/title>/.exec(opts.html)?.[1]?.trim() || opts.name;
+  // A stylesheet link in a React 19 layout needs `precedence`, or Next's prerender fails on the hoisting; the patchers add it too.
+  const links = [...opts.html.matchAll(/<link[^>]*rel="(?:stylesheet|preconnect)"[^>]*>/g)].map((m) =>
+    m[0]
+      .replace(/\s*\/?>$/, " />")
+      .replace(/\scrossorigin(?=\s|\/|>)/, " crossOrigin=\"anonymous\"")
+      .replace(/(rel="stylesheet"[^>]*?)\s\/>$/, '$1 precedence="default" />'),
+  );
+  const imports = [...opts.main.matchAll(/^import "(\.\/[^"]+\.css)";$/gm)].map((m) => m[1]!.replace(/^\.\//, "@/"));
+  const css = (imports.length ? imports : ["@/styles/index.css", "@/theme/brand.css"]).map((p) => `import "${p}";`).join("\n");
+  return `${css}
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+
+export const metadata: Metadata = { title: ${JSON.stringify(title)} };
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+${links.map((l) => `        ${l}`).join("\n")}
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+`;
+};
+
+const TSCONFIG_NEXT = (storybook: boolean): string =>
+  JSON.stringify(
+    {
+      compilerOptions: {
+        target: "ES2022",
+        module: "ESNext",
+        moduleResolution: "Bundler",
+        lib: ["ES2022", "DOM", "DOM.Iterable"],
+        jsx: "react-jsx",
+        strict: true,
+        noUncheckedIndexedAccess: true,
+        isolatedModules: true,
+        skipLibCheck: true,
+        resolveJsonModule: true,
+        esModuleInterop: true,
+        allowJs: true,
+        incremental: true,
+        noEmit: true,
+        plugins: [{ name: "next" }],
+        baseUrl: ".",
+        paths: { "@/*": ["./src/*"] },
+      },
+      include: ["next-env.d.ts", "src", ".next/types/**/*.ts", ".next/dev/types/**/*.ts", ...(storybook ? ["stories", ".storybook"] : [])],
+      exclude: ["node_modules"],
+    },
+    null,
+    2,
+  ) + "\n";

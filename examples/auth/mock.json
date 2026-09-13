@@ -1,0 +1,35 @@
+{
+  "$description": "The accounts the auth flows check against. `npm run mock` regenerates src/mock; sign up with one of these emails and the form says so.",
+  "seed": 4401,
+  "entities": [
+    {
+      "name": "Account",
+      "count": 12,
+      "fields": {
+        "id": {
+          "type": "id",
+          "prefix": "USR"
+        },
+        "name": "fullName",
+        "email": "email",
+        "role": {
+          "type": "enum",
+          "values": [
+            "owner",
+            "admin",
+            "member"
+          ],
+          "weights": [
+            1,
+            2,
+            6
+          ]
+        },
+        "joined": {
+          "type": "date",
+          "pastDays": 400
+        }
+      }
+    }
+  ]
+}

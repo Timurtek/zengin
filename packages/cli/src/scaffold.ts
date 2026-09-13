@@ -3,7 +3,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaVariables, writePlugin } from "@zengin/figma";
 import type { ComponentManifest } from "@zengin/engine";
 import { generateMock, PRESETS, schemaFromPresets, type MockSchema } from "@zengin/mock";
-import { applyFonts, applyIcons, applyTheme, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zengin/registry";
+import { applyFonts, applyIcons, applyTheme, applyUpgrade, planUpgrade, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zengin/registry";
 
 export interface ScaffoldOptions {
   registry?: string;
@@ -25,6 +25,8 @@ export interface ScaffoldOptions {
   fonts?: string;
   /** fonts: download the files into public/fonts instead of linking Google Fonts. */
   selfHost?: boolean;
+  /** create: vite (default) or next. */
+  framework?: "vite" | "next";
   fontMono?: string;
   radius?: BrandRadius;
   write: boolean;
@@ -73,6 +75,32 @@ export async function runFonts(name: string | undefined, opts: ScaffoldOptions, 
   return lines.join("\n");
 }
 
+/** `zengin upgrade [items] [--write] [--force]`: what changed upstream since the components were copied, and take it. */
+export async function runUpgrade(names: string[], opts: ScaffoldOptions, cwd: string): Promise<string> {
+  const source = openRegistry(opts.registry);
+  const projectDir = opts.dir ? resolve(cwd, opts.dir) : cwd;
+  const plan = await planUpgrade({ projectDir, source, ...(names.length ? { only: names } : {}) });
+  const counts: Record<string, number> = {};
+  for (const e of plan.entries) counts[e.state] = (counts[e.state] ?? 0) + 1;
+  const lines = [`Project pins ${plan.projectVersion ?? "no version"}; ${source.location} is at ${plan.version}. ${plan.entries.length} owned files in ${plan.items.length} items.`];
+  const word: Record<string, string> = { current: "current ", upstream: "upstream", local: "local   ", conflict: "CONFLICT", unknown: "unknown ", gone: "gone    " };
+  for (const e of plan.entries) if (e.state !== "current") lines.push(`  ${word[e.state]}  ${e.path}${e.from ? `  (from ${e.from})` : ""}`);
+  if (!plan.entries.some((e) => e.state !== "current")) lines.push("  Everything is what the registry ships.");
+  const summary = Object.entries(counts).map(([k, n]) => `${n} ${k}`).join(", ");
+
+  if (!opts.write) {
+    for (const e of plan.entries) if (e.diff && (e.state === "conflict" || e.state === "unknown")) lines.push("", `${e.path}:`, ...e.diff.split("\n").map((l) => `  ${l}`));
+    lines.push("", `${summary}. This was a report; zengin upgrade --write takes every upstream change. A conflict needs a merge, or --force to take upstream as is.`);
+    return lines.join("\n");
+  }
+  const r = await applyUpgrade(plan, { projectDir, source, force: opts.force });
+  for (const p of r.written) lines.push(`  wrote   ${p}`);
+  for (const e of r.skipped) lines.push(`  held    ${e.path} (${e.state}; merge by hand, or --force)`);
+  if (r.versionBumped) lines.push(`  pinned  zengin.config.yaml now says ${plan.version}`);
+  lines.push("", `${summary}. ${r.written.length} written, ${r.skipped.length} held. Run zengin check to confirm the project is still clean.`);
+  return lines.join("\n");
+}
+
 /** `zengin icons [set]`: list the registry's icon sets, or point this project's icon vocabulary at one. */
 export async function runIcons(name: string | undefined, opts: ScaffoldOptions, cwd: string): Promise<string> {
   const source = openRegistry(opts.registry);
@@ -116,9 +144,9 @@ export async function runBrand(opts: ScaffoldOptions, cwd: string): Promise<stri
 export async function runCreate(dirArg: string | undefined, opts: ScaffoldOptions, cwd: string): Promise<string> {
   if (!dirArg) throw new Error("zengin create needs a directory: zengin create my-app [--template marketing]");
   const source = openRegistry(opts.registry);
-  const r = await createProject({ dir: resolve(cwd, dirArg), name: opts.name, template: opts.template, theme: opts.theme, source, storybook: opts.storybook, local: opts.local });
+  const r = await createProject({ dir: resolve(cwd, dirArg), name: opts.name, template: opts.template, theme: opts.theme, source, storybook: opts.storybook, local: opts.local, framework: opts.framework });
   const lines = [
-    `Created ${r.name} in ${relative(cwd, r.dir) || "."} from the ${r.template} template${opts.theme ? ` with the ${opts.theme} theme` : ""} (Zengin UI ${r.version}, registry ${source.location}).`,
+    `Created ${r.name} in ${relative(cwd, r.dir) || "."} from the ${r.template} template${opts.theme ? ` with the ${opts.theme} theme` : ""}${r.framework === "next" ? " on Next.js" : ""} (Zengin UI ${r.version}, registry ${source.location}).`,
     `  ${r.install.components.length} components in ${LAYOUT.componentsDir}: ${r.install.components.join(", ")}`,
     `  tokens.css: ${r.tokens.light} tokens, ${r.tokens.dark} dark overrides`,
     `  zengin check: ${r.violations} violations`,
