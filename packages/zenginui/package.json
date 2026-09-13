@@ -1,6 +1,6 @@
 {
   "name": "zenginui",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "The Zengin command line, unscoped: `npx zenginui create my-app`. Runs @zenginui/cli.",
   "license": "MIT",
   "type": "module",

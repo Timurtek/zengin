@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/cli",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Command line for the Zengin conformance engine: the gate for pre-commit and CI.",
   "license": "MIT",
   "type": "module",

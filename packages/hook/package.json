@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/hook",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Claude Code PostToolUse hook that checks every file write against the design system.",
   "license": "MIT",
   "type": "module",

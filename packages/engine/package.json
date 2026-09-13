@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/engine",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Deterministic design-system conformance engine. Code in, structured violations out.",
   "license": "MIT",
   "type": "module",

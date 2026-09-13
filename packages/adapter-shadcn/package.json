@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/adapter-shadcn",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Derives Zengin definitions from a shadcn/ui project: theme variables, Tailwind config, and the cva() calls in components/ui.",
   "license": "MIT",
   "type": "module",
