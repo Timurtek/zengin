@@ -105,7 +105,7 @@ function SignIn({ email, onEmail, onDone, onSignUp, onReset }: { email: string; 
         <TextField
           label="Password"
           type={show ? "text" : "password"}
-          autoComplete="current-password"
+          autoComplete="off"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           error={touched ? errors.password : undefined}
@@ -172,7 +172,7 @@ function SignUp({ email, onEmail, onDone, onSignIn }: { email: string; onEmail: 
         <TextField
           label="Password"
           type="password"
-          autoComplete="new-password"
+          autoComplete="off"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           error={touched ? errors.password : undefined}
@@ -260,7 +260,7 @@ function Code({ email, onVerified, onBack }: { email: string; onVerified: () => 
         </p>
       </div>
       <div className="form__fields">
-        <TextField label="Six-digit code" inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={code} onChange={(e) => { setCode(e.target.value); setError(undefined); }} error={error} description={`For the demo: ${RESET_CODE}`} />
+        <TextField label="Six-digit code" inputMode="numeric" autoComplete="off" maxLength={6} value={code} onChange={(e) => { setCode(e.target.value); setError(undefined); }} error={error} description={`For the demo: ${RESET_CODE}`} />
       </div>
       <Button type="submit" tone="primary" size="lg" className="form__submit">
         Verify

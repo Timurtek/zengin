@@ -1,10 +1,10 @@
 import { Button, Tooltip } from "@zenginui/ui";
-import { NAV, REPO } from "../content";
+import { NAV, NPM, REPO } from "../content";
 
 export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggleTheme: () => void }) {
   return (
     <header className="nav">
-      <div className="wrap nav__inner">
+      <div className="nav__inner">
         <a className="nav__mark" href="#top" aria-label="Zengin, top of page">
           <Mark />
           <span className="nav__wordmark">
@@ -29,8 +29,11 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
               {theme === "light" ? "Dark" : "Light"}
             </Button>
           </Tooltip>
+          <Button asChild variant="ghost" size="sm">
+            <a href={NPM} target="_blank" rel="noreferrer">npm</a>
+          </Button>
           <Button asChild variant="soft" size="sm">
-            <a href={REPO}>GitHub</a>
+            <a href={REPO} target="_blank" rel="noreferrer">GitHub</a>
           </Button>
         </div>
       </div>

@@ -31,7 +31,7 @@ export function System() {
               manifest entry, a story and tests, because a marketing page needed them and the components did not have them.
             </p>
             <p>
-              <a href={`${REPO}/tree/main/packages/ui`}>Zengin UI on GitHub</a>, with a contrast test over every theme pairing and a test that runs the engine on its own source. Every
+              <a href={`${REPO}/tree/main/packages/ui`} target="_blank" rel="noreferrer">Zengin UI on GitHub</a>, with a contrast test over every theme pairing and a test that runs the engine on its own source. Every
               component, in both themes, with its manifest-driven controls:
             </p>
             <div className="hero__actions">

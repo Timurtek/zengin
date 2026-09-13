@@ -16,10 +16,10 @@ export function GetStarted() {
           <p>An existing project keeps its own system: a shadcn project gets its definitions derived, anything else gets a config template with the questions to answer.</p>
           <div className="hero__actions">
             <Button asChild tone="primary">
-              <a href={REPO}>Open the repository</a>
+              <a href={REPO} target="_blank" rel="noreferrer">Open the repository</a>
             </Button>
             <Button asChild variant="ghost">
-              <a href={`${REPO}/blob/main/skills/zengin/SKILL.md`}>The agent skill</a>
+              <a href={`${REPO}/blob/main/skills/zengin/SKILL.md`} target="_blank" rel="noreferrer">The agent skill</a>
             </Button>
           </div>
         </div>

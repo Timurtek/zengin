@@ -108,11 +108,13 @@ body {
   border-bottom: 1px solid var(--color-border);
 }
 
+/* Edge to edge: the bar is the page's full width, with the same side padding at every size, so the links have room. */
 .nav__inner {
   display: flex;
   align-items: center;
   gap: var(--spacing-8);
   min-height: var(--spacing-16);
+  padding-inline: var(--spacing-6);
 }
 
 .nav__mark {
@@ -150,6 +152,7 @@ body {
 .nav__links {
   display: flex;
   gap: var(--spacing-5);
+  white-space: nowrap;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -171,7 +174,23 @@ body {
   margin-left: auto;
 }
 
-@media (max-width: 56rem) {
+/* Laptop widths: the same links, set tighter, and the tagline under the wordmark goes. */
+@media (max-width: 76rem) {
+  .nav__inner {
+    gap: var(--spacing-4);
+  }
+
+  .nav__links {
+    gap: var(--spacing-3);
+    letter-spacing: 0.04em;
+  }
+
+  .nav__wordmark small {
+    display: none;
+  }
+}
+
+@media (max-width: 64rem) {
   .nav__links {
     display: none;
   }
@@ -826,6 +845,12 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--spacing-4);
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-5);
 }
 
 @media (prefers-reduced-motion: reduce) {

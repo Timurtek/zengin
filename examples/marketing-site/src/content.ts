@@ -1,6 +1,7 @@
 /** Everything the page says. Numbers and quotes come from the repository's own docs, named beside each. */
 
 export const REPO = "https://github.com/Timurtek/zengin";
+export const NPM = "https://www.npmjs.com/org/zenginui";
 
 export const NAV: { href: string; label: string; external?: boolean }[] = [
   { href: "#how", label: "How it works" },

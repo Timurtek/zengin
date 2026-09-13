@@ -10,7 +10,7 @@ export function Proof() {
             <h2 className="title">Run on code nobody wrote for it</h2>
             <p className="lead">
               Two public shadcn codebases, every violation read and classified by hand. The write-ups are in the repository under{" "}
-              <a href={`${REPO}/tree/main/docs/field-tests`}>docs/field-tests</a>.
+              <a href={`${REPO}/tree/main/docs/field-tests`} target="_blank" rel="noreferrer">docs/field-tests</a>.
             </p>
           </div>
         </div>
