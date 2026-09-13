@@ -16,7 +16,9 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
           <ul className="nav__links">
             {NAV.map((item) => (
               <li key={item.href}>
-                <a href={item.href}>{item.label}</a>
+                <a href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noreferrer" : undefined}>
+                  {item.label}
+                </a>
               </li>
             ))}
           </ul>

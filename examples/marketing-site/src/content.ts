@@ -2,9 +2,10 @@
 
 export const REPO = "https://github.com/Timurtek/zengin";
 
-export const NAV = [
+export const NAV: { href: string; label: string; external?: boolean }[] = [
   { href: "#how", label: "How it works" },
   { href: "#templates", label: "Templates" },
+  { href: "/storybook/index.html", label: "Storybook", external: true },
   { href: "#surfaces", label: "Surfaces" },
   { href: "#rules", label: "Rules" },
   { href: "#system", label: "Reference system" },
