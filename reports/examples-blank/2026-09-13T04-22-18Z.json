@@ -7,7 +7,7 @@
     "commit": "946230627df7249acf6e8d650df44d8233369071"
   },
   "system": {
-    "package": "@zengin/ui",
+    "package": "@zenginui/ui",
     "version": "0.0.1"
   },
   "filesChecked": 4,
