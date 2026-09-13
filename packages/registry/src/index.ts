@@ -1,7 +1,7 @@
 export { buildRegistry, writeRegistry, kebab, pascal } from "./build.js";
 export { openRegistry, registryFromMemory, DEFAULT_REGISTRY, type RegistrySource } from "./load.js";
 export { resolveItems } from "./resolve.js";
-export { installItems, withPragma, stripPragma, contentHash, type InstallResult } from "./install.js";
+export { addBarrelLine, installItems, withPragma, stripPragma, contentHash, type InstallResult } from "./install.js";
 export { planUpgrade, applyUpgrade, diffLines, type UpgradePlan, type UpgradeEntry, type UpgradeState, type ApplyResult } from "./upgrade.js";
 export { createProject, VERSIONS, type CreateOptions, type CreateResult } from "./create.js";
 export { buildTokensCss, writeTokensCss } from "./tokens.js";

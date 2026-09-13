@@ -229,3 +229,12 @@ export function renderReport(d: PackageDerivation): string {
 
 export { deriveTokensFromCss, classify, type CssDerivation, type CssToken, type Group } from "./tokens.js";
 export { deriveManifestFromTypes, type TypesDerivation } from "./types.js";
+export {
+  deriveManifestFromSource,
+  mergeIntoManifest,
+  renderDefineReport,
+  type SourceDerivation,
+  type SourceFile,
+  type SourceOptions,
+  type MergePlan,
+} from "./source.js";

@@ -3,6 +3,7 @@ import { dirname, relative, resolve } from "node:path";
 import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity } from "@zenginui/engine";
 import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check.js";
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
+import { runDefine } from "./define.js";
 import { init, initFromPackage, initFromShadcn } from "./init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "./report.js";
 import { runAdd, runBrand, runCreate, runFigma, runFonts, runIcons, runMock, runUpgrade, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
@@ -16,6 +17,7 @@ Usage:
   zengin init                         write a zengin.config.yaml in the current directory
   zengin init --from shadcn           derive tokens, manifest and config from a shadcn/ui project
   zengin init --from package <name>   derive them from an installed package: its CSS variables and type declarations
+  zengin define [names...]            teach the manifest the components this project owns, from their own types and CSS
   zengin report [--out file]          one repository's snapshot: violations plus inventory, as JSON, for the rollup
   zengin report --into <dir>          the same, filed as <dir>/<repo>/<time>.json so the directory is the history
   zengin rollup <snapshots|dirs...>   drift, adoption and trends across repositories, from report snapshots
@@ -37,6 +39,10 @@ Usage:
 Init options:
   --from shadcn         read the theme CSS, Tailwind config and components/ui; write zengin/ and zengin.config.yaml
   --from package <name> read node_modules/<name>: tokens from its stylesheet (names kept), manifest from its .d.ts
+
+Define options:
+  --write               apply the plan (a report only, otherwise)
+  --dir <path>          project directory (default: cwd)
   --dir <path>          project directory (default: cwd)
   --force               overwrite existing zengin/ definitions and config
 
@@ -107,7 +113,7 @@ Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 us
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "help";
+  command: "check" | "explain" | "init" | "define" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "help";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
@@ -135,7 +141,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       return v;
     };
     if (!a.startsWith("-") && !command) {
-      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "fonts" || a === "icons" || a === "upgrade" || a === "brand" || a === "figma" || a === "mock" || a === "help") command = a;
+      if (a === "check" || a === "explain" || a === "init" || a === "define" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "fonts" || a === "icons" || a === "upgrade" || a === "brand" || a === "figma" || a === "mock" || a === "help") command = a;
       else {
         command = "check";
         positional.push(a);
@@ -295,6 +301,15 @@ async function main(): Promise<void> {
       }
       const path = init(dir);
       process.stdout.write(`Wrote ${path}. Edit system.package to point at your design system, then run: zengin check\n`);
+      return;
+    }
+    case "define": {
+      const result = runDefine({
+        cwd: parsed.init.dir ? resolve(process.cwd(), parsed.init.dir) : process.cwd(),
+        write: parsed.scaffold.write,
+        ...(parsed.positional.length ? { only: parsed.positional } : {}),
+      });
+      process.stdout.write(result.report + "\n");
       return;
     }
     case "create":

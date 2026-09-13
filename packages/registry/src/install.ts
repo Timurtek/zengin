@@ -107,7 +107,7 @@ function addBarrelExport(projectDir: string, name: string): void {
   addBarrelLine(projectDir, `export * from "./${name}/${name}";`);
 }
 
-function addBarrelLine(projectDir: string, line: string): void {
+export function addBarrelLine(projectDir: string, line: string): void {
   const p = join(projectDir, LAYOUT.componentsDir, "index.ts");
   const current = existsSync(p) ? readFileSync(p, "utf8") : BARREL_HEAD;
   if (current.includes(line)) return;

@@ -86,6 +86,8 @@ export interface OwnedFile {
 export interface FileInventory {
   file: string;
   kind: FileKind;
+  /** The surface whose definitions checked this file. Absent when it was the base system. */
+  surface?: string;
   suppressions: SuppressionUse[];
   owned?: OwnedFile;
   /** System component name -> uses in this file. */
@@ -147,6 +149,34 @@ export interface ZenginConfig {
     css?: string[];
   };
   rules?: Partial<Record<RuleId, RuleConfig | Severity | "off">>;
+  /**
+   * Parts of the project that are legitimately a different design, in order: the first whose `include`
+   * matches a file decides it. A marketing page and an application are not the same design, and without
+   * this the only ways to say so are two systems or a suppression, which both spell the difference as
+   * drift. A surface says it in the definitions instead, so it is still enforced, just enforced differently.
+   */
+  surfaces?: SurfaceConfig[];
+}
+
+export interface SurfaceConfig {
+  name: string;
+  /** Globs, against project-relative paths. */
+  include: string[];
+  /** A token file layered over the base tokens: same shape as tokens.json, and only what differs. */
+  tokens?: string;
+  /** Contract changes for this surface, merged over the base manifest entry by name. */
+  components?: Record<string, ComponentOverlay>;
+}
+
+/**
+ * What a surface may change about a component. Props are merged by name, so a surface adds a variant or
+ * widens an enum without restating the contract; `owns` likewise. A surface cannot rename or remove a
+ * component, because then it would be a different system rather than a different look.
+ */
+export interface ComponentOverlay {
+  props?: Record<string, PropManifest>;
+  owns?: Record<string, string | null>;
+  className?: { allow?: string[] };
 }
 
 export interface ResolvedRuleConfig {
@@ -176,6 +206,16 @@ export interface ResolvedConfig {
     css: string[];
   };
   rules: Record<RuleId, ResolvedRuleConfig>;
+  /** In declaration order; the first match wins. Empty when the project has one design, which is the default. */
+  surfaces: ResolvedSurface[];
+}
+
+export interface ResolvedSurface {
+  name: string;
+  include: string[];
+  /** Absolute path to the overlay token file, when the surface names one. */
+  tokensPath?: string;
+  components: Record<string, ComponentOverlay>;
 }
 
 // ---------------------------------------------------------------------------

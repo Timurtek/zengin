@@ -3,6 +3,7 @@ export { loadConfigFile, resolveConfig, compareVersions } from "./config.js";
 export { readProjectFiles } from "./project.js";
 export { loadTokens, toThemeCss, TokenIndex, normalizeColor } from "./system/tokens.js";
 export { ComponentIndex } from "./system/components.js";
+export { resolveSurfaces, type SurfaceResolver, type SurfaceView } from "./system/surfaces.js";
 export { RULES } from "./rules/index.js";
 export { StylesheetIndex } from "./resolve/stylesheet.js";
 export type { ClassResolver, Declaration, Resolution, UtilityResolver, StylesheetResolver } from "./resolve/resolver.js";

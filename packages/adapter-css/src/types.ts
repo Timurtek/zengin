@@ -10,28 +10,37 @@ import type { ComponentManifest } from "@zenginui/engine";
  * pass through.
  */
 
-type Node = { type: string; [k: string]: unknown };
+export type Node = { type: string; [k: string]: unknown };
 
-const HTML_TAGS = new Set(["button", "table", "select", "textarea", "input", "form", "label", "dialog", "progress", "hr", "img", "a", "nav", "ul", "ol", "li", "p", "span", "code", "pre", "details", "summary", "menu"]);
-const PLACEMENT = ["margin", "width", "height", "flex-item", "grid-item", "position", "display", "overflow"];
-const SKIP_PROPS = new Set(["className", "children", "style", "ref", "key"]);
+export const HTML_TAGS = new Set(["button", "table", "select", "textarea", "input", "form", "label", "dialog", "progress", "hr", "img", "a", "nav", "ul", "ol", "li", "p", "span", "code", "pre", "details", "summary", "menu"]);
+export const PLACEMENT = ["margin", "width", "height", "flex-item", "grid-item", "position", "display", "overflow"];
+export const SKIP_PROPS = new Set(["className", "children", "style", "ref", "key"]);
 
 export interface TypesDerivation {
   components: ComponentManifest[];
   report: { components: number; withVariants: number; skipped: string[] };
 }
 
-export function deriveManifestFromTypes(dts: string, opts: { importFrom: string; version?: string; only?: string[] }): TypesDerivation {
-  const ast = parse(dts, { sourceType: "module", plugins: [["typescript", { dts: true }]], errorRecovery: true }) as unknown as { program: { body: Node[] } };
-  const body = ast.program.body.map(unwrap);
+/** Everything a props walker needs from a parsed module: the types it can open, and what came from where. */
+export interface Declarations {
+  /** component name -> its props type node (parameter annotation or const type) */
+  functions: Map<string, Node | undefined>;
+  interfaces: Map<string, Node>;
+  aliases: Map<string, Node>;
+  /** camel const name -> { variant: [...], size: [...] } */
+  variants: Map<string, Record<string, string[]>>;
+  exported: Set<string>;
+  /** local name -> `source#imported` */
+  imports: Map<string, string>;
+}
 
-  const functions = new Map<string, Node | undefined>(); // component name -> its props type node (parameter annotation or const type)
-  const interfaces = new Map<string, Node>();
-  const aliases = new Map<string, Node>();
-  const variants = new Map<string, Record<string, string[]>>(); // camel const name -> { variant: [...], size: [...] }
-  const exported = new Set<string>();
-  const imports = new Map<string, string>(); // local name -> `source#imported`
+export function emptyDeclarations(): Declarations {
+  return { functions: new Map(), interfaces: new Map(), aliases: new Map(), variants: new Map(), exported: new Set(), imports: new Map() };
+}
 
+/** Reads one module's top-level declarations into `decls`. Call it per file to scan a whole directory. */
+export function scanDeclarations(body: Node[], decls: Declarations = emptyDeclarations()): Declarations {
+  const { functions, interfaces, aliases, variants, exported, imports } = decls;
   for (const node of body) {
     if (node.type === "ImportDeclaration") {
       const source = String((node["source"] as Node)["value"]);
@@ -58,13 +67,22 @@ export function deriveManifestFromTypes(dts: string, opts: { importFrom: string;
     }
     if (node.type === "ExportNamedDeclaration") for (const s of (node["specifiers"] as Node[]) ?? []) exported.add(idName(s["exported"]));
   }
+  return decls;
+}
 
-  type Info = { members: Node[]; extends?: string; found: boolean; variants: Record<string, string[]>; passthrough: string[] };
-  /**
+export type Info = { members: Node[]; extends?: string; found: boolean; variants: Record<string, string[]>; passthrough: string[] };
+
+export function emptyInfo(): Info {
+  return { members: [], found: false, variants: {}, passthrough: [] };
+}
+
+/**
    * Walks a props type: interface members, alias bodies, intersections and literals. Records the element whose
    * attributes pass through, the variant maps reached through `VariantProps<typeof x>`, and the types it cannot
    * open (imported from another package): those become the manifest's `passthrough`.
    */
+export function makeCollector(decls: Declarations): (t: Node | undefined, seen: Set<string>, into: Info) => void {
+  const { interfaces, aliases, variants, imports } = decls;
   const collect = (t: Node | undefined, seen: Set<string>, into: Info): void => {
     if (!t) return;
     if (t.type === "TSTypeLiteral") {
@@ -124,13 +142,22 @@ export function deriveManifestFromTypes(dts: string, opts: { importFrom: string;
     }
   };
 
+  return collect;
+}
+
+export function deriveManifestFromTypes(dts: string, opts: { importFrom: string; version?: string; only?: string[] }): TypesDerivation {
+  const ast = parse(dts, { sourceType: "module", plugins: [["typescript", { dts: true }]], errorRecovery: true }) as unknown as { program: { body: Node[] } };
+  const decls = scanDeclarations(ast.program.body.map(unwrap));
+  const { functions, variants, exported } = decls;
+  const collect = makeCollector(decls);
+
   const components: ComponentManifest[] = [];
   const skipped: string[] = [];
   let withVariants = 0;
   const names = [...functions.keys()].filter((n) => (exported.size === 0 || exported.has(n)) && (!opts.only || opts.only.includes(n))).sort();
   for (const name of names) {
     const props: NonNullable<ComponentManifest["props"]> = {};
-    const info: Info = { members: [], found: false, variants: {}, passthrough: [] };
+    const info: Info = emptyInfo();
     const paramType = functions.get(name);
     collect(paramType ?? { type: "TSTypeReference", typeName: { type: "Identifier", name: `${name}Props` } }, new Set(), info);
     if (!paramType && !info.found) collect({ type: "TSTypeReference", typeName: { type: "Identifier", name: `${name}Props` } }, new Set(), info);
@@ -173,7 +200,7 @@ export function deriveManifestFromTypes(dts: string, opts: { importFrom: string;
 }
 
 /** `declare const button: TVReturnType<{ variant: { a: ...; b: ... }; size: {...} }, ...>` to `{ variant: [a, b], size: [...] }`. */
-function variantMap(ann: Node | undefined): Record<string, string[]> | undefined {
+export function variantMap(ann: Node | undefined): Record<string, string[]> | undefined {
   if (!ann || ann.type !== "TSTypeReference") return undefined;
   const name = refName(ann["typeName"] as Node);
   if (!/^(TVReturnType|VariantProps)$/.test(name)) return undefined;
@@ -191,7 +218,16 @@ function variantMap(ann: Node | undefined): Record<string, string[]> | undefined
   return Object.keys(out).length ? out : undefined;
 }
 
-function propKind(t: Node | undefined): NonNullable<ComponentManifest["props"]>[string] | undefined {
+/**
+ * The manifest kind for a prop's type. `resolve` opens a named type alias, which is how source declares an
+ * enum: `variant?: ButtonVariant` where `ButtonVariant = "solid" | "soft"`. A `.d.ts` usually inlines the
+ * union or carries it on a variant function, so the package path passes no resolver and behaves as before.
+ */
+export function propKind(
+  t: Node | undefined,
+  resolve?: (name: string) => Node | undefined,
+  seen: Set<string> = new Set(),
+): NonNullable<ComponentManifest["props"]>[string] | undefined {
   if (!t) return undefined;
   switch (t.type) {
     case "TSBooleanKeyword":
@@ -210,11 +246,23 @@ function propKind(t: Node | undefined): NonNullable<ComponentManifest["props"]>[
       const rest = parts.filter((p) => p.type !== "TSLiteralType" && p.type !== "TSUndefinedKeyword" && p.type !== "TSNullKeyword");
       if (literals.length && rest.length === 0) return { type: "enum", values: literals };
       if (parts.some((p) => p.type === "TSBooleanKeyword") && rest.every((p) => p.type === "TSBooleanKeyword")) return { type: "boolean" };
-      return rest.length === 1 ? propKind(rest[0]) : { type: "node" };
+      if (resolve && rest.length > 1) {
+        // A union of aliases, each a union of literals: `Side | Align`. Opening them keeps the enum whole.
+        const opened = rest.map((p) => propKind(p, resolve, seen));
+        if (opened.every((o) => o?.type === "enum")) return { type: "enum", values: [...new Set(opened.flatMap((o) => o!.values ?? []))] };
+      }
+      return rest.length === 1 ? propKind(rest[0], resolve, seen) : { type: "node" };
     }
     case "TSTypeReference": {
       const name = refName(t["typeName"] as Node);
       if (/^(Date)$/.test(name)) return { type: "string" };
+      if (resolve && name && !seen.has(name)) {
+        const alias = resolve(name);
+        if (alias) {
+          seen.add(name);
+          return propKind(alias, resolve, seen);
+        }
+      }
       return { type: "node" };
     }
     default:
@@ -222,13 +270,13 @@ function propKind(t: Node | undefined): NonNullable<ComponentManifest["props"]>[
   }
 }
 
-function isComponentType(ann: Node): boolean {
+export function isComponentType(ann: Node): boolean {
   if (ann.type === "TSTypeReference") return /^(FC|FunctionComponent|ForwardRefExoticComponent|ComponentType|MemoExoticComponent|NamedExoticComponent)$/.test(refName(ann["typeName"] as Node));
   return ann.type === "TSFunctionType";
 }
 
 /** The props type of a `ForwardRefExoticComponent<P>` or `FC<P>`; a function type's first parameter. */
-function componentPropsType(ann: Node): Node | undefined {
+export function componentPropsType(ann: Node): Node | undefined {
   if (ann.type === "TSTypeReference") return (((ann["typeArguments"] ?? ann["typeParameters"]) as Node | undefined)?.["params"] as Node[] | undefined)?.[0];
   if (ann.type === "TSFunctionType") {
     const first = ((ann["params"] ?? ann["parameters"]) as Node[] | undefined)?.[0];
@@ -238,7 +286,7 @@ function componentPropsType(ann: Node): Node | undefined {
 }
 
 /** `HTMLAttributes<HTMLButtonElement>` -> `button`; `ComponentProps<"div">` -> `div`; `ButtonHTMLAttributes<...>` -> `button`. */
-function elementOf(name: string, args: Node[] | undefined): string | undefined {
+export function elementOf(name: string, args: Node[] | undefined): string | undefined {
   const m = /^([A-Z][A-Za-z]*?)?HTMLAttributes$/.exec(name);
   if (m) {
     const arg = args?.[0];
@@ -301,11 +349,11 @@ function qualifiedName(n: Node, imports: Map<string, string>): string {
   return parts.map((p) => p.replace(/\$\d+$/, "")).join(".");
 }
 
-function unwrap(node: Node): Node {
+export function unwrap(node: Node): Node {
   return node.type === "ExportNamedDeclaration" && node["declaration"] ? (node["declaration"] as Node) : node;
 }
 
-function idName(n: unknown): string {
+export function idName(n: unknown): string {
   const node = n as Node | undefined;
   if (!node) return "";
   if (typeof node["name"] === "string") return node["name"];
@@ -313,6 +361,6 @@ function idName(n: unknown): string {
   return "";
 }
 
-function isPascal(name: string): boolean {
+export function isPascal(name: string): boolean {
   return /^[A-Z][A-Za-z0-9]*$/.test(name);
 }

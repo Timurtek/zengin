@@ -45,3 +45,23 @@ writePackage(projectDir, d, force);                        // zengin/tokens.json
 ```
 
 `deriveTokensFromCss(css)` and `deriveManifestFromTypes(dts, { importFrom })` are the two halves, usable on their own.
+
+## From the project's own source
+
+`zengin init --from package` reads an installed design system. `zengin define` reads the one you are writing.
+
+A component a project owns sits in an ownership path, where the contract and substitution rules are off so the
+file may style itself freely. That is right for the file and wrong for everyone else: nothing tells the rest of
+the project what the component accepts, so a misspelled prop or an invented variant passes unnoticed. The
+component has joined the system's surface without joining its rules.
+
+`deriveManifestFromSource` closes that. Props come from the TypeScript types the component already declares,
+with named aliases opened so `variant?: ButtonVariant` reads as the enum it is; defaults come from the
+destructuring in the component's own signature; `extends` from the element whose attributes pass through; and
+`owns` from the component's stylesheet, since a property the component's own class sets is a property a caller
+must not set from outside. A property declared under `[data-tone="..."]` is attributed to `tone`, and one
+declared under a state the component sets for itself, like `[data-disabled]`, is attributed to nobody.
+
+`mergeIntoManifest` folds the result into the manifest the project already has, and never removes. A prop the
+manifest carries and the source cannot see survives, a hand-declared enum beats a type the walker could not
+open, and a disagreement about which prop controls a property is reported rather than resolved.

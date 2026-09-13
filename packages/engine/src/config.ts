@@ -51,6 +51,16 @@ export function resolveConfig(config: ZenginConfig, projectDir: string): Resolve
       css: (config.classes?.css ?? []).map((p) => resolve(projectDir, p)),
     },
     rules,
+    surfaces: (config.surfaces ?? []).map((s, i) => {
+      if (!s.name) throw new Error(`zengin config: surfaces[${i}] has no name`);
+      if (!s.include?.length) throw new Error(`zengin config: surface "${s.name}" has no include patterns`);
+      return {
+        name: s.name,
+        include: s.include,
+        ...(s.tokens ? { tokensPath: resolve(projectDir, s.tokens) } : {}),
+        components: s.components ?? {},
+      };
+    }),
   };
 }
 

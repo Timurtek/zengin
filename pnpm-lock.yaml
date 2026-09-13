@@ -387,10 +387,16 @@ importers:
       '@zenginui/rollup':
         specifier: workspace:*
         version: link:../rollup
+      picomatch:
+        specifier: ^4.0.3
+        version: 4.0.7
     devDependencies:
       '@types/node':
         specifier: ^22
         version: 22.20.2
+      '@types/picomatch':
+        specifier: ^4
+        version: 4.0.3
       typescript:
         specifier: ^5.9.2
         version: 5.9.3

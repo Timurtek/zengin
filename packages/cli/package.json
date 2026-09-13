@@ -46,10 +46,12 @@
     "@zenginui/figma": "workspace:*",
     "@zenginui/mock": "workspace:*",
     "@zenginui/registry": "workspace:*",
-    "@zenginui/rollup": "workspace:*"
+    "@zenginui/rollup": "workspace:*",
+    "picomatch": "^4.0.3"
   },
   "devDependencies": {
     "@types/node": "^22",
+    "@types/picomatch": "^4",
     "typescript": "^5.9.2",
     "vitest": "^5.0.0"
   }
