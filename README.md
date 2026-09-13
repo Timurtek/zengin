@@ -52,7 +52,7 @@ The vision asks for one marketing page and one application workflow from the sam
 
 ## Rollup, hosted
 
-Every example app is a consumer of Zengin UI and reports on every push to main (`.github/workflows/rollup.yml`, `scripts/report-examples.mjs`); the snapshots live in [`reports/`](reports) and the marketing site rolls them up at build time into [zengin-marketing-site.vercel.app/rollup/](https://zengin-marketing-site.vercel.app/rollup/): drift, adoption and suppressions over time, a sparkline per repository. The same two commands, `zengin report --into` and `zengin rollup <dir>`, do it for any set of repositories.
+Every example app is a consumer of Zengin UI and reports on every push to main (`.github/workflows/rollup.yml`, `scripts/report-examples.mjs`); the snapshots live in [`reports/`](reports) and the marketing site rolls them up at build time into [zengin.timurtek.com/rollup/](https://zengin.timurtek.com/rollup/): drift, adoption and suppressions over time, a sparkline per repository. The same two commands, `zengin report --into` and `zengin rollup <dir>`, do it for any set of repositories.
 
 ## Development
 

@@ -15,7 +15,7 @@ The token file references \`--color-brand\`, which **no theme defines**. Two way
 
 > The engine flags the first option as exact and the second as nearest.
 
-See [the rules](https://zengin-marketing-site.vercel.app/#rules) for the full list.`;
+See [the rules](https://zengin.timurtek.com/#rules) for the full list.`;
 
 const meta = {
   title: "Markdown",

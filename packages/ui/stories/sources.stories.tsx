@@ -10,7 +10,7 @@ const meta = {
   argTypes: argTypesFor("Sources"),
   args: {
     sources: [
-      { url: "https://zengin-marketing-site.vercel.app/#rules", title: "The seven rule kinds" },
+      { url: "https://zengin.timurtek.com/#rules", title: "The seven rule kinds" },
       { url: "https://github.com/Timurtek/zengin/blob/main/docs/field-tests/2026-09-12-vercel-ai-chatbot.md", title: "Field test: vercel/ai-chatbot" },
       { url: "https://www.w3.org/community/design-tokens/" },
     ],

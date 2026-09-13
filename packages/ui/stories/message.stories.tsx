@@ -57,7 +57,7 @@ export const WithParts: Story = {
           <Reasoning text="The user wants the violations for one file. I should run the check on that path only, then summarise by rule." duration={2.4} />
           <ToolCall name="zengin_check_code" state="output-available" input={{ path: "src/Actions.tsx" }} output={{ violations: 8, byRule: { "color-literal": 3, "spacing-literal": 2 } }} />
           <Markdown text={'Eight violations, three of them color literals with exact token matches. Here is the first:\n\n```tsx\n<span style={{ color: "var(--color-text-muted)" }}>\n```'} />
-          <Sources sources={[{ url: "https://zengin-marketing-site.vercel.app/#rules", title: "The seven rule kinds" }]} />
+          <Sources sources={[{ url: "https://zengin.timurtek.com/#rules", title: "The seven rule kinds" }]} />
         </Message.Content>
         <Message.Actions>
           <Button variant="ghost" size="sm">

@@ -6,8 +6,8 @@ export const NPM = "https://www.npmjs.com/org/zenginui";
 export const NAV: { href: string; label: string; external?: boolean }[] = [
   { href: "#how", label: "How it works" },
   { href: "#templates", label: "Templates" },
-  { href: "/storybook/index.html", label: "Storybook", external: true },
-  { href: "/rollup/index.html", label: "Rollup", external: true },
+  { href: "/storybook/", label: "Storybook", external: true },
+  { href: "/rollup/", label: "Rollup", external: true },
   { href: "#surfaces", label: "Surfaces" },
   { href: "#rules", label: "Rules" },
   { href: "#system", label: "Reference system" },

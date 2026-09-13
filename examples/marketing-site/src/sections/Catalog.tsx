@@ -102,8 +102,8 @@ export function Catalog() {
         <div className="catalog">
           {index
             ? templates.map((t) => (
-                // index.html spelled out: a dev server's SPA fallback would answer the bare directory with this page.
-                <TemplateCard key={t.name} template={t} src={`/templates/${t.name}/index.html${suffix}`} theme={theme === AUTHORED ? undefined : theme} fonts={fonts === AUTHORED ? undefined : fonts} icons={icons === AUTHORED ? undefined : icons} embedded={embedded} />
+                // The directory form, as the host serves it; vite.config.ts makes the dev server agree.
+                <TemplateCard key={t.name} template={t} src={`/templates/${t.name}/${suffix}`} theme={theme === AUTHORED ? undefined : theme} fonts={fonts === AUTHORED ? undefined : fonts} icons={icons === AUTHORED ? undefined : icons} embedded={embedded} />
               ))
             : !error && [0, 1, 2].map((i) => <SkeletonCard key={i} />)}
         </div>

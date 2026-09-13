@@ -44,7 +44,7 @@ Backfilling is honest too: `zengin report --at <iso> --commit <sha> --ref main` 
 
 ## Hosting
 
-The directory is the collector. Zengin hosts its own: [zengin-marketing-site.vercel.app/rollup/](https://zengin-marketing-site.vercel.app/rollup/) is `reports/` in the repository rolled up at site build time, and `.github/workflows/rollup.yml` files a new snapshot of every example on each push to main and commits it back. Any static host works the same way: run `zengin rollup reports --format html --out public/rollup/index.html` in the build and serve the directory.
+The directory is the collector. Zengin hosts its own: [zengin.timurtek.com/rollup/](https://zengin.timurtek.com/rollup/) is `reports/` in the repository rolled up at site build time, and `.github/workflows/rollup.yml` files a new snapshot of every example on each push to main and commits it back. Any static host works the same way: run `zengin rollup reports --format html --out public/rollup/index.html` in the build and serve the directory.
 
 ## Collecting snapshots
 

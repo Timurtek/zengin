@@ -1,7 +1,15 @@
-import { Button, Tooltip } from "@zenginui/ui";
+import { Button, Icon, Separator, Sheet, Tooltip } from "@zenginui/ui";
+import { useState } from "react";
 import { NAV, NPM, REPO } from "../content";
 
+const EXTERNAL = { target: "_blank", rel: "noreferrer" } as const;
+
+/**
+ * Three widths. Wide: the section links run inline. Narrower: they fold into a sheet behind a menu button,
+ * with npm and GitHub beside them. A phone keeps the mark, the theme toggle and the menu.
+ */
 export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggleTheme: () => void }) {
+  const [open, setOpen] = useState(false);
   return (
     <header className="nav">
       <div className="nav__inner">
@@ -16,7 +24,7 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
           <ul className="nav__links">
             {NAV.map((item) => (
               <li key={item.href}>
-                <a href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noreferrer" : undefined}>
+                <a href={item.href} {...(item.external ? EXTERNAL : {})}>
                   {item.label}
                 </a>
               </li>
@@ -25,16 +33,51 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
         </nav>
         <div className="nav__end">
           <Tooltip content={theme === "light" ? "Switch to dark" : "Switch to light"}>
-            <Button variant="ghost" size="sm" onClick={onToggleTheme} aria-label="Toggle theme">
-              {theme === "light" ? "Dark" : "Light"}
-            </Button>
+            <Button variant="ghost" size="sm" onClick={onToggleTheme} aria-label="Toggle theme" leadingIcon={theme === "light" ? <Icon.Moon /> : <Icon.Sun />} />
           </Tooltip>
-          <Button asChild variant="ghost" size="sm">
-            <a href={NPM} target="_blank" rel="noreferrer">npm</a>
+          <Button className="nav__npm" asChild variant="ghost" size="sm">
+            <a href={NPM} {...EXTERNAL}>
+              npm
+            </a>
           </Button>
-          <Button asChild variant="soft" size="sm">
-            <a href={REPO} target="_blank" rel="noreferrer">GitHub</a>
+          <Button className="nav__github" asChild variant="soft" size="sm">
+            <a href={REPO} {...EXTERNAL}>
+              GitHub
+            </a>
           </Button>
+          <Sheet open={open} onOpenChange={setOpen} side="right" size="sm">
+            <Sheet.Trigger asChild>
+              <Button className="nav__menu" variant="ghost" size="sm" aria-label="Open menu" leadingIcon={<Icon.Menu />} />
+            </Sheet.Trigger>
+            <Sheet.Content>
+              <Sheet.Title>Zengin</Sheet.Title>
+              <Sheet.Description>Sections of this page, and where the code lives.</Sheet.Description>
+              <nav aria-label="Sections">
+                <ul className="nav__sheet">
+                  {NAV.map((item) => (
+                    <li key={item.href}>
+                      <a href={item.href} onClick={() => setOpen(false)} {...(item.external ? EXTERNAL : {})}>
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <Separator />
+              <ul className="nav__sheet">
+                <li>
+                  <a href={NPM} {...EXTERNAL}>
+                    npm
+                  </a>
+                </li>
+                <li>
+                  <a href={REPO} {...EXTERNAL}>
+                    GitHub
+                  </a>
+                </li>
+              </ul>
+            </Sheet.Content>
+          </Sheet>
         </div>
       </div>
     </header>

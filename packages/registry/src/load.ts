@@ -9,7 +9,7 @@ export interface RegistrySource {
   item(name: string): Promise<RegistryItem>;
 }
 
-export const DEFAULT_REGISTRY = "https://zengin-marketing-site.vercel.app/r";
+export const DEFAULT_REGISTRY = "https://zengin.timurtek.com/r";
 
 /** `source` is a directory written by writeRegistry, or the base URL such a directory is served from. */
 export function openRegistry(source: string = process.env["ZENGIN_REGISTRY"] ?? DEFAULT_REGISTRY): RegistrySource {

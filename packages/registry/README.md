@@ -27,7 +27,7 @@ The generator runs the engine on the result before it returns. A fresh project r
 
 ## The registry
 
-A directory of static JSON, so it can be served from anywhere: `index.json` lists every item without file contents; `items/<name>.json` carries the files. The marketing site serves the public one at `https://zengin-marketing-site.vercel.app/r`, rebuilt on every deploy. `ZENGIN_REGISTRY` or `--registry <dir|url>` points the CLI elsewhere, which is how a private registry of paid templates works later: same shape, a different URL, a token on the request.
+A directory of static JSON, so it can be served from anywhere: `index.json` lists every item without file contents; `items/<name>.json` carries the files. The marketing site serves the public one at `https://zengin.timurtek.com/r`, rebuilt on every deploy. `ZENGIN_REGISTRY` or `--registry <dir|url>` points the CLI elsewhere, which is how a private registry of paid templates works later: same shape, a different URL, a token on the request.
 
 ```bash
 zengin registry build --out public/r        # from a Zengin repository checkout

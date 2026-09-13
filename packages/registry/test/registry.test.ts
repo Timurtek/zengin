@@ -67,7 +67,7 @@ describe("buildRegistry", () => {
     const def = registry.items.find((i) => i.name === "default")!;
     expect(def.files[0]!.content).toContain("--color-primary: #2563eb;");
     expect(def.files[0]!.content).toContain('[data-theme="dark"]');
-    expect(marketing.registryDependencies).toEqual(["foundation", "lib-cx", "badge", "button", "card", "checkbox", "code-block", "select", "skeleton", "table", "tabs", "text-field", "tooltip"]); // code-block is imported under an alias
+    expect(marketing.registryDependencies).toEqual(["foundation", "lib-cx", "badge", "button", "card", "checkbox", "code-block", "select", "separator", "sheet", "skeleton", "table", "tabs", "text-field", "tooltip"]); // code-block is imported under an alias
   });
 
   it("round-trips through static files", async () => {
@@ -99,7 +99,7 @@ describe("createProject", () => {
     const dir = join(tmp, "acme-site");
     const r = await createProject({ dir, template: "marketing", source: registryFromMemory(registry), local: root });
     expect(r.violations).toBe(0);
-    expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card", "Checkbox", "CodeBlock", "Icon", "Select", "Skeleton", "Table", "Tabs", "TextField", "Tooltip"]);
+    expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card", "Checkbox", "CodeBlock", "Icon", "Select", "Separator", "Sheet", "Skeleton", "Table", "Tabs", "TextField", "Tooltip"]);
 
     const button = readFileSync(join(dir, "src/components/ui/button/button.tsx"), "utf8");
     expect(button).toMatch(/^\/\* zengin-owned Button, forked from @zenginui\/ui@[\d.]+, sha [0-9a-f]{12} \*\//);
@@ -113,8 +113,9 @@ describe("createProject", () => {
 
     const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8")) as { name: string; dependencies: Record<string, string>; devDependencies: Record<string, string> };
     expect(pkg.name).toBe("acme-site");
-    expect(pkg.dependencies["@radix-ui/react-dialog"]).toBeUndefined(); // the marketing page does not use Dialog
+    expect(pkg.dependencies["@radix-ui/react-avatar"]).toBeUndefined(); // the marketing page does not use Avatar
     expect(pkg.dependencies["@radix-ui/react-tabs"]).toBeDefined();
+    expect(pkg.dependencies["@radix-ui/react-dialog"]).toBeDefined(); // its nav folds into a Sheet
     expect(pkg.devDependencies["@zenginui/cli"]).toMatch(/^link:/);
   });
 

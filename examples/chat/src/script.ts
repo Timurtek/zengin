@@ -30,7 +30,7 @@ export const REPLIES: ScriptedReply[] = [
 The part people miss: a literal that *equals* a token's value is still a violation. \`#2563EB\` matches \`color.primary\` in the default theme, so the fix is exact, but the literal will not follow a theme change. That is the whole reason the token exists.
 
 In \`semantic\` mode, Tailwind palette utilities such as \`bg-red-500\` count too; the fix goes by role, so red becomes \`danger\`.`,
-    sources: [{ url: "https://zengin-marketing-site.vercel.app/#rules", title: "The seven rule kinds" }],
+    sources: [{ url: "https://zengin.timurtek.com/#rules", title: "The seven rule kinds" }],
   },
   {
     match: ["check", "actions.tsx", "violations"],

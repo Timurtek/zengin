@@ -36,7 +36,7 @@ export function System() {
             </p>
             <div className="hero__actions">
               <Button asChild variant="soft">
-                <a href="/storybook/index.html" target="_blank" rel="noreferrer">
+                <a href="/storybook/" target="_blank" rel="noreferrer">
                   Open Storybook
                 </a>
               </Button>

@@ -174,24 +174,61 @@ body {
   margin-left: auto;
 }
 
-/* Laptop widths: the same links, set tighter, and the tagline under the wordmark goes. */
+/* The menu button exists for the widths where the links do not fit inline. */
+.nav__menu {
+  display: none;
+}
+
+/* The sheet's list: the same mono labels, one per row, with room to tap. */
+.nav__sheet {
+  display: grid;
+  gap: var(--spacing-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.nav__sheet a {
+  display: block;
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.nav__sheet a:hover {
+  background-color: var(--color-surface-sunken);
+}
+
+.nav__sheet + .z-separator {
+  margin-block: var(--spacing-4);
+}
+
+/* Below the width where eight labels fit inline, the links and npm move into the sheet. */
 @media (max-width: 76rem) {
-  .nav__inner {
-    gap: var(--spacing-4);
-  }
-
-  .nav__links {
-    gap: var(--spacing-3);
-    letter-spacing: 0.04em;
-  }
-
-  .nav__wordmark small {
+  .nav__links,
+  .nav__npm {
     display: none;
+  }
+
+  .nav__menu {
+    display: inline-flex;
   }
 }
 
-@media (max-width: 64rem) {
-  .nav__links {
+/* A phone keeps the mark, the theme toggle and the menu. */
+@media (max-width: 40rem) {
+  .nav__inner {
+    gap: var(--spacing-4);
+    padding-inline: var(--spacing-4);
+  }
+
+  .nav__wordmark small,
+  .nav__github {
     display: none;
   }
 }
