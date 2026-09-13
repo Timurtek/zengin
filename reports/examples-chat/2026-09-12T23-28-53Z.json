@@ -7,7 +7,7 @@
     "ref": "main"
   },
   "system": {
-    "package": "@zengin/ui",
+    "package": "@zenginui/ui",
     "version": "0.0.1"
   },
   "filesChecked": 6,

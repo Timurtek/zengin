@@ -1,4 +1,4 @@
-# @zengin/rollup
+# @zenginui/rollup
 
 Drift and adoption across every repository that consumes a design system. The same engine that corrects an agent mid-generation, added up for the team that owns the system.
 
@@ -86,7 +86,7 @@ Publish `rollup/latest.html` wherever the team reads dashboards, and post the ma
 ## Programmatic use
 
 ```ts
-import { buildSnapshot, aggregate, renderMarkdown, renderHtml } from "@zengin/rollup";
+import { buildSnapshot, aggregate, renderMarkdown, renderHtml } from "@zenginui/rollup";
 
 const snapshot = buildSnapshot({ engine, files, repo: { name: "acme/checkout" } });
 const rollup = aggregate([snapshot, ...others], { previous });

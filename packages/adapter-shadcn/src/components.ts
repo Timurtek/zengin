@@ -1,7 +1,7 @@
 import { parse } from "@babel/parser";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { ComponentManifest, PropManifest } from "@zengin/engine";
+import type { ComponentManifest, PropManifest } from "@zenginui/engine";
 import { defaultAllow, HEADLESS_BY_FILE, INTRINSIC_BY_FILE, ownedPropertyOf, PACKAGE_ROOT_PROPS, pascal, RADIX_ROOT_PROPS, type PropSpec } from "./knowledge.js";
 
 /**

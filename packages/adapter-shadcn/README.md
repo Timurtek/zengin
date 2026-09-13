@@ -1,4 +1,4 @@
-# @zengin/adapter-shadcn
+# @zenginui/adapter-shadcn
 
 Turns a shadcn/ui project into a Zengin consumer with one command. It reads what the project already has and writes the two definition files the engine needs, plus a config.
 
@@ -33,7 +33,7 @@ Two field tests. shadcn/taxonomy (Tailwind 3): hand-authored definitions gave 35
 ## Programmatic use
 
 ```ts
-import { deriveShadcn, writeShadcn, renderReport } from "@zengin/adapter-shadcn";
+import { deriveShadcn, writeShadcn, renderReport } from "@zenginui/adapter-shadcn";
 
 const d = deriveShadcn("/path/to/project");
 writeShadcn("/path/to/project", d, /* force */ false);

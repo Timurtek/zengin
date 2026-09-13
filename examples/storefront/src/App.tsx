@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Card, Dialog, Icon, Select, Separator, Sheet, Table, TextField, Toast, Tooltip, toast } from "@zengin/ui";
+import { Avatar, Badge, Button, Card, Dialog, Icon, Select, Separator, Sheet, Table, TextField, Toast, Tooltip, toast } from "@zenginui/ui";
 import { useEffect, useMemo, useState } from "react";
 import { CATEGORIES, FREE_SHIPPING_FROM, money, PRODUCTS, SHIPPING, sortProducts, SORTS, type Category, type Product, type Sort } from "./data";
 

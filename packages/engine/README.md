@@ -1,4 +1,4 @@
-# @zengin/engine
+# @zenginui/engine
 
 Deterministic design-system conformance engine. Code in, structured violations out. No LLM in the loop, no token spend on the check, the same answer every run.
 
@@ -35,10 +35,10 @@ Rules have a scope dimension. Foundation rules run everywhere except theme files
 
 ```yaml
 system:
-  package: "@zengin/ui"
+  package: "@zenginui/ui"
   version: "1.2.0"                 # read from node_modules when omitted
-  sources: ["@zengin/ui", "@/components/ui/*"]
-  definitions: ./node_modules/@zengin/ui/zengin   # default
+  sources: ["@zenginui/ui", "@/components/ui/*"]
+  definitions: ./node_modules/@zenginui/ui/zengin   # default
 
 scope:
   include: ["src/**/*.{ts,tsx,css}"]
@@ -84,12 +84,12 @@ Every surface renders the same shape:
 ## Suppressions and ownership
 
 - `// zengin-allow color-literal: hero gradient, approved in brand review` on the line above silences that violation. A comment with no reason does not suppress; the violation is kept and annotated.
-- `/* zengin-owned Button, forked from @zengin/ui@1.2.0 */` at the top of a file, or a path under `scope.ownership`, marks it owned. Contract and substitution rules turn off. Foundation rules stay on: owning a component never licenses a hardcoded color inside it.
+- `/* zengin-owned Button, forked from @zenginui/ui@1.2.0 */` at the top of a file, or a path under `scope.ownership`, marks it owned. Contract and substitution rules turn off. Foundation rules stay on: owning a component never licenses a hardcoded color inside it.
 
 ## Usage
 
 ```ts
-import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zengin/engine";
+import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
 
 const { config, dir } = loadConfigFile("zengin.config.yaml");
 const resolved = resolveConfig(config, dir);

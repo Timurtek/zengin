@@ -1,5 +1,5 @@
-import type { Engine, FileInput, InventoryTotals, OwnedFile, SuppressionUse, Summary, Violation } from "@zengin/engine";
-import { summarize } from "@zengin/engine";
+import type { Engine, FileInput, InventoryTotals, OwnedFile, SuppressionUse, Summary, Violation } from "@zenginui/engine";
+import { summarize } from "@zenginui/engine";
 
 /** One repository, one point in time. What `zengin report` writes and `zengin rollup` reads. */
 export interface ReportSnapshot {

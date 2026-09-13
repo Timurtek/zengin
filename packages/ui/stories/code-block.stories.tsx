@@ -21,4 +21,4 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const Bare: Story = { args: { language: undefined, showCopy: false, code: "npx zengin create acme --template chat" } };
+export const Bare: Story = { args: { language: undefined, showCopy: false, code: "npx zenginui create acme --template chat" } };

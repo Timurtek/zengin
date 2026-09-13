@@ -11,7 +11,7 @@ import {
   type Engine,
   type Severity,
   type Violation,
-} from "@zengin/engine";
+} from "@zenginui/engine";
 
 /** The subset of the Claude Code PostToolUse payload the hook reads. */
 export interface HookInput {

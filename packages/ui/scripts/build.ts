@@ -10,7 +10,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadTokens, type Token } from "@zengin/engine";
+import { loadTokens, type Token } from "@zenginui/engine";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p: string) => readFileSync(join(root, p), "utf8");
@@ -53,7 +53,7 @@ function buildBundle(): void {
   const imports = [...index.matchAll(/@import\s+"([^"]+)";/g)].map((m) => m[1]!);
   const parts = imports.map((rel) => `/* ${rel} */\n${read(join("src/styles", rel))}`);
   mkdirSync(join(root, "dist"), { recursive: true });
-  writeFileSync(join(root, "dist/zengin.css"), `/* @zengin/ui */\n\n${parts.join("\n\n")}`);
+  writeFileSync(join(root, "dist/zengin.css"), `/* @zenginui/ui */\n\n${parts.join("\n\n")}`);
   console.log(`zengin.css: ${imports.length} stylesheets`);
 }
 

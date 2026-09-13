@@ -12,7 +12,7 @@ import {
   type Severity,
   type Summary,
   type Violation,
-} from "@zengin/engine";
+} from "@zenginui/engine";
 import { changedFiles, stagedFiles } from "./git.js";
 
 export type Format = "pretty" | "json" | "github";

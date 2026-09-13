@@ -1,4 +1,4 @@
-import { normalizeColor } from "@zengin/engine";
+import { normalizeColor } from "@zenginui/engine";
 import postcss, { type Rule, type AtRule } from "postcss";
 
 /**

@@ -1,4 +1,4 @@
-import { Badge, Button, Card } from "@zengin/ui";
+import { Badge, Button, Card } from "@zenginui/ui";
 import type { ReviewItem, ReviewStatus } from "./data";
 
 const STATUS: Record<ReviewStatus, { label: string; tone: "primary" | "success" | "danger" | "warning" }> = {

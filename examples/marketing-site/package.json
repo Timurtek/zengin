@@ -2,7 +2,7 @@
   "name": "marketing-site",
   "private": true,
   "version": "0.0.0",
-  "description": "Zengin's own marketing page, built on @zengin/ui with a distinct brand through tokens, and enforced by the engine it advertises.",
+  "description": "Zengin's own marketing page, built on @zenginui/ui with a distinct brand through tokens, and enforced by the engine it advertises.",
   "type": "module",
   "scripts": {
     "dev": "node ../../packages/cli/dist/index.js registry build --out public/r && node scripts/build-previews.mjs && node ../../packages/cli/dist/index.js rollup ../../reports --format html --out public/rollup/index.html && vite --port 5174",
@@ -16,7 +16,7 @@
     "rollup": "node ../../packages/cli/dist/index.js rollup ../../reports --format html --out public/rollup/index.html"
   },
   "dependencies": {
-    "@zengin/ui": "workspace:*",
+    "@zenginui/ui": "workspace:*",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
@@ -24,10 +24,10 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "@zengin/cli": "workspace:*",
-    "@zengin/engine": "workspace:*",
-    "@zengin/hook": "workspace:*",
-    "@zengin/mcp": "workspace:*",
+    "@zenginui/cli": "workspace:*",
+    "@zenginui/engine": "workspace:*",
+    "@zenginui/hook": "workspace:*",
+    "@zenginui/mcp": "workspace:*",
     "puppeteer-core": "^25.10.0",
     "react-icons": "^5.7.0",
     "typescript": "^5.9.2",

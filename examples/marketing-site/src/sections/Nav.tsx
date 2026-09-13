@@ -1,4 +1,4 @@
-import { Button, Tooltip } from "@zengin/ui";
+import { Button, Tooltip } from "@zenginui/ui";
 import { NAV, REPO } from "../content";
 
 export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggleTheme: () => void }) {

@@ -1,4 +1,4 @@
-import { renderSummary, type Violation } from "@zengin/engine";
+import { renderSummary, type Violation } from "@zenginui/engine";
 import type { CheckResult } from "./check.js";
 
 const useColor = (): boolean => process.stdout.isTTY === true && !process.env["NO_COLOR"] && process.env["TERM"] !== "dumb";

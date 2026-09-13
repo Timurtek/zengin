@@ -1,4 +1,4 @@
-import "@zengin/ui/styles.css";
+import "@zenginui/ui/styles.css";
 import "./theme/brand.css";
 import "./site.css";
 import "./preview-theme";

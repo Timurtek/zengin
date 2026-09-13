@@ -1,4 +1,4 @@
-import { compareVersions, RULE_IDS, type RuleId } from "@zengin/engine";
+import { compareVersions, RULE_IDS, type RuleId } from "@zenginui/engine";
 import { buildHistory, groupByRepo, type History } from "./history.js";
 import type { ReportSnapshot } from "./snapshot.js";
 

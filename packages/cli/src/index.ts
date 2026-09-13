@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { dirname, relative, resolve } from "node:path";
-import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity } from "@zengin/engine";
+import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity } from "@zenginui/engine";
 import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check.js";
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { init, initFromPackage, initFromShadcn } from "./init.js";

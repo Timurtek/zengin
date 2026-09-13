@@ -1,6 +1,6 @@
 # marketing-site
 
-Zengin's own marketing page, built on `@zengin/ui` and checked by the engine it advertises. It is the marketing treatment from the product vision, next to the [review workspace](../review-workspace): the same components and tokens, a different brand.
+Zengin's own marketing page, built on `@zenginui/ui` and checked by the engine it advertises. It is the marketing treatment from the product vision, next to the [review workspace](../review-workspace): the same components and tokens, a different brand.
 
 ```bash
 pnpm build                                  # from the repository root, once
@@ -13,7 +13,7 @@ node demo/sample/run.mjs                    # regenerate the hero panel's violat
 
 ## How the brand works
 
-`src/theme/brand.css` is the whole brand, and it is the `zengin` theme in the registry: ivory (#F4F1E9) and ink (#20231F), vermilion (#D7472F, a shade under it on buttons so white text reaches AA) as the single accent, olive (#727B60) as the success tone for what is on-system, Inter Tight for headlines and Inter for text, the system's own JetBrains Mono for labels. Both color schemes. The earlier spec-sheet brand lives on as the `spec-sheet` theme. It redefines tokens the system already has and nothing else, so every component from `@zengin/ui` wears it without a line of component CSS changing. It is the only file allowed to hold literals (`scope.foundations` in `zengin.config.yaml`).
+`src/theme/brand.css` is the whole brand, and it is the `zengin` theme in the registry: ivory (#F4F1E9) and ink (#20231F), vermilion (#D7472F, a shade under it on buttons so white text reaches AA) as the single accent, olive (#727B60) as the success tone for what is on-system, Inter Tight for headlines and Inter for text, the system's own JetBrains Mono for labels. Both color schemes. The earlier spec-sheet brand lives on as the `spec-sheet` theme. It redefines tokens the system already has and nothing else, so every component from `@zenginui/ui` wears it without a line of component CSS changing. It is the only file allowed to hold literals (`scope.foundations` in `zengin.config.yaml`).
 
 `src/site.css` is layout and typography for the page. Every value is a token, including the drafting grid behind the hero, which is `color-mix()`ed from the border token. Zero violations, zero suppressions. The hero band runs in the opposite theme to the page by attaching `data-theme` to one element, which is how Zengin UI themes work everywhere.
 

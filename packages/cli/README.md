@@ -1,4 +1,4 @@
-# @zengin/cli
+# @zenginui/cli
 
 The `zengin` command. The gate that actually protects the codebase: run it pre-commit and on every pull request. Same engine, same violations, same fixes as the MCP server and the hook.
 
@@ -55,7 +55,7 @@ zengin check --staged
 
 ## GitHub Actions
 
-Until the packages are published, build them from source in the workflow. With published packages this collapses to one `npx zengin check` step.
+Until the packages are published, build them from source in the workflow. With published packages this collapses to one `npx zenginui check` step.
 
 ```yaml
 name: design-system
@@ -87,7 +87,7 @@ cd acme && zengin add dialog tooltip          # more items; --force overwrites f
 zengin tokens                                 # after editing zengin/tokens*.json (dev and build run it)
 ```
 
-`create` writes the project, copies the template's components in with the owned pragma, merges their manifest entries into `zengin/components.json`, builds `tokens.css`, and runs the engine on the result before it prints. `add` does the same for further items and records any npm packages they need in `package.json`. See [@zengin/registry](../registry) for the layout and the registry format.
+`create` writes the project, copies the template's components in with the owned pragma, merges their manifest entries into `zengin/components.json`, builds `tokens.css`, and runs the engine on the result before it prints. `add` does the same for further items and records any npm packages they need in `package.json`. See [@zenginui/registry](../registry) for the layout and the registry format.
 
 ## upgrade
 
@@ -98,7 +98,7 @@ zengin upgrade button card     # only these items
 zengin upgrade --write --force # take upstream over a conflict too
 ```
 
-Every owned file carries the hash of what was copied in its pragma (`/* zengin-owned Button, forked from @zengin/ui@0.1.0, sha 3f9a1c0b2d4e */`). Comparing that hash with the file now says whether you edited it; comparing it with the registry says whether the system moved. Four answers per file: `current`, `upstream` (taken with `--write`), `local` (yours, left alone), `conflict` (both moved: the report shows the diff, `--force` takes upstream). Files copied before hashes existed show as `unknown` when they differ. When nothing is left behind, `zengin.config.yaml` is moved to the registry's version.
+Every owned file carries the hash of what was copied in its pragma (`/* zengin-owned Button, forked from @zenginui/ui@0.1.0, sha 3f9a1c0b2d4e */`). Comparing that hash with the file now says whether you edited it; comparing it with the registry says whether the system moved. Four answers per file: `current`, `upstream` (taken with `--write`), `local` (yours, left alone), `conflict` (both moved: the report shows the diff, `--force` takes upstream). Files copied before hashes existed show as `unknown` when they differ. When nothing is left behind, `zengin.config.yaml` is moved to the registry's version.
 
 ## theme and brand
 
@@ -124,10 +124,10 @@ zengin brand --name Nova --primary "#7C3AED"  # from a color alone
 ```bash
 zengin mock customers invoices            # presets: users, customers, companies, products, orders, invoices, events, messages, metrics
 zengin mock users --count 50 --seed 3
-zengin mock --schema mock.json            # your own entities; see @zengin/mock for the field kinds
+zengin mock --schema mock.json            # your own entities; see @zenginui/mock for the field kinds
 ```
 
-Writes `src/mock/rng.ts` (a seeded generator and the pools, no dependency) and one typed module per entity exporting the type, a factory and the array. The same seed gives the same data on every run, so screenshots and previews do not drift. See [@zengin/mock](../mock).
+Writes `src/mock/rng.ts` (a seeded generator and the pools, no dependency) and one typed module per entity exporting the type, a factory and the array. The same seed gives the same data on every run, so screenshots and previews do not drift. See [@zenginui/mock](../mock).
 
 ## figma
 
@@ -139,7 +139,7 @@ zengin figma import figma/local.json --write # and update the token files; then 
 zengin figma connect --map figma/map.json    # Code Connect files from zengin/components.json
 ```
 
-One naming rule carries both directions: `color.primary.soft` is `color/primary/soft` in Figma with `var(--color-primary-soft)` as its code syntax. See [@zengin/figma](../figma).
+One naming rule carries both directions: `color.primary.soft` is `color/primary/soft` in Figma with `var(--color-primary-soft)` as its code syntax. See [@zenginui/figma](../figma).
 
 ## report and rollup
 
@@ -149,7 +149,7 @@ zengin rollup reports/*.json --previous last.json           # across repositorie
 zengin rollup reports/*.json --format html --out rollup.html
 ```
 
-`report` is the check plus an inventory: component usage (adoption), suppressions with and without reasons, owned forks with their versions, uncontracted components, and the pinned system version. `rollup` ranks repositories by drift, shows violations per 100 files so sizes compare, flags who is behind the latest version, computes deltas against a previous rollup, and lists what needs attention in priority order. See [`@zengin/rollup`](../rollup) for the workflow recipe.
+`report` is the check plus an inventory: component usage (adoption), suppressions with and without reasons, owned forks with their versions, uncontracted components, and the pinned system version. `rollup` ranks repositories by drift, shows violations per 100 files so sizes compare, flags who is behind the latest version, computes deltas against a previous rollup, and lists what needs attention in priority order. See [`@zenginui/rollup`](../rollup) for the workflow recipe.
 
 ## explain
 
@@ -167,7 +167,7 @@ zengin init --from package @umami/react-zen   # the same from an installed desig
 zengin init --from shadcn --dir ../app --force
 ```
 
-The template refuses to overwrite an existing config. The shadcn path reads the theme CSS, the Tailwind config and `components/ui`, writes the definitions, and prints the defaults worth reviewing. See [`@zengin/adapter-shadcn`](../adapter-shadcn). The package path reads `node_modules/<name>`: its theme stylesheet, its precompiled utilities and its `.d.ts`; see [`@zengin/adapter-css`](../adapter-css).
+The template refuses to overwrite an existing config. The shadcn path reads the theme CSS, the Tailwind config and `components/ui`, writes the definitions, and prints the defaults worth reviewing. See [`@zenginui/adapter-shadcn`](../adapter-shadcn). The package path reads `node_modules/<name>`: its theme stylesheet, its precompiled utilities and its `.d.ts`; see [`@zenginui/adapter-css`](../adapter-css).
 
 ## Not included, on purpose
 
@@ -181,4 +181,4 @@ zengin rollup reports --format html --out public/rollup/index.html
 zengin report --into reports --at 2026-09-01T06:00:00Z --commit abc1234 --ref main   # backfill from an older checkout
 ```
 
-`zengin rollup` accepts directories and reads every snapshot under them as history: the newest run per repository is the row, the one before is the delta, the series is the trend. See [`@zengin/rollup`](../rollup#history-and-trends).
+`zengin rollup` accepts directories and reads every snapshot under them as history: the newest run per repository is the row, the one before is the delta, the series is the trend. See [`@zenginui/rollup`](../rollup#history-and-trends).

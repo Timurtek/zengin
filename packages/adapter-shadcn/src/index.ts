@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import type { ComponentManifest } from "@zengin/engine";
+import type { ComponentManifest } from "@zenginui/engine";
 import { scanUiDir } from "./components.js";
 import { readTailwind } from "./tailwind.js";
 import { deriveTokens, findThemeCss, parseTheme } from "./theme.js";
@@ -69,7 +69,7 @@ export function deriveShadcn(projectDir: string): ShadcnDerivation {
 
 function renderConfig(uiAlias: string, uiDir: string, themeFile: string, tailwind: boolean): string {
   const themeDir = themeFile.includes("/") ? themeFile.slice(0, themeFile.lastIndexOf("/")) : ".";
-  return `# Derived by @zengin/adapter-shadcn. Definitions live in ./zengin; regenerate with: zengin init --from shadcn --force
+  return `# Derived by @zenginui/adapter-shadcn. Definitions live in ./zengin; regenerate with: zengin init --from shadcn --force
 system:
   package: "${uiAlias}"
   version: "0.0.0"

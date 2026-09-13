@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Card, Checkbox, Icon, Separator, TextField, Toast, Tooltip, toast } from "@zengin/ui";
+import { Avatar, Badge, Button, Card, Checkbox, Icon, Separator, TextField, Toast, Tooltip, toast } from "@zenginui/ui";
 import { useEffect, useState, type FormEvent } from "react";
 import { emailError, findAccount, nameError, passwordError, RESET_CODE, SAMPLE, type Account } from "./data";
 

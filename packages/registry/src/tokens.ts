@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { loadTokens, type Token } from "@zengin/engine";
+import { loadTokens, type Token } from "@zenginui/engine";
 
 /**
  * tokens.json (and tokens.dark.json when present) to a stylesheet of custom properties, using the engine's

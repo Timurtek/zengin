@@ -1,4 +1,4 @@
-import { loadTokens, type Token } from "@zengin/engine";
+import { loadTokens, type Token } from "@zenginui/engine";
 
 /**
  * Tokens to Figma variables and back. One rule carries both directions: the variable is named like the

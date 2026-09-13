@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const project = resolve(here, "..");
-const cli = resolve(project, "node_modules", "@zengin", "cli", "dist", "index.js");
+const cli = resolve(project, "node_modules", "@zenginui", "cli", "dist", "index.js");
 const target = join(project, "src", "ReviewCard.tsx");
 const targetCss = join(project, "src", "review-card.css");
 

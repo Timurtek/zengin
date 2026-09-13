@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Zengin's own rollup history. Every example app is a consumer of @zengin/ui; this files one snapshot per
+ * Zengin's own rollup history. Every example app is a consumer of @zenginui/ui; this files one snapshot per
  * example under reports/<name>/<time>.json, which the marketing site rolls up into /rollup/ at build time.
  *
  *   node scripts/report-examples.mjs                 # snapshot every example at HEAD

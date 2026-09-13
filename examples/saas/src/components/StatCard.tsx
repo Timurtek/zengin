@@ -1,4 +1,4 @@
-import { Badge, Card, Sparkline } from "@zengin/ui";
+import { Badge, Card, Sparkline } from "@zenginui/ui";
 
 interface StatCardProps {
   label: string;

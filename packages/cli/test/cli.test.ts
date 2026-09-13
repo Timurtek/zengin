@@ -22,7 +22,7 @@ describe("zengin check", () => {
     const r = await runCheck(opts());
     expect(r.violations).toHaveLength(expectedCount);
     expect(r.exitCode).toBe(1);
-    expect(r.system).toEqual({ package: "@zengin/ui", version: "1.2.0" });
+    expect(r.system).toEqual({ package: "@zenginui/ui", version: "1.2.0" });
   });
 
   it("accepts files and directories, relative to cwd", async () => {
@@ -84,7 +84,7 @@ describe("formats", () => {
     expect(out).toContain("src/features/review/approve-bar.css");
     expect(out).toMatch(/error\s+color-literal/);
     expect(out).toContain("fix (exact)  var(--color-primary)");
-    expect(out).toMatch(/1 file checked against @zengin\/ui@1\.2\.0/);
+    expect(out).toMatch(/1 file checked against @zenginui\/ui@1\.2\.0/);
   });
 });
 

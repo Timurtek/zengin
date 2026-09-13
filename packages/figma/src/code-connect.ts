@@ -1,4 +1,4 @@
-import type { ComponentManifest } from "@zengin/engine";
+import type { ComponentManifest } from "@zenginui/engine";
 
 /**
  * Code Connect files from the component manifest: one `<name>.figma.tsx` per component mapping the

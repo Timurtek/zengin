@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadTokens, type ComponentManifest } from "@zengin/engine";
+import { loadTokens, type ComponentManifest } from "@zenginui/engine";
 import { describe, expect, it } from "vitest";
 import { codeConnectFiles, figmaToHex, fromFigmaVariables, hexToFigma, PLUGIN_FILES, renderImportReport, toFigmaValue, toFigmaVariables, type LocalVariables } from "../src/index.js";
 

@@ -1,6 +1,6 @@
 # Field test: shadcn/taxonomy
 
-**Date** 2026-09-12. **Engine** @zengin/engine at the commit this file lands in. **Subject** [shadcn-ui/taxonomy](https://github.com/shadcn-ui/taxonomy) at `298a885`: 94 TSX files, 36 of them in `components/ui`, Tailwind 3, Next 13. The archetype of a copied-components React app, and old enough to have real drift.
+**Date** 2026-09-12. **Engine** @zenginui/engine at the commit this file lands in. **Subject** [shadcn-ui/taxonomy](https://github.com/shadcn-ui/taxonomy) at `298a885`: 94 TSX files, 36 of them in `components/ui`, Tailwind 3, Next 13. The archetype of a copied-components React app, and old enough to have real drift.
 
 The question was the one the design record left open: what is the false-positive rate of the rules, and of the raw-element substitution heuristic in particular, on code nobody wrote for Zengin.
 
@@ -59,4 +59,4 @@ cd taxonomy
 zengin check --format json --fail-on never > report.json
 ```
 
-The derivation script used for this run has since become `@zengin/adapter-shadcn`. Running `zengin init --from shadcn` on the same clone reproduces the second run exactly: the same 35 violations, from 36 derived components rather than the 22 hand-written ones.
+The derivation script used for this run has since become `@zenginui/adapter-shadcn`. Running `zengin init --from shadcn` on the same clone reproduces the second run exactly: the same 35 violations, from 36 derived components rather than the 22 hand-written ones.

@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import type { ComponentManifest } from "@zengin/engine";
+import type { ComponentManifest } from "@zenginui/engine";
 import { LAYOUT, type RegistryItem } from "./schema.js";
 
 export interface InstallResult {
@@ -50,7 +50,7 @@ export function installItems(opts: { projectDir: string; items: RegistryItem[]; 
       mergeManifest(projectDir, { ...item.manifest, export: item.type === "component" ? { ...item.manifest.export, from: LAYOUT.alias } : item.manifest.export });
       const css = item.files.find((f) => f.kind === "style" && f.path.startsWith(LAYOUT.componentsDir));
       if (css) addStyleImport(projectDir, css.path);
-      // Templates import Icon from the package alias, as they did from @zengin/ui: the barrel re-exports the vocabulary.
+      // Templates import Icon from the package alias, as they did from @zenginui/ui: the barrel re-exports the vocabulary.
       if (item.name === "lib-icons") addBarrelLine(projectDir, `export * from "../../lib/icons";`);
       else addBarrelExport(projectDir, item.name);
     }
@@ -69,7 +69,7 @@ export function installItems(opts: { projectDir: string; items: RegistryItem[]; 
  */
 export function withPragma(content: string, component: string, version: string): string {
   const body = stripPragma(content);
-  return `/* zengin-owned ${component}, forked from @zengin/ui@${version}, sha ${contentHash(body)} */\n${body}`;
+  return `/* zengin-owned ${component}, forked from @zenginui/ui@${version}, sha ${contentHash(body)} */\n${body}`;
 }
 
 /** The file without its pragma line, line endings normalized, so hashes compare across platforms. */

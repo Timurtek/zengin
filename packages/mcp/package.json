@@ -1,5 +1,5 @@
 {
-  "name": "@zengin/mcp",
+  "name": "@zenginui/mcp",
   "version": "0.0.1",
   "description": "MCP server exposing the Zengin conformance engine to coding agents.",
   "license": "MIT",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "@zengin/engine": "workspace:*",
+    "@zenginui/engine": "workspace:*",
     "zod": "^4.6.2"
   },
   "devDependencies": {

@@ -1,8 +1,8 @@
-import { Badge, Button, Card, Checkbox, TextField } from "@zengin/ui";
+import { Badge, Button, Card, Checkbox, TextField } from "@zenginui/ui";
 import { REPO } from "../content";
 
 /**
- * The page is its own evidence: every component here is @zengin/ui in the brand this page defines through
+ * The page is its own evidence: every component here is @zenginui/ui in the brand this page defines through
  * tokens alone. The pair below renders the same components under both themes side by side.
  */
 export function System() {

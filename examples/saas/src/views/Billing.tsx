@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Dialog, Progress, Select, Separator, Switch, Table, toast, Icon } from "@zengin/ui";
+import { Badge, Button, Card, Dialog, Progress, Select, Separator, Switch, Table, toast, Icon } from "@zenginui/ui";
 import { useState } from "react";
 import { invoices, money, quotas } from "../data";
 

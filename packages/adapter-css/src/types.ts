@@ -1,5 +1,5 @@
 import { parse } from "@babel/parser";
-import type { ComponentManifest } from "@zengin/engine";
+import type { ComponentManifest } from "@zenginui/engine";
 
 /**
  * A component manifest from a package's type declarations. A component is a `declare function X(props: XProps)`

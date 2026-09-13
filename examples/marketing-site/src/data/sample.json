@@ -1,7 +1,7 @@
 {
   "file": "src/Actions.tsx",
-  "before": "import { Button } from \"@zengin/ui\";\n\nexport function Actions({ pending }: { pending: number }) {\n  return (\n    <div style={{ display: \"flex\", gap: \"14px\" }}>\n      <Button variant=\"ghost-danger\">Reject</Button>\n      <Button varient=\"soft\">Later</Button>\n      <button style={{ background: \"#2563EB\", color: \"#FFFFFF\", padding: \"8px 14px\", borderRadius: \"6px\" }}>Approve</button>\n      <span style={{ color: \"#475569\" }}>{pending} pending</span>\n    </div>\n  );\n}",
-  "after": "import { Button } from \"@zengin/ui\";\n\nexport function Actions({ pending }: { pending: number }) {\n  return (\n    <div style={{ display: \"flex\", gap: \"var(--spacing-3)\" }}>\n      <Button variant=\"ghost\" tone=\"danger\">Reject</Button>\n      <Button variant=\"soft\">Later</Button>\n      <Button tone=\"primary\">Approve</Button>\n      <span style={{ color: \"var(--color-text-muted)\" }}>{pending} pending</span>\n    </div>\n  );\n}",
+  "before": "import { Button } from \"@zenginui/ui\";\n\nexport function Actions({ pending }: { pending: number }) {\n  return (\n    <div style={{ display: \"flex\", gap: \"14px\" }}>\n      <Button variant=\"ghost-danger\">Reject</Button>\n      <Button varient=\"soft\">Later</Button>\n      <button style={{ background: \"#2563EB\", color: \"#FFFFFF\", padding: \"8px 14px\", borderRadius: \"6px\" }}>Approve</button>\n      <span style={{ color: \"#475569\" }}>{pending} pending</span>\n    </div>\n  );\n}",
+  "after": "import { Button } from \"@zenginui/ui\";\n\nexport function Actions({ pending }: { pending: number }) {\n  return (\n    <div style={{ display: \"flex\", gap: \"var(--spacing-3)\" }}>\n      <Button variant=\"ghost\" tone=\"danger\">Reject</Button>\n      <Button variant=\"soft\">Later</Button>\n      <Button tone=\"primary\">Approve</Button>\n      <span style={{ color: \"var(--color-text-muted)\" }}>{pending} pending</span>\n    </div>\n  );\n}",
   "violations": [
     {
       "rule": "spacing-literal",
@@ -44,7 +44,7 @@
       "severity": "error",
       "line": 8,
       "found": "<button style={{ background: \"#2563EB\", color: \"#FFFFFF\", padding: \"8px 14px\", borderRadius: \"6px\" }}>",
-      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @zengin/ui.",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @zenginui/ui.",
       "fix": {
         "replace": "<Button>Approve</Button>",
         "confidence": "nearest",

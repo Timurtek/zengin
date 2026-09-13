@@ -1,8 +1,8 @@
 import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
-import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zengin/engine";
-import { aggregate, buildSnapshot, isRollup, isSnapshot, renderHtml, renderMarkdown, type ReportSnapshot, type RollupResult } from "@zengin/rollup";
+import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
+import { aggregate, buildSnapshot, isRollup, isSnapshot, renderHtml, renderMarkdown, type ReportSnapshot, type RollupResult } from "@zenginui/rollup";
 import { findConfig } from "./check.js";
 
 export interface ReportOptions {

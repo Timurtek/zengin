@@ -1,4 +1,4 @@
-# @zengin/figma
+# @zenginui/figma
 
 Figma both ways for a Zengin system. One rule carries both directions: a variable is named like its token, with slashes for dots, and its code syntax is the CSS custom property. `color.primary.soft` is `color/primary/soft` in Figma and `var(--color-primary-soft)` in code. That is the Carbon model, and it is what lets a designer's change come back into the token file with the token's own unit.
 
@@ -26,7 +26,7 @@ zengin figma connect --map figma/map.json    # Code Connect files from zengin/co
 ## Programmatic use
 
 ```ts
-import { toFigmaVariables, fromFigmaVariables, codeConnectFiles, writePlugin } from "@zengin/figma";
+import { toFigmaVariables, fromFigmaVariables, codeConnectFiles, writePlugin } from "@zenginui/figma";
 
 const payload = toFigmaVariables(light, dark, { collection: "Acme" });
 const report = fromFigmaVariables(local, light, dark);

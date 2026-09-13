@@ -50,7 +50,7 @@ There are four legitimate ways to get a different look, in order. Try them in th
 1. **Brand**: change tokens in the theme files. The only place literal values live.
 2. **Appearance**: a documented variant or prop. `variant`, `tone`, `size`.
 3. **Composition**: slots, and `className` for placement in the parent.
-4. **Ownership**: a declared, forked copy of the component, under `scope.ownership` or with a `/* zengin-owned Button, forked from @zengin/ui@1.2.0 */` pragma. Contract and substitution rules turn off inside it. Foundation rules stay on: an owned component still uses tokens.
+4. **Ownership**: a declared, forked copy of the component, under `scope.ownership` or with a `/* zengin-owned Button, forked from @zenginui/ui@1.2.0 */` pragma. Contract and substitution rules turn off inside it. Foundation rules stay on: an owned component still uses tokens.
 
 There is no fifth option where `className` becomes a styling API. If the system lacks a variant the design needs, say so to the human and propose the variant. Do not restyle around the component, and do not fork it silently to escape a check.
 

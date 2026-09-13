@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zengin/engine";
+import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
 import { installItems, STYLES_INDEX_HEAD, type InstallResult } from "./install.js";
 import type { RegistrySource } from "./load.js";
 import { resolveItems } from "./resolve.js";
@@ -142,9 +142,9 @@ function packageJson(opts: { name: string; install: InstallResult; storybook: bo
     "@types/react": VERSIONS["@types/react"],
     "@types/react-dom": VERSIONS["@types/react-dom"],
     ...(!next || opts.storybook ? { "@vitejs/plugin-react": VERSIONS["@vitejs/plugin-react"] } : {}),
-    "@zengin/cli": z("cli"),
-    "@zengin/hook": z("hook"),
-    "@zengin/mcp": z("mcp"),
+    "@zenginui/cli": z("cli"),
+    "@zenginui/hook": z("hook"),
+    "@zenginui/mcp": z("mcp"),
     typescript: VERSIONS.typescript,
     ...(!next || opts.storybook ? { vite: VERSIONS.vite } : {}),
     ...(opts.storybook

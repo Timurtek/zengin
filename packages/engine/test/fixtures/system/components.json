@@ -2,7 +2,7 @@
   {
     "name": "Button",
     "since": "1.0.0",
-    "export": { "from": "@zengin/ui", "name": "Button" },
+    "export": { "from": "@zenginui/ui", "name": "Button" },
     "replaces": ["button", "@headlessui/react#Button"],
     "extends": "button",
     "props": {
@@ -27,7 +27,7 @@
   {
     "name": "Dialog",
     "since": "1.0.0",
-    "export": { "from": "@zengin/ui", "name": "Dialog" },
+    "export": { "from": "@zenginui/ui", "name": "Dialog" },
     "replaces": ["dialog", "@headlessui/react#Dialog", "@radix-ui/react-dialog#*"],
     "props": {
       "open": { "type": "boolean" },

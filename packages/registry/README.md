@@ -1,4 +1,4 @@
-# @zengin/registry
+# @zenginui/registry
 
 Components, templates and definitions as installable items, and the generator behind `zengin create` and `zengin add`. This is the shadcn model with the piece shadcn lacks: what gets copied into a project stays understood by the engine, so it can be checked, tracked and upgraded.
 
@@ -13,7 +13,7 @@ zengin tokens                               # zengin/tokens*.json to src/styles/
 
 | Path | What |
 | --- | --- |
-| `src/components/ui/<name>/` | The component's TSX and CSS, copied in. The TSX opens with `/* zengin-owned Button, forked from @zengin/ui@0.1.0 */`, which the engine and the rollup read. |
+| `src/components/ui/<name>/` | The component's TSX and CSS, copied in. The TSX opens with `/* zengin-owned Button, forked from @zenginui/ui@0.1.0 */`, which the engine and the rollup read. |
 | `src/components/ui/index.ts` | The barrel. The engine treats `@/components/ui` as the system. |
 | `src/lib/cx.ts` | The one shared helper. |
 | `zengin/` | `tokens.json`, `tokens.dark.json`, `components.json`. The manifest entries arrive with each component, `export.from` already pointing at the alias. |
@@ -33,7 +33,7 @@ A directory of static JSON, so it can be served from anywhere: `index.json` list
 zengin registry build --out public/r        # from a Zengin repository checkout
 ```
 
-Items are built, never hand-written. Components come from `packages/ui/src/components`, their stories from `packages/ui/stories`, their manifest entries from `packages/ui/zengin/components.json`. Templates come from `examples/` (every template is a real app there, recorded in the item's `source` field, which the marketing site builds as the template's live preview) with `@zengin/ui` imports rewritten to `@/components/ui`. The `default` theme is generated from the token files rather than read from a file, so applying it over another brand resets every token. The one test that matters: every template creates a project the engine finds clean.
+Items are built, never hand-written. Components come from `packages/ui/src/components`, their stories from `packages/ui/stories`, their manifest entries from `packages/ui/zengin/components.json`. Templates come from `examples/` (every template is a real app there, recorded in the item's `source` field, which the marketing site builds as the template's live preview) with `@zenginui/ui` imports rewritten to `@/components/ui`. The `default` theme is generated from the token files rather than read from a file, so applying it over another brand resets every token. The one test that matters: every template creates a project the engine finds clean.
 
 | Item type | Examples | Installs |
 | --- | --- | --- |
@@ -66,7 +66,7 @@ A theme carries its own fonts; a pairing applied after it wins for type only, th
 
 ## Icons
 
-Zengin UI draws by name. `Icon.Search`, `Icon.Close`, `Icon.ChevronDown` and sixty more are one component each, exported from `@zengin/ui` and, in a project, from `src/lib/icons.tsx` (the `lib-icons` item, which every component that draws an icon depends on). The default drawings are Zengin UI's own: 16 units, a 1.75 stroke, `currentColor`, sized by font-size. Components use the same names for their chevrons, checks and close buttons, so a set change reaches inside them.
+Zengin UI draws by name. `Icon.Search`, `Icon.Close`, `Icon.ChevronDown` and sixty more are one component each, exported from `@zenginui/ui` and, in a project, from `src/lib/icons.tsx` (the `lib-icons` item, which every component that draws an icon depends on). The default drawings are Zengin UI's own: 16 units, a 1.75 stroke, `currentColor`, sized by font-size. Components use the same names for their chevrons, checks and close buttons, so a set change reaches inside them.
 
 ```bash
 zengin icons                  # lucide, tabler, phosphor, heroicons, feather, radix, material, bootstrap
@@ -88,7 +88,7 @@ A set maps every vocabulary name to a real export of its react-icons module; the
 ## Programmatic use
 
 ```ts
-import { buildRegistry, createProject, installItems, openRegistry, resolveItems } from "@zengin/registry";
+import { buildRegistry, createProject, installItems, openRegistry, resolveItems } from "@zenginui/registry";
 
 const source = openRegistry();                       // the public registry, or ZENGIN_REGISTRY
 const result = await createProject({ dir: "acme", template: "review", source });
@@ -98,4 +98,4 @@ installItems({ projectDir: "acme", items, version: (await source.index()).versio
 
 ## Before the first npm release
 
-Created projects depend on `@zengin/cli`, `@zengin/mcp` and `@zengin/hook` from npm. Until those are published, `zengin create --local <path to this repository>` links them from the checkout with `link:`, which pnpm resolves. That is how the generator is tested.
+Created projects depend on `@zenginui/cli`, `@zenginui/mcp` and `@zenginui/hook` from npm. Until those are published, `zengin create --local <path to this repository>` links them from the checkout with `link:`, which pnpm resolves. That is how the generator is tested.

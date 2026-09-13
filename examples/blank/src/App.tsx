@@ -1,4 +1,4 @@
-import { Button, Card } from "@zengin/ui";
+import { Button, Card } from "@zenginui/ui";
 
 export function App() {
   return (

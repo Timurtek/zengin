@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import type { ComponentManifest } from "@zengin/engine";
+import type { ComponentManifest } from "@zenginui/engine";
 import { deriveTokensFromCss } from "./tokens.js";
 import { deriveManifestFromTypes, type TypesDerivation } from "./types.js";
 
@@ -157,7 +157,7 @@ function rel(from: string, abs: string): string {
 function renderConfig(pkgName: string, version: string, utilityFile: string | undefined, foundations: string[]): string {
   const css = utilityFile ? `["${utilityFile}"]   # precompiled utilities: class names resolve against these declarations` : "[]";
   const found = foundations.length ? `[${foundations.map((f) => `"${f}"`).join(", ")}]   # define :root variables; literals live here` : "[]";
-  return `# Derived by @zengin/adapter-css from ${pkgName}@${version}. Definitions live in ./zengin; regenerate with: zengin init --from package ${pkgName} --force
+  return `# Derived by @zenginui/adapter-css from ${pkgName}@${version}. Definitions live in ./zengin; regenerate with: zengin init --from package ${pkgName} --force
 system:
   package: "${pkgName}"
   version: "${version}"

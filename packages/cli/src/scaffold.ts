@@ -1,9 +1,9 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
-import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaVariables, writePlugin } from "@zengin/figma";
-import type { ComponentManifest } from "@zengin/engine";
-import { generateMock, PRESETS, schemaFromPresets, type MockSchema } from "@zengin/mock";
-import { applyFonts, applyIcons, applyTheme, applyUpgrade, planUpgrade, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zengin/registry";
+import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaVariables, writePlugin } from "@zenginui/figma";
+import type { ComponentManifest } from "@zenginui/engine";
+import { generateMock, PRESETS, schemaFromPresets, type MockSchema } from "@zenginui/mock";
+import { applyFonts, applyIcons, applyTheme, applyUpgrade, planUpgrade, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zenginui/registry";
 
 export interface ScaffoldOptions {
   registry?: string;

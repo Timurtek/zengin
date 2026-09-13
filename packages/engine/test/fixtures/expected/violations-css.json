@@ -14,11 +14,11 @@
       }
     },
     "found": "<button className=\"approve-bar__button\" style={{ backgroundColor: \"#2563EB\" }}>",
-    "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @zengin/ui.",
+    "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @zenginui/ui.",
     "fix": {
       "replace": "<Button>\n        Approve all\n      </Button>",
       "confidence": "nearest",
-      "note": "Express the removed styling through Button props. Add: import { Button } from \"@zengin/ui\";"
+      "note": "Express the removed styling through Button props. Add: import { Button } from \"@zenginui/ui\";"
     },
     "suppress": "// zengin-allow component-substitution: <reason>"
   },
@@ -60,9 +60,9 @@
       }
     },
     "found": "import { Dialog } from \"@headlessui/react\";",
-    "message": "@headlessui/react Dialog is shadowed by the system. Use Dialog from @zengin/ui.",
+    "message": "@headlessui/react Dialog is shadowed by the system. Use Dialog from @zenginui/ui.",
     "fix": {
-      "replace": "import { Dialog } from \"@zengin/ui\";",
+      "replace": "import { Dialog } from \"@zenginui/ui\";",
       "confidence": "exact",
       "note": "API differs. Dialog.Panel becomes Dialog.Content; onClose becomes onOpenChange."
     },
@@ -83,11 +83,11 @@
       }
     },
     "found": "<button type=\"button\" onClick={onClose} className=\"confirm-reject__cancel\">",
-    "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @zengin/ui.",
+    "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @zenginui/ui.",
     "fix": {
       "replace": "<Button onClick={onClose}>\n          Cancel\n        </Button>",
       "confidence": "nearest",
-      "note": "Express the removed styling through Button props. Add: import { Button } from \"@zengin/ui\";"
+      "note": "Express the removed styling through Button props. Add: import { Button } from \"@zenginui/ui\";"
     },
     "suppress": "// zengin-allow component-substitution: <reason>"
   },
@@ -129,7 +129,7 @@
       }
     },
     "found": "size=\"xl\"",
-    "message": "Button size \"xl\" was added in @zengin/ui 1.3.0. This project pins 1.2.0. Valid here: sm, md, lg.",
+    "message": "Button size \"xl\" was added in @zenginui/ui 1.3.0. This project pins 1.2.0. Valid here: sm, md, lg.",
     "fix": {
       "replace": "size=\"lg\"",
       "confidence": "nearest"

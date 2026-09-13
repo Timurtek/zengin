@@ -18,7 +18,7 @@ jobs:
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
-      - run: pnpm --filter @zengin/ui build-storybook
+      - run: pnpm --filter @zenginui/ui build-storybook
       # The engine checks its own fixture projects and annotates the PR, as a consumer would.
       - name: zengin on the plain-css fixture
         run: node "$GITHUB_WORKSPACE/packages/cli/dist/index.js" check --format github --fail-on never

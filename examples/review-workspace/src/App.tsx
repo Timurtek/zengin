@@ -1,4 +1,4 @@
-import { Badge, Button, Checkbox, Dialog, TextField, Tooltip } from "@zengin/ui";
+import { Badge, Button, Checkbox, Dialog, TextField, Tooltip } from "@zenginui/ui";
 import { useMemo, useState } from "react";
 import { ITEMS, type ReviewItem, type ReviewStatus } from "./data";
 import { ReviewCard } from "./ReviewCard";

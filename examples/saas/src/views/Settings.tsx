@@ -1,4 +1,4 @@
-import { Button, Card, Dialog, Select, Separator, Switch, TextArea, TextField, toast } from "@zengin/ui";
+import { Button, Card, Dialog, Select, Separator, Switch, TextArea, TextField, toast } from "@zenginui/ui";
 import { useState } from "react";
 
 export function Settings() {

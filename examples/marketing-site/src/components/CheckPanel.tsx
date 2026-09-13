@@ -1,4 +1,4 @@
-import { Badge, Button } from "@zengin/ui";
+import { Badge, Button } from "@zenginui/ui";
 import { useState } from "react";
 import sample from "../data/sample.json";
 

@@ -210,8 +210,8 @@ describe("color literals", () => {
 describe("owned pragma", () => {
   it("reads the component, the version and the optional hash", async () => {
     const { readOwnedPragma } = await import("../src/scope.js");
-    expect(readOwnedPragma("/* zengin-owned Button, forked from @zengin/ui@1.2.0, sha 3f9a1c0b2d4e */\nexport {}")).toEqual({ component: "Button", forkedFrom: "@zengin/ui@1.2.0", sha: "3f9a1c0b2d4e" });
-    expect(readOwnedPragma("/* zengin-owned Button, forked from @zengin/ui@1.2.0 */\nexport {}")).toEqual({ component: "Button", forkedFrom: "@zengin/ui@1.2.0" });
+    expect(readOwnedPragma("/* zengin-owned Button, forked from @zenginui/ui@1.2.0, sha 3f9a1c0b2d4e */\nexport {}")).toEqual({ component: "Button", forkedFrom: "@zenginui/ui@1.2.0", sha: "3f9a1c0b2d4e" });
+    expect(readOwnedPragma("/* zengin-owned Button, forked from @zenginui/ui@1.2.0 */\nexport {}")).toEqual({ component: "Button", forkedFrom: "@zenginui/ui@1.2.0" });
     expect(readOwnedPragma("/* zengin-owned */")).toEqual({ component: undefined, forkedFrom: undefined });
   });
 });
@@ -236,7 +236,7 @@ describe("config", () => {
   });
 
   it("leaves the tailwind adapter off when the project does not depend on it", () => {
-    const resolved = resolveConfig({ system: { package: "@zengin/ui", version: "1.0.0" } }, PROJECTS[1].dir);
+    const resolved = resolveConfig({ system: { package: "@zenginui/ui", version: "1.0.0" } }, PROJECTS[1].dir);
     expect(resolved.classes.tailwind).toBe(false);
   });
 });

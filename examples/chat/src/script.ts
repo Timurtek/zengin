@@ -78,7 +78,7 @@ Either way the components have no idea; a brand is one file of token overrides.`
     text: `Every component \`zengin create\` copies into your project opens with a line like:
 
 \`\`\`ts
-/* zengin-owned Button, forked from @zengin/ui@0.1.0 */
+/* zengin-owned Button, forked from @zenginui/ui@0.1.0 */
 \`\`\`
 
 It tells the engine two things. The file is **yours**: the contract and substitution rules are off inside it, so you can restyle the Button however you like. And it came **from somewhere**: the foundation rules still apply, so every value in it must be a token, and the rollup can report how far your fork has drifted from the version you took it from.`,

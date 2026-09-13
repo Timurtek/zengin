@@ -1,13 +1,13 @@
 import { existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { derivePackage, renderReport as renderPackageReport, writePackage } from "@zengin/adapter-css";
-import { deriveShadcn, renderReport, writeShadcn } from "@zengin/adapter-shadcn";
+import { derivePackage, renderReport as renderPackageReport, writePackage } from "@zenginui/adapter-css";
+import { deriveShadcn, renderReport, writeShadcn } from "@zenginui/adapter-shadcn";
 
 export const CONFIG_TEMPLATE = `# Zengin policy for this project. The design system ships the definitions; this file says how strictly they apply.
 system:
-  package: "@zengin/ui"           # the package that ships tokens.json and components.json
+  package: "@zenginui/ui"           # the package that ships tokens.json and components.json
   # version: "1.2.0"              # read from node_modules when omitted
-  sources: ["@zengin/ui"]         # import sources that count as the system (globs allowed)
+  sources: ["@zenginui/ui"]         # import sources that count as the system (globs allowed)
   # definitions: ./design-system  # override the definitions directory (default: node_modules/<package>/zengin)
 
 scope:

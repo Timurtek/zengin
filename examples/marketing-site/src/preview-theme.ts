@@ -73,7 +73,7 @@ const LOADERS: Record<string, () => Promise<Record<string, unknown>>> = {
   bootstrap: () => import("react-icons/bs"),
 };
 if (valid(icons) && LOADERS[icons]) {
-  Promise.all([item(`icons-${icons}`), LOADERS[icons]!(), import("@zengin/ui")])
+  Promise.all([item(`icons-${icons}`), LOADERS[icons]!(), import("@zenginui/ui")])
     .then(([meta, mod, ui]: [{ iconSet?: { names: Record<string, string> } }, Record<string, unknown>, { setIconSet: (s: Record<string, unknown>) => void }]) => {
       const names = meta.iconSet?.names ?? {};
       ui.setIconSet(Object.fromEntries(Object.entries(names).map(([k, v]) => [k, mod[v]]).filter(([, c]) => typeof c === "function")));

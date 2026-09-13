@@ -1,4 +1,4 @@
-import { Tabs } from "@zengin/ui";
+import { Tabs } from "@zenginui/ui";
 import { CodeBlock } from "../components/CodeBlock";
 import { SURFACES } from "../content";
 

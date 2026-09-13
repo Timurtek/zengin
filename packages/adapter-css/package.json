@@ -1,5 +1,5 @@
 {
-  "name": "@zengin/adapter-css",
+  "name": "@zenginui/adapter-css",
   "version": "0.0.1",
   "description": "Derives Zengin definitions from a design system that ships CSS custom properties and TypeScript declarations: tokens from the variables, keeping their names, and a component manifest from the types.",
   "license": "MIT",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@babel/parser": "^8.0.5",
-    "@zengin/engine": "workspace:*",
+    "@zenginui/engine": "workspace:*",
     "postcss": "^8.5.6"
   },
   "devDependencies": {

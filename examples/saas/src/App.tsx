@@ -1,4 +1,4 @@
-import { Toast, Tooltip } from "@zengin/ui";
+import { Toast, Tooltip } from "@zenginui/ui";
 import { useEffect, useState, type ComponentType } from "react";
 import { Shell, type Page } from "./components/Shell";
 import { Billing } from "./views/Billing";

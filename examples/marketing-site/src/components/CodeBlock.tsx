@@ -1,4 +1,4 @@
-import { CodeBlock as UiCodeBlock } from "@zengin/ui";
+import { CodeBlock as UiCodeBlock } from "@zenginui/ui";
 
 /** The system's CodeBlock, with the page's older `title` name kept for the label. */
 export function CodeBlock({ title, wrap = false, children }: { title?: string; wrap?: boolean; children: string }) {

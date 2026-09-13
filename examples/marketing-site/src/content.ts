@@ -99,7 +99,7 @@ export const SURFACES: Surface[] = [
          found  "#2563EB"
          fix (exact)  "var(--color-primary)"
 
-1 file checked against @zengin/ui@0.1.0: 8 violations (8 error, 0 warn, 0 info)`,
+1 file checked against @zenginui/ui@0.1.0: 8 violations (8 error, 0 warn, 0 info)`,
     },
   },
   {
@@ -115,7 +115,7 @@ export const SURFACES: Surface[] = [
     ],
     code: {
       title: "zengin rollup reports/",
-      text: `# @zengin/ui across 3 repositories
+      text: `# @zenginui/ui across 3 repositories
 
 | Repository | Version | Files | Violations | /100 | Suppressed | Owned | Adoption | Trend |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -157,10 +157,10 @@ export const PROOF = [
 ];
 
 export const INSTALL = `# A new project: components copied in, engine, MCP, hook and Storybook wired
-npx zengin create acme --template marketing
+npx zenginui create acme --template marketing
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
-npx zengin brand --name Acme --logo logo.svg   # palette, favicon, wordmark from one color
+npx zenginui brand --name Acme --logo logo.svg   # palette, favicon, wordmark from one color
 
 # An existing project: derive the definitions, then check
 zengin init --from shadcn                       # or: --from package @your/design-system

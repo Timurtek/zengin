@@ -1,4 +1,4 @@
-/* zengin-owned Badge, forked from @zengin/ui@1.2.0 */
+/* zengin-owned Badge, forked from @zenginui/ui@1.2.0 */
 import type { ReactNode } from "react";
 
 export function Badge({ children }: { children: ReactNode }) {

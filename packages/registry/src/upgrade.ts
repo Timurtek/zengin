@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
-import { readOwnedPragma } from "@zengin/engine";
+import { readOwnedPragma } from "@zenginui/engine";
 import { kebab } from "./build.js";
 import { contentHash, mergeManifest, stripPragma, withPragma } from "./install.js";
 import type { RegistrySource } from "./load.js";

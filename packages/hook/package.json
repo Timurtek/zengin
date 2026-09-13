@@ -1,5 +1,5 @@
 {
-  "name": "@zengin/hook",
+  "name": "@zenginui/hook",
   "version": "0.0.1",
   "description": "Claude Code PostToolUse hook that checks every file write against the design system.",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@zengin/engine": "workspace:*"
+    "@zenginui/engine": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22",

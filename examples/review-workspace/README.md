@@ -1,6 +1,6 @@
 # review-workspace
 
-A review-and-approval queue built on `@zengin/ui`, with every Zengin surface wired in. It is the application workflow from the product vision and the host of the [replayable enforcement demo](DEMO.md).
+A review-and-approval queue built on `@zenginui/ui`, with every Zengin surface wired in. It is the application workflow from the product vision and the host of the [replayable enforcement demo](DEMO.md).
 
 ```bash
 pnpm build                                  # from the repository root, once

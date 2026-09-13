@@ -1,4 +1,4 @@
-# @zengin/adapter-css
+# @zenginui/adapter-css
 
 Turns a design system that ships as an npm package into Zengin definitions. It reads the package's stylesheet and type declarations and writes the two files the engine needs, plus a config. Nothing is executed.
 
@@ -38,7 +38,7 @@ The engine's `unknown-prop` rule does not run on a component with passthrough ty
 ## API
 
 ```ts
-import { derivePackage, writePackage, renderReport, deriveTokensFromCss, deriveManifestFromTypes } from "@zengin/adapter-css";
+import { derivePackage, writePackage, renderReport, deriveTokensFromCss, deriveManifestFromTypes } from "@zenginui/adapter-css";
 
 const d = derivePackage(projectDir, "@umami/react-zen"); // { tokens, tokensDark, components, config, report }
 writePackage(projectDir, d, force);                        // zengin/tokens.json, zengin/components.json, zengin.config.yaml

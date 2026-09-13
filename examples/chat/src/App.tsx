@@ -1,5 +1,5 @@
 import { useChat } from "@ai-sdk/react";
-import { Avatar, Button, Conversation, Loader, Markdown, Message, PromptInput, Reasoning, Select, Sources, Suggestions, Toast, ToolCall, Tooltip, toast } from "@zengin/ui";
+import { Avatar, Button, Conversation, Loader, Markdown, Message, PromptInput, Reasoning, Select, Sources, Suggestions, Toast, ToolCall, Tooltip, toast } from "@zenginui/ui";
 import type { UIMessage } from "ai";
 import { useEffect, useMemo, useState } from "react";
 import { THREADS } from "./data";

@@ -1,7 +1,7 @@
 /*
  * The Zengin brand, as token overrides. This file is the only place on the site that may hold a literal
  * (scope.foundations in zengin.config.yaml). Everything else references the tokens by name, so the
- * components from @zengin/ui take on the brand without a line of their CSS changing.
+ * components from @zenginui/ui take on the brand without a line of their CSS changing.
  *
  * The brand: a specification sheet. Sharp corners, black rules, an expanded grotesk for headlines,
  * a mono for labels, cobalt as the single accent. Same selectors as the generated tokens.css, loaded

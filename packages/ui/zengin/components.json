@@ -3,7 +3,7 @@
     "name": "Button",
     "since": "0.1.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Button"
     },
     "replaces": [
@@ -101,7 +101,7 @@
     "name": "Badge",
     "since": "0.1.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Badge"
     },
     "replaces": [
@@ -164,7 +164,7 @@
     "name": "Card",
     "since": "0.1.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Card"
     },
     "replaces": [
@@ -230,7 +230,7 @@
     "name": "TextField",
     "since": "0.1.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "TextField"
     },
     "replaces": [
@@ -301,7 +301,7 @@
     "name": "Checkbox",
     "since": "0.1.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Checkbox"
     },
     "replaces": [
@@ -379,7 +379,7 @@
     "name": "Dialog",
     "since": "0.1.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Dialog"
     },
     "replaces": [
@@ -441,7 +441,7 @@
     "name": "Tooltip",
     "since": "0.1.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Tooltip"
     },
     "replaces": [
@@ -495,7 +495,7 @@
     "name": "Tabs",
     "since": "0.1.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Tabs"
     },
     "replaces": [
@@ -567,7 +567,7 @@
     "name": "Select",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Select"
     },
     "replaces": [
@@ -668,7 +668,7 @@
     "name": "Switch",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Switch"
     },
     "replaces": [
@@ -745,7 +745,7 @@
     "name": "Toast",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Toast"
     },
     "replaces": [
@@ -807,7 +807,7 @@
     "name": "Menu",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Menu"
     },
     "replaces": [
@@ -874,7 +874,7 @@
     "name": "Table",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Table"
     },
     "replaces": [
@@ -934,7 +934,7 @@
     "name": "Avatar",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Avatar"
     },
     "replaces": [
@@ -1000,7 +1000,7 @@
     "name": "Skeleton",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Skeleton"
     },
     "replaces": [
@@ -1052,7 +1052,7 @@
     "name": "Sheet",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Sheet"
     },
     "replaces": [
@@ -1130,7 +1130,7 @@
     "name": "Popover",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Popover"
     },
     "replaces": [
@@ -1196,7 +1196,7 @@
     "name": "Progress",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Progress"
     },
     "replaces": [
@@ -1265,7 +1265,7 @@
     "name": "Separator",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Separator"
     },
     "replaces": [
@@ -1316,7 +1316,7 @@
     "name": "TextArea",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "TextArea"
     },
     "replaces": [
@@ -1390,7 +1390,7 @@
     "name": "LineChart",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "LineChart"
     },
     "replaces": [
@@ -1463,7 +1463,7 @@
     "name": "BarChart",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "BarChart"
     },
     "replaces": [
@@ -1522,7 +1522,7 @@
     "name": "Sparkline",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Sparkline"
     },
     "replaces": [
@@ -1582,7 +1582,7 @@
     "name": "Markdown",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Markdown"
     },
     "replaces": [
@@ -1624,7 +1624,7 @@
     "name": "CodeBlock",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "CodeBlock"
     },
     "replaces": [
@@ -1675,7 +1675,7 @@
     "name": "Conversation",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Conversation"
     },
     "replaces": [],
@@ -1708,7 +1708,7 @@
     "name": "Message",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Message"
     },
     "replaces": [],
@@ -1768,7 +1768,7 @@
     "name": "PromptInput",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "PromptInput"
     },
     "replaces": [],
@@ -1850,7 +1850,7 @@
     "name": "Reasoning",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Reasoning"
     },
     "replaces": [],
@@ -1896,7 +1896,7 @@
     "name": "ToolCall",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "ToolCall"
     },
     "replaces": [],
@@ -1965,7 +1965,7 @@
     "name": "Sources",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Sources"
     },
     "replaces": [],
@@ -2007,7 +2007,7 @@
     "name": "Suggestions",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Suggestions"
     },
     "replaces": [],
@@ -2050,7 +2050,7 @@
     "name": "Loader",
     "since": "0.2.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Loader"
     },
     "replaces": [
@@ -2100,7 +2100,7 @@
     "name": "Icon",
     "since": "0.1.0",
     "export": {
-      "from": "@zengin/ui",
+      "from": "@zenginui/ui",
       "name": "Icon"
     },
     "replaces": [

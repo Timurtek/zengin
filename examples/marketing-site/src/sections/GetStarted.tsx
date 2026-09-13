@@ -1,4 +1,4 @@
-import { Button } from "@zengin/ui";
+import { Button } from "@zenginui/ui";
 import { CodeBlock } from "../components/CodeBlock";
 import { INSTALL, REPO } from "../content";
 

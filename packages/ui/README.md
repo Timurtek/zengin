@@ -1,14 +1,14 @@
-# @zengin/ui
+# @zenginui/ui
 
 The reference design system the Zengin engine is proven against. Plain CSS with custom-property tokens, Radix primitives for behavior, no styling framework. It ships its own definitions, so a project that installs it is enforceable with no extra configuration.
 
 ```bash
-pnpm add @zengin/ui react react-dom
+pnpm add @zenginui/ui react react-dom
 ```
 
 ```tsx
-import "@zengin/ui/styles.css";
-import { Button, Dialog, TextField } from "@zengin/ui";
+import "@zenginui/ui/styles.css";
+import { Button, Dialog, TextField } from "@zenginui/ui";
 ```
 
 ## What ships

@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { readOwnedPragma } from "@zengin/engine";
+import { readOwnedPragma } from "@zenginui/engine";
 import { afterAll, describe, expect, it } from "vitest";
 import { applyUpgrade, buildRegistry, createProject, diffLines, planUpgrade, registryFromMemory, type Registry } from "../src/index.js";
 
@@ -30,7 +30,7 @@ describe("zengin upgrade", () => {
     const button = readFileSync(join(dir, "src/components/ui/button/button.tsx"), "utf8");
     const pragma = readOwnedPragma(button)!;
     expect(pragma.component).toBe("Button");
-    expect(pragma.forkedFrom).toBe(`@zengin/ui@${registry.version}`);
+    expect(pragma.forkedFrom).toBe(`@zenginui/ui@${registry.version}`);
     expect(pragma.sha).toMatch(/^[0-9a-f]{12}$/);
     expect(readOwnedPragma(readFileSync(join(dir, "src/components/ui/button/button.css"), "utf8"))?.sha).toMatch(/^[0-9a-f]{12}$/);
   });
@@ -61,7 +61,7 @@ describe("zengin upgrade", () => {
     expect(r.versionBumped).toBe(true);
     const button = readFileSync(join(dir, "src/components/ui/button/button.tsx"), "utf8");
     expect(button).toContain("// upstream: a fix");
-    expect(readOwnedPragma(button)?.forkedFrom).toBe("@zengin/ui@9.9.0");
+    expect(readOwnedPragma(button)?.forkedFrom).toBe("@zenginui/ui@9.9.0");
     expect(readFileSync(join(dir, "zengin.config.yaml"), "utf8")).toMatch(/version: "9\.9\.0"/);
     expect((await planUpgrade({ projectDir: dir, source: nextSource })).entries.every((e) => e.state === "current")).toBe(true);
   });
@@ -99,14 +99,14 @@ describe("zengin upgrade", () => {
 
   it("cannot tell the sides apart without a hash, and says so", async () => {
     const buttonPath = join(dir, "src/components/ui/button/button.tsx");
-    const stripped = readFileSync(buttonPath, "utf8").replace(/^\/\* zengin-owned[^\n]*\*\/\n/, "/* zengin-owned Button, forked from @zengin/ui@0.0.1 */\n");
+    const stripped = readFileSync(buttonPath, "utf8").replace(/^\/\* zengin-owned[^\n]*\*\/\n/, "/* zengin-owned Button, forked from @zenginui/ui@0.0.1 */\n");
     writeFileSync(buttonPath, stripped + "\n// something\n");
     const plan = await planUpgrade({ projectDir: dir, source, only: ["button"] });
     expect(plan.entries.map((e) => [e.path, e.state])).toEqual([
       ["src/components/ui/button/button.css", "current"],
       ["src/components/ui/button/button.tsx", "unknown"],
     ]);
-    expect(plan.entries[1]!.from).toBe("@zengin/ui@0.0.1");
+    expect(plan.entries[1]!.from).toBe("@zenginui/ui@0.0.1");
   });
 
   it("diffs with context and hunks", () => {

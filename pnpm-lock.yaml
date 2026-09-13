@@ -20,7 +20,7 @@ importers:
 
   examples/auth:
     dependencies:
-      '@zengin/ui':
+      '@zenginui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       react:
@@ -39,7 +39,7 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
-      '@zengin/cli':
+      '@zenginui/cli':
         specifier: workspace:*
         version: link:../../packages/cli
       react-icons:
@@ -54,7 +54,7 @@ importers:
 
   examples/blank:
     dependencies:
-      '@zengin/ui':
+      '@zenginui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       react:
@@ -73,7 +73,7 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
-      '@zengin/cli':
+      '@zenginui/cli':
         specifier: workspace:*
         version: link:../../packages/cli
       react-icons:
@@ -91,7 +91,7 @@ importers:
       '@ai-sdk/react':
         specifier: ^4.0.102
         version: 4.0.102(react@19.3.0)(zod@4.6.2)
-      '@zengin/ui':
+      '@zenginui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       ai:
@@ -113,7 +113,7 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
-      '@zengin/cli':
+      '@zenginui/cli':
         specifier: workspace:*
         version: link:../../packages/cli
       puppeteer-core:
@@ -131,7 +131,7 @@ importers:
 
   examples/docs:
     dependencies:
-      '@zengin/ui':
+      '@zenginui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       react:
@@ -150,7 +150,7 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
-      '@zengin/cli':
+      '@zenginui/cli':
         specifier: workspace:*
         version: link:../../packages/cli
       react-icons:
@@ -165,7 +165,7 @@ importers:
 
   examples/marketing-site:
     dependencies:
-      '@zengin/ui':
+      '@zenginui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       react:
@@ -184,16 +184,16 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
-      '@zengin/cli':
+      '@zenginui/cli':
         specifier: workspace:*
         version: link:../../packages/cli
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../../packages/engine
-      '@zengin/hook':
+      '@zenginui/hook':
         specifier: workspace:*
         version: link:../../packages/hook
-      '@zengin/mcp':
+      '@zenginui/mcp':
         specifier: workspace:*
         version: link:../../packages/mcp
       puppeteer-core:
@@ -211,7 +211,7 @@ importers:
 
   examples/review-workspace:
     dependencies:
-      '@zengin/ui':
+      '@zenginui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       react:
@@ -230,13 +230,13 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
-      '@zengin/cli':
+      '@zenginui/cli':
         specifier: workspace:*
         version: link:../../packages/cli
-      '@zengin/hook':
+      '@zenginui/hook':
         specifier: workspace:*
         version: link:../../packages/hook
-      '@zengin/mcp':
+      '@zenginui/mcp':
         specifier: workspace:*
         version: link:../../packages/mcp
       puppeteer-core:
@@ -254,7 +254,7 @@ importers:
 
   examples/saas:
     dependencies:
-      '@zengin/ui':
+      '@zenginui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       react:
@@ -273,7 +273,7 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
-      '@zengin/cli':
+      '@zenginui/cli':
         specifier: workspace:*
         version: link:../../packages/cli
       puppeteer-core:
@@ -291,7 +291,7 @@ importers:
 
   examples/storefront:
     dependencies:
-      '@zengin/ui':
+      '@zenginui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       react:
@@ -310,7 +310,7 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
-      '@zengin/cli':
+      '@zenginui/cli':
         specifier: workspace:*
         version: link:../../packages/cli
       react-icons:
@@ -328,7 +328,7 @@ importers:
       '@babel/parser':
         specifier: ^8.0.5
         version: 8.0.5
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../engine
       postcss:
@@ -350,7 +350,7 @@ importers:
       '@babel/parser':
         specifier: ^8.0.5
         version: 8.0.5
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../engine
     devDependencies:
@@ -366,25 +366,25 @@ importers:
 
   packages/cli:
     dependencies:
-      '@zengin/adapter-css':
+      '@zenginui/adapter-css':
         specifier: workspace:*
         version: link:../adapter-css
-      '@zengin/adapter-shadcn':
+      '@zenginui/adapter-shadcn':
         specifier: workspace:*
         version: link:../adapter-shadcn
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../engine
-      '@zengin/figma':
+      '@zenginui/figma':
         specifier: workspace:*
         version: link:../figma
-      '@zengin/mock':
+      '@zenginui/mock':
         specifier: workspace:*
         version: link:../mock
-      '@zengin/registry':
+      '@zenginui/registry':
         specifier: workspace:*
         version: link:../registry
-      '@zengin/rollup':
+      '@zenginui/rollup':
         specifier: workspace:*
         version: link:../rollup
     devDependencies:
@@ -434,7 +434,7 @@ importers:
 
   packages/figma:
     dependencies:
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../engine
     devDependencies:
@@ -450,7 +450,7 @@ importers:
 
   packages/hook:
     dependencies:
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../engine
     devDependencies:
@@ -469,7 +469,7 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.30.0
         version: 1.30.0(zod@4.6.2)
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../engine
       zod:
@@ -500,7 +500,7 @@ importers:
 
   packages/registry:
     dependencies:
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../engine
     devDependencies:
@@ -519,7 +519,7 @@ importers:
 
   packages/rollup:
     dependencies:
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../engine
     devDependencies:
@@ -602,7 +602,7 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
-      '@zengin/engine':
+      '@zenginui/engine':
         specifier: workspace:*
         version: link:../engine
       jsdom:
@@ -629,6 +629,12 @@ importers:
       vitest:
         specifier: ^5.0.0
         version: 5.0.0(@types/node@22.20.2)(jsdom@30.0.1)(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
+
+  packages/zenginui:
+    dependencies:
+      '@zenginui/cli':
+        specifier: workspace:*
+        version: link:../cli
 
 packages:
 

@@ -1,5 +1,5 @@
 {
-  "name": "@zengin/engine",
+  "name": "@zenginui/engine",
   "version": "0.0.1",
   "description": "Deterministic design-system conformance engine. Code in, structured violations out.",
   "license": "MIT",

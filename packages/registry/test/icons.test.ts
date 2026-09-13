@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zengin/engine";
+import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
 import { describe, expect, it } from "vitest";
 import { applyIcons, buildRegistry, createProject, ICON_NAMES, ICON_SETS, registryFromMemory, renderIconsModule } from "../src/index.js";
 import { mkdtempSync, rmSync } from "node:fs";

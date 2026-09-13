@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import { normalizeColor } from "@zengin/engine";
+import { normalizeColor } from "@zenginui/engine";
 
 /**
  * The theme half of a shadcn project: the CSS file where `--background`, `--primary` and friends live,
@@ -155,7 +155,7 @@ export function deriveTokens(theme: ParsedTheme, fontFamilies: Record<string, st
   };
 
   const light: Record<string, unknown> = {
-    $description: "Derived from the project's theme CSS by @zengin/adapter-shadcn. Spacing is Tailwind's scale, so no spacing tokens are declared.",
+    $description: "Derived from the project's theme CSS by @zenginui/adapter-shadcn. Spacing is Tailwind's scale, so no spacing tokens are declared.",
     color: colors(theme.light, true),
   };
 

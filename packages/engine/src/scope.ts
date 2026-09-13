@@ -10,7 +10,7 @@ export interface OwnedPragma {
   sha?: string;
 }
 
-/** Reads `/* zengin-owned Button, forked from @zengin/ui@1.2.0, sha 3f9a1c0b2d4e *\/` when present; the sha is optional. */
+/** Reads `/* zengin-owned Button, forked from @zenginui/ui@1.2.0, sha 3f9a1c0b2d4e *\/` when present; the sha is optional. */
 export function readOwnedPragma(content: string): OwnedPragma | undefined {
   const head = content.slice(0, 2000);
   const m = /zengin-owned\s+([\w.]+)?(?:,\s*forked from\s+([^\s,*]+))?(?:,\s*sha\s+([0-9a-f]+))?/.exec(head);

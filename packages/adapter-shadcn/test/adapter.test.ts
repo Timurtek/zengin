@@ -2,7 +2,7 @@ import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createEngine, loadConfigFile, loadTokens, readProjectFiles, resolveConfig, type ComponentManifest } from "@zengin/engine";
+import { createEngine, loadConfigFile, loadTokens, readProjectFiles, resolveConfig, type ComponentManifest } from "@zenginui/engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { deriveComponent, deriveShadcn, writeShadcn } from "../src/index.js";
 

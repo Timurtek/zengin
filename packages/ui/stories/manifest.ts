@@ -1,4 +1,4 @@
-import type { ComponentManifest } from "@zengin/engine";
+import type { ComponentManifest } from "@zenginui/engine";
 import manifests from "../zengin/components.json";
 
 /**

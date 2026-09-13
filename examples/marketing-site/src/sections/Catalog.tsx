@@ -1,4 +1,4 @@
-import { Badge, Button, Select, Skeleton } from "@zengin/ui";
+import { Badge, Button, Select, Skeleton } from "@zenginui/ui";
 import { useEffect, useRef, useState } from "react";
 import { CodeBlock } from "../components/CodeBlock";
 
@@ -128,7 +128,7 @@ function TemplateCard({ template, src, theme, fonts, icons, embedded }: { templa
   }, []);
 
   const components = template.registryDependencies.filter((d) => d !== "cx" && d !== "foundation").length;
-  const command = `npx zengin create my-app --template ${template.name}${theme ? ` --theme ${theme}` : ""}${fonts || icons ? ` && cd my-app` : ""}${fonts ? ` && npx zengin fonts ${fonts}` : ""}${icons ? ` && npx zengin icons ${icons}` : ""}`;
+  const command = `npx zenginui create my-app --template ${template.name}${theme ? ` --theme ${theme}` : ""}${fonts || icons ? ` && cd my-app` : ""}${fonts ? ` && npx zenginui fonts ${fonts}` : ""}${icons ? ` && npx zenginui icons ${icons}` : ""}`;
 
   return (
     <article className="catalog__card">

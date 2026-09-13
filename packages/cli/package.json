@@ -1,5 +1,5 @@
 {
-  "name": "@zengin/cli",
+  "name": "@zenginui/cli",
   "version": "0.0.1",
   "description": "Command line for the Zengin conformance engine: the gate for pre-commit and CI.",
   "license": "MIT",
@@ -40,13 +40,13 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@zengin/adapter-css": "workspace:*",
-    "@zengin/adapter-shadcn": "workspace:*",
-    "@zengin/engine": "workspace:*",
-    "@zengin/figma": "workspace:*",
-    "@zengin/mock": "workspace:*",
-    "@zengin/registry": "workspace:*",
-    "@zengin/rollup": "workspace:*"
+    "@zenginui/adapter-css": "workspace:*",
+    "@zenginui/adapter-shadcn": "workspace:*",
+    "@zenginui/engine": "workspace:*",
+    "@zenginui/figma": "workspace:*",
+    "@zenginui/mock": "workspace:*",
+    "@zenginui/registry": "workspace:*",
+    "@zenginui/rollup": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22",

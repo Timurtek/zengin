@@ -1,4 +1,4 @@
-import "@zengin/ui/styles.css";
+import "@zenginui/ui/styles.css";
 import "./app.css";
 import "./preview-theme";
 import { StrictMode } from "react";

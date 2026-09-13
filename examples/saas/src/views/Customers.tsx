@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Card, Menu, Progress, Select, Sheet, Sparkline, Table, TextField, toast, Icon } from "@zengin/ui";
+import { Avatar, Badge, Button, Card, Menu, Progress, Select, Sheet, Sparkline, Table, TextField, toast, Icon } from "@zenginui/ui";
 import { useMemo, useState } from "react";
 import { customers, money, PLANS, type Customer, type CustomerStatus } from "../data";
 

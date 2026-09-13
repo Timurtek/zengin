@@ -10,8 +10,8 @@ A changeset file looks like this:
 
 ```md
 ---
-"@zengin/engine": minor
-"@zengin/cli": patch
+"@zenginui/engine": minor
+"@zenginui/cli": patch
 ---
 
 Short summary of what changed and why a consumer cares.

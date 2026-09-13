@@ -8,7 +8,7 @@ import {
   type Engine,
   type FileInput,
   type ResolvedConfig,
-} from "@zengin/engine";
+} from "@zenginui/engine";
 
 const CONFIG_NAMES = ["zengin.config.yaml", "zengin.config.yml"];
 

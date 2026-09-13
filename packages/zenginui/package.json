@@ -1,0 +1,25 @@
+{
+  "name": "zenginui",
+  "version": "0.0.1",
+  "description": "The Zengin command line, unscoped: `npx zenginui create my-app`. Runs @zenginui/cli.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": ["design-system", "cli", "zengin"],
+  "repository": { "type": "git", "url": "git+https://github.com/Timurtek/zengin.git", "directory": "packages/zenginui" },
+  "homepage": "https://github.com/Timurtek/zengin#readme",
+  "bugs": "https://github.com/Timurtek/zengin/issues",
+  "engines": { "node": ">=20" },
+  "bin": {
+    "zengin": "./bin.js"
+  },
+  "files": ["bin.js"],
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "node -e \"process.exit(0)\"",
+    "typecheck": "node -e \"process.exit(0)\"",
+    "test": "node bin.js --help"
+  },
+  "dependencies": {
+    "@zenginui/cli": "workspace:*"
+  }
+}

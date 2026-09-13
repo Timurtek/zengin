@@ -1,7 +1,7 @@
 ---
-"@zengin/registry": minor
-"@zengin/cli": minor
-"@zengin/engine": patch
+"@zenginui/registry": minor
+"@zenginui/cli": minor
+"@zenginui/engine": patch
 ---
 
 `zengin upgrade`: every owned file's pragma now carries the hash of what was copied, so the command can tell a local edit from an upstream change. A report lists each file as current, upstream, local, conflict or unknown, with a diff for conflicts; `--write` takes upstream changes the project did not touch and moves the pinned version, `--force` takes upstream over a conflict. Stylesheets of components carry the pragma too; stories never do.

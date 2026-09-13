@@ -36,10 +36,10 @@ src/ReviewCard.tsx
   32:27  error  spacing-literal  Arbitrary spacing value in inline style (margin). 8px is not on the spacing scale.
          found  margin: "8px 0 12px"
          fix (exact)  "var(--spacing-2) 0 var(--spacing-3)"
-  38:11  error  component-substitution  Raw <button> styled as a system Button (background-color, border-radius, color, font, padding). Use Button from @zengin/ui.
+  38:11  error  component-substitution  Raw <button> styled as a system Button (background-color, border-radius, color, font, padding). Use Button from @zenginui/ui.
          found  <button className="review-card__button" onClick={onReject} style={{ color: "#DC2626" }}>
          fix (nearest)  <Button onClick={onReject}> Reject </Button>
-         note  Express the removed styling through Button props. Add: import { Button } from "@zengin/ui";
+         note  Express the removed styling through Button props. Add: import { Button } from "@zenginui/ui";
 ```
 
 ## 3. What the agent did
@@ -52,7 +52,7 @@ The result is `demo/after/ReviewCard.tsx`, which is also what ships in `src/`.
 
 ```
 $ zengin check
-5 files checked against @zengin/ui@0.0.1: 0 violations
+5 files checked against @zenginui/ui@0.0.1: 0 violations
 ```
 
 And it renders like this:

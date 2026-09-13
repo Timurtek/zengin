@@ -1,6 +1,6 @@
-# The whole configuration a consumer of @zengin/ui needs. Definitions and version come from the installed package.
+# The whole configuration a consumer of @zenginui/ui needs. Definitions and version come from the installed package.
 system:
-  package: "@zengin/ui"
+  package: "@zenginui/ui"
 
 scope:
   include: ["src/**/*.{ts,tsx,css}"]

@@ -1,4 +1,4 @@
-import { Button } from "@zengin/ui";
+import { Button } from "@zenginui/ui";
 
 export function RejectButton() {
   return (

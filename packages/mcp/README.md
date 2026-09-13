@@ -1,4 +1,4 @@
-# @zengin/mcp
+# @zenginui/mcp
 
 MCP server (stdio) that exposes the Zengin conformance engine to coding agents. An agent submits code, the engine returns structured violations with suggested corrections, the agent self-corrects before the code lands. No LLM in the check, no token spend on it, the same answer every time.
 
@@ -11,7 +11,7 @@ MCP server (stdio) that exposes the Zengin conformance engine to coding agents. 
 | `zengin_describe_system` | The tokens and component contracts the rules check against, so generated code references what exists. |
 | `zengin_explain_rules` | What each rule checks, whether it is on in this project, and how to suppress or scope it. |
 
-All four are read-only. Nothing installs, edits, migrates or executes code. The violation shape is the engine's: see [`@zengin/engine`](../engine/README.md#violations).
+All four are read-only. Nothing installs, edits, migrates or executes code. The violation shape is the engine's: see [`@zenginui/engine`](../engine/README.md#violations).
 
 ## Running
 

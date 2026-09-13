@@ -1,4 +1,4 @@
-# @zengin/hook
+# @zenginui/hook
 
 Claude Code PostToolUse hook. Every time the agent writes or edits a file, the engine checks it and the violations go straight back to the agent as the blocking reason. This is the surface that catches the agent that never called MCP.
 

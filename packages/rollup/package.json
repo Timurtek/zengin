@@ -1,5 +1,5 @@
 {
-  "name": "@zengin/rollup",
+  "name": "@zenginui/rollup",
   "version": "0.0.1",
   "description": "Drift and adoption reporting across every repository that consumes a design system, from Zengin report snapshots.",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@zengin/engine": "workspace:*"
+    "@zenginui/engine": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22",

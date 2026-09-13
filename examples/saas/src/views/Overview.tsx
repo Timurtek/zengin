@@ -1,4 +1,4 @@
-import { Avatar, Badge, BarChart, Button, Card, LineChart, Table } from "@zengin/ui";
+import { Avatar, Badge, BarChart, Button, Card, LineChart, Table } from "@zenginui/ui";
 import { StatCard } from "../components/StatCard";
 import { activeUsers, activity, churn, compact, conversion, DAYS, money, PLANS, refunds, revenue, signupsByPlan } from "../data";
 

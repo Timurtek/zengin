@@ -106,7 +106,7 @@ describe("zengin_get_violations", () => {
     expect(data.total).toBe(expected.length);
     expect(data.returned).toBe(expected.length);
     expect(data.truncated).toBe(false);
-    expect(data.system).toEqual({ package: "@zengin/ui", version: "1.2.0" });
+    expect(data.system).toEqual({ package: "@zenginui/ui", version: "1.2.0" });
     expect(data.summary.byRule["color-literal"]).toBeGreaterThan(0);
   });
 

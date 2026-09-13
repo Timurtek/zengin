@@ -10,37 +10,37 @@ Everyone else serves context. Zengin serves constraints.
 
 | Package | Status | Purpose |
 | --- | --- | --- |
-| [`@zengin/engine`](packages/engine) | Phase 1, seven rule kinds | The rule engine. Parses TSX and CSS, resolves class names through the project's own stylesheets (or an optional Tailwind adapter), checks declarations against a system's tokens and component manifest. |
-| [`@zengin/mcp`](packages/mcp) | Phase 1, four tools | stdio MCP server: `zengin_check_code`, `zengin_get_violations`, `zengin_describe_system`, `zengin_explain_rules`. |
-| [`@zengin/hook`](packages/hook) | Phase 1 | Claude Code PostToolUse hook. Checks every file write; blocks with the violations as the reason. |
-| [`@zengin/cli`](packages/cli) | Phase 1 | `zengin check` for pre-commit and CI, with `--changed`, `--staged`, and GitHub annotations. `explain`, `init`. |
-| [`@zengin/adapter-shadcn`](packages/adapter-shadcn) | Phase 2 | `zengin init --from shadcn`: derives tokens, the component manifest and a config from a shadcn/ui project. Reproduces the taxonomy field test exactly. |
-| [`@zengin/adapter-css`](packages/adapter-css) | Phase 2 | `zengin init --from package <name>`: derives them from any installed design-system package, tokens from its CSS variables with the names kept, manifest from its `.d.ts`. Verified on umami. |
-| [`@zengin/rollup`](packages/rollup) | Phase 2 | `zengin report` in each consuming repo, `zengin rollup` across them: drift, adoption, suppressions, owned forks, pinned versions, deltas. Markdown, JSON, or a self-contained HTML page. |
-| [`@zengin/registry`](packages/registry) | Phase 3 | The registry and the generator: `zengin create` scaffolds a project that owns its components shadcn-style, `zengin add` brings in more, `zengin tokens` compiles the token JSON. Items are built from `packages/ui` and `examples/`; the marketing site serves the public registry. |
-| [`@zengin/mock`](packages/mock) | Phase 3 | `zengin mock`: typed, seeded mock data generated as plain TypeScript into the project. Presets for the entities apps show, a small schema for the rest, no runtime dependency. |
-| [`@zengin/figma`](packages/figma) | Phase 3 | Figma both ways: tokens to Figma variables (Light and Dark modes, code syntax set to the CSS variable) and back with a report, Code Connect files from the component manifest, and a plugin that imports and exports variables in any file. |
-| [`@zengin/ui`](packages/ui) | Phase 1, thirty-three components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
+| [`@zenginui/engine`](packages/engine) | Phase 1, seven rule kinds | The rule engine. Parses TSX and CSS, resolves class names through the project's own stylesheets (or an optional Tailwind adapter), checks declarations against a system's tokens and component manifest. |
+| [`@zenginui/mcp`](packages/mcp) | Phase 1, four tools | stdio MCP server: `zengin_check_code`, `zengin_get_violations`, `zengin_describe_system`, `zengin_explain_rules`. |
+| [`@zenginui/hook`](packages/hook) | Phase 1 | Claude Code PostToolUse hook. Checks every file write; blocks with the violations as the reason. |
+| [`@zenginui/cli`](packages/cli) | Phase 1 | `zengin check` for pre-commit and CI, with `--changed`, `--staged`, and GitHub annotations. `explain`, `init`. |
+| [`@zenginui/adapter-shadcn`](packages/adapter-shadcn) | Phase 2 | `zengin init --from shadcn`: derives tokens, the component manifest and a config from a shadcn/ui project. Reproduces the taxonomy field test exactly. |
+| [`@zenginui/adapter-css`](packages/adapter-css) | Phase 2 | `zengin init --from package <name>`: derives them from any installed design-system package, tokens from its CSS variables with the names kept, manifest from its `.d.ts`. Verified on umami. |
+| [`@zenginui/rollup`](packages/rollup) | Phase 2 | `zengin report` in each consuming repo, `zengin rollup` across them: drift, adoption, suppressions, owned forks, pinned versions, deltas. Markdown, JSON, or a self-contained HTML page. |
+| [`@zenginui/registry`](packages/registry) | Phase 3 | The registry and the generator: `zengin create` scaffolds a project that owns its components shadcn-style, `zengin add` brings in more, `zengin tokens` compiles the token JSON. Items are built from `packages/ui` and `examples/`; the marketing site serves the public registry. |
+| [`@zenginui/mock`](packages/mock) | Phase 3 | `zengin mock`: typed, seeded mock data generated as plain TypeScript into the project. Presets for the entities apps show, a small schema for the rest, no runtime dependency. |
+| [`@zenginui/figma`](packages/figma) | Phase 3 | Figma both ways: tokens to Figma variables (Light and Dark modes, code syntax set to the CSS variable) and back with a report, Code Connect files from the component manifest, and a plugin that imports and exports variables in any file. |
+| [`@zenginui/ui`](packages/ui) | Phase 1, thirty-three components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
 
 ## Start a project
 
 ```bash
-npx zengin create acme --template saas        # or: chat, auth, docs, storefront, blank, marketing, review; --framework next for the App Router
+npx zenginui create acme --template saas        # or: chat, auth, docs, storefront, blank, marketing, review; --framework next for the App Router
 npm run mock                                  # regenerate the SaaS template's rows from mock.json
-npx zengin upgrade --write                     # take what the system changed since you copied it; a local edit is yours, a conflict shows its diff
+npx zenginui upgrade --write                     # take what the system changed since you copied it; a local edit is yours, a conflict shows its diff
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
-npx zengin theme plex                          # or: default, meadow, spec-sheet, brutal, zengin
-npx zengin fonts fraunces                      # a font pairing: headlines, text, code; --self-host keeps Google out of the runtime
-npx zengin icons tabler                        # the icon vocabulary drawn by a react-icons set; the names in your code stay
-npx zengin brand --name Acme --logo logo.svg  # your own palette, favicon and wordmark from one color
+npx zenginui theme plex                          # or: default, meadow, spec-sheet, brutal, zengin
+npx zenginui fonts fraunces                      # a font pairing: headlines, text, code; --self-host keeps Google out of the runtime
+npx zenginui icons tabler                        # the icon vocabulary drawn by a react-icons set; the names in your code stay
+npx zenginui brand --name Acme --logo logo.svg  # your own palette, favicon and wordmark from one color
 ```
 
 The project owns its components (`src/components/ui`, each file carrying the version it was copied from), its definitions (`zengin/`), a brand file, Storybook, and the MCP server and hook. The generator runs the engine on the result before it returns: a fresh project reports zero violations. Until the first npm release, run the CLI from a checkout with `--local <path>`.
 
 ## The two reference experiences
 
-The vision asks for one marketing page and one application workflow from the same foundations with distinct visual treatments. Both are workspace examples built on `@zengin/ui`, and both are checked by the engine in CI.
+The vision asks for one marketing page and one application workflow from the same foundations with distinct visual treatments. Both are workspace examples built on `@zenginui/ui`, and both are checked by the engine in CI.
 
 [`examples/review-workspace`](examples/review-workspace) is a review queue with the MCP server, hook and CLI wired in, in the default theme. Its [DEMO.md](examples/review-workspace/DEMO.md) replays the enforcement loop: an off-system component the way an agent writes it, the engine's 19 violations, the corrected component, zero violations, and both renders. The replay runs in CI with assertions.
 
@@ -61,7 +61,7 @@ pnpm install
 pnpm build
 pnpm test
 pnpm typecheck
-pnpm --filter @zengin/ui storybook
+pnpm --filter @zenginui/ui storybook
 ```
 
 Node 22 and pnpm 10.
@@ -84,7 +84,7 @@ pnpm version-packages   # what the release PR does, locally, if you ever need to
 pnpm release            # what merging the release PR does
 ```
 
-Publishing needs an `NPM_TOKEN` repository secret with publish rights on the `@zengin` scope.
+Publishing needs an `NPM_TOKEN` repository secret with publish rights on the `@zenginui` scope.
 
 ## Design documents
 

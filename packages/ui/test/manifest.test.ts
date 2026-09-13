@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadTokens, type ComponentManifest } from "@zengin/engine";
+import { loadTokens, type ComponentManifest } from "@zenginui/engine";
 import { describe, expect, it } from "vitest";
 import * as ui from "../src/index.js";
 
@@ -30,7 +30,7 @@ function referencedVars(): Set<string> {
 describe("components.json against the implementation", () => {
   it("every manifest names an exported component with the declared export name", () => {
     for (const m of manifests) {
-      expect(m.export.from).toBe("@zengin/ui");
+      expect(m.export.from).toBe("@zenginui/ui");
       expect(m.export.name).toBe(m.name);
       expect(ui, m.name).toHaveProperty(m.name);
     }

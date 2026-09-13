@@ -1,6 +1,6 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zengin/engine";
+import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
 import { describe, expect, it } from "vitest";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -11,7 +11,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
  * and spacing value in every component stylesheet is a token reference. Zero violations, or the system
  * is not practising what it enforces.
  */
-describe("zengin on @zengin/ui", () => {
+describe("zengin on @zenginui/ui", () => {
   it("finds no violations in its own components", async () => {
     const { config, dir } = loadConfigFile(join(root, "zengin.config.yaml"));
     const resolved = resolveConfig(config, dir);

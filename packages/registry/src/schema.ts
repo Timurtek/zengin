@@ -1,4 +1,4 @@
-import type { ComponentManifest } from "@zengin/engine";
+import type { ComponentManifest } from "@zenginui/engine";
 
 export const REGISTRY_SCHEMA = "zengin-registry/1";
 

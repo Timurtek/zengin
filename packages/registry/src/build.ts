@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
-import type { ComponentManifest } from "@zengin/engine";
+import type { ComponentManifest } from "@zenginui/engine";
 import { LAYOUT, REGISTRY_SCHEMA, type Registry, type RegistryFile, type RegistryIndex, type RegistryItem, type FontRole } from "./schema.js";
 import { ICON_SETS, REACT_ICONS_VERSION, renderIconsModule } from "./icons.js";
 import { buildTokensCss } from "./tokens.js";
@@ -164,7 +164,7 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       dir: "examples/auth",
       name: "auth",
       title: "Auth",
-      description: "Sign in, create account, reset and verify, one card on @zengin/ui with real validation against mock accounts.",
+      description: "Sign in, create account, reset and verify, one card on @zenginui/ui with real validation against mock accounts.",
       rootFiles: ["index.html", "mock.json"],
       componentNames,
     }),
@@ -175,7 +175,7 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       dir: "examples/docs",
       name: "docs",
       title: "Docs",
-      description: "A sidebar of sections, markdown pages with code and tables, an on-this-page outline, search, previous and next, on @zengin/ui.",
+      description: "A sidebar of sections, markdown pages with code and tables, an on-this-page outline, search, previous and next, on @zenginui/ui.",
       rootFiles: ["index.html", "mock.json"],
       componentNames,
     }),
@@ -186,7 +186,7 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       dir: "examples/storefront",
       name: "storefront",
       title: "Storefront",
-      description: "A product grid with search, filters and sort, a cart sheet with quantities and totals, and a checkout dialog that places the order, on @zengin/ui.",
+      description: "A product grid with search, filters and sort, a cart sheet with quantities and totals, and a checkout dialog that places the order, on @zenginui/ui.",
       rootFiles: ["index.html", "mock.json"],
       componentNames,
     }),
@@ -287,7 +287,7 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
     let content = read(p);
     if (rel === "src/main.tsx") content = content.replace(/import "\.\/preview-theme";\r?\n/, "");
     if (/\.(tsx?|css)$/.test(rel)) {
-      for (const m of content.matchAll(/import\s*\{([^}]+)\}\s*from\s*"@zengin\/ui"/g)) {
+      for (const m of content.matchAll(/import\s*\{([^}]+)\}\s*from\s*"@zenginui\/ui"/g)) {
         for (const name of m[1]!.split(",")) {
           const clean = name.replace(/^\s*type\s+/, "").replace(/\s+as\s+\w+\s*$/, "").trim(); // `type X` and `X as Y` both name X
           if (!clean) continue;
@@ -295,7 +295,7 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
           if (opts.componentNames.has(k)) used.add(k);
         }
       }
-      content = content.replace(/"@zengin\/ui\/styles\.css"/g, '"./styles/index.css"').replace(/"@zengin\/ui"/g, `"${LAYOUT.alias}"`);
+      content = content.replace(/"@zenginui\/ui\/styles\.css"/g, '"./styles/index.css"').replace(/"@zenginui\/ui"/g, `"${LAYOUT.alias}"`);
     }
     // The entry point must load the brand file, or themes and brands change nothing. The examples that
     // consume the package have no brand file; the project has one.

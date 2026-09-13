@@ -1,4 +1,4 @@
-import { Button } from "@zengin/ui";
+import { Button } from "@zenginui/ui";
 import { CheckPanel } from "../components/CheckPanel";
 
 /** The facts on the sheet. Each is a number the repository can back. */

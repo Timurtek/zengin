@@ -1,4 +1,4 @@
-import { Badge, Table } from "@zengin/ui";
+import { Badge, Table } from "@zenginui/ui";
 import { FAMILY_NOTE, RULES } from "../content";
 
 const FAMILY_TONE = { foundation: "primary", contract: "neutral", substitution: "warning" } as const;

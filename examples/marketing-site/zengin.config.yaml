@@ -1,6 +1,6 @@
 # The page is enforced by the engine it advertises. The brand lives in src/theme; nothing else may hold a literal.
 system:
-  package: "@zengin/ui"
+  package: "@zenginui/ui"
 
 scope:
   include: ["src/**/*.{ts,tsx,css}"]

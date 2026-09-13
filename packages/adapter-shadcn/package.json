@@ -1,5 +1,5 @@
 {
-  "name": "@zengin/adapter-shadcn",
+  "name": "@zenginui/adapter-shadcn",
   "version": "0.0.1",
   "description": "Derives Zengin definitions from a shadcn/ui project: theme variables, Tailwind config, and the cva() calls in components/ui.",
   "license": "MIT",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@babel/parser": "^8.0.5",
-    "@zengin/engine": "workspace:*"
+    "@zenginui/engine": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22",

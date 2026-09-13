@@ -1,6 +1,6 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zengin/engine";
+import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
 import { describe, expect, it } from "vitest";
 import { aggregate, buildSnapshot, isRollup, isSnapshot, renderHtml, renderMarkdown, type ReportSnapshot } from "../src/index.js";
 
@@ -13,7 +13,7 @@ function snapshot(over: Partial<ReportSnapshot> & { name: string; violations?: n
     schema: "zengin-report/1",
     generatedAt: over.generatedAt ?? NOW.toISOString(),
     repo: { name: over.name, commit: "abc1234def", ref: "main" },
-    system: over.system ?? { package: "@zengin/ui", version: "0.1.0" },
+    system: over.system ?? { package: "@zenginui/ui", version: "0.1.0" },
     filesChecked: over.filesChecked ?? 100,
     summary: { total, bySeverity: { error: total, warn: 0, info: 0 }, byRule: over.byRule ?? (total ? { "color-literal": total } : {}), byFile: {} },
     violations: [],
@@ -33,7 +33,7 @@ describe("buildSnapshot on the engine's fixture project", () => {
 
     expect(isSnapshot(s)).toBe(true);
     expect(s.generatedAt).toBe("2026-09-12T12:00:00.000Z");
-    expect(s.system).toEqual({ package: "@zengin/ui", version: "1.2.0" });
+    expect(s.system).toEqual({ package: "@zenginui/ui", version: "1.2.0" });
     expect(s.summary.total).toBe(21);
     expect(s.violations).toEqual([]); // counts only, by default
     // Hero.tsx carries one suppression with a reason and one without.
@@ -45,7 +45,7 @@ describe("buildSnapshot on the engine's fixture project", () => {
     ]);
     // badge.tsx is owned by path and carries a pragma with the fork version.
     expect(s.inventory.ownedFiles).toBe(1);
-    expect(s.owned).toEqual([{ file: "src/components/ui/badge.tsx", component: "Badge", forkedFrom: "@zengin/ui@1.2.0" }]);
+    expect(s.owned).toEqual([{ file: "src/components/ui/badge.tsx", component: "Badge", forkedFrom: "@zenginui/ui@1.2.0" }]);
     // Button is used in RejectButton.tsx and twice in Hero.tsx.
     expect(s.inventory.components["Button"]).toEqual({ uses: 3, files: 2 });
     expect(s.inventory.uncontracted).toEqual([]);
@@ -64,7 +64,7 @@ describe("buildSnapshot on the engine's fixture project", () => {
 describe("aggregate", () => {
   const snaps = [
     snapshot({ name: "acme/checkout", violations: 30, byRule: { "color-literal": 20, "component-substitution": 10 }, filesChecked: 200 }),
-    snapshot({ name: "acme/admin", violations: 4, filesChecked: 50, system: { package: "@zengin/ui", version: "0.0.9" } }),
+    snapshot({ name: "acme/admin", violations: 4, filesChecked: 50, system: { package: "@zenginui/ui", version: "0.0.9" } }),
     snapshot({
       name: "acme/marketing",
       violations: 0,
@@ -118,13 +118,13 @@ describe("aggregate", () => {
 
 describe("renderers", () => {
   const r = aggregate(
-    [snapshot({ name: "acme/checkout", violations: 30, filesChecked: 200 }), snapshot({ name: "acme/admin", violations: 4, filesChecked: 50, system: { package: "@zengin/ui", version: "0.0.9" } })],
+    [snapshot({ name: "acme/checkout", violations: 30, filesChecked: 200 }), snapshot({ name: "acme/admin", violations: 4, filesChecked: 50, system: { package: "@zenginui/ui", version: "0.0.9" } })],
     { now: NOW },
   );
 
   it("markdown has the repository table, the rule table, and the attention list", () => {
     const md = renderMarkdown(r);
-    expect(md).toContain("# @zengin/ui across 2 repositories");
+    expect(md).toContain("# @zenginui/ui across 2 repositories");
     expect(md).toContain("| acme/checkout | 0.1.0 | 200 | 30 | 15 | 1 | 2 | 45 uses, 2 components |");
     expect(md).toContain("| acme/admin | 0.0.9 behind | 50 | 4 | 8 | 1 | 2 | 45 uses, 2 components |");
     expect(md).toContain("| color-literal | 34 |");

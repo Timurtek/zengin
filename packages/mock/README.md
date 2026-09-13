@@ -1,4 +1,4 @@
-# @zengin/mock
+# @zenginui/mock
 
 Mock data to see a screen with, before there is a backend. Typed, seeded, realistic, and generated as plain TypeScript into the project, so it has no runtime dependency and the same data shows up on every run and in every screenshot.
 
@@ -48,7 +48,7 @@ Field kinds: `id`, `firstName`, `lastName`, `fullName`, `email`, `company`, `job
 ## Programmatic use
 
 ```ts
-import { generateMock, schemaFromPresets } from "@zengin/mock";
+import { generateMock, schemaFromPresets } from "@zenginui/mock";
 const files = generateMock(schemaFromPresets(["customers"], { count: 30 }));
 // { "src/mock/rng.ts": "...", "src/mock/customers.ts": "..." }
 ```

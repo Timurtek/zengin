@@ -6,7 +6,7 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": [
         "--filter",
-        "@zengin/ui",
+        "@zenginui/ui",
         "storybook"
       ],
       "port": 6006

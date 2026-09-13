@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Violation } from "@zengin/engine";
-import { renderSummary, renderViolations, summarize } from "@zengin/engine";
+import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Violation } from "@zenginui/engine";
+import { renderSummary, renderViolations, summarize } from "@zenginui/engine";
 import type { Host } from "./host.js";
 
 export const SERVER_NAME = "zengin-mcp-server";

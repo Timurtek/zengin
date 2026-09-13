@@ -1,4 +1,4 @@
-import { Tooltip } from "@zengin/ui";
+import { Tooltip } from "@zenginui/ui";
 import { useEffect, useState } from "react";
 import { REPO } from "./content";
 import { Catalog } from "./sections/Catalog";

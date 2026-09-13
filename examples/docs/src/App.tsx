@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Icon, Markdown, Separator, Sheet, TextField, Tooltip } from "@zengin/ui";
+import { Avatar, Badge, Button, Icon, Markdown, Separator, Sheet, TextField, Tooltip } from "@zenginui/ui";
 import { useEffect, useMemo, useState } from "react";
 import { compact, DOCS, headingsOf, SECTIONS, type Doc } from "./data";
 

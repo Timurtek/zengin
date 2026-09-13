@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Menu, Popover, Sheet, TextField, Tooltip, Icon } from "@zengin/ui";
+import { Avatar, Badge, Button, Menu, Popover, Sheet, TextField, Tooltip, Icon } from "@zenginui/ui";
 import { useState, type ComponentType, type ReactNode } from "react";
 
 export type Page = "overview" | "customers" | "billing" | "settings";

@@ -1,6 +1,6 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, extname, join, resolve } from "node:path";
-import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zengin/engine";
+import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
 import { contrast, hexToOklch, oklchToHex, pushForContrast, type Oklch } from "./color.js";
 import { patchIndexHtml, fontsHref } from "./html.js";
 import { LAYOUT } from "./schema.js";

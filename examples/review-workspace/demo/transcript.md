@@ -128,17 +128,17 @@ src/ReviewCard.tsx
   37:88  error  spacing-literal  Spacing literal in inline style (margin-top) where a token reference is required. 16px matches space.4 but will not follow scale changes.
          found  marginTop: 16
          fix (exact)  "var(--spacing-4)"
-  38:11  error  component-substitution  Raw <button> styled as a system Button (background-color, border-radius, color, font, padding). Use Button from @zengin/ui.
+  38:11  error  component-substitution  Raw <button> styled as a system Button (background-color, border-radius, color, font, padding). Use Button from @zenginui/ui.
          found  <button className="review-card__button" onClick={onReject} style={{ color: "#DC2626" }}>
          fix (nearest)  <Button onClick={onReject}> Reject </Button>
-         note  Express the removed styling through Button props. Add: import { Button } from "@zengin/ui";
+         note  Express the removed styling through Button props. Add: import { Button } from "@zenginui/ui";
   38:86  error  color-literal  Color literal in inline style (color) where a token reference is required. The value matches color.danger in the default theme but will not follow theme changes.
          found  "#DC2626"
          fix (exact)  "var(--color-danger)"
-  41:11  error  component-substitution  Raw <button> styled as a system Button (background-color, border-radius, color, font, padding). Use Button from @zengin/ui.
+  41:11  error  component-substitution  Raw <button> styled as a system Button (background-color, border-radius, color, font, padding). Use Button from @zenginui/ui.
          found  <button className="review-card__button review-card__button--primary" onClick={onApprove}>
          fix (nearest)  <Button onClick={onApprove}> Approve </Button>
-         note  Express the removed styling through Button props. Add: import { Button } from "@zengin/ui";
+         note  Express the removed styling through Button props. Add: import { Button } from "@zenginui/ui";
 
 src/review-card.css
   2:15  error  color-literal  Color literal where a token reference is required. The value matches 6 tokens (color.surface, color.on-primary, color.on-danger, color.on-success, color.on-warning, color.on-neutral) in the default theme but will not follow theme changes.
@@ -183,7 +183,7 @@ src/review-card.css
          found  #1D4ED8
          fix (exact)  var(--color-primary-hover)
 
-6 files checked against @zengin/ui@0.0.1: 19 violations (19 error, 0 warn, 0 info): spacing-literal 9, color-literal 8, component-substitution 2
+6 files checked against @zenginui/ui@0.0.1: 19 violations (19 error, 0 warn, 0 info): spacing-literal 9, color-literal 8, component-substitution 2
 (exit 1)
 ```
 
@@ -194,7 +194,7 @@ src/review-card.css
 Exact fixes verbatim. Nearest fixes by role. The raw buttons and the improvised status badge become the system's Button and Badge; the card becomes Card. The stylesheet goes away because the components own their appearance.
 
 ```tsx
-import { Badge, Button, Card } from "@zengin/ui";
+import { Badge, Button, Card } from "@zenginui/ui";
 import type { ReviewItem, ReviewStatus } from "./data";
 
 const STATUS: Record<ReviewStatus, { label: string; tone: "primary" | "success" | "danger" | "warning" }> = {
@@ -248,7 +248,7 @@ export function ReviewCard({ item, onApprove, onReject }: ReviewCardProps) {
 
 ```
 $ zengin check
-5 files checked against @zengin/ui@0.0.1: 0 violations (0 error, 0 warn, 0 info)
+5 files checked against @zenginui/ui@0.0.1: 0 violations (0 error, 0 warn, 0 info)
 (exit 0)
 ```
 

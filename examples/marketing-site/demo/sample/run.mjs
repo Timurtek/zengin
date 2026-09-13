@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 /**
- * Runs the engine on demo/sample/Actions.tsx against @zengin/ui and writes src/data/sample.json: the source before
+ * Runs the engine on demo/sample/Actions.tsx against @zenginui/ui and writes src/data/sample.json: the source before
  * and after, and the violations the hero panel renders. Asserts that Actions.fixed.tsx is clean. Re-run after
  * changing the sample or the engine.
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createEngine, readProjectFiles, resolveConfig } from "@zengin/engine";
+import { createEngine, readProjectFiles, resolveConfig } from "@zenginui/engine";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const project = resolve(here, "..", "..");
-const config = resolveConfig({ system: { package: "@zengin/ui" }, scope: { include: ["demo/sample/*.tsx"] } }, project);
+const config = resolveConfig({ system: { package: "@zenginui/ui" }, scope: { include: ["demo/sample/*.tsx"] } }, project);
 const engine = await createEngine(config);
 const files = readProjectFiles(project, config.scope.include, config.scope.exclude);
 

@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createEngine, loadTokens, resolveConfig, TokenIndex } from "@zengin/engine";
+import { createEngine, loadTokens, resolveConfig, TokenIndex } from "@zenginui/engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { classify, deriveManifestFromTypes, derivePackage, deriveTokensFromCss, writePackage } from "../src/index.js";
 
@@ -186,7 +186,7 @@ export function App() {
   });
 
   it("the engine checks the project with those definitions", async () => {
-    const { loadConfigFile, readProjectFiles } = await import("@zengin/engine");
+    const { loadConfigFile, readProjectFiles } = await import("@zenginui/engine");
     const { config } = loadConfigFile(join(dir, "zengin.config.yaml"));
     const resolved = resolveConfig(config, dir);
     const engine = await createEngine(resolved);
