@@ -6,7 +6,7 @@
 
 - [`46c9785`](https://github.com/Timurtek/zengin/commit/46c9785cef6a6a2765043d32eb34098584ebd343) Thanks [@Timurtek](https://github.com/Timurtek)! - `@zenginui/figma`: tokens to a Figma Variables payload and back with a report, Code Connect files from the component manifest, and a plugin that imports and exports variables in any Figma file. `zengin figma export | import | connect | plugin` in the CLI.
 
-- [`bf6477b`](https://github.com/Timurtek/zengin/commit/bf6477bd04edbd3fc4fdc317bf93d9adb941a09a) Thanks [@Timurtek](https://github.com/Timurtek)! - The npm scope is `@zenginui`: `@zenginui/ui`, `@zenginui/cli`, `@zenginui/engine` and the rest, since the `zengin` org was taken. The unscoped `zenginui` package carries the `zengin` bin, so `npx zenginui create my-app` is the install command. Generated projects, the registry's import rewriting, the docs and the rollup history all use the new scope.
+- [`bf6477b`](https://github.com/Timurtek/zengin/commit/bf6477bd04edbd3fc4fdc317bf93d9adb941a09a) Thanks [@Timurtek](https://github.com/Timurtek)! - The npm scope is `@zenginui`: `@zenginui/ui`, `@zenginui/cli`, `@zenginui/engine` and the rest, since the `zengin` org was taken. The unscoped `zenginui` package carries the `zengin` bin, so `npm create zengin@latest my-app` is the install command. Generated projects, the registry's import rewriting, the docs and the rollup history all use the new scope.
 
 ### Patch Changes
 

@@ -1,0 +1,40 @@
+{
+  "name": "create-zengin",
+  "version": "0.1.0",
+  "description": "npm create zengin: a new project on Zengin UI that owns its components. Runs @zenginui/cli create.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "design-system",
+    "create",
+    "scaffold",
+    "zengin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Timurtek/zengin.git",
+    "directory": "packages/create-zengin"
+  },
+  "homepage": "https://github.com/Timurtek/zengin#readme",
+  "bugs": "https://github.com/Timurtek/zengin/issues",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "create-zengin": "./bin.js"
+  },
+  "files": [
+    "bin.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "node -e \"process.exit(0)\"",
+    "typecheck": "node -e \"process.exit(0)\"",
+    "test": "node bin.js --help"
+  },
+  "dependencies": {
+    "@zenginui/cli": "workspace:*"
+  }
+}

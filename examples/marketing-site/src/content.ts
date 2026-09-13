@@ -157,10 +157,10 @@ export const PROOF = [
 ];
 
 export const INSTALL = `# A new project: components copied in, engine, MCP, hook and Storybook wired
-npx zenginui create acme --template marketing
+npm create zengin@latest acme -- --template marketing
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
-npx zenginui brand --name Acme --logo logo.svg   # palette, favicon, wordmark from one color
+npx zengin brand --name Acme --logo logo.svg   # palette, favicon, wordmark from one color
 
 # An existing project: derive the definitions, then check
 zengin init --from shadcn                       # or: --from package @your/design-system

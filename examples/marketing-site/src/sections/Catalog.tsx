@@ -128,7 +128,7 @@ function TemplateCard({ template, src, theme, fonts, icons, embedded }: { templa
   }, []);
 
   const components = template.registryDependencies.filter((d) => d !== "cx" && d !== "foundation").length;
-  const command = `npx zenginui create my-app --template ${template.name}${theme ? ` --theme ${theme}` : ""}${fonts || icons ? ` && cd my-app` : ""}${fonts ? ` && npx zenginui fonts ${fonts}` : ""}${icons ? ` && npx zenginui icons ${icons}` : ""}`;
+  const command = `npm create zengin@latest my-app -- --template ${template.name}${theme ? ` --theme ${theme}` : ""}${fonts || icons ? ` && cd my-app` : ""}${fonts ? ` && npx zengin fonts ${fonts}` : ""}${icons ? ` && npx zengin icons ${icons}` : ""}`;
 
   return (
     <article className="catalog__card">

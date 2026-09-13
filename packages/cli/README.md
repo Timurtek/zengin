@@ -55,7 +55,7 @@ zengin check --staged
 
 ## GitHub Actions
 
-Until the packages are published, build them from source in the workflow. With published packages this collapses to one `npx zenginui check` step.
+Until the packages are published, build them from source in the workflow. With published packages this collapses to one `npx zengin check` step.
 
 ```yaml
 name: design-system

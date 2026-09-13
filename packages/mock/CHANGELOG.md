@@ -6,7 +6,7 @@
 
 - [`cf35643`](https://github.com/Timurtek/zengin/commit/cf35643dade7f24efe20a68eb867faa58331f0d0) Thanks [@Timurtek](https://github.com/Timurtek)! - `@zenginui/mock` and `zengin mock`: typed, seeded mock data generated as plain TypeScript into `src/mock`, from presets (users, customers, companies, products, orders, invoices, events, messages, metrics) or a schema of your own.
 
-- [`bf6477b`](https://github.com/Timurtek/zengin/commit/bf6477bd04edbd3fc4fdc317bf93d9adb941a09a) Thanks [@Timurtek](https://github.com/Timurtek)! - The npm scope is `@zenginui`: `@zenginui/ui`, `@zenginui/cli`, `@zenginui/engine` and the rest, since the `zengin` org was taken. The unscoped `zenginui` package carries the `zengin` bin, so `npx zenginui create my-app` is the install command. Generated projects, the registry's import rewriting, the docs and the rollup history all use the new scope.
+- [`bf6477b`](https://github.com/Timurtek/zengin/commit/bf6477bd04edbd3fc4fdc317bf93d9adb941a09a) Thanks [@Timurtek](https://github.com/Timurtek)! - The npm scope is `@zenginui`: `@zenginui/ui`, `@zenginui/cli`, `@zenginui/engine` and the rest, since the `zengin` org was taken. The unscoped `zenginui` package carries the `zengin` bin, so `npm create zengin@latest my-app` is the install command. Generated projects, the registry's import rewriting, the docs and the rollup history all use the new scope.
 
 ### Patch Changes
 

@@ -25,15 +25,15 @@ Everyone else serves context. Zengin serves constraints.
 ## Start a project
 
 ```bash
-npx zenginui create acme --template saas        # or: chat, auth, docs, storefront, blank, marketing, review; --framework next for the App Router
+npm create zengin@latest acme -- --template saas        # or: chat, auth, docs, storefront, blank, marketing, review; --framework next for the App Router
 npm run mock                                  # regenerate the SaaS template's rows from mock.json
-npx zenginui upgrade --write                     # take what the system changed since you copied it; a local edit is yours, a conflict shows its diff
+npx zengin upgrade --write                     # take what the system changed since you copied it; a local edit is yours, a conflict shows its diff
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
-npx zenginui theme plex                          # or: default, meadow, spec-sheet, brutal, zengin
-npx zenginui fonts fraunces                      # a font pairing: headlines, text, code; --self-host keeps Google out of the runtime
-npx zenginui icons tabler                        # the icon vocabulary drawn by a react-icons set; the names in your code stay
-npx zenginui brand --name Acme --logo logo.svg  # your own palette, favicon and wordmark from one color
+npx zengin theme plex                          # or: default, meadow, spec-sheet, brutal, zengin
+npx zengin fonts fraunces                      # a font pairing: headlines, text, code; --self-host keeps Google out of the runtime
+npx zengin icons tabler                        # the icon vocabulary drawn by a react-icons set; the names in your code stay
+npx zengin brand --name Acme --logo logo.svg  # your own palette, favicon and wordmark from one color
 ```
 
 The project owns its components (`src/components/ui`, each file carrying the version it was copied from), its definitions (`zengin/`), a brand file, Storybook, and the MCP server and hook. The generator runs the engine on the result before it returns: a fresh project reports zero violations. Until the first npm release, run the CLI from a checkout with `--local <path>`.

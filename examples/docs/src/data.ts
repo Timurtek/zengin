@@ -36,7 +36,7 @@ const CATALOG: Omit<Doc, "author" | "updated" | "views">[] = [
 Zengin creates a project with the components copied in, the engine wired, and Storybook ready.
 
 \`\`\`bash
-npx zenginui create acme --template saas
+npm create zengin@latest acme -- --template saas
 cd acme && npm install && npm run dev
 \`\`\`
 
@@ -224,8 +224,8 @@ The manifest says \`Table\` replaces \`<table>\`. A raw table styled with two pr
     body: `# Theming
 
 \`\`\`bash
-npx zenginui theme brutal                     # swap the brand file and the fonts link
-npx zenginui brand --name Acme --logo logo.svg   # a palette from the logo's color, pushed to AA
+npx zengin theme brutal                     # swap the brand file and the fonts link
+npx zengin brand --name Acme --logo logo.svg   # a palette from the logo's color, pushed to AA
 \`\`\`
 
 ## The brand file
@@ -257,7 +257,7 @@ npx zenginui brand --name Acme --logo logo.svg   # a palette from the logo's col
 Components and app code draw by name: \`<Icon.Search />\`, \`<Icon.Close />\`. The drawings are Zengin UI's own until you pick a set:
 
 \`\`\`bash
-npx zenginui icons tabler     # lucide, tabler, phosphor, heroicons, feather, radix, material, bootstrap
+npx zengin icons tabler     # lucide, tabler, phosphor, heroicons, feather, radix, material, bootstrap
 \`\`\`
 
 \`src/lib/icons.tsx\` is rewritten so the same names come from \`react-icons/tb\`. A direct import from an icon package anywhere else is a substitution violation.
@@ -267,8 +267,8 @@ npx zenginui icons tabler     # lucide, tabler, phosphor, heroicons, feather, ra
 A pairing is three roles, headlines, text and code:
 
 \`\`\`bash
-npx zenginui fonts fraunces
-npx zenginui fonts geist --self-host   # the files into public/fonts, no Google at runtime
+npx zengin fonts fraunces
+npx zengin fonts geist --self-host   # the files into public/fonts, no Google at runtime
 \`\`\`
 
 Only the three font tokens change. The palette stays.`,
@@ -281,8 +281,8 @@ Only the three font tokens change. The palette stays.`,
     body: `# Mock data
 
 \`\`\`bash
-npx zenginui mock customers invoices          # presets, one module each
-npx zenginui mock --schema mock.json          # your own entities
+npx zengin mock customers invoices          # presets, one module each
+npx zengin mock --schema mock.json          # your own entities
 \`\`\`
 
 \`\`\`ts
