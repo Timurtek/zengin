@@ -1,0 +1,17 @@
+# The documentation is enforced by the engine it documents. The brand lives in src/theme; nothing else may
+# hold a literal, including the pages that teach you why.
+system:
+  package: "@zenginui/ui"
+
+scope:
+  include: ["src/**/*.{ts,tsx,css}"]
+  foundations: ["src/theme/**"]
+
+rules:
+  color-literal: { severity: error, allow: semantic }
+  spacing-literal: error
+  token-reference: error
+  unknown-prop: error
+  unknown-prop-value: error
+  classname-policy: error
+  component-substitution: error

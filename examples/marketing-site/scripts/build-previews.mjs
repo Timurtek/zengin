@@ -58,6 +58,23 @@ function markAsDemo(t) {
   writeFileSync(file, html);
 }
 
+// Zengin's own documentation, served at /docs/. It is an ordinary project on the docs template, built the
+// same way a template preview is, which is the point: the documentation for the product is a consumer of it.
+{
+  const docsRoot = join(repo, "examples", "zengin-docs");
+  const out = join(site, "public", "docs");
+  rmSync(out, { recursive: true, force: true });
+  await build({
+    root: docsRoot,
+    configFile: join(docsRoot, "vite.config.ts"),
+    base: "/docs/",
+    publicDir: false,
+    logLevel: "error",
+    build: { outDir: out, emptyOutDir: true },
+  });
+  console.log("built public/docs/ from examples/zengin-docs");
+}
+
 // Storybook for Zengin UI, served at /storybook/. Always for a site build (--storybook); for dev only when
 // it is not there yet, since it takes a moment and rarely changes underneath a page edit.
 const storybookOut = join(site, "public", "storybook");

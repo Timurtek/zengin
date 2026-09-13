@@ -1,0 +1,113 @@
+/*
+ * Zengin: ivory and ink, vermilion as the single accent, olive for what is on-system, Inter Tight for
+ * headlines and Inter for text. Token overrides only; every component wears it without a change.
+ * The vermilion is a shade under the brand swatch (#D7472F) so white text on it reaches AA.
+ */
+
+:root,
+[data-theme="light"] {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter Tight", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-surface: #F4F1E9;
+  --color-surface-raised: #FAF8F3;
+  --color-surface-sunken: #EBE7DC;
+  --color-surface-overlay: #20231FCC;
+  --color-text: #20231F;
+  --color-text-muted: #5B5E57;
+  --color-text-subtle: #8A8C84;
+  --color-border: #DCD8CC;
+  --color-border-strong: #C4BFB0;
+
+  --color-primary: #D3442C;
+  --color-primary-hover: #BE3A24;
+  --color-primary-active: #A3301C;
+  --color-primary-soft: #FEDCD4;
+  --color-primary-soft-hover: #FBC9BD;
+  --color-primary-soft-foreground: #8D1D0A;
+  --color-on-primary: #FFFFFF;
+  --color-focus: #D3442C;
+
+  --color-neutral: #20231F;
+  --color-neutral-hover: #33362F;
+  --color-neutral-active: #141613;
+  --color-neutral-soft: #E6E2D6;
+  --color-neutral-soft-hover: #D9D4C6;
+  --color-neutral-soft-foreground: #20231F;
+  --color-on-neutral: #F4F1E9;
+
+  --color-success: #676F55;
+  --color-success-soft: #DAE2CC;
+  --color-success-soft-foreground: #3F452F;
+  --color-on-success: #FFFFFF;
+}
+
+[data-theme="dark"] {
+  --color-surface: #20231F;
+  --color-surface-raised: #2B2E29;
+  --color-surface-sunken: #171916;
+  --color-surface-overlay: #171916CC;
+  --color-text: #F4F1E9;
+  --color-text-muted: #B5B3AA;
+  --color-text-subtle: #7F7E76;
+  --color-border: #363933;
+  --color-border-strong: #4A4D45;
+
+  --color-primary: #FC694F;
+  --color-primary-hover: #FF8571;
+  --color-primary-active: #FFA08F;
+  --color-primary-soft: #4A1D14;
+  --color-primary-soft-hover: #5C2419;
+  --color-primary-soft-foreground: #FFB5A6;
+  --color-on-primary: #20231F;
+  --color-focus: #FC694F;
+
+  --color-neutral: #F4F1E9;
+  --color-neutral-hover: #E4E0D6;
+  --color-neutral-active: #FFFFFF;
+  --color-neutral-soft: #363933;
+  --color-neutral-soft-hover: #4A4D45;
+  --color-neutral-soft-foreground: #F4F1E9;
+  --color-on-neutral: #20231F;
+
+  --color-success: #A0A98D;
+  --color-success-soft: #2E3328;
+  --color-success-soft-foreground: #C9D0B8;
+  --color-on-success: #20231F;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-surface: #20231F;
+    --color-surface-raised: #2B2E29;
+    --color-surface-sunken: #171916;
+    --color-surface-overlay: #171916CC;
+    --color-text: #F4F1E9;
+    --color-text-muted: #B5B3AA;
+    --color-text-subtle: #7F7E76;
+    --color-border: #363933;
+    --color-border-strong: #4A4D45;
+
+    --color-primary: #FC694F;
+    --color-primary-hover: #FF8571;
+    --color-primary-active: #FFA08F;
+    --color-primary-soft: #4A1D14;
+    --color-primary-soft-hover: #5C2419;
+    --color-primary-soft-foreground: #FFB5A6;
+    --color-on-primary: #20231F;
+    --color-focus: #FC694F;
+
+    --color-neutral: #F4F1E9;
+    --color-neutral-hover: #E4E0D6;
+    --color-neutral-active: #FFFFFF;
+    --color-neutral-soft: #363933;
+    --color-neutral-soft-hover: #4A4D45;
+    --color-neutral-soft-foreground: #F4F1E9;
+    --color-on-neutral: #20231F;
+
+    --color-success: #A0A98D;
+    --color-success-soft: #2E3328;
+    --color-success-soft-foreground: #C9D0B8;
+    --color-on-success: #20231F;
+  }
+}

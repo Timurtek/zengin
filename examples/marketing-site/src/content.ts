@@ -11,6 +11,7 @@ export const NAV: { href: string; label: string; external?: boolean }[] = [
   { href: "#surfaces", label: "Surfaces" },
   { href: "#rules", label: "Rules" },
   { href: "#growth", label: "Growth" },
+  { href: "/docs/", label: "Docs", external: true },
   { href: "#system", label: "Reference system" },
   { href: "#proof", label: "Field tests" },
 ];

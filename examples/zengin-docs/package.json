@@ -1,0 +1,28 @@
+{
+  "name": "zengin-docs",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Zengin's own documentation, built on the docs template and checked by its own engine. Served at /docs from the marketing site.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5181",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check": "node ../../packages/cli/dist/index.js check",
+    "test": "node ../../packages/cli/dist/index.js check"
+  },
+  "dependencies": {
+    "@zenginui/ui": "workspace:*",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@zenginui/cli": "workspace:*",
+    "react-icons": "^5.7.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.3.0"
+  }
+}

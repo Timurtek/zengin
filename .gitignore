@@ -9,6 +9,8 @@ storybook-static/
 examples/marketing-site/public/r/
 # Built by examples/marketing-site/scripts/build-previews.mjs
 examples/marketing-site/public/templates/
+# Built by examples/marketing-site/scripts/build-previews.mjs from examples/zengin-docs
+examples/marketing-site/public/docs/
 # Rendered by examples/saas/demo/look.mjs
 examples/saas/demo/*.png
 # Rendered by examples/chat/demo/look.mjs
