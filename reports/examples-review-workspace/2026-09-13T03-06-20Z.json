@@ -1,0 +1,65 @@
+{
+  "schema": "zengin-report/1",
+  "generatedAt": "2026-09-13T03:06:20.746Z",
+  "repo": {
+    "name": "examples/review-workspace",
+    "ref": "main",
+    "commit": "05568b7b471b10871260ea85461d4ccbfaf28844"
+  },
+  "system": {
+    "package": "@zengin/ui",
+    "version": "0.0.1"
+  },
+  "filesChecked": 6,
+  "summary": {
+    "total": 0,
+    "bySeverity": {
+      "error": 0,
+      "warn": 0,
+      "info": 0
+    },
+    "byRule": {},
+    "byFile": {}
+  },
+  "violations": [],
+  "inventory": {
+    "files": 6,
+    "consumerFiles": 6,
+    "ownedFiles": 0,
+    "suppressions": 0,
+    "suppressionsWithoutReason": 0,
+    "components": {
+      "Tooltip": {
+        "uses": 2,
+        "files": 1
+      },
+      "Badge": {
+        "uses": 2,
+        "files": 2
+      },
+      "TextField": {
+        "uses": 1,
+        "files": 1
+      },
+      "Checkbox": {
+        "uses": 1,
+        "files": 1
+      },
+      "Button": {
+        "uses": 5,
+        "files": 2
+      },
+      "Dialog": {
+        "uses": 6,
+        "files": 1
+      },
+      "Card": {
+        "uses": 4,
+        "files": 1
+      }
+    },
+    "uncontracted": []
+  },
+  "suppressions": [],
+  "owned": []
+}
