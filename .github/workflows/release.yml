@@ -40,4 +40,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # Provenance needs a public source repository; the repo is private. Set NPM_CONFIG_PROVENANCE: "true" here once it is public.
+          # Provenance needs a public source repository, which this is since 2026-09-13: npm records
+          # the workflow and commit each package was built from, and shows it on the package page.
+          NPM_CONFIG_PROVENANCE: "true"
