@@ -1,0 +1,182 @@
+/*
+ * Brutal: neo-brutalism as token overrides. Every rule is 2px and black, every shadow is a hard offset in
+ * the border color, every corner is square, the primary is yellow with black text on it, focus is hot pink,
+ * headlines are Archivo Black. Nothing in a component changes: the components draw their borders with
+ * --border-width and --color-outline, and this file sets both.
+ *
+ * Same selectors as the generated tokens.css, loaded after it: an explicit data-theme wins, and without
+ * one the system preference decides. Dark keeps the same accents on near-black, with ivory rules and
+ * ivory offset shadows.
+ */
+
+:root,
+[data-theme="light"] {
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Archivo Black", "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --border-width: 2px;
+  --color-outline: #000000;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+
+  --shadow-sm: 2px 2px 0 0 #000000;
+  --shadow-md: 4px 4px 0 0 #000000;
+  --shadow-lg: 8px 8px 0 0 #000000;
+
+  --color-surface: #FFFCF2;
+  --color-surface-raised: #FFFFFF;
+  --color-surface-sunken: #F2EDDA;
+  --color-surface-overlay: #000000D9;
+  --color-text: #000000;
+  --color-text-muted: #2E2E2E;
+  --color-text-subtle: #5C5C5C;
+  --color-border: #000000;
+  --color-border-strong: #000000;
+
+  --color-primary: #FFD400;
+  --color-primary-hover: #FFC800;
+  --color-primary-active: #F0B800;
+  --color-primary-soft: #FFF1A8;
+  --color-primary-soft-hover: #FFE87A;
+  --color-primary-soft-foreground: #3D3000;
+  --color-on-primary: #000000;
+  --color-focus: #FF4FA3;
+
+  --color-danger: #FF3B3B;
+  --color-danger-hover: #E62E2E;
+  --color-danger-active: #C92525;
+  --color-danger-soft: #FFD6D6;
+  --color-danger-soft-hover: #FFBDBD;
+  --color-danger-soft-foreground: #7A0000;
+  --color-on-danger: #000000;
+
+  --color-success: #00C853;
+  --color-success-soft: #C8F7DC;
+  --color-success-soft-foreground: #004D22;
+  --color-on-success: #000000;
+
+  --color-warning: #FF8A00;
+  --color-warning-soft: #FFE1B8;
+  --color-warning-soft-foreground: #5A2E00;
+  --color-on-warning: #000000;
+
+  --color-neutral: #000000;
+  --color-neutral-hover: #262626;
+  --color-neutral-active: #000000;
+  --color-neutral-soft: #EDE8D5;
+  --color-neutral-soft-hover: #E2DCC3;
+  --color-neutral-soft-foreground: #000000;
+  --color-on-neutral: #FFFFFF;
+}
+
+[data-theme="dark"] {
+  --color-outline: #FFFCF2;
+
+  --shadow-sm: 2px 2px 0 0 #FFFCF2;
+  --shadow-md: 4px 4px 0 0 #FFFCF2;
+  --shadow-lg: 8px 8px 0 0 #FFFCF2;
+
+  --color-surface: #141414;
+  --color-surface-raised: #1E1E1E;
+  --color-surface-sunken: #0A0A0A;
+  --color-surface-overlay: #000000D9;
+  --color-text: #FFFCF2;
+  --color-text-muted: #D6D3C8;
+  --color-text-subtle: #A3A097;
+  --color-border: #FFFCF2;
+  --color-border-strong: #FFFCF2;
+
+  --color-primary: #FFD400;
+  --color-primary-hover: #FFE14D;
+  --color-primary-active: #FFEB80;
+  --color-primary-soft: #4A3F00;
+  --color-primary-soft-hover: #5C4E00;
+  --color-primary-soft-foreground: #FFE87A;
+  --color-on-primary: #000000;
+  --color-focus: #FF4FA3;
+
+  --color-danger: #FF5C5C;
+  --color-danger-hover: #FF7A7A;
+  --color-danger-active: #FF9999;
+  --color-danger-soft: #4A0F0F;
+  --color-danger-soft-hover: #5C1414;
+  --color-danger-soft-foreground: #FFBDBD;
+  --color-on-danger: #000000;
+
+  --color-success: #00E676;
+  --color-success-soft: #063D22;
+  --color-success-soft-foreground: #A6F5CB;
+  --color-on-success: #000000;
+
+  --color-warning: #FFA33A;
+  --color-warning-soft: #4A2A00;
+  --color-warning-soft-foreground: #FFD9A8;
+  --color-on-warning: #000000;
+
+  --color-neutral: #FFFCF2;
+  --color-neutral-hover: #E8E5DA;
+  --color-neutral-active: #FFFFFF;
+  --color-neutral-soft: #2A2A2A;
+  --color-neutral-soft-hover: #383838;
+  --color-neutral-soft-foreground: #FFFCF2;
+  --color-on-neutral: #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-outline: #FFFCF2;
+
+    --shadow-sm: 2px 2px 0 0 #FFFCF2;
+    --shadow-md: 4px 4px 0 0 #FFFCF2;
+    --shadow-lg: 8px 8px 0 0 #FFFCF2;
+
+    --color-surface: #141414;
+    --color-surface-raised: #1E1E1E;
+    --color-surface-sunken: #0A0A0A;
+    --color-surface-overlay: #000000D9;
+    --color-text: #FFFCF2;
+    --color-text-muted: #D6D3C8;
+    --color-text-subtle: #A3A097;
+    --color-border: #FFFCF2;
+    --color-border-strong: #FFFCF2;
+
+    --color-primary: #FFD400;
+    --color-primary-hover: #FFE14D;
+    --color-primary-active: #FFEB80;
+    --color-primary-soft: #4A3F00;
+    --color-primary-soft-hover: #5C4E00;
+    --color-primary-soft-foreground: #FFE87A;
+    --color-on-primary: #000000;
+    --color-focus: #FF4FA3;
+
+    --color-danger: #FF5C5C;
+    --color-danger-hover: #FF7A7A;
+    --color-danger-active: #FF9999;
+    --color-danger-soft: #4A0F0F;
+    --color-danger-soft-hover: #5C1414;
+    --color-danger-soft-foreground: #FFBDBD;
+    --color-on-danger: #000000;
+
+    --color-success: #00E676;
+    --color-success-soft: #063D22;
+    --color-success-soft-foreground: #A6F5CB;
+    --color-on-success: #000000;
+
+    --color-warning: #FFA33A;
+    --color-warning-soft: #4A2A00;
+    --color-warning-soft-foreground: #FFD9A8;
+    --color-on-warning: #000000;
+
+    --color-neutral: #FFFCF2;
+    --color-neutral-hover: #E8E5DA;
+    --color-neutral-active: #FFFFFF;
+    --color-neutral-soft: #2A2A2A;
+    --color-neutral-soft-hover: #383838;
+    --color-neutral-soft-foreground: #FFFCF2;
+    --color-on-neutral: #000000;
+  }
+}

@@ -63,7 +63,7 @@ Want me to apply all eight?`,
     reasoning: "Two commands cover this: theme swaps a registry theme in, brand generates one from a color. The user said add, so the theme command is the answer, with brand as the follow-up.",
     text: `Two ways, depending on whether you want one of the registry's themes or your own.
 
-1. **A registry theme**: \`zengin theme\` lists them (default, meadow, plex, spec-sheet), and \`zengin theme plex\` swaps your brand file and the fonts link. Nothing else in the project changes.
+1. **A registry theme**: \`zengin theme\` lists them (brutal, default, meadow, plex, spec-sheet, zengin), and \`zengin theme plex\` swaps your brand file and the fonts link. Nothing else in the project changes.
 2. **Your own**: \`zengin brand --name Acme --logo logo.svg\` derives a whole palette from the logo's color in OKLCH, pushes every pairing to WCAG AA in both schemes, and writes the brand file, a favicon and a wordmark component.
 
 Either way the components have no idea; a brand is one file of token overrides.`,

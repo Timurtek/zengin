@@ -24,7 +24,7 @@
   width: 100%;
   min-width: 0;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border-strong);
+  border: var(--border-width) solid var(--color-border-strong);
   border-radius: var(--radius-md);
   color: var(--color-text);
   font-family: inherit;
@@ -123,7 +123,7 @@
   max-height: var(--radix-select-content-available-height);
   overflow: hidden;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   color: var(--color-text);

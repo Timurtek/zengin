@@ -18,7 +18,7 @@ export const RULE_DOCS: Record<RuleId, { family: RuleFamily; description: string
   },
   "unknown-prop": {
     family: "contract",
-    description: "A prop passed to a system component that its manifest does not declare. Standard DOM, aria-, data- and on* props pass through.",
+    description: "A prop passed to a system component that its manifest does not declare. Standard DOM, aria-, data- and on* props pass through. A component whose manifest lists passthrough types is not judged.",
   },
   "unknown-prop-value": {
     family: "contract",

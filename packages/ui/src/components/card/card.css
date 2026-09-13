@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   background-color: var(--color-surface);
-  border: 1px solid transparent;
+  border: var(--border-width) solid var(--color-outline);
   border-radius: var(--radius-lg);
   color: var(--color-text);
   transition:
@@ -49,7 +49,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-3);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: var(--border-width) solid var(--color-border);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -62,7 +62,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--spacing-2);
-  border-top: 1px solid var(--color-border);
+  border-top: var(--border-width) solid var(--color-border);
   background-color: var(--color-surface-raised);
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;

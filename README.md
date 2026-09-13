@@ -15,6 +15,7 @@ Everyone else serves context. Zengin serves constraints.
 | [`@zengin/hook`](packages/hook) | Phase 1 | Claude Code PostToolUse hook. Checks every file write; blocks with the violations as the reason. |
 | [`@zengin/cli`](packages/cli) | Phase 1 | `zengin check` for pre-commit and CI, with `--changed`, `--staged`, and GitHub annotations. `explain`, `init`. |
 | [`@zengin/adapter-shadcn`](packages/adapter-shadcn) | Phase 2 | `zengin init --from shadcn`: derives tokens, the component manifest and a config from a shadcn/ui project. Reproduces the taxonomy field test exactly. |
+| [`@zengin/adapter-css`](packages/adapter-css) | Phase 2 | `zengin init --from package <name>`: derives them from any installed design-system package, tokens from its CSS variables with the names kept, manifest from its `.d.ts`. Verified on umami. |
 | [`@zengin/rollup`](packages/rollup) | Phase 2 | `zengin report` in each consuming repo, `zengin rollup` across them: drift, adoption, suppressions, owned forks, pinned versions, deltas. Markdown, JSON, or a self-contained HTML page. |
 | [`@zengin/registry`](packages/registry) | Phase 3 | The registry and the generator: `zengin create` scaffolds a project that owns its components shadcn-style, `zengin add` brings in more, `zengin tokens` compiles the token JSON. Items are built from `packages/ui` and `examples/`; the marketing site serves the public registry. |
 | [`@zengin/mock`](packages/mock) | Phase 3 | `zengin mock`: typed, seeded mock data generated as plain TypeScript into the project. Presets for the entities apps show, a small schema for the rest, no runtime dependency. |
@@ -27,7 +28,7 @@ Everyone else serves context. Zengin serves constraints.
 npx zengin create acme --template saas        # or: chat, blank, marketing, review
 cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
-npx zengin theme plex                          # or: default, meadow, spec-sheet
+npx zengin theme plex                          # or: default, meadow, spec-sheet, brutal
 npx zengin brand --name Acme --logo logo.svg  # your own palette, favicon and wordmark from one color
 ```
 
@@ -43,7 +44,7 @@ The vision asks for one marketing page and one application workflow from the sam
 
 ## Field tests
 
-`docs/field-tests/` records runs against real external codebases, every violation classified by hand, and the engine changes each run produced. First: [shadcn/taxonomy](docs/field-tests/2026-09-12-shadcn-taxonomy.md), 41 violations of which 10 were false positives, then 35 with none after the fixes; the shadcn adapter reproduces that run from one command. Second: [vercel/ai-chatbot](docs/field-tests/2026-09-12-vercel-ai-chatbot.md) on Tailwind 4, 128 then 109 with none, no hand-authored definitions, and a migration bug found that nobody had noticed.
+`docs/field-tests/` records runs against real external codebases, every violation classified by hand, and the engine changes each run produced. First: [shadcn/taxonomy](docs/field-tests/2026-09-12-shadcn-taxonomy.md), 41 violations of which 10 were false positives, then 35 with none after the fixes; the shadcn adapter reproduces that run from one command. Second: [vercel/ai-chatbot](docs/field-tests/2026-09-12-vercel-ai-chatbot.md) on Tailwind 4, 128 then 109 with none, no hand-authored definitions, and a migration bug found that nobody had noticed. Third: [umami](docs/field-tests/2026-09-12-umami.md), the first non-shadcn system (`@umami/react-zen`, read from the package by `zengin init --from package`), 255 then 147 with none, an invalid DOM attribute and a `var()` whose fallback is what renders, both real.
 
 ## Development
 

@@ -1,7 +1,7 @@
 .z-toolcall {
   display: grid;
   overflow: hidden;
-  border: 1px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-text);
 }
@@ -60,7 +60,7 @@
   display: grid;
   gap: var(--spacing-3);
   padding: var(--spacing-3);
-  border-top: 1px solid var(--color-border);
+  border-top: var(--border-width) solid var(--color-border);
 }
 
 .z-toolcall__section {

@@ -91,7 +91,7 @@ zengin tokens                                 # after editing zengin/tokens*.jso
 ## theme and brand
 
 ```bash
-zengin theme                                  # list: default, meadow, plex, spec-sheet
+zengin theme                                  # list: brutal, default, meadow, plex, spec-sheet, zengin
 zengin theme plex                             # swap the brand file and the fonts link; nothing else changes
 zengin create acme --theme spec-sheet         # or at creation
 
@@ -145,10 +145,11 @@ zengin explain classname-policy
 ```bash
 zengin init                     # a commented zengin.config.yaml template
 zengin init --from shadcn       # derive zengin/tokens.json, zengin/components.json and a config from a shadcn/ui project
+zengin init --from package @umami/react-zen   # the same from an installed design-system package: its CSS variables (names kept) and .d.ts
 zengin init --from shadcn --dir ../app --force
 ```
 
-The template refuses to overwrite an existing config. The shadcn path reads the theme CSS, the Tailwind config and `components/ui`, writes the definitions, and prints the defaults worth reviewing. See [`@zengin/adapter-shadcn`](../adapter-shadcn).
+The template refuses to overwrite an existing config. The shadcn path reads the theme CSS, the Tailwind config and `components/ui`, writes the definitions, and prints the defaults worth reviewing. See [`@zengin/adapter-shadcn`](../adapter-shadcn). The package path reads `node_modules/<name>`: its theme stylesheet, its precompiled utilities and its `.d.ts`; see [`@zengin/adapter-css`](../adapter-css).
 
 ## Not included, on purpose
 

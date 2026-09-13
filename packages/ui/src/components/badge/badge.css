@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-1);
-  border: 1px solid transparent;
+  border: var(--border-width) solid var(--color-outline);
   border-radius: var(--radius-full);
   font-weight: var(--font-weight-medium);
   line-height: var(--leading-tight);

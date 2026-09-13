@@ -86,6 +86,7 @@ export function findColorLiterals(value: string): LiteralMatch[] {
   while ((m = re.exec(value)) !== null) {
     const lit = m[0];
     if (lit.startsWith("#") || lit.includes("(")) {
+      if (isTransparent(lit)) continue; // #0000 and rgba(0 0 0 / 0) are `transparent`, a keyword, not a color choice
       out.push({ literal: lit, offset: m.index });
     } else if (NAMED_COLORS.has(lit.toLowerCase())) {
       // Skip identifiers that are part of a var() name or function keyword context.
@@ -95,6 +96,21 @@ export function findColorLiterals(value: string): LiteralMatch[] {
     }
   }
   return out;
+}
+
+/** A hex with a zero alpha channel, or an rgb()/hsl() whose alpha is 0: fully transparent, whatever the channels say. */
+export function isTransparent(lit: string): boolean {
+  const hex = /^#([0-9a-fA-F]{4}|[0-9a-fA-F]{8})$/.exec(lit);
+  if (hex) {
+    const alpha = hex[1]!.length === 4 ? hex[1]!.slice(3) : hex[1]!.slice(6);
+    return /^0+$/.test(alpha);
+  }
+  const fn = /^(?:rgba?|hsla?)\(([^)]*)\)$/.exec(lit);
+  if (fn) {
+    const parts = fn[1]!.split(/[\s,/]+/).filter(Boolean);
+    return parts.length === 4 && /^0(\.0+)?%?$/.test(parts[3]!);
+  }
+  return false;
 }
 
 /** Non-zero px/rem/em lengths inside a CSS value. `0`, percentages, and `auto` are not literals. */

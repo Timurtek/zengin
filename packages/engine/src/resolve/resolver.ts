@@ -5,8 +5,11 @@ export interface Declaration {
 
 export interface Resolution {
   decls: Declaration[];
-  /** `utility` when a class compiler (Tailwind) produced it, `stylesheet` when it came from the project's own CSS. */
-  source: "utility" | "stylesheet";
+  /**
+   * `utility` when a class compiler (Tailwind) produced it, `stylesheet` when it came from the project's own CSS,
+   * `external` when it came from a stylesheet named in classes.css (a system's precompiled utilities, outside scope).
+   */
+  source: "utility" | "stylesheet" | "external";
   /** File the class is defined in, for stylesheet resolutions. */
   origin?: string;
 }
@@ -39,7 +42,7 @@ const EMPTY_SET: ReadonlySet<string> = new Set();
 const EMPTY_MAP: ReadonlyMap<string, string> = new Map();
 
 /** Project stylesheets win over utilities: a consumer's `.btn` is theirs even if a utility of that name exists. */
-export function combineResolvers(stylesheets: StylesheetResolver, utility?: UtilityResolver): ClassResolver {
+export function combineResolvers(stylesheets: StylesheetResolver, utility?: UtilityResolver, external?: StylesheetResolver): ClassResolver {
   return {
     utilities: utility !== undefined,
     defaultVars: utility?.defaultVars ?? EMPTY_SET,
@@ -47,6 +50,8 @@ export function combineResolvers(stylesheets: StylesheetResolver, utility?: Util
     resolve(candidate) {
       const own = stylesheets.resolve(candidate);
       if (own) return { decls: own.decls, source: "stylesheet", origin: own.origin };
+      const ext = external?.resolve(candidate);
+      if (ext) return { decls: ext.decls, source: "external", origin: ext.origin };
       const compiled = utility?.resolve(candidate);
       if (compiled) return { decls: compiled, source: "utility" };
       return null;

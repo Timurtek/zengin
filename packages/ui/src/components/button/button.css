@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-2);
-  border: 1px solid transparent;
+  border: var(--border-width) solid var(--color-outline);
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-medium);
   line-height: var(--leading-tight);

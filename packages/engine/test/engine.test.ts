@@ -152,6 +152,61 @@ describe("tokens", () => {
   });
 });
 
+describe("tokens with their own variable names", () => {
+  it("honors $extensions.zengin.cssVar instead of deriving --group-key", () => {
+    const tokens = loadTokens({
+      color: {
+        $type: "color",
+        "surface-base": { $value: "#ffffff", $extensions: { zengin: { cssVar: "--surface-base" } } },
+        primary: { $value: "{color.surface-base}", $extensions: { zengin: { cssVar: "--primary" } } },
+        plain: { $value: "#000000" },
+      },
+    });
+    const idx = new TokenIndex(tokens);
+    expect(idx.byName.get("color.surface-base")?.cssVar).toBe("--surface-base");
+    expect(idx.byName.get("color.primary")?.cssVar).toBe("--primary");
+    expect(idx.byName.get("color.primary")?.value).toBe("#ffffff");
+    expect(idx.byName.get("color.plain")?.cssVar).toBe("--color-plain");
+    expect(idx.byVar.get("--surface-base")?.name).toBe("color.surface-base");
+  });
+});
+
+describe("external stylesheets (classes.css)", () => {
+  it("resolves as external and reports their literals at the use, like compiled utilities", async () => {
+    const { mkdtempSync, writeFileSync, mkdirSync, rmSync } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const dir = mkdtempSync(join(tmpdir(), "zengin-external-"));
+    try {
+      mkdirSync(join(dir, "zengin"), { recursive: true });
+      mkdirSync(join(dir, "src"), { recursive: true });
+      writeFileSync(join(dir, "zengin", "tokens.json"), JSON.stringify({ color: { $type: "color", surface: { $value: "#ffffff", $extensions: { zengin: { cssVar: "--surface" } } } } }));
+      writeFileSync(join(dir, "zengin", "components.json"), "[]");
+      writeFileSync(join(dir, "vendor.css"), ".bg-white{background-color:#fff}.w-full{width:100%}.bg-surface{background-color:var(--surface)}");
+      writeFileSync(join(dir, "src", "a.tsx"), 'export const A = () => <div className="bg-white w-full bg-surface" />;\n');
+      const resolved = resolveConfig({ system: { package: "x", version: "1.0.0", definitions: "./zengin" }, scope: { include: ["src/**"] }, classes: { tailwind: false, css: ["vendor.css"] } }, dir);
+      const engine = await createEngine(resolved);
+      const violations = engine.check(readProjectFiles(dir, resolved.scope.include, resolved.scope.exclude));
+      expect(violations.map((v) => [v.rule, v.found])).toEqual([["color-literal", "bg-white"]]);
+      expect(violations[0]!.fix.candidates ?? [violations[0]!.fix.token]).toContain("color.surface");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("color literals", () => {
+  it("does not count fully transparent values as color choices", async () => {
+    const { findColorLiterals } = await import("../src/resolve/css-props.js");
+    expect(findColorLiterals("#0000")).toEqual([]);
+    expect(findColorLiterals("#00000000")).toEqual([]);
+    expect(findColorLiterals("rgba(0, 0, 0, 0)")).toEqual([]);
+    expect(findColorLiterals("rgb(0 0 0 / 0)")).toEqual([]);
+    expect(findColorLiterals("#000")).toHaveLength(1);
+    expect(findColorLiterals("#0001")).toHaveLength(1);
+    expect(findColorLiterals("rgba(0, 0, 0, 0.7)")).toHaveLength(1);
+  });
+});
+
 describe("config", () => {
   it("compares semver triples", () => {
     expect(compareVersions("1.3.0", "1.2.0")).toBeGreaterThan(0);

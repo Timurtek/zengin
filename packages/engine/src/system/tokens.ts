@@ -26,15 +26,18 @@ interface RawToken {
   type: TokenType;
   raw: unknown;
   extendsDefault: boolean;
+  /** `$extensions.zengin.cssVar`: the variable the project actually uses, when it is not the derived name. */
+  cssVar?: string;
 }
 
 function collect(node: unknown, path: string[], inherited: TokenType | undefined, extendsDefault: boolean, out: RawToken[]): void {
   if (typeof node !== "object" || node === null) return;
   const obj = node as Record<string, unknown>;
   const type = (obj["$type"] as TokenType | undefined) ?? inherited;
-  const ext = (obj["$extensions"] as { zengin?: { extendsDefault?: boolean } } | undefined)?.zengin?.extendsDefault ?? extendsDefault;
+  const zengin = (obj["$extensions"] as { zengin?: { extendsDefault?: boolean; cssVar?: string } } | undefined)?.zengin;
+  const ext = zengin?.extendsDefault ?? extendsDefault;
   if ("$value" in obj) {
-    out.push({ path, type: type ?? "string", raw: obj["$value"], extendsDefault: ext });
+    out.push({ path, type: type ?? "string", raw: obj["$value"], extendsDefault: ext, cssVar: zengin?.cssVar });
     return;
   }
   for (const [k, v] of Object.entries(obj)) {
@@ -87,7 +90,7 @@ export function loadTokens(json: unknown): Token[] {
       path: r.path.join("."),
       type: r.type,
       value: normalizeValue(stringify(resolve(r.raw)), r.type),
-      cssVar: key ? `--${namespace}-${key}` : `--${namespace}`,
+      cssVar: r.cssVar ?? (key ? `--${namespace}-${key}` : `--${namespace}`),
       namespace,
       key,
       extendsDefault: r.extendsDefault,
@@ -135,6 +138,7 @@ export function normalizeColor(v: string): string | undefined {
 
 /** The CSS named colors that show up in real stylesheets. Others fall through to `confidence: none`. */
 const NAMED_HEX: Record<string, string> = {
+  transparent: "#00000000",
   white: "#ffffff",
   black: "#000000",
   red: "#ff0000",

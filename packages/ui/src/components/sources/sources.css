@@ -51,7 +51,7 @@
   align-items: baseline;
   gap: var(--spacing-2);
   padding: var(--spacing-2) var(--spacing-3);
-  border: 1px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-md);
   color: inherit;
   font-size: var(--text-xs);

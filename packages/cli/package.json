@@ -40,6 +40,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@zengin/adapter-css": "workspace:*",
     "@zengin/adapter-shadcn": "workspace:*",
     "@zengin/engine": "workspace:*",
     "@zengin/figma": "workspace:*",

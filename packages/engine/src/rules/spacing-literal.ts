@@ -22,11 +22,15 @@ function match(ctx: RuleContext, literal: string): Match | undefined {
   const neighbours = [m.below, m.above].filter((s): s is NonNullable<typeof s> => s !== undefined);
   if (neighbours.length === 0) return { px: m.px, confidence: "none" };
   const closest = neighbours.reduce((a, b) => (Math.abs(b.px - m.px!) < Math.abs(a.px - m.px!) ? b : a));
+  const note = neighbours.map((s) => `${s.token.name} = ${s.px}px`).join(", ");
+  // A neighbour is a fix only when it is near: within 4px, or within half the value. Suggesting a 12px
+  // token for 100px is not a fix, it is a different design; the scale steps go in the note instead.
+  if (Math.abs(closest.px - m.px) > Math.max(4, m.px / 2)) return { px: m.px, confidence: "none", note };
   return {
     px: m.px,
     token: closest.token,
     confidence: "nearest",
-    note: neighbours.map((s) => `${s.token.name} = ${s.px}px`).join(", "),
+    note,
   };
 }
 

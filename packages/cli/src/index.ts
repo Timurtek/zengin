@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity } from "@zengin/engine";
 import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check.js";
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
-import { init, initFromShadcn } from "./init.js";
+import { init, initFromPackage, initFromShadcn } from "./init.js";
 import { renderRollup, runReport, runRollup } from "./report.js";
 import { runAdd, runBrand, runCreate, runFigma, runMock, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
 import { writeFileSync } from "node:fs";
@@ -15,6 +15,7 @@ Usage:
   zengin explain [rule]               what each rule checks
   zengin init                         write a zengin.config.yaml in the current directory
   zengin init --from shadcn           derive tokens, manifest and config from a shadcn/ui project
+  zengin init --from package <name>   derive them from an installed package: its CSS variables and type declarations
   zengin report [--out file]          one repository's snapshot: violations plus inventory, as JSON, for the rollup
   zengin rollup <snapshots...>        drift and adoption across repositories, from report snapshots
   zengin create <dir>                 a new project on Zengin UI: components copied in, engine, MCP, hook, Storybook wired
@@ -31,6 +32,7 @@ Usage:
 
 Init options:
   --from shadcn         read the theme CSS, Tailwind config and components/ui; write zengin/ and zengin.config.yaml
+  --from package <name> read node_modules/<name>: tokens from its stylesheet (names kept), manifest from its .d.ts
   --dir <path>          project directory (default: cwd)
   --force               overwrite existing zengin/ definitions and config
 
@@ -204,7 +206,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       check.format = asFormat(rawFormat);
     }
   }
-  if (initOpts.from && initOpts.from !== "shadcn") throw new Error(`--from supports "shadcn" (got ${initOpts.from}).`);
+  if (initOpts.from && initOpts.from !== "shadcn" && initOpts.from !== "package") throw new Error(`--from supports "shadcn" and "package <name>" (got ${initOpts.from}).`);
   return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold };
 }
 
@@ -258,6 +260,12 @@ async function main(): Promise<void> {
       const dir = parsed.init.dir ? resolve(process.cwd(), parsed.init.dir) : process.cwd();
       if (parsed.init.from === "shadcn") {
         process.stdout.write(initFromShadcn(dir, parsed.init.force) + "\n");
+        return;
+      }
+      if (parsed.init.from === "package") {
+        const pkgName = parsed.positional[0];
+        if (!pkgName) throw new Error("zengin init --from package needs the package name, e.g. zengin init --from package @umami/react-zen");
+        process.stdout.write(initFromPackage(dir, pkgName, parsed.init.force) + "\n");
         return;
       }
       const path = init(dir);

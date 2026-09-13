@@ -30,10 +30,10 @@
 }
 
 /* Side owns the edge and the motion. */
-.z-sheet[data-side="right"] { top: 0; right: 0; bottom: 0; border-left: 1px solid var(--color-border); animation-name: z-sheet-from-right; }
-.z-sheet[data-side="left"] { top: 0; left: 0; bottom: 0; border-right: 1px solid var(--color-border); animation-name: z-sheet-from-left; }
-.z-sheet[data-side="top"] { top: 0; left: 0; right: 0; border-bottom: 1px solid var(--color-border); animation-name: z-sheet-from-top; }
-.z-sheet[data-side="bottom"] { left: 0; right: 0; bottom: 0; border-top: 1px solid var(--color-border); animation-name: z-sheet-from-bottom; }
+.z-sheet[data-side="right"] { top: 0; right: 0; bottom: 0; border-left: var(--border-width) solid var(--color-border); animation-name: z-sheet-from-right; }
+.z-sheet[data-side="left"] { top: 0; left: 0; bottom: 0; border-right: var(--border-width) solid var(--color-border); animation-name: z-sheet-from-left; }
+.z-sheet[data-side="top"] { top: 0; left: 0; right: 0; border-bottom: var(--border-width) solid var(--color-border); animation-name: z-sheet-from-top; }
+.z-sheet[data-side="bottom"] { left: 0; right: 0; bottom: 0; border-top: var(--border-width) solid var(--color-border); animation-name: z-sheet-from-bottom; }
 
 .z-sheet[data-state="closed"] {
   animation-duration: var(--duration-normal);

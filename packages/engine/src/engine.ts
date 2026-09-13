@@ -52,6 +52,10 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
     : undefined;
   const scope = new Scope(config);
   const rules = RULES.filter((r) => config.rules[r.id].enabled);
+  // Stylesheets named in classes.css are indexed too: a system that ships precompiled utilities
+  // (`.w-full { width: 100% }`) resolves class names the project's own CSS never defines. They resolve
+  // as `external`, so foundation rules judge the declarations at the use, as they do for compiled utilities.
+  const external = StylesheetIndex.from(config.classes.css.filter((p) => existsSync(p)).map((p) => ({ path: normalize(p), content: readFileSync(p, "utf8") })));
   let loaded = new StylesheetIndex();
 
   const checkWith = (file: FileInput, resolver: ClassResolver): Violation[] => {
@@ -99,11 +103,11 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
       loaded = StylesheetIndex.from(files.map((f) => ({ ...f, path: normalize(f.path) })));
     },
     checkFile(file) {
-      return checkWith(file, combineResolvers(loaded, utility));
+      return checkWith(file, combineResolvers(loaded, utility, external));
     },
     check(files) {
       const batch = StylesheetIndex.from(files.map((f) => ({ ...f, path: normalize(f.path) })));
-      const resolver = combineResolvers(loaded.merge(batch), utility);
+      const resolver = combineResolvers(loaded.merge(batch), utility, external);
       return [...files]
         .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))
         .flatMap((f) => checkWith(f, resolver));

@@ -15,7 +15,7 @@ export interface ClassUse {
   /** Declarations the class applies, or null when nothing resolves it. */
   decls: Declaration[] | null;
   /** Where the declarations came from. Undefined when unresolved. */
-  source?: "utility" | "stylesheet";
+  source?: "utility" | "stylesheet" | "external";
   /** Stylesheet the class is defined in, for stylesheet resolutions. */
   origin?: string;
   /** The JSX element the class is on, when attached to one. */
@@ -57,8 +57,9 @@ export function makeReporter(file: FileInput, config: ResolvedConfig): RuleConte
 }
 
 /** Utility-class uses only: the ones a class compiler produced and can therefore rewrite. */
+/** Class uses whose declarations live outside the project: compiled utilities and classes.css sheets. Their literals can only be reported at the use. */
 export function utilityUses(ctx: RuleContext): ClassUse[] {
-  return ctx.classUses.filter((u) => u.source === "utility");
+  return ctx.classUses.filter((u) => u.source === "utility" || u.source === "external");
 }
 
 /** Rewrites a utility's theme key: `bg-[#3B82F6]` + `primary` -> `bg-primary`, `hover:px-[13px]` + `3` -> `hover:px-3`. */

@@ -226,6 +226,12 @@ export interface ComponentManifest {
   states?: string[];
   /** Human notes shown when substituting a replaced export, keyed by `source#Name`. */
   migrations?: Record<string, string>;
+  /**
+   * Types whose props the component forwards without declaring them (`Popover.Positioner.Props`, `UseFormProps`).
+   * Named so the reason is on record: unknown-prop does not run on a component with passthrough types,
+   * because the manifest cannot say what the component does not accept. Enum values are still checked.
+   */
+  passthrough?: string[];
 }
 
 export interface SystemDefinitions {

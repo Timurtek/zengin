@@ -1,0 +1,33 @@
+{
+  "name": "@zengin/adapter-css",
+  "version": "0.0.1",
+  "description": "Derives Zengin definitions from a design system that ships CSS custom properties and TypeScript declarations: tokens from the variables, keeping their names, and a component manifest from the types.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": ["design-system", "css-variables", "adapter", "zengin"],
+  "repository": { "type": "git", "url": "git+https://github.com/Timurtek/zengin.git", "directory": "packages/adapter-css" },
+  "homepage": "https://github.com/Timurtek/zengin/tree/main/packages/adapter-css#readme",
+  "bugs": "https://github.com/Timurtek/zengin/issues",
+  "engines": { "node": ">=20" },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist"],
+  "sideEffects": false,
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@babel/parser": "^8.0.5",
+    "@zengin/engine": "workspace:*",
+    "postcss": "^8.5.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^5.9.2",
+    "vitest": "^5.0.0"
+  }
+}

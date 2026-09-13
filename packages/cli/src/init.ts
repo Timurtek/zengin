@@ -1,5 +1,6 @@
 import { existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { derivePackage, renderReport as renderPackageReport, writePackage } from "@zengin/adapter-css";
 import { deriveShadcn, renderReport, writeShadcn } from "@zengin/adapter-shadcn";
 
 export const CONFIG_TEMPLATE = `# Zengin policy for this project. The design system ships the definitions; this file says how strictly they apply.
@@ -46,4 +47,13 @@ export function initFromShadcn(dir: string, force: boolean): string {
   return `Wrote ${written.join(", ")}
 
 ${renderReport(derivation)}`;
+}
+
+/** Derives definitions and a config from an installed package's stylesheet and type declarations. Returns the report text. */
+export function initFromPackage(dir: string, pkgName: string, force: boolean): string {
+  const derivation = derivePackage(dir, pkgName);
+  const { written } = writePackage(dir, derivation, force);
+  return `Wrote ${written.join(", ")}
+
+${renderPackageReport(derivation)}`;
 }

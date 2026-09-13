@@ -15,7 +15,7 @@ export const NAV: { href: string; label: string; external?: boolean }[] = [
 export const STEPS = [
   {
     title: "Definitions your system already has",
-    body: "tokens.json in the W3C design-token format and components.json, the manifest of props, values, owned properties and what each component replaces. Write them by hand, or derive them from a shadcn project with zengin init --from shadcn.",
+    body: "tokens.json in the W3C design-token format and components.json, the manifest of props, values, owned properties and what each component replaces. Write them by hand, or derive them with zengin init: from a shadcn project, or from any installed design-system package, its CSS variables and its type declarations.",
   },
   {
     title: "A deterministic engine",
@@ -149,7 +149,8 @@ export const FAMILY_NOTE =
 export const PROOF = [
   { figure: "41", after: "35", title: "shadcn/taxonomy", body: "First run to final run after the engine fixes. Every violation read and classified by hand; none of the remaining ones is a false positive." },
   { figure: "128", after: "109", title: "vercel/ai-chatbot", body: "Tailwind 4, the unified radix-ui package, oklch. Definitions derived by the shadcn adapter, no hand-written config. It found a dead custom variant the project had shipped." },
-  { figure: "0", after: null, title: "hand-written definitions", body: "Both field tests ran from zengin init --from shadcn. 275 violations classified in total; every miss became a regression test in the engine." },
+  { figure: "255", after: "147", title: "umami-software/umami", body: "Not shadcn: Umami's own react-zen package, read by zengin init --from package. Tokens keep their variable names, the manifest comes from the .d.ts. It found an attribute that silently reaches the DOM and a var() whose fallback is what renders." },
+  { figure: "0", after: null, title: "hand-written definitions", body: "All three field tests ran from zengin init. 422 violations classified by hand in total; every miss became a regression test in the engine." },
 ];
 
 export const INSTALL = `# A new project: components copied in, engine, MCP, hook and Storybook wired
@@ -159,5 +160,5 @@ npm run add -- dialog tooltip
 npx zengin brand --name Acme --logo logo.svg   # palette, favicon, wordmark from one color
 
 # An existing project: derive the definitions, then check
-zengin init --from shadcn
+zengin init --from shadcn                       # or: --from package @your/design-system
 zengin check`;

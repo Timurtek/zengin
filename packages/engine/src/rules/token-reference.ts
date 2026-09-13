@@ -22,6 +22,7 @@ export const tokenReference: Rule = {
 
     for (const use of ctx.classUses) {
       if (use.source === "stylesheet") continue; // the project defines it; its literals are checked in the stylesheet
+      if (use.source === "external") continue; // a shipped utility references its own system's variables
       const prefix = tokenUtilityPrefix(use.base);
       if (!prefix) continue;
 

@@ -58,6 +58,7 @@ export const unknownProp: Rule = {
     const out: Violation[] = [];
     for (const [el, comp] of ctx.systemElements) {
       if (el.tag.includes(".")) continue; // sub-parts are not contracted yet
+      if (comp.passthrough?.length) continue; // forwards props of types the manifest does not enumerate
       const known = Object.keys(comp.props ?? {});
       // An uncontracted component (no declared props beyond asChild, nothing extended) cannot call a prop unknown.
       if (!comp.extends && known.filter((k) => k !== "asChild").length === 0) continue;
