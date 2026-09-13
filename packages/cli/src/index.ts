@@ -5,7 +5,7 @@ import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { init, initFromShadcn } from "./init.js";
 import { renderRollup, runReport, runRollup } from "./report.js";
-import { runAdd, runBrand, runCreate, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
+import { runAdd, runBrand, runCreate, runFigma, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
 import { writeFileSync } from "node:fs";
 
 const HELP = `zengin: design-system conformance, enforceable.
@@ -22,6 +22,10 @@ Usage:
   zengin theme [name]                 list the registry's themes, or swap this project's brand for one
   zengin brand --name <name>          a brand from a name, a logo or a color: tokens, favicon, wordmark, index.html
   zengin tokens                       zengin/tokens*.json to src/styles/generated/tokens.css
+  zengin figma export                 tokens to a Figma Variables payload (figma/variables.json)
+  zengin figma import <local.json>    variables exported from Figma back into the token files, with a report
+  zengin figma connect                Code Connect files from zengin/components.json
+  zengin figma plugin                 the plugin that imports and exports variables in any Figma file
   zengin registry build --out <dir>   build the registry from a Zengin repository checkout
 
 Init options:
@@ -47,6 +51,12 @@ Brand options:
   --font-sans <f>       Google Fonts family for text
   --font-mono <f>       Google Fonts family for code
   --radius <r>          sharp | soft | round (default: soft, the system's own radii)
+
+Figma options:
+  --collection <name>   the variable collection (default: Zengin)
+  --write               import: update zengin/tokens*.json (a report only, otherwise)
+  --map <json>          connect: Figma component URLs by component name
+  --out <path>          export: the payload file; connect and plugin: the directory
 
 Registry options:
   --root <path>         the Zengin repository (default: found above cwd)
@@ -76,7 +86,7 @@ Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 us
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "brand" | "help";
+  command: "check" | "explain" | "init" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "brand" | "figma" | "help";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
@@ -93,7 +103,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
   const initOpts: Parsed["init"] = { force: false };
   const reportOpts: Parsed["report"] = { includeViolations: false };
   const rollupOpts: Parsed["rollup"] = { format: "markdown" };
-  const scaffold: ScaffoldOptions = { storybook: true, force: false, list: false };
+  const scaffold: ScaffoldOptions = { storybook: true, force: false, list: false, write: false };
   let rawFormat: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
@@ -104,7 +114,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       return v;
     };
     if (!a.startsWith("-") && !command) {
-      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "brand" || a === "help") command = a;
+      if (a === "check" || a === "explain" || a === "init" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "brand" || a === "figma" || a === "help") command = a;
       else {
         command = "check";
         positional.push(a);
@@ -131,6 +141,11 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a === "--dir") initOpts.dir = scaffold.dir = value();
     else if (a.startsWith("--dir=")) initOpts.dir = scaffold.dir = a.slice(6);
     else if (a === "--force") initOpts.force = scaffold.force = true;
+    else if (a === "--write") scaffold.write = true;
+    else if (a === "--map") scaffold.map = value();
+    else if (a.startsWith("--map=")) scaffold.map = a.slice(6);
+    else if (a === "--collection") scaffold.collection = value();
+    else if (a.startsWith("--collection=")) scaffold.collection = a.slice(13);
     else if (a === "--theme") scaffold.theme = value();
     else if (a.startsWith("--theme=")) scaffold.theme = a.slice(8);
     else if (a === "--list") scaffold.list = true;
@@ -241,6 +256,9 @@ async function main(): Promise<void> {
       return;
     case "add":
       process.stdout.write((await runAdd(parsed.positional, parsed.scaffold, process.cwd())) + "\n");
+      return;
+    case "figma":
+      process.stdout.write(runFigma(parsed.positional[0], parsed.positional.slice(1), parsed.scaffold, process.cwd()) + "\n");
       return;
     case "theme":
       process.stdout.write((await runTheme(parsed.positional[0], parsed.scaffold, process.cwd())) + "\n");

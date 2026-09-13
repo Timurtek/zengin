@@ -1,5 +1,7 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join, relative, resolve } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join, relative, resolve } from "node:path";
+import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaVariables, writePlugin } from "@zengin/figma";
+import type { ComponentManifest } from "@zengin/engine";
 import { applyTheme, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, type BrandRadius } from "@zengin/registry";
 
 export interface ScaffoldOptions {
@@ -20,6 +22,9 @@ export interface ScaffoldOptions {
   fontSans?: string;
   fontMono?: string;
   radius?: BrandRadius;
+  write: boolean;
+  map?: string;
+  collection?: string;
 }
 
 /** `zengin theme [name]`: list the registry's themes, or apply one to the current project. */
@@ -141,5 +146,71 @@ function findRepoRoot(from: string): string {
     const parent = resolve(dir, "..");
     if (parent === dir) throw new Error("Not inside a Zengin repository checkout. Pass --root <path>.");
     dir = parent;
+  }
+}
+
+/** `zengin figma export|import|connect|plugin`: tokens to variables and back, Code Connect files, the plugin. */
+export function runFigma(sub: string | undefined, args: string[], opts: ScaffoldOptions, cwd: string): string {
+  const projectDir = opts.dir ? resolve(cwd, opts.dir) : cwd;
+  const defs = join(projectDir, LAYOUT.definitionsDir);
+  const readJson = (p: string): unknown => JSON.parse(readFileSync(p, "utf8"));
+  const writeText = (rel: string, text: string): string => {
+    const abs = resolve(projectDir, rel);
+    mkdirSync(dirname(abs), { recursive: true });
+    writeFileSync(abs, text);
+    return rel;
+  };
+  const tokensPath = join(defs, "tokens.json");
+  const darkPath = join(defs, "tokens.dark.json");
+
+  switch (sub) {
+    case "export": {
+      if (!existsSync(tokensPath)) throw new Error(`No ${LAYOUT.definitionsDir}/tokens.json in ${projectDir}.`);
+      const payload = toFigmaVariables(readJson(tokensPath), existsSync(darkPath) ? readJson(darkPath) : undefined, { collection: opts.collection });
+      const out = opts.out ?? "figma/variables.json";
+      writeText(out, JSON.stringify(payload, null, 2) + "\n");
+      return `Wrote ${out}: ${payload.variables.length} variables in "${payload.variableCollections[0]!.name}" with ${payload.variableModes.map((m) => m.name).join(" and ")} modes.\nImport it with the plugin (zengin figma plugin), or POST it to /v1/files/:key/variables on an Enterprise plan.`;
+    }
+    case "import": {
+      const file = args[0];
+      if (!file) throw new Error("zengin figma import needs the exported variables JSON: zengin figma import figma/local.json [--write]");
+      if (!existsSync(tokensPath)) throw new Error(`No ${LAYOUT.definitionsDir}/tokens.json in ${projectDir}.`);
+      const local = readJson(resolve(cwd, file)) as Parameters<typeof fromFigmaVariables>[0];
+      if (!local || typeof local !== "object" || !("meta" in local)) throw new Error(`${file} is not a Figma variables export (expected { meta: { variableCollections, variables } }).`);
+      const light = readJson(tokensPath);
+      const dark = existsSync(darkPath) ? readJson(darkPath) : undefined;
+      const report = fromFigmaVariables(local, light, dark, { collection: opts.collection });
+      const lines = [renderImportReport(report)];
+      if (opts.write) {
+        writeText(`${LAYOUT.definitionsDir}/tokens.json`, JSON.stringify(report.light, null, 2) + "\n");
+        if (dark !== undefined || report.changed.some((c) => c.mode === "dark") || report.added.some((c) => c.mode === "dark")) {
+          writeText(`${LAYOUT.definitionsDir}/tokens.dark.json`, JSON.stringify(report.dark, null, 2) + "\n");
+        }
+        lines.push("", `Wrote ${LAYOUT.definitionsDir}/tokens.json${dark !== undefined ? ` and tokens.dark.json` : ""}. Run zengin tokens to rebuild the stylesheet.`);
+      } else if (report.changed.length || report.added.length) {
+        lines.push("", "Nothing written. Pass --write to update the token files.");
+      }
+      return lines.join("\n");
+    }
+    case "connect": {
+      const manifestPath = join(defs, "components.json");
+      if (!existsSync(manifestPath)) throw new Error(`No ${LAYOUT.definitionsDir}/components.json in ${projectDir}.`);
+      const manifests = readJson(manifestPath) as ComponentManifest[];
+      const urls = opts.map ? (readJson(resolve(cwd, opts.map)) as Record<string, string>) : {};
+      const files = codeConnectFiles(manifests, { urls, dir: opts.out ?? "src/figma" });
+      const written = Object.entries(files).map(([rel, text]) => writeText(rel, text));
+      const todo = manifests.filter((m) => !urls[m.name]).map((m) => m.name);
+      const lines = [`Wrote ${written.length} files: figma.config.json and one *.figma.tsx per component in ${opts.out ?? "src/figma"}.`];
+      if (todo.length) lines.push(`${todo.length} without a Figma URL, marked TODO: ${todo.join(", ")}. Pass --map <json> with { "Button": "https://www.figma.com/design/...?node-id=..." }.`);
+      lines.push("Then: npx figma connect publish");
+      return lines.join("\n");
+    }
+    case "plugin": {
+      const dir = resolve(projectDir, opts.out ?? "figma/plugin");
+      const written = writePlugin(dir);
+      return `Wrote ${written.length} files to ${relative(cwd, dir) || "."}.\nIn Figma: Plugins, Development, Import plugin from manifest, choose manifest.json. Import pastes the payload from zengin figma export; Export produces what zengin figma import reads.`;
+    }
+    default:
+      throw new Error("zengin figma supports: export [--out file] [--collection name], import <local.json> [--write], connect [--map urls.json] [--out dir], plugin [--out dir]");
   }
 }
