@@ -7,7 +7,7 @@ pnpm build                                  # from the repository root, once
 pnpm --filter marketing-site dev            # http://localhost:5174
 pnpm --filter marketing-site check          # zengin check: 0 violations, 0 suppressions
 pnpm --filter marketing-site screenshot     # demo/light.png, demo/dark.png, demo/hero-fixed.png in a real Chromium
-pnpm --filter marketing-site previews       # build every template's app into public/templates/ (dev and build do it)
+pnpm --filter marketing-site previews       # build every template's app into public/templates/ and Storybook into public/storybook/
 node demo/sample/run.mjs                    # regenerate the hero panel's violations from the engine
 ```
 
@@ -23,7 +23,7 @@ node demo/sample/run.mjs                    # regenerate the hero panel's violat
 - **Templates.** Live previews, not screenshots. `scripts/build-previews.mjs` builds every template's source app (named by the registry's `source` field) into `public/templates/<name>/` with a matching base path, so the catalog embeds each one in a scaled iframe you can use, with an open-full-page link and the `create` command. The theme tabs pass `?theme=<name>` to every preview; a small harness in each example app (`src/preview-theme.ts`, stripped from templates by the registry builder) fetches that brand file from `/r` and applies it live. Inside a preview the catalog shows placeholders, so the marketing template does not embed itself forever.
 - **Surfaces.** The four surfaces in a `Tabs` component, each with a real config or output.
 - **Rules.** The seven rule kinds from `packages/engine/src/docs.ts`.
-- **Reference system.** Zengin UI components in this brand, and the same card under both themes side by side (`data-theme` attaches to any element).
+- **Reference system.** Zengin UI components in this brand, the same card under both themes side by side (`data-theme` attaches to any element), and a link to Storybook, which the site build compiles from `packages/ui` into `public/storybook/` so it deploys with the page at `/storybook/`.
 - **Field tests.** The numbers from `docs/field-tests`.
 
 ## What the page added to the system

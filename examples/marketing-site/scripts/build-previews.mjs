@@ -4,6 +4,7 @@
  * catalog can embed and link live previews served beside the page. Reads the template list and each
  * template's source directory from the registry just built into public/r, so the two cannot disagree.
  */
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -32,4 +33,14 @@ for (const t of templates) {
     build: { outDir: join(outRoot, t.name), emptyOutDir: true },
   });
   console.log(`built public/templates/${t.name}/ from ${t.source}`);
+}
+
+// Storybook for Zengin UI, served at /storybook/. Always for a site build (--storybook); for dev only when
+// it is not there yet, since it takes a moment and rarely changes underneath a page edit.
+const storybookOut = join(site, "public", "storybook");
+if (process.argv.includes("--storybook") || !existsSync(join(storybookOut, "index.html"))) {
+  const ui = join(repo, "packages", "ui");
+  // shell: true is what runs pnpm's .cmd shim on Windows, and it splits on spaces, so the path is quoted.
+  execFileSync("pnpm", ["exec", "storybook", "build", "--output-dir", `"${storybookOut}"`, "--quiet"], { cwd: ui, stdio: "inherit", shell: true });
+  console.log("built public/storybook/ from packages/ui");
 }

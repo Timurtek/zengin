@@ -13,3 +13,5 @@ examples/marketing-site/public/templates/
 examples/saas/demo/*.png
 # Rendered by examples/chat/demo/look.mjs
 examples/chat/demo/*.png
+# Built by examples/marketing-site/scripts/build-previews.mjs from packages/ui
+examples/marketing-site/public/storybook/

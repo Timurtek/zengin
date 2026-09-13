@@ -6,13 +6,13 @@
   "type": "module",
   "scripts": {
     "dev": "node ../../packages/cli/dist/index.js registry build --out public/r && node scripts/build-previews.mjs && vite --port 5174",
-    "build": "node ../../packages/cli/dist/index.js registry build --out public/r && node scripts/build-previews.mjs && vite build",
+    "build": "node ../../packages/cli/dist/index.js registry build --out public/r && node scripts/build-previews.mjs --storybook && vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check": "node ../../packages/cli/dist/index.js check",
     "test": "node ../../packages/cli/dist/index.js check",
     "screenshot": "node demo/screenshot.mjs",
     "registry": "node ../../packages/cli/dist/index.js registry build --out public/r",
-    "previews": "node scripts/build-previews.mjs"
+    "previews": "node scripts/build-previews.mjs --storybook"
   },
   "dependencies": {
     "@zengin/ui": "workspace:*",
