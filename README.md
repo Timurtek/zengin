@@ -89,4 +89,4 @@ Publishing needs an `NPM_TOKEN` repository secret with publish rights on the `@z
 
 ## Design documents
 
-The product vision and the decision record that shaped the engine live in the Timurtek ORG vault under `Ventures/ZenginUI/Product`. The engine's fixtures are the three violation examples from that record, and its first milestone is returning exactly the violations written there on every run.
+The engine was designed against three hand-written violation examples before any of it existed: an off-system version and a corrected one that render identically, with the rule that separates them written down. Those three are the engine's fixtures, in [`packages/engine/test/fixtures`](packages/engine/test/fixtures), and returning exactly those violations on every run was its first milestone. The field tests in [`docs/field-tests`](docs/field-tests) are the same exercise against codebases nobody here wrote.
