@@ -1,0 +1,75 @@
+{
+  "schema": "zengin-report/1",
+  "generatedAt": "2026-09-14T17:49:22.868Z",
+  "repo": {
+    "name": "examples/docs",
+    "ref": "main",
+    "commit": "253bfcecb56d502ef9a6ee90ca6144ea4b0bf8d9"
+  },
+  "system": {
+    "package": "@zenginui/ui",
+    "version": "0.2.0"
+  },
+  "filesChecked": 7,
+  "summary": {
+    "total": 0,
+    "bySeverity": {
+      "error": 0,
+      "warn": 0,
+      "info": 0
+    },
+    "byRule": {},
+    "byFile": {}
+  },
+  "violations": [],
+  "inventory": {
+    "files": 7,
+    "consumerFiles": 7,
+    "ownedFiles": 0,
+    "suppressions": 0,
+    "suppressionsWithoutReason": 0,
+    "components": {
+      "Button": {
+        "uses": 6,
+        "files": 1
+      },
+      "Badge": {
+        "uses": 2,
+        "files": 1
+      },
+      "Tooltip": {
+        "uses": 2,
+        "files": 1
+      },
+      "Sheet": {
+        "uses": 4,
+        "files": 1
+      },
+      "Icon": {
+        "uses": 8,
+        "files": 1
+      },
+      "Avatar": {
+        "uses": 2,
+        "files": 1
+      },
+      "TextField": {
+        "uses": 1,
+        "files": 1
+      },
+      "Markdown": {
+        "uses": 1,
+        "files": 1
+      },
+      "Separator": {
+        "uses": 1,
+        "files": 1
+      }
+    },
+    "uncontracted": [
+      "Icon"
+    ]
+  },
+  "suppressions": [],
+  "owned": []
+}
