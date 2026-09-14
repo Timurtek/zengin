@@ -336,6 +336,20 @@ describe("zengin doctor", () => {
     expect(ids()).toContain("undefined-components");
   });
 
+  it("catches a hook declared with a separate args array, which the schema has no field for", () => {
+    // Found in Zengin's own examples by running this command on them: the hooks had never fired.
+    write(".claude/settings.json", {
+      hooks: { PostToolUse: [{ matcher: "Write|Edit|MultiEdit", hooks: [{ type: "command", command: "node", args: ["../../packages/hook/dist/index.js"] }] }] },
+    });
+    expect(ids()).toContain("hook-split-args");
+
+    runDoctor({ cwd: dir, fix: true });
+    const settings = read<{ hooks: { PostToolUse: { hooks: { command: string; args?: string[] }[] }[] } }>(".claude/settings.json");
+    expect(settings.hooks.PostToolUse[0]!.hooks[0]!.command).toBe("node ../../packages/hook/dist/index.js");
+    expect(settings.hooks.PostToolUse[0]!.hooks[0]!.args).toBeUndefined();
+    expect(ids()).not.toContain("hook-split-args");
+  });
+
   it("a stale generated stylesheet is a finding, because the tokens resolve to nothing without it", () => {
     // Age the generated file rather than post-date the source: that is the shape this drift actually has.
     const past = new Date(Date.now() - 60_000);

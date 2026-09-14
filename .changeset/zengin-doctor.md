@@ -28,3 +28,8 @@ changing a pin means running an install, so it prints the command instead.
 
 `AGENT_WIRING` is now one exported constant in the registry: `create` writes it and `doctor` checks it, so the
 two cannot drift apart.
+
+It also catches a hook declared as a command plus an `args` array. The hook schema has one string field, so
+only `command` is read and the rest is dropped: the hook runs `node` with no script, or nothing at all. Both
+of Zengin's own examples were wired that way, which means the edit hook had never fired in this repository
+either — found by running the new command on them.

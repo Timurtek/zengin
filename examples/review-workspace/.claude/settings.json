@@ -6,8 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node",
-            "args": ["../../packages/hook/dist/index.js"],
+            "command": "node ../../packages/hook/dist/index.js",
             "timeout": 30,
             "statusMessage": "Checking against the design system..."
           }

@@ -120,6 +120,17 @@ function findUp(projectDir: string, name: string): string | undefined {
   }
 }
 
+/**
+ * Is this command a path to a build that exists? A repository working on Zengin itself wires the agent to its
+ * own `dist`, which is deliberate and correct, and telling that from a bare binary that cannot launch is the
+ * difference between a useful warning and a nagging one.
+ */
+function localBuild(dir: string, parts: string[]): string | undefined {
+  if (parts[0] !== "node" || !parts[1]) return undefined;
+  const target = join(dir, parts[1]);
+  return existsSync(target) ? parts[1] : undefined;
+}
+
 function checkMcp(at: (r: string) => string, rel: (p: string) => string, out: DoctorFinding[], fix: boolean, fixed: string[]): boolean {
   const path = findUp(at("."), ".mcp.json") ?? at(".mcp.json");
   if (!existsSync(path)) {
@@ -166,6 +177,10 @@ function checkMcp(at: (r: string) => string, rel: (p: string) => string, out: Do
       fixable: true,
     });
     if (fix) fixed.push(writeMcp(path, file));
+  } else if (localBuild(dirname(path), [server.command ?? "", ...(server.args ?? [])])) {
+    out.push({ id: "mcp", level: "ok", title: `MCP server wired to a local build: \`${command}\`.` });
+    checkConfigEnv(server, path, out);
+    return false;
   } else if (command !== wanted) {
     const unguarded = server.command === AGENT_WIRING.command && !(server.args ?? []).includes("--no-install");
     out.push({
@@ -183,16 +198,22 @@ function checkMcp(at: (r: string) => string, rel: (p: string) => string, out: Do
     out.push({ id: "mcp", level: "ok", title: `MCP server wired in ${rel(path) || ".mcp.json"}: \`${wanted}\`.` });
   }
 
+  checkConfigEnv(server, path, out);
+  return true;
+}
+
+/** The config the server is told to read. Relative to the file that declares it, which in a monorepo is the
+ * repository root rather than this project. */
+function checkConfigEnv(server: { env?: Record<string, string> }, path: string, out: DoctorFinding[]): void {
   const configured = server.env?.[AGENT_WIRING.configEnv];
-  if (configured && !existsSync(at(configured))) {
+  if (configured && !existsSync(join(dirname(path), configured))) {
     out.push({
       id: "mcp-config-env",
       level: "error",
       title: `.mcp.json points ${AGENT_WIRING.configEnv} at ${configured}, which does not exist.`,
-      fix: `Set it to ${AGENT_WIRING.configFile}.`,
+      fix: `Set it to a config that does, or drop it: without it the server reads the nearest one above its working directory.`,
     });
   }
-  return true;
 }
 
 function writeMcp(path: string, file: McpFile): string {
@@ -207,8 +228,17 @@ function writeMcp(path: string, file: McpFile): string {
   return ".mcp.json";
 }
 
+interface HookEntry {
+  type?: string;
+  command?: string;
+  /** Not part of the hook schema. Present only in a file someone wrote by hand, and the reason to look. */
+  args?: string[];
+  timeout?: number;
+  statusMessage?: string;
+}
+
 interface SettingsFile {
-  hooks?: { PostToolUse?: { matcher?: string; hooks?: { type?: string; command?: string; timeout?: number; statusMessage?: string }[] }[] };
+  hooks?: { PostToolUse?: { matcher?: string; hooks?: HookEntry[] }[] };
 }
 
 const HOOK_PATH = ".claude/settings.json";
@@ -222,8 +252,34 @@ function checkHook(at: (r: string) => string, rel: (p: string) => string, out: D
   }
 
   const entries = file.hooks?.PostToolUse ?? [];
-  const commands = entries.flatMap((e) => (e.hooks ?? []).map((h) => h.command ?? ""));
-  const zengin = commands.filter((c) => c.includes("zengin-hook"));
+  const all = entries.flatMap((e) => e.hooks ?? []);
+  const mentionsZengin = (h: HookEntry): boolean => [h.command ?? "", ...(h.args ?? [])].some((p) => p.includes("zengin-hook") || /hook[\\/]dist/.test(p));
+
+  // A hook declared as a command plus an args array never runs: the schema has one string field, so the
+  // command is `node` and the path is dropped. It fails the way every fault in this family fails — silently.
+  const split = all.find((h) => h.args?.length && mentionsZengin(h));
+  if (split) {
+    const whole = [split.command ?? "", ...(split.args ?? [])].join(" ").trim();
+    out.push({
+      id: "hook-split-args",
+      level: "error",
+      title: "The edit hook is declared with a separate `args` array, which the hook schema does not have, so it never runs.",
+      detail: `Only \`command\` is read, so the command is \`${split.command ?? ""}\` with the rest dropped.`,
+      fix: `Put the whole thing in command: \`${whole}\`.`,
+      fixable: true,
+    });
+    if (fix) {
+      split.command = whole;
+      delete split.args;
+      mkdirSync(dirname(path), { recursive: true });
+      writeFileSync(path, `${JSON.stringify(file, null, 2)}\n`);
+      fixed.push(rel(path));
+    }
+    return false;
+  }
+
+  const commands = all.map((h) => h.command ?? "");
+  const zengin = commands.filter((c) => c.includes("zengin-hook") || /hook[\\/]dist/.test(c));
 
   if (!zengin.length) {
     out.push({
@@ -253,7 +309,12 @@ function checkHook(at: (r: string) => string, rel: (p: string) => string, out: D
     return true;
   }
 
+  const build = zengin.map((c) => localBuild(dirname(path).replace(/[\\/]\.claude$/, ""), c.trim().split(/\s+/))).find(Boolean);
   const exact = zengin.some((c) => c.trim() === AGENT_WIRING.hookCommand);
+  if (build) {
+    out.push({ id: "hook", level: "ok", title: `Edit hook wired to a local build: \`${zengin[0]}\`.` });
+    return false;
+  }
   if (!exact) {
     out.push({
       id: "hook-command",

@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [{ "type": "command", "command": "node packages/hook/dist/index.js", "timeout": 30, "statusMessage": "Checking against the design system..." }]
+      }
+    ]
+  }
+}
