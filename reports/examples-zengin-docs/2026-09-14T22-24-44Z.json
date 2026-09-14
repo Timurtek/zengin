@@ -1,0 +1,67 @@
+{
+  "schema": "zengin-report/1",
+  "generatedAt": "2026-09-14T22:24:44.822Z",
+  "repo": {
+    "name": "examples/zengin-docs",
+    "ref": "main",
+    "commit": "f6af9da9494417800e595c481dc5555e4b2b85f7"
+  },
+  "system": {
+    "package": "@zenginui/ui",
+    "version": "0.2.0"
+  },
+  "filesChecked": 5,
+  "summary": {
+    "total": 0,
+    "bySeverity": {
+      "error": 0,
+      "warn": 0,
+      "info": 0
+    },
+    "byRule": {},
+    "byFile": {}
+  },
+  "violations": [],
+  "inventory": {
+    "files": 5,
+    "consumerFiles": 4,
+    "ownedFiles": 0,
+    "suppressions": 0,
+    "suppressionsWithoutReason": 0,
+    "components": {
+      "Button": {
+        "uses": 6,
+        "files": 1
+      },
+      "Badge": {
+        "uses": 2,
+        "files": 1
+      },
+      "Tooltip": {
+        "uses": 2,
+        "files": 1
+      },
+      "Sheet": {
+        "uses": 4,
+        "files": 1
+      },
+      "Icon": {
+        "uses": 8,
+        "files": 1
+      },
+      "TextField": {
+        "uses": 1,
+        "files": 1
+      },
+      "Markdown": {
+        "uses": 1,
+        "files": 1
+      }
+    },
+    "uncontracted": [
+      "Icon"
+    ]
+  },
+  "suppressions": [],
+  "owned": []
+}
