@@ -81,7 +81,7 @@ export function emptyInfo(): Info {
    * attributes pass through, the variant maps reached through `VariantProps<typeof x>`, and the types it cannot
    * open (imported from another package): those become the manifest's `passthrough`.
    */
-export function makeCollector(decls: Declarations): (t: Node | undefined, seen: Set<string>, into: Info) => void {
+export function makeCollector(decls: Declarations, opts: { strictElements?: boolean } = {}): (t: Node | undefined, seen: Set<string>, into: Info) => void {
   const { interfaces, aliases, variants, imports } = decls;
   const collect = (t: Node | undefined, seen: Set<string>, into: Info): void => {
     if (!t) return;
@@ -112,10 +112,15 @@ export function makeCollector(decls: Declarations): (t: Node | undefined, seen: 
         }
         return;
       }
-      const el = elementOf(name, args);
+      const el = elementOf(name, args, opts.strictElements);
       if (el) {
         into.found = true;
         into.extends ??= el;
+        return;
+      }
+      if (opts.strictElements && /^([A-Z][A-Za-z]*?)?HTMLAttributes$|^(ComponentProps|ComponentPropsWithoutRef|ComponentPropsWithRef|HTMLProps)$/.test(name)) {
+        // The props are real and pass through; which element renders them is not stated here.
+        into.found = true;
         return;
       }
       if (/^(RefAttributes|PropsWithChildren|PropsWithoutRef|Attributes|ClassAttributes)$/.test(name)) {
@@ -285,20 +290,29 @@ export function componentPropsType(ann: Node): Node | undefined {
   return undefined;
 }
 
-/** `HTMLAttributes<HTMLButtonElement>` -> `button`; `ComponentProps<"div">` -> `div`; `ButtonHTMLAttributes<...>` -> `button`. */
-export function elementOf(name: string, args: Node[] | undefined): string | undefined {
+/**
+ * `HTMLAttributes<HTMLButtonElement>` -> `button`; `ComponentProps<"div">` -> `div`; `ButtonHTMLAttributes<...>`
+ * -> `button`.
+ *
+ * With `strict`, a shape that names no element at all reports nothing instead of falling back to `div`.
+ * `ComponentPropsWithoutRef<typeof RadixSeparator.Root>` says which component's props pass through and not
+ * which element renders, and guessing `div` there is only right by luck. The package path keeps the guess,
+ * because a manifest derived from a stranger's `.d.ts` is better off with a likely answer than none; reading
+ * a project's own source, a wrong `extends` quietly widens what `unknown-prop` accepts.
+ */
+export function elementOf(name: string, args: Node[] | undefined, strict = false): string | undefined {
   const m = /^([A-Z][A-Za-z]*?)?HTMLAttributes$/.exec(name);
   if (m) {
     const arg = args?.[0];
     const el = arg && arg.type === "TSTypeReference" ? /^HTML([A-Za-z]*)Element$/.exec(refName(arg["typeName"] as Node))?.[1] : undefined;
     const fromArg = el ? htmlTag(el) : undefined;
     const fromName = m[1] && m[1] !== "All" ? htmlTag(m[1]) : undefined;
-    return fromArg ?? fromName ?? "div";
+    return fromArg ?? fromName ?? (strict ? undefined : "div");
   }
   if (/^(ComponentProps|ComponentPropsWithoutRef|ComponentPropsWithRef|HTMLProps)$/.test(name)) {
     const arg = args?.[0];
     if (arg?.type === "TSLiteralType" && typeof (arg["literal"] as Node)["value"] === "string") return String((arg["literal"] as Node)["value"]);
-    return "div";
+    return strict ? undefined : "div";
   }
   return undefined;
 }

@@ -11,7 +11,8 @@ const ACCESSIBILITY_UTILITIES = new Set(["sr-only", "not-sr-only"]);
 function reason(comp: ComponentManifest, prop: string): string {
   const key = ownedKey(prop, comp.owns);
   const control = key ? comp.owns?.[key] : undefined;
-  if (key && control) return `${key} is owned by the ${control} prop.`;
+  const props = typeof control === "string" ? [control] : (control ?? []);
+  if (key && props.length) return `${key} is owned by the ${props.join(" and ")} prop${props.length > 1 ? "s" : ""}.`;
   if (key) return `${key} is owned by the component; use a variant or a token.`;
   return `className on ${comp.name} is limited to: ${quoteList(comp.className?.allow ?? [])}.`;
 }

@@ -98,6 +98,94 @@ describe("a manifest from the project's own source", () => {
   });
 });
 
+describe("who controls a property", () => {
+  const TSX = `import { forwardRef, type HTMLAttributes } from "react";
+export type Tone = "neutral" | "primary";
+export type Variant = "solid" | "soft";
+export interface ChipProps extends HTMLAttributes<HTMLSpanElement> {
+  tone?: Tone;
+  variant?: Variant;
+  interactive?: boolean;
+}
+export const Chip = forwardRef<HTMLSpanElement, ChipProps>(function Chip({ tone = "neutral", variant = "solid", interactive = false }, ref) {
+  return <span ref={ref} className="z-chip" data-tone={tone} data-variant={variant} data-interactive={interactive || undefined} />;
+});
+`;
+  const CSS = `.z-chip { border-radius: var(--radius-md); }
+.z-chip[data-variant="solid"][data-tone="neutral"] { background-color: var(--color-neutral); }
+.z-chip[data-variant="solid"][data-tone="primary"] { background-color: var(--color-primary); }
+.z-chip[data-variant="soft"] { background-color: var(--color-neutral-soft); }
+.z-chip[data-size="sm"] .z-chip__label { font-size: var(--text-xs); }
+.z-chip[data-interactive]:hover { box-shadow: var(--shadow-md); }
+`;
+  const d = deriveManifestFromSource(
+    [
+      { path: "src/components/ui/chip/chip.tsx", content: TSX },
+      { path: "src/components/ui/chip/chip.css", content: CSS },
+    ],
+    opts,
+  );
+  const chip = d.components.find((c) => c.name === "Chip")!;
+
+  it("names every prop that governs a property, most frequent first", () => {
+    // The hue comes from tone and the treatment from variant; naming one would send a reader to the wrong half.
+    expect(chip.owns?.["background-color"]).toEqual(["variant", "tone"]);
+  });
+
+  it("records a property no prop governs as null", () => {
+    expect(chip.owns?.["border-radius"]).toBeNull();
+  });
+
+  it("does not attribute a property to a hover state", () => {
+    // `interactive` is a prop, but the rule only fires under :hover, which says nothing about who controls it.
+    expect(chip.owns?.["box-shadow"]).toBeNull();
+  });
+
+  it("ignores a rule that styles a child rather than the component", () => {
+    // `.z-chip[data-size] .z-chip__label` styles the label; the root does not own its font size.
+    expect(chip.owns?.["font-size"]).toBeUndefined();
+  });
+
+  it("reads the element whose attributes pass through when the type states one", () => {
+    expect(chip.extends).toBe("span");
+  });
+
+  it("does not guess an element the types never state", () => {
+    const vague = deriveManifestFromSource(
+      [
+        {
+          path: "src/components/ui/panel/panel.tsx",
+          content: `import type { ComponentPropsWithoutRef } from "react";\nimport * as Radix from "@radix-ui/react-dialog";\nexport interface PanelProps extends ComponentPropsWithoutRef<typeof Radix.Root> { open?: boolean }\nexport function Panel({ open }: PanelProps) { return <div className="z-panel" data-open={open} />; }\n`,
+        },
+      ],
+      opts,
+    );
+    // `ComponentPropsWithoutRef<typeof Radix.Root>` says whose props pass through, not which element renders.
+    expect(vague.components[0]?.extends).toBeUndefined();
+  });
+});
+
+describe("resolving a disagreement", () => {
+  const derived = [
+    { name: "Chip", export: { from: "x", name: "Chip" }, owns: { "background-color": "tone" } },
+  ] as ComponentManifest[];
+  const prior = [
+    { name: "Chip", export: { from: "x", name: "Chip" }, owns: { "background-color": "variant" } },
+  ] as ComponentManifest[];
+
+  it("keeps the manifest by default and says so", () => {
+    const plan = mergeIntoManifest(prior, derived);
+    expect(plan.merged[0]!.owns?.["background-color"]).toBe("variant");
+    expect(plan.disagreed).toHaveLength(1);
+  });
+
+  it("takes the stylesheet when asked, and still reports it", () => {
+    const plan = mergeIntoManifest(prior, derived, true);
+    expect(plan.merged[0]!.owns?.["background-color"]).toBe("tone");
+    expect(plan.disagreed).toHaveLength(1);
+  });
+});
+
 describe("which files may contribute components", () => {
   it("reads types from everywhere but takes components only from owned paths", () => {
     const shared: SourceFile = { path: "src/lib/tones.ts", content: `export type Tone = "a" | "b";\n` };

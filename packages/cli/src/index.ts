@@ -42,6 +42,7 @@ Init options:
 
 Define options:
   --write               apply the plan (a report only, otherwise)
+  --force               on an owns disagreement, take the stylesheet's answer over the manifest's
   --dir <path>          project directory (default: cwd)
   --dir <path>          project directory (default: cwd)
   --force               overwrite existing zengin/ definitions and config
@@ -307,6 +308,7 @@ async function main(): Promise<void> {
       const result = runDefine({
         cwd: parsed.init.dir ? resolve(process.cwd(), parsed.init.dir) : process.cwd(),
         write: parsed.scaffold.write,
+        force: parsed.scaffold.force,
         ...(parsed.positional.length ? { only: parsed.positional } : {}),
       });
       process.stdout.write(result.report + "\n");

@@ -13,6 +13,8 @@ export interface DefineOptions {
   write?: boolean;
   /** Limit to these component names. */
   only?: string[];
+  /** Resolve an `owns` disagreement in the stylesheet's favour instead of keeping the manifest's answer. */
+  force?: boolean;
 }
 
 export interface DefineResult {
@@ -64,7 +66,7 @@ export function runDefine(opts: DefineOptions): DefineResult {
     owned: isOwned,
     ...(opts.only?.length ? { only: opts.only } : {}),
   });
-  const plan = mergeIntoManifest(existing, derivation.components);
+  const plan = mergeIntoManifest(existing, derivation.components, Boolean(opts.force));
   const changes = plan.added.length + plan.changed.length;
 
   // A definition nobody can import does nothing: the contract rules only reach a component the rest of the
@@ -89,7 +91,7 @@ export function runDefine(opts: DefineOptions): DefineResult {
     for (const line of exports) addBarrelLine(dir, line);
   }
 
-  let report = renderDefineReport(derivation, plan, Boolean(opts.write) && changes > 0);
+  let report = renderDefineReport(derivation, plan, Boolean(opts.write) && changes > 0, Boolean(opts.force));
   if (exports.length) report += `\n${opts.write ? "Exported from" : "To export from"} ${relative(dir, barrelPath(dir, resolved)).replace(/\\/g, "/")}: ${exports.length} ${exports.length === 1 ? "line" : "lines"}.`;
   if (unreachable.length) {
     report += `\n\nNot exported by the system's entry point, so the contract rules will not reach ${unreachable.length === 1 ? "it" : "them"}:`;

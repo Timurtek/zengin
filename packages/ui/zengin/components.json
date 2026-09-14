@@ -76,13 +76,33 @@
       ]
     },
     "owns": {
-      "background-color": "tone",
-      "color": "tone",
+      "background-color": [
+        "variant",
+        "tone"
+      ],
+      "color": [
+        "tone",
+        "variant"
+      ],
       "border-color": "variant",
-      "padding": "size",
-      "border-radius": null,
+      "padding": [
+        "size",
+        "variant"
+      ],
+      "border-radius": "variant",
       "font": "size",
-      "box-shadow": null
+      "box-shadow": null,
+      "gap": null,
+      "border": null,
+      "font-weight": null,
+      "line-height": null,
+      "min-height": [
+        "size",
+        "variant"
+      ],
+      "font-size": "size",
+      "opacity": null,
+      "font-family": null
     },
     "slots": [
       "leadingIcon",
@@ -149,12 +169,27 @@
       ]
     },
     "owns": {
-      "background-color": "tone",
-      "color": "tone",
-      "border-color": "variant",
+      "background-color": [
+        "variant",
+        "tone"
+      ],
+      "color": [
+        "tone",
+        "variant"
+      ],
+      "border-color": [
+        "tone",
+        "variant"
+      ],
       "padding": "size",
       "border-radius": null,
-      "font": "size"
+      "font": "size",
+      "gap": null,
+      "border": null,
+      "font-weight": null,
+      "line-height": null,
+      "font-size": "size",
+      "font-family": null
     },
     "states": [
       "default"
@@ -209,11 +244,15 @@
       ]
     },
     "owns": {
-      "background-color": null,
+      "background-color": "variant",
       "border-color": "variant",
       "box-shadow": "variant",
       "padding": "padding",
-      "border-radius": null
+      "border-radius": null,
+      "border": null,
+      "color": null,
+      "font-family": null,
+      "line-height": null
     },
     "slots": [
       "Header",
@@ -282,7 +321,10 @@
       "border-color": "error",
       "padding": "size",
       "border-radius": null,
-      "font": "size"
+      "font": "size",
+      "gap": null,
+      "font-family": null,
+      "line-height": null
     },
     "slots": [
       "leadingIcon",
@@ -364,7 +406,10 @@
       "border-color": null,
       "color": null,
       "border-radius": null,
-      "font": "size"
+      "font": "size",
+      "gap": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "unchecked",
@@ -484,7 +529,12 @@
       "color": null,
       "padding": null,
       "border-radius": null,
-      "font": null
+      "font": null,
+      "box-shadow": null,
+      "font-size": null,
+      "font-weight": null,
+      "line-height": null,
+      "font-family": null
     },
     "states": [
       "closed",
@@ -548,7 +598,9 @@
       "padding": "size",
       "border-radius": null,
       "font": "size",
-      "box-shadow": "variant"
+      "box-shadow": "variant",
+      "font-family": null,
+      "line-height": null
     },
     "slots": [
       "List",
@@ -587,7 +639,8 @@
         "type": "node"
       },
       "placeholder": {
-        "type": "node"
+        "type": "node",
+        "default": "Select"
       },
       "size": {
         "type": "enum",
@@ -647,7 +700,10 @@
       "border-radius": null,
       "padding": "size",
       "font": "size",
-      "box-shadow": null
+      "box-shadow": null,
+      "gap": null,
+      "font-family": null,
+      "line-height": null
     },
     "slots": [
       "Item",
@@ -731,7 +787,10 @@
       "border-color": null,
       "color": null,
       "border-radius": null,
-      "font": "size"
+      "font": "size",
+      "gap": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "unchecked",
@@ -914,7 +973,10 @@
       "color": null,
       "border-radius": null,
       "padding": "density",
-      "font": "density"
+      "font": "density",
+      "border": null,
+      "font-family": null,
+      "line-height": null
     },
     "slots": [
       "Head",
@@ -988,7 +1050,11 @@
       "border-radius": "shape",
       "width": "size",
       "height": "size",
-      "font": "size"
+      "font": "size",
+      "font-weight": null,
+      "line-height": null,
+      "font-size": "size",
+      "font-family": null
     },
     "states": [
       "loading",
@@ -1042,7 +1108,8 @@
     },
     "owns": {
       "background-color": null,
-      "border-radius": "variant"
+      "border-radius": "variant",
+      "gap": null
     },
     "states": [
       "default"
@@ -1254,7 +1321,11 @@
       "background-color": "tone",
       "border-radius": null,
       "height": "size",
-      "font": null
+      "font": null,
+      "gap": null,
+      "color": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "determinate",
@@ -1306,7 +1377,10 @@
       "color": null,
       "width": "orientation",
       "height": "orientation",
-      "font": null
+      "font": null,
+      "min-height": "orientation",
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "default"
@@ -1375,7 +1449,10 @@
       "color": null,
       "border-radius": null,
       "padding": "size",
-      "font": "size"
+      "font": "size",
+      "gap": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "default",
@@ -1452,12 +1529,15 @@
     "owns": {
       "color": null,
       "font": null,
-      "background-color": null
+      "background-color": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "default",
       "hover"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "BarChart",
@@ -1511,12 +1591,15 @@
     "owns": {
       "color": null,
       "font": null,
-      "background-color": null
+      "background-color": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "default",
       "hover"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "Sparkline",
@@ -1570,13 +1653,16 @@
     },
     "owns": {
       "color": "tone",
-      "background-color": null
+      "background-color": null,
+      "line-height": null,
+      "font-family": null
     },
     "states": [
       "up",
       "down",
       "flat"
-    ]
+    ],
+    "extends": "span"
   },
   {
     "name": "Markdown",
@@ -1613,12 +1699,17 @@
     "owns": {
       "color": null,
       "font": null,
-      "background-color": null
+      "background-color": null,
+      "gap": null,
+      "font-size": null,
+      "line-height": null,
+      "font-family": null
     },
     "states": [
       "default",
       "streaming"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "CodeBlock",
@@ -1664,12 +1755,16 @@
       "border-radius": null,
       "padding": null,
       "font": null,
-      "color": null
+      "color": null,
+      "border": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "default",
       "copied"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "Conversation",
@@ -1693,7 +1788,11 @@
       ]
     },
     "owns": {
-      "padding": null
+      "padding": null,
+      "min-height": null,
+      "color": null,
+      "font-family": null,
+      "line-height": null
     },
     "slots": [
       "Content",
@@ -1702,7 +1801,8 @@
     "states": [
       "at-bottom",
       "scrolled-up"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "Message",
@@ -1750,10 +1850,13 @@
     },
     "owns": {
       "background-color": "role",
-      "color": "role",
+      "color": null,
       "border-radius": "role",
       "padding": "role",
-      "font": null
+      "font": null,
+      "gap": null,
+      "font-family": null,
+      "line-height": null
     },
     "slots": [
       "Content",
@@ -1762,7 +1865,8 @@
     "states": [
       "default",
       "hover"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "PromptInput",
@@ -1777,7 +1881,8 @@
         "type": "string"
       },
       "defaultValue": {
-        "type": "string"
+        "type": "string",
+        "default": ""
       },
       "onValueChange": {
         "type": "function"
@@ -1806,7 +1911,8 @@
         "type": "node"
       },
       "sendLabel": {
-        "type": "string"
+        "type": "string",
+        "default": "Send"
       },
       "placeholder": {
         "type": "string"
@@ -1833,7 +1939,11 @@
       "border-radius": null,
       "padding": null,
       "font": null,
-      "color": null
+      "color": null,
+      "gap": null,
+      "border": null,
+      "font-family": null,
+      "line-height": null
     },
     "slots": [
       "toolbar"
@@ -1844,7 +1954,8 @@
       "streaming",
       "error",
       "focus-within"
-    ]
+    ],
+    "extends": "textarea"
   },
   {
     "name": "Reasoning",
@@ -1884,13 +1995,17 @@
     "owns": {
       "color": null,
       "font": null,
-      "border-color": null
+      "border-color": null,
+      "gap": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "open",
       "closed",
       "streaming"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "ToolCall",
@@ -1949,7 +2064,10 @@
       "border-radius": null,
       "padding": null,
       "font": null,
-      "color": null
+      "color": null,
+      "border": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "input-streaming",
@@ -1959,7 +2077,8 @@
       "output-available",
       "output-error",
       "output-denied"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "Sources",
@@ -1996,12 +2115,16 @@
       "border-radius": null,
       "padding": null,
       "font": null,
-      "color": null
+      "color": null,
+      "gap": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "open",
       "closed"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "Suggestions",
@@ -2040,11 +2163,16 @@
       ]
     },
     "owns": {
-      "padding": null
+      "padding": null,
+      "gap": null,
+      "color": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "default"
-    ]
+    ],
+    "extends": "div"
   },
   {
     "name": "Loader",
@@ -2090,11 +2218,16 @@
       "color": null,
       "font": null,
       "width": "size",
-      "height": "size"
+      "height": "size",
+      "gap": null,
+      "font-size": null,
+      "font-family": null,
+      "line-height": null
     },
     "states": [
       "default"
-    ]
+    ],
+    "extends": "span"
   },
   {
     "name": "Icon",

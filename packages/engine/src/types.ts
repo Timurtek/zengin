@@ -175,7 +175,7 @@ export interface ProfileConfig {
  */
 export interface ComponentOverlay {
   props?: Record<string, PropManifest>;
-  owns?: Record<string, string | null>;
+  owns?: Record<string, string | string[] | null>;
   className?: { allow?: string[] };
 }
 
@@ -260,8 +260,12 @@ export interface ComponentManifest {
   extends?: string;
   props?: Record<string, PropManifest>;
   className?: { allow?: string[] };
-  /** CSS properties the component owns, mapped to the prop that controls them (or null when no prop does). */
-  owns?: Record<string, string | null>;
+  /**
+   * CSS properties the component owns, mapped to the prop or props that control them, or null when no prop
+   * does. More than one is common and worth saying: a Button's background comes from `tone` for the hue and
+   * `variant` for the treatment, and naming only one sends a reader to the wrong place.
+   */
+  owns?: Record<string, string | string[] | null>;
   slots?: string[];
   states?: string[];
   /** Human notes shown when substituting a replaced export, keyed by `source#Name`. */

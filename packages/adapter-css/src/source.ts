@@ -6,7 +6,6 @@ import {
   elementOf,
   emptyDeclarations,
   emptyInfo,
-  HTML_TAGS,
   idName,
   isPascal,
   makeCollector,
@@ -96,7 +95,7 @@ export function deriveManifestFromSource(files: SourceFile[], opts: SourceOption
     for (const site of componentsIn(body, f.path)) if (!sites.has(site.name)) sites.set(site.name, site);
   }
 
-  const collect = makeCollector(decls);
+  const collect = makeCollector(decls, { strictElements: true });
   // Source names its enums: `variant?: ButtonVariant` with `type ButtonVariant = "solid" | "soft"`. The prop
   // kind is only an enum if the alias is opened, so the walker gets a resolver the package path does not need.
   const resolveAlias = (name: string): Node | undefined => decls.aliases.get(name);
@@ -130,14 +129,15 @@ export function deriveManifestFromSource(files: SourceFile[], opts: SourceOption
 
     const owns = decideOwns(site.rootClass ? ownsByClass.get(site.rootClass) : undefined, props);
     if (Object.keys(owns).length) withOwns++;
-    const lower = name.toLowerCase();
-    const ext = HTML_TAGS.has(lower) ? lower : info.extends;
+    // The package path guesses `extends` and `replaces` from a component's name, because a `.d.ts` for a
+    // library called Dialog usually is a dialog. Source knows better and should not guess: this project's
+    // Dialog is a Radix dialog, not an HTML one, and its Avatar renders a span whose props type says
+    // HTMLElement. Only an element actually read from the props type is recorded.
     components.push({
       name,
       since: opts.version ?? "0.0.0",
       export: { from: opts.importFrom, name },
-      ...(HTML_TAGS.has(lower) ? { replaces: [lower] } : {}),
-      ...(ext ? { extends: ext } : {}),
+      ...(info.extends ? { extends: info.extends } : {}),
       props,
       className: { allow: PLACEMENT },
       ...(Object.keys(owns).length ? { owns } : {}),
@@ -285,9 +285,15 @@ const OWNABLE = new Set([
 export type OwnsTally = Record<string, { by: Record<string, number>; bare: boolean }>;
 
 /**
- * Reads each stylesheet into `class -> tally`. A rule's selector may carry several data attributes and a
- * property may be set under several of them, so nothing is decided here: the counts are carried out to
- * `decideOwns`, which is the only place that knows which of those attributes are actually props.
+ * Reads each stylesheet into `class -> tally`. Two things decide whether a rule counts.
+ *
+ * The rule must be *about* the class, not about one of its children: `.z-tabs[data-variant="pill"] .z-tabs__list`
+ * styles the list, and attributing its radius to Tabs would say the root owns something it does not. Only the
+ * rightmost compound selector, the one the rule actually styles, is read.
+ *
+ * And a rule behind a pseudo-class is a state, not a prop. `.z-card[data-interactive]:hover` sets a border
+ * color because the pointer is over it, so counting `interactive` there would name the wrong lever for someone
+ * asking which prop to reach for. The property is still owned; it just is not attributed to that attribute.
  */
 function ownsFromCss(files: SourceFile[]): Map<string, OwnsTally> {
   const out = new Map<string, OwnsTally>();
@@ -300,9 +306,11 @@ function ownsFromCss(files: SourceFile[]): Map<string, OwnsTally> {
     }
     root.walkRules((rule: Rule) => {
       for (const selector of rule.selectors ?? []) {
-        const cls = /^\.([A-Za-z0-9_-]+)/.exec(selector.trim())?.[1];
+        const subject = subjectOf(selector);
+        const cls = /\.([A-Za-z0-9_-]+)/.exec(subject)?.[1];
         if (!cls) continue;
-        const attrs = [...selector.matchAll(/\[data-([a-z-]+)/g)].map((m) => camel(m[1]!));
+        const stateful = /:(?!not\()[a-z-]/.test(subject);
+        const attrs = stateful ? [] : [...subject.matchAll(/\[data-([a-z-]+)/g)].map((m) => camel(m[1]!));
         const entry = out.get(cls) ?? {};
         rule.walkDecls((decl: Declaration) => {
           const name = decl.prop.toLowerCase();
@@ -318,21 +326,28 @@ function ownsFromCss(files: SourceFile[]): Map<string, OwnsTally> {
   return out;
 }
 
+/** The compound a rule actually styles: everything after the last combinator. */
+function subjectOf(selector: string): string {
+  const parts = selector.trim().split(/\s*[>+~]\s*|\s+/);
+  return parts[parts.length - 1] ?? "";
+}
+
 /**
- * Turns a tally into the manifest's `owns`. A property is attributed to the prop that governed it most often,
- * and only to one the component actually declares: `[data-disabled]` and `[data-loading]` are states the
- * component sets for itself, not props a caller chooses, and attributing a property to one would say something
- * false about who controls it. Anything else the component's own rules set is owned by nobody in particular,
- * which the manifest spells null.
+ * Turns a tally into the manifest's `owns`. Every prop that governs a property is named, most frequent first,
+ * because more than one commonly does: a Button's background takes its hue from `tone` and its treatment from
+ * `variant`, and naming only the winner of a count sends a reader to the wrong half. Only props the component
+ * declares are named at all, so an attribute the component sets for itself is never mistaken for a lever.
+ * A property nothing declared governs is owned by the component and nobody in particular, which is null.
  */
-function decideOwns(tally: OwnsTally | undefined, props: NonNullable<ComponentManifest["props"]>): Record<string, string | null> {
+function decideOwns(tally: OwnsTally | undefined, props: NonNullable<ComponentManifest["props"]>): Record<string, string | string[] | null> {
   if (!tally) return {};
-  const out: Record<string, string | null> = {};
+  const out: Record<string, string | string[] | null> = {};
   for (const [property, slot] of Object.entries(tally)) {
     const ranked = Object.entries(slot.by)
       .filter(([prop]) => prop in props)
-      .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
-    out[property] = ranked.length ? ranked[0]![0] : null;
+      .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
+      .map(([prop]) => prop);
+    out[property] = ranked.length === 0 ? null : ranked.length === 1 ? ranked[0]! : ranked;
   }
   return out;
 }
@@ -355,6 +370,10 @@ export interface MergePlan {
 }
 
 /**
+ * Folds derived entries into the manifest the project already has. With `takeStylesheet`, a disagreement
+ * about who controls a property is resolved in the stylesheet's favour instead of only being reported, which
+ * is the right way round when the manifest was written by hand and has fallen behind the CSS.
+ *
  * Folds derived entries into the manifest the project already has. An entry the manifest does not carry is
  * added whole. One it does carry is updated field by field, and only where the source is the better authority:
  * props, owns and extends come from the code, while `replaces`, `migrations`, `since`, `className` and any
@@ -362,7 +381,7 @@ export interface MergePlan {
  * source states, so it is written once with a new entry and never overwritten. Nothing is ever removed,
  * because the manifest may legitimately know things the source cannot say.
  */
-export function mergeIntoManifest(existing: ComponentManifest[], derived: ComponentManifest[]): MergePlan {
+export function mergeIntoManifest(existing: ComponentManifest[], derived: ComponentManifest[], takeStylesheet = false): MergePlan {
   const byName = new Map(existing.map((e) => [e.name, e]));
   const added: string[] = [];
   const changed: { name: string; fields: string[] }[] = [];
@@ -392,8 +411,9 @@ export function mergeIntoManifest(existing: ComponentManifest[], derived: Compon
       const owns = { ...(prior.owns ?? {}) };
       for (const [property, prop] of Object.entries(d.owns)) {
         if (property in owns) {
-          if (owns[property] !== prop) disagreed.push(`${d.name}.${property}: manifest says ${String(owns[property])}, stylesheet says ${String(prop)}`);
-          continue;
+          if (JSON.stringify(owns[property]) === JSON.stringify(prop)) continue;
+          disagreed.push(`${d.name}.${property}: manifest says ${show(owns[property])}, stylesheet says ${show(prop)}`);
+          if (!takeStylesheet) continue;
         }
         owns[property] = prop;
       }
@@ -402,7 +422,9 @@ export function mergeIntoManifest(existing: ComponentManifest[], derived: Compon
         fields.push("owns");
       }
     }
-    if (d.extends && d.extends !== prior.extends) {
+    // Which element's attributes pass through is a judgment the manifest may hold more precisely than the
+    // types do, so it is filled in when absent and never overwritten.
+    if (d.extends && !prior.extends) {
       next.extends = d.extends;
       fields.push("extends");
     }
@@ -447,7 +469,7 @@ function mergeProps(prior: ComponentManifest["props"], derived: ComponentManifes
   return out;
 }
 
-export function renderDefineReport(d: SourceDerivation, plan: MergePlan, write: boolean): string {
+export function renderDefineReport(d: SourceDerivation, plan: MergePlan, write: boolean, took = false): string {
   const lines: string[] = [];
   lines.push(`${d.report.files} source files read, ${d.report.components} components derived.`);
   if (plan.added.length) lines.push(`\nNew to the manifest (${plan.added.length}):`);
@@ -465,7 +487,7 @@ export function renderDefineReport(d: SourceDerivation, plan: MergePlan, write: 
   }
   if (plan.unchanged.length) lines.push(`\nAlready current: ${plan.unchanged.join(", ")}`);
   if (plan.disagreed.length) {
-    lines.push(`\nThe manifest and the stylesheet disagree (${plan.disagreed.length}). The manifest was kept:`);
+    lines.push(`\nThe manifest and the stylesheet disagree (${plan.disagreed.length}). ${took ? "The stylesheet was taken (--force):" : "The manifest was kept; --force takes the stylesheet:"}`);
     for (const d of plan.disagreed) lines.push(`  ${d}`);
   }
   if (d.report.skipped.length) {
@@ -476,4 +498,10 @@ export function renderDefineReport(d: SourceDerivation, plan: MergePlan, write: 
   lines.push("");
   lines.push(changes === 0 ? "The manifest already describes this source." : write ? `Wrote ${changes} ${changes === 1 ? "entry" : "entries"} to components.json.` : `${changes} ${changes === 1 ? "entry" : "entries"} to write. Run again with --write.`);
   return lines.join("\n");
+}
+
+/** A controlling prop, or several, or none, as one readable phrase. */
+function show(v: string | string[] | null | undefined): string {
+  if (v === null || v === undefined) return "null";
+  return Array.isArray(v) ? v.join(" and ") : v;
 }

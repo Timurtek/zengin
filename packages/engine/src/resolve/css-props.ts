@@ -54,7 +54,7 @@ export function categoryOf(prop: string): string {
 }
 
 /** Finds the `owns` key that governs a resolved property, e.g. `padding-inline` -> `padding`. */
-export function ownedKey(prop: string, owns: Record<string, string | null> | undefined): string | undefined {
+export function ownedKey(prop: string, owns: Record<string, string | string[] | null> | undefined): string | undefined {
   if (!owns) return undefined;
   return Object.keys(owns).find((k) => {
     if (prop === k || prop.startsWith(k + "-")) return true;
