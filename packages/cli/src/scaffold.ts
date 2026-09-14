@@ -1,9 +1,10 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaVariables, writePlugin } from "@zenginui/figma";
 import type { ComponentManifest } from "@zenginui/engine";
 import { generateMock, PRESETS, schemaFromPresets, type MockSchema } from "@zenginui/mock";
-import { applyFonts, applyIcons, applyTheme, applyUpgrade, planUpgrade, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zenginui/registry";
+import { applyFonts, applyIcons, applyTheme, applyUpgrade, planUpgrade, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, resolveSome, unknownItemsMessage, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zenginui/registry";
 
 export interface ScaffoldOptions {
   registry?: string;
@@ -13,6 +14,8 @@ export interface ScaffoldOptions {
   storybook: boolean;
   local?: string;
   force: boolean;
+  /** add: run the project's package manager for the dependencies the items need. */
+  install?: boolean;
   out?: string;
   root?: string;
   dir?: string;
@@ -194,7 +197,9 @@ export async function runAdd(names: string[], opts: ScaffoldOptions, cwd: string
   }
   const source = openRegistry(opts.registry);
   const index = await source.index();
-  const items = await resolveItems(source, names);
+  // One wrong name used to throw the whole batch away. The valid items go in and the rest is reported.
+  const { items, unknown, known } = await resolveSome(source, names);
+  if (!items.length) throw new Error(`${unknownItemsMessage(source.location, unknown, known)} Nothing was added. Run \`zengin add\` with no arguments to see what the registry has.`);
   const r = installItems({ projectDir, items, version: index.version, force: opts.force });
 
   const missing = missingDependencies(projectDir, { ...r.dependencies, ...r.devDependencies });
@@ -202,9 +207,32 @@ export async function runAdd(names: string[], opts: ScaffoldOptions, cwd: string
   for (const p of r.written) lines.push(`  wrote   ${p}`);
   for (const p of r.skipped) lines.push(`  kept    ${p} (exists; --force overwrites)`);
   if (Object.keys(missing).length) {
-    lines.push("", "Install the packages these components need:", `  npm install ${Object.entries(missing).map(([k, v]) => `${k}@"${v}"`).join(" ")}`);
+    const spec = Object.entries(missing).map(([k, v]) => `${k}@"${v}"`).join(" ");
+    if (opts.install) {
+      const pm = packageManagerOf(projectDir);
+      lines.push("", `Installing with ${pm}: ${Object.keys(missing).join(", ")}`);
+      try {
+        execFileSync(pm, ["install"], { cwd: projectDir, stdio: "inherit", shell: true });
+        lines.push("  done.");
+      } catch {
+        lines.push(`  that failed; run it yourself: ${pm} install`);
+      }
+    } else {
+      lines.push(
+        "",
+        "Install the packages these components need:",
+        `  ${packageManagerOf(projectDir)} install ${spec}`,
+        // The type errors before that install are a cascade from the missing module, not a broken item.
+        "  Until then TypeScript will report the missing module, and a second error inside the story that uses it. Both go away with the install.",
+        "  Pass --install to have this run for you.",
+      );
+    }
   }
   pushSkippedStories(lines, r.storiesSkipped);
+  if (unknown.length) {
+    lines.push("", `Not added, because the registry has no such item:`);
+    for (const u of unknown) lines.push(`  ${u.name}${u.didYouMean ? `  — did you mean ${u.didYouMean}?` : ""}`);
+  }
   lines.push("", `Manifest: ${r.components.length} components in ${LAYOUT.definitionsDir}/components.json. Run zengin check to confirm the project is still clean.`);
   return lines.join("\n");
 }
@@ -231,6 +259,14 @@ export function runRegistryBuild(opts: ScaffoldOptions, cwd: string): string {
 }
 
 /** Packages an item needs that the project's package.json does not list. */
+/** The package manager the project already uses, from whichever lockfile is next to it. */
+function packageManagerOf(projectDir: string): string {
+  if (existsSync(join(projectDir, "pnpm-lock.yaml"))) return "pnpm";
+  if (existsSync(join(projectDir, "yarn.lock"))) return "yarn";
+  if (existsSync(join(projectDir, "bun.lockb"))) return "bun";
+  return "npm";
+}
+
 function missingDependencies(projectDir: string, wanted: Record<string, string>): Record<string, string> {
   const p = join(projectDir, "package.json");
   if (!existsSync(p)) return wanted;

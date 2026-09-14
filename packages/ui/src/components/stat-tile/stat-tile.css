@@ -1,0 +1,49 @@
+.z-stat {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.z-stat__label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.z-stat__row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+/* Tabular figures, so a row of tiles lines up and a changing number does not shift its neighbours. */
+.z-stat__value {
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.z-stat[data-size="md"] .z-stat__value {
+  font-size: var(--text-2xl);
+}
+
+.z-stat[data-size="sm"] .z-stat__value {
+  font-size: var(--text-xl);
+}
+
+.z-stat__spark {
+  display: block;
+  width: 6rem;
+}
+
+.z-stat[data-size="sm"] .z-stat__spark {
+  width: 4rem;
+}
+
+.z-stat__delta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}

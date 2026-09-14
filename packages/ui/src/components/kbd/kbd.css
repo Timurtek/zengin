@@ -1,0 +1,29 @@
+.z-kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-family: var(--font-mono);
+}
+
+.z-kbd__key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5em;
+  padding-inline: var(--spacing-1);
+  border: var(--border-width) solid var(--color-border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-muted);
+  font-family: inherit;
+  line-height: var(--leading-normal);
+}
+
+.z-kbd[data-size="sm"] .z-kbd__key {
+  font-size: var(--text-xs);
+}
+
+.z-kbd[data-size="md"] .z-kbd__key {
+  font-size: var(--text-sm);
+}

@@ -11,12 +11,17 @@ export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   /** Error message. Its presence marks the field invalid. */
   error?: ReactNode;
   size?: TextFieldSize;
+  /**
+   * Render the value in the system's monospace face. For content that is code or data rather than prose: a
+   * JSON block, an API key, a path. The face is the `font-mono` token, so it follows `zengin fonts`.
+   */
+  font?: "sans" | "mono";
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
-  { label, description, error, size = "md", leadingIcon, trailingIcon, className, id: idProp, disabled, readOnly, required, ...rest },
+  { label, description, error, size = "md", font = "sans", leadingIcon, trailingIcon, className, id: idProp, disabled, readOnly, required, ...rest },
   ref,
 ) {
   const generated = useId();
@@ -29,6 +34,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
     <div
       className={cx("z-field", className)}
       data-size={size}
+      data-font={font}
       data-invalid={invalid || undefined}
       data-disabled={disabled || undefined}
       data-readonly={readOnly || undefined}

@@ -104,7 +104,7 @@ body {
   font-family: var(--font-display);
   font-size: var(--text-2xl);
   line-height: var(--leading-tight);
-  letter-spacing: -0.01em;
+  letter-spacing: var(--tracking-snug);
 }
 
 .form__head p {

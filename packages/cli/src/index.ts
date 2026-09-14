@@ -57,6 +57,7 @@ Create and add options:
   --local <repo>        link the Zengin packages from a repository checkout instead of npm (create)
   --dir <path>          project directory (add, tokens; default: cwd)
   --force               overwrite files that already exist (add); take upstream over a conflict (upgrade)
+  --install             add: run the project's package manager for the packages the items need
   --write               upgrade: apply the plan (a report only, otherwise)
 
 Brand options:
@@ -170,6 +171,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a.startsWith("--dir=")) initOpts.dir = scaffold.dir = a.slice(6);
     else if (a === "--force") initOpts.force = scaffold.force = true;
     else if (a === "--write") scaffold.write = true;
+    else if (a === "--install") scaffold.install = true;
     else if (a === "--schema") scaffold.schema = value();
     else if (a.startsWith("--schema=")) scaffold.schema = a.slice(9);
     else if (a === "--count") scaffold.count = asInt(value());

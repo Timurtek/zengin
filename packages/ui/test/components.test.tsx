@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Avatar, Badge, BarChart, Button, Card, Checkbox, CodeBlock, Conversation, Dialog, LineChart, Loader, Markdown, Menu, Message, Popover, Progress, PromptInput, Reasoning, Select, Separator, Sheet, Skeleton, Sources, Sparkline, Suggestions, Switch, Table, Tabs, TextArea, TextField, Toast, ToolCall, Tooltip, initials, parseMarkdown, toast } from "../src/index.js";
+import { Avatar, Badge, BarChart, Button, Card, Checkbox, CodeBlock, Conversation, DataTable, Dialog, EmptyState, Kbd, LineChart, Loader, Markdown, Menu, Message, Popover, Progress, PromptInput, Reasoning, Select, Separator, Sheet, Skeleton, Sources, Sparkline, StatTile, Suggestions, Switch, Table, Tabs, TextArea, TextField, Toast, ToolCall, Tooltip, initials, parseMarkdown, toast } from "../src/index.js";
 import { axisLabelIndexes } from "../src/components/line-chart/line-chart.js";
 import { extent, linePath, defaultFormat } from "../src/internal/chart.js";
 
@@ -648,5 +648,141 @@ describe("AI kit", () => {
     expect(screen.getByRole("group", { name: "Suggestions" })).toHaveAttribute("data-layout", "scroll");
     render(<Loader label="Working" size="sm" />);
     expect(screen.getByRole("status", { name: "Working" })).toHaveAttribute("data-size", "sm");
+  });
+});
+
+describe("EmptyState", () => {
+  it("draws the title, and the description and action only when given", () => {
+    const { rerender } = render(<EmptyState title="No customers yet" />);
+    expect(screen.getByText("No customers yet")).toBeTruthy();
+    expect(document.querySelector(".z-empty__description")).toBeNull();
+    expect(document.querySelector(".z-empty__action")).toBeNull();
+    rerender(<EmptyState title="No customers yet" description="They appear here." action={<Button>Invite</Button>} />);
+    expect(screen.getByText("They appear here.")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Invite" })).toBeTruthy();
+  });
+
+  it("carries size and tone as data attributes, and hides the icon from assistive tech", () => {
+    render(<EmptyState title="Could not load" tone="danger" size="sm" icon={<span>!</span>} />);
+    const el = document.querySelector(".z-empty")!;
+    expect(el).toHaveAttribute("data-tone", "danger");
+    expect(el).toHaveAttribute("data-size", "sm");
+    expect(document.querySelector(".z-empty__icon")).toHaveAttribute("aria-hidden", "true");
+  });
+});
+
+describe("Kbd", () => {
+  it("renders one kbd element per key, in order", () => {
+    render(<Kbd keys={["Ctrl", "K"]} />);
+    const keys = [...document.querySelectorAll(".z-kbd__key")].map((k) => k.textContent);
+    expect(keys).toEqual(["Ctrl", "K"]);
+  });
+});
+
+describe("DataTable", () => {
+  interface Row {
+    id: string;
+    name: string;
+    seats: number;
+  }
+  const rows: Row[] = [
+    { id: "a", name: "Northwind", seats: 240 },
+    { id: "b", name: "Acme", seats: 18 },
+    { id: "c", name: "Kestrel", seats: 1180 },
+  ];
+  const columns = [
+    { id: "name", header: "Customer", cell: (r: Row) => r.name, sortable: true },
+    // Formatted for reading, sorted on the number underneath.
+    { id: "seats", header: "Seats", cell: (r: Row) => r.seats.toLocaleString(), value: (r: Row) => r.seats, sortable: true },
+  ];
+  const seatsColumn = () => [...document.querySelectorAll("tbody tr td:nth-child(2)")].map((c) => c.textContent);
+
+  it("sorts on the column's value, not on the text in the cell", () => {
+    render(<DataTable label="Customers" columns={columns} rows={rows} rowKey={(r) => r.id} />);
+    fireEvent.click(screen.getByRole("button", { name: /Seats/ }));
+    // A string sort would put "1,180" second, between "18" and "240".
+    expect(seatsColumn()).toEqual(["18", "240", "1,180"]);
+  });
+
+  it("cycles ascending, descending, then back to the original order", () => {
+    render(<DataTable label="Customers" columns={columns} rows={rows} rowKey={(r) => r.id} />);
+    const header = screen.getByRole("button", { name: /Seats/ });
+    fireEvent.click(header);
+    expect(seatsColumn()).toEqual(["18", "240", "1,180"]);
+    fireEvent.click(header);
+    expect(seatsColumn()).toEqual(["1,180", "240", "18"]);
+    fireEvent.click(header);
+    expect(seatsColumn()).toEqual(["240", "18", "1,180"]);
+  });
+
+  it("announces the sort direction on the header cell", () => {
+    render(<DataTable label="Customers" columns={columns} rows={rows} rowKey={(r) => r.id} />);
+    fireEvent.click(screen.getByRole("button", { name: /Customer/ }));
+    const cells = [...document.querySelectorAll("thead th")];
+    expect(cells[0]).toHaveAttribute("aria-sort", "ascending");
+    expect(cells[1]).not.toHaveAttribute("aria-sort");
+  });
+
+  it("searches across every column that can produce a value", () => {
+    render(<DataTable label="Customers" columns={columns} rows={rows} rowKey={(r) => r.id} searchable />);
+    fireEvent.change(screen.getByLabelText("Search Customers"), { target: { value: "acme" } });
+    expect(document.querySelectorAll("tbody tr")).toHaveLength(1);
+    expect(screen.getByText("Acme")).toBeTruthy();
+  });
+
+  it("tells the difference between no rows and no matches", () => {
+    const { rerender } = render(<DataTable label="Customers" columns={columns} rows={[]} searchable />);
+    expect(screen.getByText("Nothing here yet")).toBeTruthy();
+    rerender(<DataTable label="Customers" columns={columns} rows={rows} rowKey={(r) => r.id} searchable />);
+    fireEvent.change(screen.getByLabelText("Search Customers"), { target: { value: "zzz" } });
+    expect(screen.getByText(/Nothing matches/)).toBeTruthy();
+  });
+
+  it("pages, and only shows the pager when there is more than one page", () => {
+    const { rerender } = render(<DataTable label="Customers" columns={columns} rows={rows} rowKey={(r) => r.id} pageSize={2} />);
+    expect(document.querySelectorAll("tbody tr")).toHaveLength(2);
+    fireEvent.click(screen.getByRole("button", { name: /Next/ }));
+    expect(document.querySelectorAll("tbody tr")).toHaveLength(1);
+    rerender(<DataTable label="Customers" columns={columns} rows={rows} rowKey={(r) => r.id} pageSize={10} />);
+    expect(screen.queryByRole("button", { name: /Next/ })).toBeNull();
+  });
+
+  it("sorts missing values last whichever way the column points", () => {
+    const sparse = [{ id: "a", name: "A", seats: 5 }, { id: "b", name: "B", seats: undefined as unknown as number }];
+    // A column whose cell copes with a missing value, which is the realistic case.
+    const sparseColumns = [
+      { id: "name", header: "Customer", cell: (r: Row) => r.name, sortable: true },
+      { id: "seats", header: "Seats", cell: (r: Row) => r.seats?.toLocaleString() ?? "—", value: (r: Row) => r.seats, sortable: true },
+    ];
+    render(<DataTable label="Customers" columns={sparseColumns} rows={sparse} rowKey={(r) => r.id} />);
+    const header = screen.getByRole("button", { name: /Seats/ });
+    fireEvent.click(header);
+    expect([...document.querySelectorAll("tbody tr td:first-child")].map((c) => c.textContent)).toEqual(["A", "B"]);
+    fireEvent.click(header);
+    expect([...document.querySelectorAll("tbody tr td:first-child")].map((c) => c.textContent)).toEqual(["A", "B"]);
+  });
+});
+
+describe("StatTile", () => {
+  it("colours a fall by what the metric means, not by the sign", () => {
+    // The same -6.2%: bad for revenue, good for churn. Nothing but higherIsBetter separates them.
+    const { rerender } = render(<StatTile label="Revenue" value="£41,880" delta={-6.2} />);
+    expect(document.querySelector(".z-stat")).toHaveAttribute("data-tone", "danger");
+    rerender(<StatTile label="Churn" value="1.8%" delta={-6.2} higherIsBetter={false} />);
+    expect(document.querySelector(".z-stat")).toHaveAttribute("data-tone", "success");
+  });
+
+  it("says nothing about direction when there is nothing to compare to", () => {
+    render(<StatTile label="Seats" value="1,180" />);
+    expect(document.querySelector(".z-stat")).toHaveAttribute("data-tone", "neutral");
+    expect(document.querySelector(".z-stat__delta")).toBeNull();
+  });
+
+  it("signs the change and draws the trend only when there is a shape to draw", () => {
+    const { rerender } = render(<StatTile label="Revenue" value="£48,210" delta={12.4} series={[1, 2, 3]} seriesLabel="Revenue, last 30 days" />);
+    expect(screen.getByText("+12.4%")).toBeTruthy();
+    expect(document.querySelector(".z-stat__spark")).not.toBeNull();
+    rerender(<StatTile label="Revenue" value="£48,210" delta={12.4} series={[1]} />);
+    expect(document.querySelector(".z-stat__spark")).toBeNull();
   });
 });

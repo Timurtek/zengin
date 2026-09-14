@@ -302,6 +302,14 @@
       },
       "trailingIcon": {
         "type": "node"
+      },
+      "font": {
+        "type": "enum",
+        "values": [
+          "sans",
+          "mono"
+        ],
+        "default": "sans"
       }
     },
     "className": {
@@ -321,9 +329,12 @@
       "border-color": "error",
       "padding": "size",
       "border-radius": null,
-      "font": "size",
+      "font": [
+        "size",
+        "font"
+      ],
       "gap": null,
-      "font-family": null,
+      "font-family": "font",
       "line-height": null
     },
     "slots": [
@@ -1430,6 +1441,14 @@
       "rows": {
         "type": "number",
         "default": 3
+      },
+      "font": {
+        "type": "enum",
+        "values": [
+          "sans",
+          "mono"
+        ],
+        "default": "sans"
       }
     },
     "className": {
@@ -1449,9 +1468,12 @@
       "color": null,
       "border-radius": null,
       "padding": "size",
-      "font": "size",
+      "font": [
+        "size",
+        "font"
+      ],
       "gap": null,
-      "font-family": null,
+      "font-family": "font",
       "line-height": null
     },
     "states": [
@@ -2264,5 +2286,256 @@
     "migrations": {
       "react-icons/*#*": "Draw from the vocabulary: <Icon.Search />. Pick the set for the whole project with zengin icons <set>; the names stay."
     }
+  },
+  {
+    "name": "EmptyState",
+    "since": "0.4.0",
+    "export": {
+      "from": "@zenginui/ui",
+      "name": "EmptyState"
+    },
+    "replaces": [],
+    "extends": "div",
+    "props": {
+      "title": {
+        "type": "node"
+      },
+      "description": {
+        "type": "node"
+      },
+      "icon": {
+        "type": "node"
+      },
+      "action": {
+        "type": "node"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      },
+      "tone": {
+        "type": "enum",
+        "values": [
+          "neutral",
+          "danger"
+        ],
+        "default": "neutral"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "padding": "size",
+      "border": null,
+      "border-radius": null,
+      "color": null,
+      "gap": null,
+      "text-transform": null
+    },
+    "slots": [
+      "title",
+      "description",
+      "icon",
+      "action"
+    ],
+    "states": [
+      "default"
+    ]
+  },
+  {
+    "name": "Kbd",
+    "since": "0.4.0",
+    "export": {
+      "from": "@zenginui/ui",
+      "name": "Kbd"
+    },
+    "replaces": [
+      "kbd"
+    ],
+    "extends": "span",
+    "props": {
+      "keys": {
+        "type": "node"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "gap": null,
+      "font-family": null
+    },
+    "states": [
+      "default"
+    ]
+  },
+  {
+    "name": "DataTable",
+    "since": "0.4.0",
+    "export": {
+      "from": "@zenginui/ui",
+      "name": "DataTable"
+    },
+    "replaces": [
+      "@tanstack/react-table#*"
+    ],
+    "props": {
+      "columns": {
+        "type": "node"
+      },
+      "rows": {
+        "type": "node"
+      },
+      "rowKey": {
+        "type": "function"
+      },
+      "searchable": {
+        "type": "boolean",
+        "default": false
+      },
+      "searchPlaceholder": {
+        "type": "string",
+        "default": "Search"
+      },
+      "pageSize": {
+        "type": "number"
+      },
+      "density": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      },
+      "label": {
+        "type": "string"
+      },
+      "empty": {
+        "type": "node"
+      },
+      "onRowClick": {
+        "type": "function"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "gap": null
+    },
+    "slots": [
+      "empty"
+    ],
+    "states": [
+      "default"
+    ]
+  },
+  {
+    "name": "StatTile",
+    "since": "0.4.0",
+    "export": {
+      "from": "@zenginui/ui",
+      "name": "StatTile"
+    },
+    "replaces": [],
+    "extends": "div",
+    "props": {
+      "label": {
+        "type": "node"
+      },
+      "value": {
+        "type": "node"
+      },
+      "delta": {
+        "type": "number"
+      },
+      "higherIsBetter": {
+        "type": "boolean",
+        "default": true
+      },
+      "series": {
+        "type": "node"
+      },
+      "seriesLabel": {
+        "type": "string"
+      },
+      "caption": {
+        "type": "node"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "gap": null,
+      "font-size": "size",
+      "font-weight": null,
+      "color": null,
+      "line-height": null
+    },
+    "slots": [
+      "label",
+      "value",
+      "caption"
+    ],
+    "states": [
+      "default"
+    ]
   }
 ]

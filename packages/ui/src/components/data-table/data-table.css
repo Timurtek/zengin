@@ -1,0 +1,48 @@
+.z-datatable {
+  display: grid;
+  gap: var(--spacing-3);
+}
+
+.z-datatable__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.z-datatable__search {
+  min-width: 16rem;
+}
+
+/* The count is the difference between a filtered list that found one thing and one that looks broken. */
+.z-datatable__count {
+  margin: 0;
+  padding-bottom: var(--spacing-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* The header's sort control is a Button, so it keeps the focus ring and the hit area; it only loses the
+   padding that would push the column heading out of line with the cells below it. */
+.z-datatable__sort {
+  margin-inline: calc(var(--spacing-2) * -1);
+}
+
+.z-datatable__pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.z-datatable__page {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}

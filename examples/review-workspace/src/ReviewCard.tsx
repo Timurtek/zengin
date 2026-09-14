@@ -20,7 +20,7 @@ export function ReviewCard({ item, onApprove, onReject }: ReviewCardProps) {
   return (
     <Card variant="outlined" padding="md">
       <Card.Header>
-        <h2 className="review-card__title">{item.title}</h2>
+        <h3 className="review-card__title">{item.title}</h3>
         <Badge tone={status.tone}>{status.label}</Badge>
       </Card.Header>
       <Card.Body>

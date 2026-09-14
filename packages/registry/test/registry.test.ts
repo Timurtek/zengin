@@ -15,9 +15,9 @@ describe("buildRegistry", () => {
   it("has every Zengin UI component, the shared items, and the three templates", () => {
     const by = (t: string) => registry.items.filter((i) => i.type === t).map((i) => i.name);
     expect(by("component")).toEqual([
-      "avatar", "badge", "bar-chart", "button", "card", "checkbox", "code-block", "conversation", "dialog", "line-chart", "loader", "markdown", "menu", "message",
-      "popover", "progress", "prompt-input", "reasoning", "select", "separator", "sheet", "skeleton", "sources", "sparkline", "suggestions", "switch", "table",
-      "tabs", "text-area", "text-field", "toast", "tool-call", "tooltip",
+      "avatar", "badge", "bar-chart", "button", "card", "checkbox", "code-block", "conversation", "data-table", "dialog", "empty-state", "kbd", "line-chart", "loader",
+      "markdown", "menu", "message", "popover", "progress", "prompt-input", "reasoning", "select", "separator", "sheet", "skeleton", "sources", "sparkline",
+      "stat-tile", "suggestions", "switch", "table", "tabs", "text-area", "text-field", "toast", "tool-call", "tooltip",
     ]);
     expect(by("template")).toEqual(["blank", "marketing", "review", "saas", "chat", "auth", "docs", "storefront"]);
     expect(by("lib")).toEqual(["lib-chart", "lib-cx", "lib-icons", "lib-markdown"]);
@@ -90,7 +90,8 @@ describe("resolveItems", () => {
     expect(names.indexOf("lib-cx")).toBeLessThan(names.indexOf("dialog"));
     expect(names.indexOf("foundation")).toBeLessThan(names.indexOf("dialog"));
     expect(new Set(names).size).toBe(names.length);
-    await expect(resolveItems(source, ["buton"])).rejects.toThrow(/no item "buton".*Available: /);
+    // The whole list stays, because it is how someone finds the right name; the suggestion is added to it.
+    await expect(resolveItems(source, ["buton"])).rejects.toThrow(/no item "buton" \(did you mean "button"\?\).*Available: /);
   });
 });
 

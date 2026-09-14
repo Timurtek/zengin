@@ -14,11 +14,16 @@ export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
   size?: TextAreaSize;
   /** Which way the user may drag the corner. Default vertical. */
   resize?: TextAreaResize;
+  /**
+   * Render the value in the system's monospace face. For content that is code or data rather than prose: a
+   * JSON block, an API key, a path. The face is the `font-mono` token, so it follows `zengin fonts`.
+   */
+  font?: "sans" | "mono";
 }
 
 /** A multi-line text field with its label, description and error, in the shape of TextField. */
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea(
-  { label, description, error, size = "md", resize = "vertical", rows = 3, className, id: idProp, disabled, readOnly, required, ...rest },
+  { label, description, error, size = "md", resize = "vertical", font = "sans", rows = 3, className, id: idProp, disabled, readOnly, required, ...rest },
   ref,
 ) {
   const generated = useId();
@@ -32,6 +37,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
       className={cx("z-textarea", className)}
       data-size={size}
       data-resize={resize}
+      data-font={font}
       data-invalid={invalid || undefined}
       data-disabled={disabled || undefined}
       data-readonly={readOnly || undefined}

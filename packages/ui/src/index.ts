@@ -13,6 +13,10 @@ export { Menu, type MenuProps, type MenuContentProps, type MenuItemProps, type M
 export { Table, type TableProps, type TableRowProps, type TableCellProps, type TableHeadCellProps, type TableDensity, type TableAlign } from "./components/table/table.js";
 export { Avatar, initials, type AvatarProps, type AvatarSize, type AvatarShape } from "./components/avatar/avatar.js";
 export { Skeleton, type SkeletonProps, type SkeletonVariant } from "./components/skeleton/skeleton.js";
+export { EmptyState, type EmptyStateProps, type EmptyStateSize, type EmptyStateTone } from "./components/empty-state/empty-state.js";
+export { Kbd, type KbdProps, type KbdSize } from "./components/kbd/kbd.js";
+export { DataTable, type DataTableProps, type DataTableColumn, type DataTableAlign, type SortDirection } from "./components/data-table/data-table.js";
+export { StatTile, type StatTileProps, type StatTileSize } from "./components/stat-tile/stat-tile.js";
 export { Sheet, type SheetProps, type SheetContentProps, type SheetSide, type SheetSize } from "./components/sheet/sheet.js";
 export { Popover, type PopoverProps, type PopoverContentProps, type PopoverSize } from "./components/popover/popover.js";
 export { Progress, type ProgressProps, type ProgressSize, type ProgressTone } from "./components/progress/progress.js";
