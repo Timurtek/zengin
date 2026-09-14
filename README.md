@@ -63,9 +63,18 @@ pnpm build
 pnpm test
 pnpm typecheck
 pnpm --filter @zenginui/ui storybook
+pnpm smoke                      # what the deployed site actually serves
 ```
 
 Node 22 and pnpm 10.
+
+`pnpm smoke` checks a running deployment rather than a build: every page the site's navigation promises,
+the JSON the CLI reads, and the assets each page asks for, resolved the way a browser would resolve them.
+It exists because the rest of the pipeline never opens a URL, so a hosting rule that rewrites a path can
+break a page while the engine, the tests and CI all stay green. Pass a base URL to point it elsewhere:
+`node scripts/smoke.mjs http://localhost:5174`. It runs on its own after every production deployment
+(`.github/workflows/smoke.yml`) and once a day, because hosting, DNS and certificates change without a
+commit.
 
 ## Agent skill
 

@@ -6,12 +6,13 @@
   "packageManager": "pnpm@10.14.0",
   "scripts": {
     "build": "pnpm -r build",
+    "changeset": "changeset",
+    "registry": "node packages/cli/dist/index.js registry build --out examples/marketing-site/public/r",
+    "release": "pnpm build && changeset publish",
+    "smoke": "node scripts/smoke.mjs",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
-    "changeset": "changeset",
-    "version-packages": "changeset version && pnpm install --lockfile-only",
-    "release": "pnpm build && changeset publish",
-    "registry": "node packages/cli/dist/index.js registry build --out examples/marketing-site/public/r"
+    "version-packages": "changeset version && pnpm install --lockfile-only"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^1.0.1",

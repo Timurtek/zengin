@@ -1,0 +1,37 @@
+name: smoke
+
+# What a visitor gets, checked against the deployment rather than the build.
+#
+# CI checks the code and the release checks the packages; neither opens a URL, which is how two hosting
+# bugs shipped green on the same day. This runs after Vercel reports a successful deployment, so the thing
+# under test is the site as configured and served, not dist/ on a runner.
+on:
+  deployment_status:
+  schedule:
+    # Hosting config, DNS and certificates can change without a commit, so it also runs on its own.
+    - cron: "17 7 * * *"
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Base URL to check"
+        required: false
+        default: "https://zengin.timurtek.com"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    # A deployment_status fires for every state and every environment; only a finished production one is
+    # worth testing, and a preview URL would fail the checks that assume the real domain's routing.
+    if: >
+      github.event_name != 'deployment_status' ||
+      (github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check what the navigation promises
+        run: node scripts/smoke.mjs "${{ github.event.inputs.url || 'https://zengin.timurtek.com' }}"
