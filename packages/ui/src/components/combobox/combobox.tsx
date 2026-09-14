@@ -54,6 +54,18 @@ export type ComboboxProps = ComboboxSingleProps | ComboboxMultipleProps;
  * the list. Hand-rolled comboboxes almost always get that last part wrong, and a screen reader then reads
  * nothing as the user arrows through.
  */
+/**
+ * An option's DOM id, from its position in the list rather than from its value.
+ *
+ * `aria-activedescendant` is a single IDREF and an id may not contain whitespace, so building ids out of
+ * values broke the moment a value was "Assembly AI": assistive technology reads nothing while the user
+ * arrows through, and nothing looks wrong, because `getElementById` tolerates the space and the highlight is
+ * drawn from an index. A position is always id-safe and always unique in the list being rendered.
+ */
+function optionId(base: string, index: number): string {
+  return `${base}-option-${index}`;
+}
+
 export function Combobox(props: ComboboxProps) {
   const {
     options,
@@ -211,7 +223,7 @@ export function Combobox(props: ComboboxProps) {
           aria-expanded={open}
           aria-controls={listId}
           aria-autocomplete="list"
-          aria-activedescendant={open && matches[active] ? `${id}-option-${matches[active]!.value}` : undefined}
+          aria-activedescendant={open && matches[active] ? optionId(id, active) : undefined}
           aria-describedby={describedBy}
           aria-invalid={error ? true : undefined}
           disabled={disabled}
@@ -243,7 +255,8 @@ export function Combobox(props: ComboboxProps) {
                   return (
                     <li
                       key={option.value}
-                      id={`${id}-option-${option.value}`}
+                      id={optionId(id, index)}
+                      data-value={option.value}
                       className="z-combobox__option"
                       role="option"
                       aria-selected={isSelected}

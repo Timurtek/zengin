@@ -887,6 +887,27 @@ describe("Kanban", () => {
 });
 
 describe("Combobox", () => {
+  it("gives options ids that are valid IDREFs, whatever the values are", () => {
+    // A value with a space is ordinary — a company name, a person's name. It used to produce an id with a
+    // space in it, so `aria-activedescendant` stopped resolving and a screen reader read nothing, while the
+    // highlight kept moving because it is drawn from an index. Nothing looked wrong.
+    const options = [
+      { value: "Assembly AI", label: "Assembly AI" },
+      { value: "north wind", label: "Northwind" },
+    ];
+    render(<Combobox label="Company" options={options} />);
+    const input = screen.getByRole("combobox");
+    input.focus();
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+
+    const active = input.getAttribute("aria-activedescendant")!;
+    expect(active).toBeTruthy();
+    expect(active).not.toMatch(/\s/);
+    // The strict path, not the lenient getElementById that hid this: one IDREF, one element.
+    expect(document.querySelectorAll(`#${CSS.escape(active)}`)).toHaveLength(1);
+    expect(document.getElementById(active)).toHaveAttribute("data-value", "Assembly AI");
+  });
+
   const options = [
     { value: "mina", label: "Mina Okafor", hint: "mina@x.dev" },
     { value: "rafa", label: "Rafa Silva", hint: "rafa@x.dev" },
@@ -929,7 +950,9 @@ describe("Combobox", () => {
     fireEvent.focus(input);
     fireEvent.keyDown(input, { key: "ArrowDown" }); // Rafa
     fireEvent.keyDown(input, { key: "ArrowDown" }); // skips Arun, wraps to Mina
-    expect(input.getAttribute("aria-activedescendant")).toContain("mina");
+    // Read the value off the element, not out of the id: ids are positions now, which is the fix for #8.
+    const active = document.getElementById(input.getAttribute("aria-activedescendant")!);
+    expect(active).toHaveAttribute("data-value", "mina");
   });
 
   it("reports the chosen value and closes", () => {

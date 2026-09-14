@@ -78,7 +78,10 @@
   list-style: none;
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-md);
-  background-color: var(--color-surface-overlay);
+  /* The surface, not --color-surface-overlay: that token is the 80%-alpha scrim a modal sits on top of, and
+     content painted on it composites with the page behind. Menu, Select and Popover all use the surface. */
+  background-color: var(--color-surface);
+  color: var(--color-text);
   box-shadow: var(--shadow-lg);
 }
 

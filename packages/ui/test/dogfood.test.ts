@@ -1,3 +1,4 @@
+import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
@@ -32,5 +33,32 @@ describe("zengin on @zenginui/ui", () => {
     });
     expect(violations.map((v) => v.rule)).toEqual(["color-literal", "spacing-literal"]);
     expect(violations[0]!.fix).toMatchObject({ replace: "var(--color-primary)", confidence: "exact" });
+  });
+});
+
+/**
+ * A rule the engine cannot express, because every token here is real and used in a valid place: what is
+ * wrong is which token was chosen. `--color-surface-overlay` is the 80%-alpha scrim a modal sits on top of.
+ * Painting content on it composites with whatever is behind, which is how Combobox's option list shipped at
+ * 1.79:1 in the light theme while every check in the repository stayed green.
+ */
+describe("the scrim is a backdrop", () => {
+  const components = join(root, "src", "components");
+
+  it("is used only by the two components that put something in front of it", () => {
+    const used: string[] = [];
+    for (const dir of readdirSync(components)) {
+      const css = join(components, dir, `${dir}.css`);
+      let content = "";
+      try {
+        content = readFileSync(css, "utf8");
+      } catch {
+        continue; // a component without its own stylesheet
+      }
+      // `var(...)`, not the bare name: a stylesheet may say in a comment why it does not use the scrim.
+      if (content.includes("var(--color-surface-overlay)")) used.push(dir);
+    }
+    // Dialog and Sheet paint it behind themselves. Anything else is content on a scrim.
+    expect(used.sort()).toEqual(["dialog", "sheet"]);
   });
 });
