@@ -8,6 +8,7 @@ export { createProject, AGENT_WIRING, VERSIONS, type CreateOptions, type CreateR
 // build time; `create` writes it into a new project and `doctor` judges an existing one against it.
 export { ZENGIN_VERSIONS } from "./generated/versions.js";
 export { buildTokensCss, writeTokensCss } from "./tokens.js";
+export { addTokens, foundationTokens, tokenDrift, varsUsed, type TokenDrift } from "./definitions.js";
 export { applyTheme, listThemes, type ApplyThemeResult, type ThemeSummary } from "./theme.js";
 export { applyIcons, listIconSets, renderIconsModule, ICON_NAMES, ICON_SETS, type ApplyIconsResult, type IconsSummary, type IconSetSpec } from "./icons.js";
 export { applyFonts, listFonts, applyPairingToCss, pairingCss, pairingFamilies, type ApplyFontsResult, type FontsSummary } from "./fonts.js";

@@ -629,6 +629,22 @@ Each one arrives as source in \`src/components/ui\`, with its stylesheet importe
 
 Every item is in [the hosted Storybook](https://zengin.timurtek.com/storybook/) with its manifest-driven controls, which is the fastest way to decide what you want before you add it.
 
+## The tokens they need
+
+A component added today may read a token family added today, and your \`zengin/tokens.json\` is as old as
+your project. So \`add\` carries the tokens the arriving component actually reads, from the same registry and
+the same version, and says which ones:
+
+\`\`\`
+Added 1 token to zengin/tokens.json that the new component read: --tracking-wider.
+  Your own values were not touched. Run zengin tokens to rebuild the stylesheet.
+\`\`\`
+
+Only names your definitions lack entirely. A token you gave your own value is your brand, and it stays.
+Without this the component installs, its stylesheet reads a custom property nothing defines, and
+[\`zengin check\`](#first-check) fails a project that was just told it was up to date — which is exactly how
+this was found.
+
 ## The packages they need
 
 Adding a component writes its files and tells you what it needs from npm. It does not install anything unless you ask:
@@ -880,6 +896,22 @@ Comparing the hash of the file on disk against that record says whether you edit
 ## What a conflict looks like
 
 The report prints a real diff of both sides, so the decision is made with the change in front of you rather than from a filename.
+
+## Your definitions
+
+The components in \`src/components/ui\` each record the version they were copied from, which is how upgrade tells
+*current* from *edited*. \`zengin/tokens.json\` records nothing — JSON has no comments — so it used to sit outside
+this command entirely, and a project a release behind on its tokens was told everything was current.
+
+The definitions are compared token by token instead:
+
+\`\`\`
+  tokens    8 the registry defines and this project does not: --tracking-tighter, --tracking-tight, ...
+  yours     1 token with your own value, left alone: --color-primary
+\`\`\`
+
+**\`--write\` is additive.** It adds what you are missing and never touches a value you changed, because a brand
+that upgrade could overwrite would not be yours.
 
 ## Next
 

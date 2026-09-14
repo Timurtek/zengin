@@ -1,10 +1,10 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
 import { afterAll, describe, expect, it } from "vitest";
-import { buildRegistry, createProject, installItems, openRegistry, registryFromMemory, resolveItems, writeRegistry } from "../src/index.js";
+import { addTokens, buildRegistry, createProject, installItems, openRegistry, registryFromMemory, resolveItems, tokenDrift, varsUsed, writeRegistry } from "../src/index.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const registry = buildRegistry({ root });
@@ -279,3 +279,66 @@ async function applyFontsForTest(dir: string): Promise<string> {
   await applyFonts({ projectDir: dir, name: "fraunces", source: registryFromMemory(registry) });
   return readFileSync(join(dir, "src/app/layout.tsx"), "utf8");
 }
+
+
+describe("definitions the project owns", () => {
+  const upstream = {
+    color: { primary: { DEFAULT: { $value: "#2563EB" }, hover: { $value: "#1D4ED8" } } },
+    tracking: { wider: { $value: "0.02em", $type: "dimension" } },
+  };
+
+  it("compares token by token: missing is the registry's, different is yours", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zengin-defs-"));
+    try {
+      mkdirSync(join(dir, "zengin"), { recursive: true });
+      // A project a release behind: no tracking family, and a brand of its own on the primary colour.
+      const mine = { color: { primary: { DEFAULT: { $value: "#0f766e" }, hover: { $value: "#1D4ED8" } } } };
+      writeFileSync(join(dir, "zengin", "tokens.json"), JSON.stringify(mine, null, 2));
+
+      const drift = tokenDrift(join(dir, "zengin"), upstream);
+      expect(drift.missing.map((t) => t.cssVar)).toEqual(["--tracking-wider"]);
+      expect(drift.yours.map((t) => t.cssVar)).toEqual(["--color-primary"]);
+
+      // Additive only. The brand survives, because a value the project changed is the point of owning them.
+      expect(addTokens(join(dir, "zengin"), upstream, drift.missing.map((t) => t.path))).toBe(1);
+      const after = JSON.parse(readFileSync(join(dir, "zengin", "tokens.json"), "utf8")) as typeof mine & { tracking: Record<string, { $value: string }> };
+      expect(after.tracking["wider"]!.$value).toBe("0.02em");
+      expect(after.color.primary.DEFAULT.$value).toBe("#0f766e");
+
+      expect(tokenDrift(join(dir, "zengin"), upstream).missing).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("reads the custom properties a stylesheet uses", () => {
+    const used = varsUsed([".a { letter-spacing: var(--tracking-wider); color: var( --color-primary ); }", ".b { gap: var(--spacing-2, 8px); }"]);
+    expect([...used].sort()).toEqual(["--color-primary", "--spacing-2", "--tracking-wider"]);
+  });
+
+  it("add carries the tokens an arriving component reads, so the project still passes its own check", async () => {
+    const dir = join(tmp, "carried");
+    const source = registryFromMemory(registry);
+    await createProject({ dir, template: "blank", source, storybook: false });
+
+    // Age the project's definitions the way a real one ages: the family did not exist when it was created.
+    const tokensPath = join(dir, "zengin", "tokens.json");
+    const before = JSON.parse(readFileSync(tokensPath, "utf8")) as Record<string, unknown>;
+    delete before["tracking"];
+    writeFileSync(tokensPath, JSON.stringify(before, null, 2));
+
+    const items = await resolveItems(source, ["combobox"]);
+    const added = installItems({ projectDir: dir, items, version: registry.version });
+    expect(added.tokensAdded).toContain("--tracking-wider");
+
+    const after = JSON.parse(readFileSync(tokensPath, "utf8")) as { tracking?: Record<string, unknown> };
+    expect(after.tracking).toBeDefined();
+
+    // The whole point: the gate the project just failed now passes.
+    const { config, dir: projectDir } = loadConfigFile(join(dir, "zengin.config.yaml"));
+    const resolved = resolveConfig(config, projectDir);
+    const engine = await createEngine(resolved);
+    const files = readProjectFiles(projectDir, resolved.scope.include, resolved.scope.exclude);
+    expect(engine.check(files).filter((v) => v.rule === "token-reference")).toEqual([]);
+  });
+});

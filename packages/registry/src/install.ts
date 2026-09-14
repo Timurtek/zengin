@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import type { ComponentManifest } from "@zenginui/engine";
+import { addTokens, tokenDrift, varsUsed } from "./definitions.js";
 import { LAYOUT, type RegistryItem } from "./schema.js";
 
 export interface InstallResult {
@@ -15,6 +16,8 @@ export interface InstallResult {
   components: string[];
   /** Stories left out because the project will not have what they demonstrate. */
   storiesSkipped: { item: string; needs: string[] }[];
+  /** Tokens added to the project's definitions because an arriving component reads them. */
+  tokensAdded: string[];
 }
 
 /**
@@ -24,7 +27,7 @@ export interface InstallResult {
  */
 export function installItems(opts: { projectDir: string; items: RegistryItem[]; version: string; force?: boolean }): InstallResult {
   const { projectDir, items, version } = opts;
-  const result: InstallResult = { written: [], skipped: [], dependencies: {}, devDependencies: {}, components: [], storiesSkipped: [] };
+  const result: InstallResult = { written: [], skipped: [], dependencies: {}, devDependencies: {}, components: [], storiesSkipped: [], tokensAdded: [] };
 
   // Everything this install will make available: what is already in the project, plus what is arriving now.
   const available = new Set<string>(readManifestNames(projectDir));
@@ -71,6 +74,8 @@ export function installItems(opts: { projectDir: string; items: RegistryItem[]; 
     }
   }
 
+  carryTokens(projectDir, items, result);
+
   const manifestPath = join(projectDir, LAYOUT.definitionsDir, "components.json");
   if (existsSync(manifestPath)) {
     result.components = (JSON.parse(readFileSync(manifestPath, "utf8")) as ComponentManifest[]).map((m) => m.name);
@@ -115,6 +120,36 @@ export function mergeManifest(projectDir: string, entry: ComponentManifest): voi
   else current[i] = entry;
   mkdirSync(dirname(p), { recursive: true });
   writeFileSync(p, JSON.stringify(current, null, 2) + "\n");
+}
+
+/**
+ * A component arriving from the registry may read a token family added after this project was created, and
+ * a project's definitions have no upgrade path of their own: `zengin add combobox` into a project older than
+ * the `tracking` family wrote a stylesheet whose `var(--tracking-wider)` resolved to nothing, and the engine
+ * failed the project immediately after `add` reported success.
+ *
+ * So the tokens an arriving component actually reads are carried with it, from the same registry and the same
+ * version as the component. Only names the project lacks entirely: a value the project has changed is its
+ * brand, and stays.
+ */
+function carryTokens(projectDir: string, items: RegistryItem[], result: InstallResult): void {
+  const upstream = items.find((i) => i.name === "foundation" && i.type === "definitions");
+  if (!upstream) return;
+  const defs = join(projectDir, LAYOUT.definitionsDir);
+
+  const styles = items.flatMap((i) => i.files.filter((f) => f.kind === "style").map((f) => f.content));
+  if (!styles.length) return;
+  const used = varsUsed(styles);
+
+  for (const file of ["tokens.json", "tokens.dark.json"]) {
+    const entry = upstream.files.find((f) => f.path === `${LAYOUT.definitionsDir}/${file}`);
+    if (!entry || !existsSync(join(defs, file))) continue;
+    const drift = tokenDrift(defs, JSON.parse(entry.content), file);
+    const needed = drift.missing.filter((t) => used.has(t.cssVar));
+    if (!needed.length) continue;
+    addTokens(defs, JSON.parse(entry.content), needed.map((t) => t.path), file);
+    for (const t of needed) if (!result.tokensAdded.includes(t.cssVar)) result.tokensAdded.push(t.cssVar);
+  }
 }
 
 /** Appends `@import "../components/ui/<x>/<x>.css";` to src/styles/index.css once. */

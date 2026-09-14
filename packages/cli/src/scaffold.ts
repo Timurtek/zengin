@@ -88,7 +88,18 @@ export async function runUpgrade(names: string[], opts: ScaffoldOptions, cwd: st
   const lines = [`Project pins ${plan.projectVersion ?? "no version"}; ${source.location} is at ${plan.version}. ${plan.entries.length} owned files in ${plan.items.length} items.`];
   const word: Record<string, string> = { current: "current ", upstream: "upstream", local: "local   ", conflict: "CONFLICT", unknown: "unknown ", gone: "gone    " };
   for (const e of plan.entries) if (e.state !== "current") lines.push(`  ${word[e.state]}  ${e.path}${e.from ? `  (from ${e.from})` : ""}`);
-  if (!plan.entries.some((e) => e.state !== "current")) lines.push("  Everything is what the registry ships.");
+  const drift = plan.tokens;
+  if (!plan.entries.some((e) => e.state !== "current") && !drift.missing.length) lines.push("  Everything is what the registry ships.");
+  if (drift.missing.length) {
+    const names = drift.missing.map((t) => t.cssVar);
+    lines.push(
+      `  tokens    ${names.length} the registry defines and this project does not: ${names.slice(0, 6).join(", ")}${names.length > 6 ? `, and ${names.length - 6} more` : ""}`,
+      "            A component added later can read a token family added later, so this is how a project fails its own check right after a clean upgrade.",
+    );
+  }
+  if (drift.yours.length) {
+    lines.push(`  yours     ${drift.yours.length} token${drift.yours.length === 1 ? "" : "s"} with your own value, left alone: ${drift.yours.slice(0, 4).map((t) => t.cssVar).join(", ")}${drift.yours.length > 4 ? ", ..." : ""}`);
+  }
   const summary = Object.entries(counts).map(([k, n]) => `${n} ${k}`).join(", ");
 
   if (!opts.write) {
@@ -149,6 +160,19 @@ export async function runBrand(opts: ScaffoldOptions, cwd: string): Promise<stri
  * other component, so they are left out. Saying which, and what would bring them, is the difference between
  * a deliberate omission and a file that mysteriously is not there.
  */
+/**
+ * Tokens that arrived with a component, named rather than slipped in: `zengin/tokens.json` is the project's
+ * own file and the definitions the engine enforces against, so a command that adds to it says so.
+ */
+function pushCarriedTokens(lines: string[], added: string[] | undefined): void {
+  if (!added?.length) return;
+  lines.push(
+    "",
+    `Added ${added.length} token${added.length === 1 ? "" : "s"} to zengin/tokens.json that the new component${added.length === 1 ? "" : "s"} read: ${added.join(", ")}.`,
+    "  Your own values were not touched. Run zengin tokens to rebuild the stylesheet (dev and build do it for you).",
+  );
+}
+
 function pushSkippedStories(lines: string[], skipped: { item: string; needs: string[] }[] | undefined): void {
   if (!skipped?.length) return;
   lines.push("", `${skipped.length} ${skipped.length === 1 ? "story was" : "stories were"} left out because ${skipped.length === 1 ? "it demonstrates" : "they demonstrate"} components this project does not have:`);
@@ -229,6 +253,7 @@ export async function runAdd(names: string[], opts: ScaffoldOptions, cwd: string
     }
   }
   pushSkippedStories(lines, r.storiesSkipped);
+  pushCarriedTokens(lines, r.tokensAdded);
   if (unknown.length) {
     lines.push("", `Not added, because the registry has no such item:`);
     for (const u of unknown) lines.push(`  ${u.name}${u.didYouMean ? `  — did you mean ${u.didYouMean}?` : ""}`);

@@ -4,6 +4,7 @@ import { readOwnedPragma } from "@zenginui/engine";
 import { kebab } from "./build.js";
 import { contentHash, mergeManifest, stripPragma, withPragma } from "./install.js";
 import type { RegistrySource } from "./load.js";
+import { addTokens, tokenDrift, type TokenDrift } from "./definitions.js";
 import { LAYOUT, type RegistryItem } from "./schema.js";
 
 /**
@@ -47,6 +48,13 @@ export interface UpgradePlan {
   entries: UpgradeEntry[];
   /** Registry items the project has files for. */
   items: string[];
+  /**
+   * The definitions, compared token by token rather than file by file. `zengin/tokens.json` carries no
+   * pragma — JSON has no comments — so it was outside this plan entirely, and a project a release behind on
+   * its tokens was told everything was current. A component added later can read a token family added later,
+   * which is how a project ends up failing its own gate straight after a clean upgrade.
+   */
+  tokens: TokenDrift;
 }
 
 export interface ApplyResult {
@@ -97,7 +105,15 @@ export async function planUpgrade(opts: { projectDir: string; source: RegistrySo
     if (!index.items.some((i) => i.name === name)) entries.push({ path: rel, item: name, state: "gone", ...(pragma.forkedFrom ? { from: pragma.forkedFrom } : {}) });
   }
   entries.sort((a, b) => a.path.localeCompare(b.path));
-  return { projectVersion, version: index.version, entries, items };
+
+  // Token drift is read from the registry's foundation, which is where a project's definitions came from.
+  let tokens: TokenDrift = { missing: [], yours: [] };
+  if (index.items.some((i) => i.name === "foundation")) {
+    const foundation = await opts.source.item("foundation");
+    const upstream = foundation.files.find((f) => f.path === `${LAYOUT.definitionsDir}/tokens.json`);
+    if (upstream) tokens = tokenDrift(join(dir, LAYOUT.definitionsDir), JSON.parse(upstream.content));
+  }
+  return { projectVersion, version: index.version, entries, items, tokens };
 }
 
 function compare(path: string, local: string, upstreamRaw: string, item: RegistryItem): UpgradeEntry {
@@ -135,6 +151,17 @@ export async function applyUpgrade(plan: UpgradePlan, opts: { projectDir: string
     writeFileSync(join(dir, e.path), owned ? withPragma(f.content, item.manifest!.name, plan.version) : f.content);
     written.push(e.path);
     if (item.manifest && f.kind === "component") mergeManifest(dir, { ...item.manifest, export: item.type === "component" ? { ...item.manifest.export, from: LAYOUT.alias } : item.manifest.export });
+  }
+
+  // The tokens the registry has and this project does not. Additive only: a value the project changed is its
+  // brand, and `yours` is reported rather than taken.
+  if (plan.tokens.missing.length) {
+    const foundation = await load("foundation");
+    const upstream = foundation.files.find((f) => f.path === `${LAYOUT.definitionsDir}/tokens.json`);
+    if (upstream) {
+      const added = addTokens(join(dir, LAYOUT.definitionsDir), JSON.parse(upstream.content), plan.tokens.missing.map((t) => t.path));
+      if (added) written.push(`${LAYOUT.definitionsDir}/tokens.json`);
+    }
   }
 
   // Files the project edited but upstream did not keep their old pragma; they are current by choice. Only a
