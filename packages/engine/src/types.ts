@@ -208,6 +208,12 @@ export interface ResolvedConfig {
   rules: Record<RuleId, ResolvedRuleConfig>;
   /** In declaration order; the first match wins. Empty when the project has one design, which is the default. */
   profiles: ResolvedProfile[];
+  /**
+   * Prefixes of custom properties a dependency sets at runtime, derived from the project's own dependencies.
+   * Radix writes `--radix-popover-content-transform-origin` onto the element from JavaScript; no stylesheet
+   * declares it and it is not a missing token, so `token-reference` must not report it.
+   */
+  externalVarPrefixes: string[];
 }
 
 export interface ResolvedProfile {

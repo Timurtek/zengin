@@ -140,11 +140,29 @@ export async function runBrand(opts: ScaffoldOptions, cwd: string): Promise<stri
   return lines.join("\n");
 }
 
+/**
+ * A story is documentation, and some of them demonstrate a component inside another one: a Tooltip on a
+ * Button, a Skeleton in a Card. Those are better stories, and they cannot compile in a project without the
+ * other component, so they are left out. Saying which, and what would bring them, is the difference between
+ * a deliberate omission and a file that mysteriously is not there.
+ */
+function pushSkippedStories(lines: string[], skipped: { item: string; needs: string[] }[] | undefined): void {
+  if (!skipped?.length) return;
+  lines.push("", `${skipped.length} ${skipped.length === 1 ? "story was" : "stories were"} left out because ${skipped.length === 1 ? "it demonstrates" : "they demonstrate"} components this project does not have:`);
+  for (const s of skipped) lines.push(`  ${s.item}: needs ${s.needs.join(", ")}`);
+  lines.push(`  Add ${skipped.length === 1 ? "it" : "them"} and run the same command again to get the ${skipped.length === 1 ? "story" : "stories"}.`);
+}
+
 /** `zengin create <dir>`: a new project on the registry's components, checked by the engine before it prints. */
 export async function runCreate(dirArg: string | undefined, opts: ScaffoldOptions, cwd: string): Promise<string> {
   if (!dirArg) throw new Error("zengin create needs a directory: zengin create my-app [--template marketing]");
   const source = openRegistry(opts.registry);
   const r = await createProject({ dir: resolve(cwd, dirArg), name: opts.name, template: opts.template, theme: opts.theme, source, storybook: opts.storybook, local: opts.local, framework: opts.framework });
+  // Suggest components this template did not bring, rather than ones it already has.
+  const suggestion = ["select", "switch", "dialog", "tooltip", "table", "tabs", "sheet", "popover"]
+    .filter((name) => !r.install.components.some((c) => c.toLowerCase() === name.replace(/-/g, "")))
+    .slice(0, 2)
+    .join(" ");
   const lines = [
     `Created ${r.name} in ${relative(cwd, r.dir) || "."} from the ${r.template} template${opts.theme ? ` with the ${opts.theme} theme` : ""}${r.framework === "next" ? " on Next.js" : ""} (Zengin UI ${r.version}, registry ${source.location}).`,
     `  ${r.install.components.length} components in ${LAYOUT.componentsDir}: ${r.install.components.join(", ")}`,
@@ -156,8 +174,13 @@ export async function runCreate(dirArg: string | undefined, opts: ScaffoldOption
     "  npm install        # or pnpm install",
     "  npm run dev        # the app",
     ...(opts.storybook ? ["  npm run storybook  # every component, both themes"] : []),
-    "  npm run add -- select switch   # more components from the registry",
+    ...(suggestion ? [`  npm run add -- ${suggestion}   # more components from the registry`] : []),
+    "",
+    // The MCP server and the hook are read when an agent session starts, so the session that ran create
+    // does not have them. Saying so here is the difference between the loop engaging and silently not.
+    "Open a new agent session in this directory so the MCP server and the edit hook load.",
   ];
+  pushSkippedStories(lines, r.install.storiesSkipped);
   if (r.violations > 0) lines.push("", "The fresh project has violations, which means the registry is wrong. Run `zengin check` in it and report the output.");
   return lines.join("\n");
 }
@@ -181,6 +204,7 @@ export async function runAdd(names: string[], opts: ScaffoldOptions, cwd: string
   if (Object.keys(missing).length) {
     lines.push("", "Install the packages these components need:", `  npm install ${Object.entries(missing).map(([k, v]) => `${k}@"${v}"`).join(" ")}`);
   }
+  pushSkippedStories(lines, r.storiesSkipped);
   lines.push("", `Manifest: ${r.components.length} components in ${LAYOUT.definitionsDir}/components.json. Run zengin check to confirm the project is still clean.`);
   return lines.join("\n");
 }

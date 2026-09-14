@@ -11,6 +11,8 @@ import type { Declaration, StylesheetResolver } from "./resolver.js";
  */
 export class StylesheetIndex implements StylesheetResolver {
   private readonly classes = new Map<string, { decls: Declaration[]; origin: string }>();
+  /** Every custom property these stylesheets declare, so a rule can tell a project's own var from a typo. */
+  readonly vars = new Set<string>();
 
   static from(files: FileInput[]): StylesheetIndex {
     const index = new StylesheetIndex();
@@ -25,6 +27,12 @@ export class StylesheetIndex implements StylesheetResolver {
     } catch {
       return; // an unparsable stylesheet is the consumer's build's problem, not ours
     }
+    // Every custom property this file declares, whatever the selector. Theme tokens live on `:root`, which
+    // is not a class selector, so collecting these inside the class walk below would miss the one place
+    // that matters most.
+    root.walkDecls((d) => {
+      if (d.prop.startsWith("--")) this.vars.add(d.prop);
+    });
     root.walkRules((rule) => {
       for (const selector of rule.selectors) {
         const m = /^\.(-?[A-Za-z_][\w-]*)(?::{1,2}[\w-]+(?:\([^)]*\))?)*$/.exec(selector.trim());
@@ -44,6 +52,8 @@ export class StylesheetIndex implements StylesheetResolver {
     const out = new StylesheetIndex();
     for (const [k, v] of this.classes) out.classes.set(k, v);
     for (const [k, v] of other.classes) out.classes.set(k, v);
+    for (const v of this.vars) out.vars.add(v);
+    for (const v of other.vars) out.vars.add(v);
     return out;
   }
 

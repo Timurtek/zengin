@@ -13,6 +13,8 @@ export interface InstallResult {
   devDependencies: Record<string, string>;
   /** Component names now in the manifest. */
   components: string[];
+  /** Stories left out because the project will not have what they demonstrate. */
+  storiesSkipped: { item: string; needs: string[] }[];
 }
 
 /**
@@ -22,7 +24,11 @@ export interface InstallResult {
  */
 export function installItems(opts: { projectDir: string; items: RegistryItem[]; version: string; force?: boolean }): InstallResult {
   const { projectDir, items, version } = opts;
-  const result: InstallResult = { written: [], skipped: [], dependencies: {}, devDependencies: {}, components: [] };
+  const result: InstallResult = { written: [], skipped: [], dependencies: {}, devDependencies: {}, components: [], storiesSkipped: [] };
+
+  // Everything this install will make available: what is already in the project, plus what is arriving now.
+  const available = new Set<string>(readManifestNames(projectDir));
+  for (const item of items) if (item.manifest?.name) available.add(item.manifest.name);
 
   const write = (rel: string, content: string, always = false): void => {
     const abs = join(projectDir, rel);
@@ -40,6 +46,15 @@ export function installItems(opts: { projectDir: string; items: RegistryItem[]; 
     Object.assign(result.devDependencies, item.devDependencies);
 
     for (const f of item.files) {
+      // A story that names a component this project will not have would not compile, so it is left out and
+      // reported rather than written. Everything else goes in.
+      if (f.kind === "story" && item.storyRequires?.length) {
+        const missing = item.storyRequires.filter((n) => !available.has(n));
+        if (missing.length) {
+          result.storiesSkipped.push({ item: item.name, needs: missing });
+          continue;
+        }
+      }
       // A component's own files, the .tsx and its stylesheet, carry the pragma; a story is the project's from the start.
       const owned = item.manifest && (f.kind === "component" || (f.kind === "style" && f.path.startsWith(LAYOUT.componentsDir)));
       const content = owned ? withPragma(f.content, item.manifest!.name, version) : f.content;
@@ -61,6 +76,17 @@ export function installItems(opts: { projectDir: string; items: RegistryItem[]; 
     result.components = (JSON.parse(readFileSync(manifestPath, "utf8")) as ComponentManifest[]).map((m) => m.name);
   }
   return result;
+}
+
+/** Components the project's manifest already lists, so an arriving story knows what it can rely on. */
+function readManifestNames(projectDir: string): string[] {
+  const p = join(projectDir, LAYOUT.definitionsDir, "components.json");
+  if (!existsSync(p)) return [];
+  try {
+    return (JSON.parse(readFileSync(p, "utf8")) as ComponentManifest[]).map((m) => m.name);
+  } catch {
+    return [];
+  }
 }
 
 /**

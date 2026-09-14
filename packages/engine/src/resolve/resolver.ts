@@ -25,6 +25,10 @@ export interface ClassResolver {
   /** Custom properties defined by the utility compiler's default theme, when one is active. */
   readonly defaultVars: ReadonlySet<string>;
   readonly defaultVarValues: ReadonlyMap<string, string>;
+  /** Custom properties the project's own stylesheets define, anywhere. A var defined in the theme layer and
+   * used in a component is the project's, not an invented token, and the two are only distinguishable with
+   * a view across files. */
+  readonly projectVars: ReadonlySet<string>;
 }
 
 /** A resolver that compiles utility classes, e.g. the Tailwind adapter. */
@@ -36,6 +40,8 @@ export interface UtilityResolver {
 
 export interface StylesheetResolver {
   resolve(candidate: string): { decls: Declaration[]; origin: string } | null;
+  /** Custom properties these stylesheets declare. */
+  readonly vars: ReadonlySet<string>;
 }
 
 const EMPTY_SET: ReadonlySet<string> = new Set();
@@ -43,10 +49,12 @@ const EMPTY_MAP: ReadonlyMap<string, string> = new Map();
 
 /** Project stylesheets win over utilities: a consumer's `.btn` is theirs even if a utility of that name exists. */
 export function combineResolvers(stylesheets: StylesheetResolver, utility?: UtilityResolver, external?: StylesheetResolver): ClassResolver {
+  const projectVars = new Set([...stylesheets.vars, ...(external?.vars ?? [])]);
   return {
     utilities: utility !== undefined,
     defaultVars: utility?.defaultVars ?? EMPTY_SET,
     defaultVarValues: utility?.defaultVarValues ?? EMPTY_MAP,
+    projectVars,
     resolve(candidate) {
       const own = stylesheets.resolve(candidate);
       if (own) return { decls: own.decls, source: "stylesheet", origin: own.origin };

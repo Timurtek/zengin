@@ -117,7 +117,9 @@ export const tokenReference: Rule = {
           ctx.report(ID, {
             range: offsetsToRange(ctx.file.content, start, start + ref.literal.length),
             found: ref.literal,
-            message: `Unknown token ${ref.literal}.`,
+            message: ctx.tokens.namespaces.has(varNamespace(ref.literal))
+              ? `Unknown token ${ref.literal}.`
+              : `Unknown token ${ref.literal}. Nothing defines it: the system has no ${varNamespace(ref.literal)} tokens and no stylesheet in this project declares it, so it resolves to nothing at runtime.`,
             fix: { replace: near ? near.cssVar : null, confidence: near ? "nearest" : "none", ...(near ? { token: near.name } : {}) },
           }),
         );
@@ -128,9 +130,28 @@ export const tokenReference: Rule = {
   },
 };
 
-/** A custom property in a namespace the system defines tokens for, that is not one of those tokens. */
+/**
+ * A `var()` the system cannot account for.
+ *
+ * Two cases, and the second one used to go unreported. A name inside a namespace the system owns but not on
+ * its scale, `var(--color-brand-x)`, was always caught. A name in a namespace that does not exist at all,
+ * `var(--tracking-wide)` against a system with no tracking family, was not, and that is the likelier mistake:
+ * inventing a whole family is easier than inventing a shade, and the browser renders nothing with no error.
+ *
+ * The second case is only safe to report because the resolver now knows every custom property the project's
+ * own stylesheets define, in any file. A project is free to define `--tracking-wide` in its theme layer and
+ * use it in a component; that is its own property, not a missing token, and without the cross-file view the
+ * two are indistinguishable. Anything the utility compiler's default theme defines is left alone for the
+ * same reason.
+ */
 function isUnknownSystemVar(ctx: RuleContext, v: string): boolean {
-  return !ctx.tokens.byVar.has(v) && ctx.tokens.namespaces.has(varNamespace(v));
+  if (ctx.tokens.byVar.has(v)) return false;
+  if (ctx.tokens.namespaces.has(varNamespace(v))) return true;
+  if (ctx.resolver.projectVars.has(v) || ctx.resolver.defaultVars.has(v)) return false;
+  // A dependency that writes custom properties from JavaScript names them after itself, and no stylesheet
+  // will ever declare them. Those are the library's, not a token this system is missing.
+  const name = v.replace(/^--/, "");
+  return !ctx.config.externalVarPrefixes.some((p) => name === p || name.startsWith(`${p}-`));
 }
 
 function nearestVar(ctx: RuleContext, v: string) {

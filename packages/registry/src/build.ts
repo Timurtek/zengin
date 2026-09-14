@@ -251,6 +251,9 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
     });
   }
 
+  // What each story needs beyond its own item, so install can decide whether to write it.
+  recordStoryRequirements(items);
+
   return { schema: REGISTRY_SCHEMA, name: "zengin", version, generatedAt: new Date().toISOString(), items };
 }
 
@@ -323,6 +326,70 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
 /** Package-relative imports become project-alias imports; `.js` suffixes on relative imports go. */
 function rewriteComponent(tsx: string): string {
   return tsx.replace(/"\.\.\/\.\.\/internal\/([\w-]+)\.js"/g, '"@/lib/$1"').replace(/from\s+"(\.\.?\/[^"]+)\.js"/g, 'from "$1"');
+}
+
+/**
+ * Every component a story names, read from its imports of the project's barrel.
+ *
+ * A story is the item's documentation and it ships with the item, so it lands in projects that may have
+ * nothing else. The component's own imports say what the component needs; nothing said what its *story*
+ * needed, so a Loader story demonstrating a Loader inside a Message shipped to projects without Message and
+ * broke `tsc` the moment it arrived. `zengin check` passed the whole time, correctly, because a missing
+ * import is not a design-system violation.
+ */
+function storyImports(tsx: string): string[] {
+  const out = new Set<string>();
+  const alias = LAYOUT.alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const m of tsx.matchAll(new RegExp(`import\\s*\\{([^}]*)\\}\\s*from\\s*"${alias}"`, "g"))) {
+    for (const part of m[1]!.split(",")) {
+      const name = part.replace(/\btype\b/, "").split(" as ")[0]!.trim();
+      if (name && /^[A-Z]/.test(name)) out.add(name);
+    }
+  }
+  return [...out];
+}
+
+/**
+ * What an item actually delivers: itself, and everything it declares it depends on, followed through.
+ * Anything a story names beyond this set is a broken install waiting to happen.
+ */
+function deliveredComponents(name: string, byName: Map<string, RegistryItem>, seen = new Set<string>()): Set<string> {
+  const out = new Set<string>();
+  if (seen.has(name)) return out;
+  seen.add(name);
+  const item = byName.get(name);
+  if (!item) return out;
+  if (item.manifest?.name) out.add(item.manifest.name);
+  for (const f of item.files ?? []) {
+    const m = /components\/ui\/([\w-]+)\//.exec(f.path);
+    if (m && f.kind === "component") out.add(m[1]!);
+  }
+  for (const dep of item.registryDependencies ?? []) for (const d of deliveredComponents(dep, byName, seen)) out.add(d);
+  return out;
+}
+
+/**
+ * Records, per item, which components its story needs beyond what the item delivers.
+ *
+ * The alternative was to make every story self-contained, which makes worse documentation: a Tooltip is
+ * best shown on a real Button, and a Skeleton inside a real Card. The other alternative was to pull those
+ * in as dependencies, which would drag Button into a dozen installs that do not otherwise need it. So the
+ * story ships with its requirements declared, and install writes it only where they are met.
+ */
+export function recordStoryRequirements(items: RegistryItem[]): void {
+  const byName = new Map(items.map((i) => [i.name, i]));
+  for (const item of items) {
+    if (item.type !== "component") continue;
+    const story = (item.files ?? []).find((f) => f.kind === "story");
+    if (!story) continue;
+    const exported = new Set<string>();
+    for (const d of deliveredComponents(item.name, byName)) {
+      exported.add(d);
+      exported.add(d.replace(/(^|-)([a-z])/g, (_, __, c: string) => c.toUpperCase()));
+    }
+    const needs = storyImports(story.content).filter((n) => !exported.has(n));
+    if (needs.length) item.storyRequires = needs.sort();
+  }
 }
 
 function rewriteStory(tsx: string): string {

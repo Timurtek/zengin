@@ -290,10 +290,17 @@ rules:
   component-substitution: error
 `;
 
+/**
+ * Through npx, deliberately. The bins live in node_modules/.bin, which is on PATH inside an npm script and
+ * nowhere else; an agent launches these directly, so a bare `zengin-mcp` resolves only for someone who
+ * installed the package globally. It failed silently for everyone else, which meant the loop this product
+ * is named for never engaged on a fresh clone.
+ */
 const MCP_JSON = `{
   "mcpServers": {
     "zengin": {
-      "command": "zengin-mcp",
+      "command": "npx",
+      "args": ["--no-install", "zengin-mcp"],
       "env": { "ZENGIN_CONFIG": "zengin.config.yaml" }
     }
   }
@@ -305,7 +312,7 @@ const CLAUDE_SETTINGS = `{
     "PostToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",
-        "hooks": [{ "type": "command", "command": "zengin-hook", "timeout": 30, "statusMessage": "Checking against the design system..." }]
+        "hooks": [{ "type": "command", "command": "npx --no-install zengin-hook", "timeout": 30, "statusMessage": "Checking against the design system..." }]
       }
     ]
   }

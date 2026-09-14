@@ -39,6 +39,12 @@ export interface RegistryItem {
   devDependencies: Record<string, string>;
   /** Other registry items this one needs, installed first. */
   registryDependencies: string[];
+  /**
+   * Components this item's *story* names beyond what the item itself delivers. A story is documentation and
+   * it is better for showing a Tooltip on a real Button, but it must not land in a project that has no
+   * Button: install writes the story only when these are all present, and says so when it does not.
+   */
+  storyRequires?: string[];
   files: RegistryFile[];
   /** For components: the manifest entry, with `export.from` already pointing at the project alias. */
   manifest?: ComponentManifest;

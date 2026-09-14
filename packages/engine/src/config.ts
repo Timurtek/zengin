@@ -52,7 +52,39 @@ export function resolveConfig(config: ZenginConfig, projectDir: string): Resolve
     },
     rules,
     profiles: readProfiles(config, projectDir),
+    externalVarPrefixes: externalVarPrefixes(projectDir, config.rules?.["token-reference"]),
   };
+}
+
+/**
+ * Which `--x-...` prefixes belong to a library rather than to the system.
+ *
+ * Derived from the project's own dependencies rather than hard-coded, so it stays true as the project
+ * changes: `@radix-ui/react-select` yields `radix` and `radix-ui`, `embla-carousel-react` yields `embla`.
+ * A library that sets custom properties from JavaScript namespaces them after itself, which is what makes
+ * this work at all. `rules.token-reference.externalVars` adds any the convention misses.
+ */
+function externalVarPrefixes(projectDir: string, rule: RuleConfig | Severity | "off" | undefined): string[] {
+  const out = new Set<string>();
+  const declared = typeof rule === "object" && rule !== null ? ((rule as { externalVars?: string[] }).externalVars ?? []) : [];
+  for (const p of declared) out.add(p.replace(/^--/, "").replace(/-$/, ""));
+
+  const pkgPath = join(projectDir, "package.json");
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, "utf8")) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
+      for (const name of [...Object.keys(pkg.dependencies ?? {}), ...Object.keys(pkg.devDependencies ?? {})]) {
+        const head = name.replace(/^@/, "").split("/")[0];
+        if (!head) continue;
+        out.add(head);
+        const first = head.split("-")[0];
+        if (first && first.length > 2) out.add(first);
+      }
+    } catch {
+      // A package.json that will not parse is the project's problem; the prefixes just stay empty.
+    }
+  }
+  return [...out];
 }
 
 /**

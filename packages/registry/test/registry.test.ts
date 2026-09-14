@@ -174,6 +174,50 @@ describe("the saas template on mock data", () => {
   });
 });
 
+describe("a story that demonstrates more than its own component", () => {
+  // Field test 4 (TekJobs, 2026-09-14): `add loader` and the saas template both shipped stories importing
+  // components the project did not have, so `zengin check` said 0 and then `tsc` failed.
+  const reg = registry;
+
+  it("records what each story needs beyond the item itself", () => {
+    const loader = reg.items.find((i) => i.name === "loader")!;
+    expect(loader.storyRequires).toContain("Message");
+  });
+
+  it("leaves an item alone when its story only uses what the item delivers", () => {
+    const button = reg.items.find((i) => i.name === "button")!;
+    expect(button.storyRequires ?? []).toEqual([]);
+  });
+
+  it("withholds a story whose requirements the project will not meet", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zengin-story-"));
+    try {
+      const loader = reg.items.find((i) => i.name === "loader")!;
+      const deps = ["foundation", "lib-cx"].map((n) => reg.items.find((i) => i.name === n)!);
+      const r = installItems({ projectDir: dir, items: [...deps, loader], version: "0.1.0" });
+      expect(r.written.some((p) => p.endsWith("loader.stories.tsx"))).toBe(false);
+      expect(r.storiesSkipped).toEqual([{ item: "loader", needs: ["Message"] }]);
+      // The component itself still arrives; only its story is held back.
+      expect(r.written.some((p) => p.endsWith("loader/loader.tsx"))).toBe(true);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("writes the story when the component it demonstrates is arriving too", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zengin-story-"));
+    try {
+      const names = ["foundation", "lib-cx", "lib-markdown", "lib-icons", "avatar", "markdown", "message", "loader"];
+      const items = names.map((n) => reg.items.find((i) => i.name === n)!).filter(Boolean);
+      const r = installItems({ projectDir: dir, items, version: "0.1.0" });
+      expect(r.written.some((p) => p.endsWith("loader.stories.tsx"))).toBe(true);
+      expect(r.storiesSkipped.find((s) => s.item === "loader")).toBeUndefined();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("createProject on Next.js", () => {
   it("writes the App Router instead of index.html and main.tsx, carries the template's head and styles into the layout, and stays clean", async () => {
     const dir = join(tmp, "next-app");

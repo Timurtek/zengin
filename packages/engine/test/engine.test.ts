@@ -1,6 +1,8 @@
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createEngine, loadConfigFile, readProjectFiles, resolveConfig, type Violation } from "../src/index.js";
 import { compareVersions } from "../src/config.js";
 import { loadTokens, TokenIndex } from "../src/system/tokens.js";
@@ -225,6 +227,53 @@ describe("shadowed sources", () => {
     expect(idx.replacementFor("lucide-react", "Search")?.component.name).toBe("Icon");
     expect(idx.replacementFor("react-icons", "IconBase")).toBeUndefined();
     expect(idx.replacementFor("@tabler/icons-react", "IconX")).toBeUndefined();
+  });
+});
+
+describe("a var() the system cannot account for", () => {
+  // Field test 4 (TekJobs, 2026-09-14): an agent wrote `var(--tracking-wide)` against a system with no
+  // tracking family. Nothing reported it, and the browser renders nothing with no error anywhere.
+  const dir = mkdtempSync(join(tmpdir(), "zengin-vars-"));
+  beforeAll(() => {
+    mkdirSync(join(dir, "zengin"), { recursive: true });
+    mkdirSync(join(dir, "src", "theme"), { recursive: true });
+    writeFileSync(join(dir, "zengin", "tokens.json"), readFileSync(join(here, "fixtures", "system", "tokens.json"), "utf8"));
+    writeFileSync(join(dir, "zengin", "components.json"), readFileSync(join(here, "fixtures", "system", "components.json"), "utf8"));
+    writeFileSync(join(dir, "package.json"), JSON.stringify({ name: "vars", dependencies: { "@radix-ui/react-popover": "1.0.0" } }));
+  });
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+  const config = { system: { package: "@zenginui/ui", version: "1.0.0", definitions: "./zengin" }, scope: { include: ["src/**/*.css"] }, classes: { tailwind: false } };
+  const run = async (files: { path: string; content: string }[]) => {
+    const engine = await createEngine(resolveConfig(config, dir));
+    engine.loadStylesheets(files);
+    return engine.check(files);
+  };
+
+  it("reports a name in a namespace the system does not have at all", async () => {
+    const v = await run([{ path: "src/a.css", content: ".x { letter-spacing: var(--tracking-wide); }" }]);
+    expect(v.map((x) => x.rule)).toEqual(["token-reference"]);
+    expect(v[0]!.message).toContain("resolves to nothing at runtime");
+  });
+
+  it("says nothing about a custom property the project declares in another file", async () => {
+    // The theme layer defines it and a component uses it. That is the project's own property, not a typo.
+    const v = await run([
+      { path: "src/theme/local.css", content: ":root { --tracking-wide: 0.08em; }" },
+      { path: "src/a.css", content: ".x { letter-spacing: var(--tracking-wide); }" },
+    ]);
+    expect(v).toEqual([]);
+  });
+
+  it("says nothing about a property a dependency sets at runtime", async () => {
+    // Radix writes this onto the element from JavaScript; no stylesheet will ever declare it.
+    const v = await run([{ path: "src/a.css", content: ".x { transform-origin: var(--radix-popover-content-transform-origin); }" }]);
+    expect(v).toEqual([]);
+  });
+
+  it("still reports a name inside a namespace the system does own", async () => {
+    const v = await run([{ path: "src/a.css", content: ".x { color: var(--color-not-a-token); }" }]);
+    expect(v.map((x) => x.rule)).toEqual(["token-reference"]);
   });
 });
 
