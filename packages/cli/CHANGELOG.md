@@ -1,5 +1,12 @@
 # @zenginui/cli
 
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [[`b233040`](https://github.com/Timurtek/zengin/commit/b2330409ef24fa92506f858c000768979c75c70a)]:
+  - @zenginui/registry@0.2.1
+
 ## 0.4.0
 
 ### Minor Changes
