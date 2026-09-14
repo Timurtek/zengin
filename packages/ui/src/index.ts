@@ -17,6 +17,8 @@ export { EmptyState, type EmptyStateProps, type EmptyStateSize, type EmptyStateT
 export { Kbd, type KbdProps, type KbdSize } from "./components/kbd/kbd.js";
 export { DataTable, type DataTableProps, type DataTableColumn, type DataTableAlign, type SortDirection } from "./components/data-table/data-table.js";
 export { StatTile, type StatTileProps, type StatTileSize } from "./components/stat-tile/stat-tile.js";
+export { Kanban, type KanbanProps, type KanbanColumn, type KanbanMove, type KanbanDensity } from "./components/kanban/kanban.js";
+export { Combobox, type ComboboxProps, type ComboboxSingleProps, type ComboboxMultipleProps, type ComboboxOption, type ComboboxSize } from "./components/combobox/combobox.js";
 export { Sheet, type SheetProps, type SheetContentProps, type SheetSide, type SheetSize } from "./components/sheet/sheet.js";
 export { Popover, type PopoverProps, type PopoverContentProps, type PopoverSize } from "./components/popover/popover.js";
 export { Progress, type ProgressProps, type ProgressSize, type ProgressTone } from "./components/progress/progress.js";

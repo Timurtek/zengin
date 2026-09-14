@@ -15,7 +15,7 @@ describe("buildRegistry", () => {
   it("has every Zengin UI component, the shared items, and the three templates", () => {
     const by = (t: string) => registry.items.filter((i) => i.type === t).map((i) => i.name);
     expect(by("component")).toEqual([
-      "avatar", "badge", "bar-chart", "button", "card", "checkbox", "code-block", "conversation", "data-table", "dialog", "empty-state", "kbd", "line-chart", "loader",
+      "avatar", "badge", "bar-chart", "button", "card", "checkbox", "code-block", "combobox", "conversation", "data-table", "dialog", "empty-state", "kanban", "kbd", "line-chart", "loader",
       "markdown", "menu", "message", "popover", "progress", "prompt-input", "reasoning", "select", "separator", "sheet", "skeleton", "sources", "sparkline",
       "stat-tile", "suggestions", "switch", "table", "tabs", "text-area", "text-field", "toast", "tool-call", "tooltip",
     ]);

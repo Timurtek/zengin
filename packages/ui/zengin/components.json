@@ -2537,5 +2537,162 @@
     "states": [
       "default"
     ]
+  },
+  {
+    "name": "Kanban",
+    "since": "0.4.0",
+    "export": {
+      "from": "@zenginui/ui",
+      "name": "Kanban"
+    },
+    "replaces": [
+      "react-beautiful-dnd#*",
+      "@hello-pangea/dnd#*"
+    ],
+    "props": {
+      "columns": {
+        "type": "node"
+      },
+      "cards": {
+        "type": "node"
+      },
+      "cardId": {
+        "type": "function"
+      },
+      "cardColumn": {
+        "type": "function"
+      },
+      "renderCard": {
+        "type": "function"
+      },
+      "cardLabel": {
+        "type": "function"
+      },
+      "onMove": {
+        "type": "function"
+      },
+      "density": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "default": "md"
+      },
+      "label": {
+        "type": "string"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "gap": null,
+      "padding": "density",
+      "border": null,
+      "border-radius": null,
+      "background-color": null
+    },
+    "states": [
+      "default"
+    ]
+  },
+  {
+    "name": "Combobox",
+    "since": "0.4.0",
+    "export": {
+      "from": "@zenginui/ui",
+      "name": "Combobox"
+    },
+    "replaces": [
+      "react-select#*",
+      "downshift#*",
+      "@headlessui/react#Combobox"
+    ],
+    "props": {
+      "options": {
+        "type": "node"
+      },
+      "label": {
+        "type": "node"
+      },
+      "description": {
+        "type": "node"
+      },
+      "error": {
+        "type": "node"
+      },
+      "placeholder": {
+        "type": "string"
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "disabled": {
+        "type": "boolean"
+      },
+      "multiple": {
+        "type": "boolean",
+        "default": false
+      },
+      "value": {
+        "type": "node"
+      },
+      "onValueChange": {
+        "type": "function"
+      },
+      "emptyMessage": {
+        "type": "string",
+        "default": "No matches"
+      }
+    },
+    "className": {
+      "allow": [
+        "margin",
+        "width",
+        "height",
+        "flex-item",
+        "grid-item",
+        "position",
+        "display",
+        "overflow"
+      ]
+    },
+    "owns": {
+      "gap": null,
+      "padding": "size",
+      "border": null,
+      "border-color": null,
+      "border-radius": null,
+      "background-color": null,
+      "font-size": "size",
+      "font-weight": null,
+      "color": null
+    },
+    "slots": [
+      "label",
+      "description",
+      "error"
+    ],
+    "states": [
+      "default",
+      "disabled",
+      "invalid"
+    ]
   }
 ]

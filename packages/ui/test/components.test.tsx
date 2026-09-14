@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Avatar, Badge, BarChart, Button, Card, Checkbox, CodeBlock, Conversation, DataTable, Dialog, EmptyState, Kbd, LineChart, Loader, Markdown, Menu, Message, Popover, Progress, PromptInput, Reasoning, Select, Separator, Sheet, Skeleton, Sources, Sparkline, StatTile, Suggestions, Switch, Table, Tabs, TextArea, TextField, Toast, ToolCall, Tooltip, initials, parseMarkdown, toast } from "../src/index.js";
+import { Avatar, Badge, BarChart, Button, Card, Checkbox, CodeBlock, Combobox, Conversation, DataTable, Dialog, EmptyState, Kanban, Kbd, LineChart, Loader, Markdown, Menu, Message, Popover, Progress, PromptInput, Reasoning, Select, Separator, Sheet, Skeleton, Sources, Sparkline, StatTile, Suggestions, Switch, Table, Tabs, TextArea, TextField, Toast, ToolCall, Tooltip, initials, parseMarkdown, toast } from "../src/index.js";
 import { axisLabelIndexes } from "../src/components/line-chart/line-chart.js";
 import { extent, linePath, defaultFormat } from "../src/internal/chart.js";
 
@@ -784,5 +784,182 @@ describe("StatTile", () => {
     expect(document.querySelector(".z-stat__spark")).not.toBeNull();
     rerender(<StatTile label="Revenue" value="£48,210" delta={12.4} series={[1]} />);
     expect(document.querySelector(".z-stat__spark")).toBeNull();
+  });
+});
+
+describe("Kanban", () => {
+  interface Ticket {
+    id: string;
+    title: string;
+    column: string;
+  }
+  const columns = [
+    { id: "todo", title: "To do" },
+    { id: "doing", title: "Doing" },
+    { id: "done", title: "Done" },
+  ];
+  const cards: Ticket[] = [
+    { id: "t1", title: "Parser", column: "todo" },
+    { id: "t2", title: "Tokens", column: "todo" },
+    { id: "t3", title: "Audit", column: "doing" },
+  ];
+  const board = (onMove?: (m: { cardId: string; from: string; to: string; index: number }) => void) => (
+    <Kanban
+      label="Board"
+      columns={columns}
+      cards={cards}
+      cardId={(t: Ticket) => t.id}
+      cardColumn={(t: Ticket) => t.column}
+      cardLabel={(t: Ticket) => t.title}
+      renderCard={(t: Ticket) => t.title}
+      {...(onMove ? { onMove } : {})}
+    />
+  );
+
+  it("moves a card to the next column with the keyboard alone", () => {
+    const onMove = vi.fn();
+    render(board(onMove));
+    const card = screen.getByRole("article", { name: "Parser" });
+    card.focus();
+    fireEvent.keyDown(card, { key: " " });
+    fireEvent.keyDown(card, { key: "ArrowRight" });
+    fireEvent.keyDown(card, { key: "Enter" });
+    expect(onMove).toHaveBeenCalledWith({ cardId: "t1", from: "todo", to: "doing", index: 0 });
+  });
+
+  it("announces the lift and the landing, because the move cannot be seen", () => {
+    render(board());
+    const card = screen.getByRole("article", { name: "Parser" });
+    card.focus();
+    fireEvent.keyDown(card, { key: " " });
+    expect(screen.getByRole("status").textContent).toContain("Parser lifted");
+    fireEvent.keyDown(card, { key: "ArrowRight" });
+    expect(screen.getByRole("status").textContent).toContain("Doing");
+  });
+
+  it("Escape puts the card back and reports nothing", () => {
+    const onMove = vi.fn();
+    render(board(onMove));
+    const card = screen.getByRole("article", { name: "Parser" });
+    card.focus();
+    fireEvent.keyDown(card, { key: " " });
+    fireEvent.keyDown(card, { key: "ArrowRight" });
+    fireEvent.keyDown(card, { key: "Escape" });
+    expect(onMove).not.toHaveBeenCalled();
+    expect(screen.getByRole("status").textContent).toContain("put back");
+  });
+
+  it("does not report a move that changes nothing", () => {
+    const onMove = vi.fn();
+    render(board(onMove));
+    const card = screen.getByRole("article", { name: "Parser" });
+    card.focus();
+    fireEvent.keyDown(card, { key: " " });
+    fireEvent.keyDown(card, { key: "Enter" });
+    expect(onMove).not.toHaveBeenCalled();
+  });
+
+  it("will not walk a card off the end of the board", () => {
+    const onMove = vi.fn();
+    render(board(onMove));
+    const card = screen.getByRole("article", { name: "Parser" });
+    card.focus();
+    fireEvent.keyDown(card, { key: " " });
+    fireEvent.keyDown(card, { key: "ArrowLeft" });
+    fireEvent.keyDown(card, { key: "Enter" });
+    expect(onMove).not.toHaveBeenCalled();
+  });
+
+  it("marks a column over its limit", () => {
+    render(
+      <Kanban
+        label="Board"
+        columns={[{ id: "doing", title: "Doing", limit: 1 }]}
+        cards={cards.map((c) => ({ ...c, column: "doing" }))}
+        cardId={(t: Ticket) => t.id}
+        cardColumn={() => "doing"}
+        cardLabel={(t: Ticket) => t.title}
+        renderCard={(t: Ticket) => t.title}
+      />,
+    );
+    expect(screen.getByText("3/1")).toBeTruthy();
+  });
+});
+
+describe("Combobox", () => {
+  const options = [
+    { value: "mina", label: "Mina Okafor", hint: "mina@x.dev" },
+    { value: "rafa", label: "Rafa Silva", hint: "rafa@x.dev" },
+    { value: "arun", label: "Arun Patel", disabled: true },
+  ];
+
+  it("keeps focus in the input and points at the active option instead", () => {
+    render(<Combobox label="Assignee" options={options} />);
+    const input = screen.getByRole("combobox");
+    // A real focus, not just the event: the point of the test is where focus ends up.
+    input.focus();
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    // The WAI-ARIA pattern: focus never enters the list, so the input says which option is current.
+    expect(document.activeElement).toBe(input);
+    expect(input).toHaveAttribute("aria-activedescendant");
+    expect(input).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("filters on the label and on the hint", () => {
+    render(<Combobox label="Assignee" options={options} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: "rafa@" } });
+    expect(screen.getAllByRole("option")).toHaveLength(1);
+    expect(screen.getByRole("option", { name: /Rafa/ })).toBeTruthy();
+  });
+
+  it("says so when nothing matches, rather than showing an empty box", () => {
+    render(<Combobox label="Assignee" options={options} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: "zzz" } });
+    expect(screen.queryAllByRole("option")).toHaveLength(0);
+    expect(screen.getByText("No matches")).toBeTruthy();
+  });
+
+  it("steps over a disabled option rather than stopping on it", () => {
+    render(<Combobox label="Assignee" options={options} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.focus(input);
+    fireEvent.keyDown(input, { key: "ArrowDown" }); // Rafa
+    fireEvent.keyDown(input, { key: "ArrowDown" }); // skips Arun, wraps to Mina
+    expect(input.getAttribute("aria-activedescendant")).toContain("mina");
+  });
+
+  it("reports the chosen value and closes", () => {
+    const onValueChange = vi.fn();
+    render(<Combobox label="Assignee" options={options} onValueChange={onValueChange} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.focus(input);
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onValueChange).toHaveBeenCalledWith("mina");
+    expect(input).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("adds and removes in multiple mode, and stays open", () => {
+    const onValueChange = vi.fn();
+    render(<Combobox multiple label="Reviewers" options={options} value={["mina"]} onValueChange={onValueChange} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.focus(input);
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onValueChange).toHaveBeenCalledWith(["mina", "rafa"]);
+    // Backspace on an empty field takes the last chip, as every tag input does.
+    fireEvent.keyDown(input, { key: "Backspace" });
+    expect(onValueChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it("ties the error to the input for anyone not looking at it", () => {
+    render(<Combobox label="Assignee" options={options} error="Pick someone." />);
+    const input = screen.getByRole("combobox");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input.getAttribute("aria-describedby")).toBeTruthy();
+    expect(screen.getByText("Pick someone.")).toBeTruthy();
   });
 });

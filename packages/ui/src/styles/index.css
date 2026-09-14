@@ -22,6 +22,8 @@
 @import "../components/kbd/kbd.css";
 @import "../components/data-table/data-table.css";
 @import "../components/stat-tile/stat-tile.css";
+@import "../components/kanban/kanban.css";
+@import "../components/combobox/combobox.css";
 @import "../components/sheet/sheet.css";
 @import "../components/popover/popover.css";
 @import "../components/progress/progress.css";

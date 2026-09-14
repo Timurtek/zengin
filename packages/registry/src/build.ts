@@ -342,7 +342,10 @@ function storyImports(tsx: string): string[] {
   const alias = LAYOUT.alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   for (const m of tsx.matchAll(new RegExp(`import\\s*\\{([^}]*)\\}\\s*from\\s*"${alias}"`, "g"))) {
     for (const part of m[1]!.split(",")) {
-      const name = part.replace(/\btype\b/, "").split(" as ")[0]!.trim();
+      // A type-only import is erased at build time, so it can never be a missing component at runtime, and
+      // a story's types come from the same barrel whether or not the component beside them is installed.
+      if (/^\s*type\s/.test(part)) continue;
+      const name = part.split(" as ")[0]!.trim();
       if (name && /^[A-Z]/.test(name)) out.add(name);
     }
   }
