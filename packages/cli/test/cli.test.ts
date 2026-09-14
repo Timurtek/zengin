@@ -1,11 +1,12 @@
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { DEFAULT_CHECK, findConfig, runCheck } from "../src/check.js";
 import { renderGithub, renderJson, renderPretty } from "../src/format-cli.js";
+import { admits, runDoctor } from "../src/doctor.js";
 import { init, initFromShadcn } from "../src/init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "../src/report.js";
 import { explain, parseArgs } from "../src/index.js";
@@ -256,5 +257,103 @@ describe("--changed and --staged against a real git repo", () => {
 
     const sinceBase = await runCheck({ ...DEFAULT_CHECK, cwd: proj, changed: "HEAD~1" });
     expect(sinceBase.filesChecked).toBe(1);
+  });
+});
+
+
+describe("zengin doctor", () => {
+  let dir = "";
+
+  const write = (rel: string, content: unknown): void => {
+    const p = join(dir, rel);
+    mkdirSync(dirname(p), { recursive: true });
+    writeFileSync(p, typeof content === "string" ? content : `${JSON.stringify(content, null, 2)}\n`);
+  };
+  const read = <T,>(rel: string): T => JSON.parse(readFileSync(join(dir, rel), "utf8")) as T;
+  const ids = (fix = false): string[] => runDoctor({ cwd: dir, fix }).findings.filter((f) => f.level !== "ok").map((f) => f.id);
+
+  beforeAll(() => {
+    dir = mkdtempSync(join(tmpdir(), "zengin-doctor-"));
+    // A project shaped like one `create` writes, wired the way every project created before 0.4.0 was.
+    write("zengin.config.yaml", `system:\n  package: "@/components/ui"\n  version: "0.1.0"\n  definitions: ./zengin\nscope:\n  include: ["src/**/*.{ts,tsx,css}"]\n  ownership: ["src/components/ui/**"]\n`);
+    write("zengin/tokens.json", { color: { primary: { $type: "color", $value: "#2563eb" } } });
+    write("zengin/components.json", [{ name: "Button", since: "0.1.0", export: { from: "@/components/ui", name: "Button" }, props: {} }]);
+    write("package.json", { name: "app", devDependencies: { "@zenginui/cli": "^0.1.0" } });
+    write(".mcp.json", { mcpServers: { zengin: { command: "zengin-mcp", env: { ZENGIN_CONFIG: "zengin.config.yaml" } }, other: { command: "node", args: ["x.mjs"] } } });
+    write(".claude/settings.json", {
+      hooks: { PostToolUse: [{ matcher: "Write|Edit|MultiEdit", hooks: [{ type: "command", command: "zengin-hook", timeout: 30 }] }] },
+    });
+    write("src/components/ui/button/button.tsx", "export const Button = () => null;\n");
+    write("src/components/ui/button/button.css", ".z-button { color: var(--color-primary); }\n");
+    write("src/components/ui/index.ts", 'export * from "./button/button";\n');
+    write("src/styles/index.css", '@import "generated/tokens.css";\n@import "../components/ui/button/button.css";\n');
+    write("src/styles/generated/tokens.css", ":root { --color-primary: #2563eb; }\n");
+  });
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+  it("finds the wiring that silently does nothing, and the pin a project was born with", () => {
+    const found = ids();
+    // The two bare binaries are the fault that made this command necessary: they fail without saying so.
+    expect(found).toContain("mcp-bare-binary");
+    expect(found).toContain("hook-bare-binary");
+    expect(found).toContain("pin-cli");
+    expect(runDoctor({ cwd: dir }).exitCode).toBe(1);
+  });
+
+  it("--fix repairs what Zengin itself wrote, keeps what it did not, and reports the state after", () => {
+    const result = runDoctor({ cwd: dir, fix: true });
+    expect(result.fixed).toContain(".mcp.json");
+    expect(result.fixed).toContain(".claude/settings.json");
+
+    const mcp = read<{ mcpServers: Record<string, { command: string; args?: string[]; env?: Record<string, string> }> }>(".mcp.json");
+    expect(mcp.mcpServers["zengin"]).toEqual({ command: "npx", args: ["--no-install", "zengin-mcp"], env: { ZENGIN_CONFIG: "zengin.config.yaml" } });
+    expect(mcp.mcpServers["other"]).toEqual({ command: "node", args: ["x.mjs"] }); // someone else's server is not ours to touch
+    expect(readFileSync(join(dir, ".claude/settings.json"), "utf8")).toContain("npx --no-install zengin-hook");
+
+    // The report is a second look, so a repaired project does not read as broken, and --fix in CI passes.
+    expect(result.findings.filter((f) => f.level === "error")).toHaveLength(0);
+    expect(result.exitCode).toBe(0);
+    expect(result.report).toContain("Repaired:");
+
+    const after = ids();
+    expect(after).not.toContain("mcp-bare-binary");
+    expect(after).not.toContain("hook-bare-binary");
+    expect(after).toContain("pin-cli"); // a dependency change needs an install, so it stays a person's call
+  });
+
+  it("names the drift that renders wrong: a stylesheet nothing imports, a component the manifest does not know", () => {
+    write("src/components/ui/card/card.tsx", "export const Card = () => null;\n");
+    write("src/components/ui/card/card.css", ".z-card { display: block; }\n");
+    const found = ids();
+    expect(found).toContain("stylesheet-imports");
+    expect(found).toContain("barrel-exports");
+    expect(found).toContain("undefined-components");
+
+    runDoctor({ cwd: dir, fix: true });
+    expect(readFileSync(join(dir, "src/styles/index.css"), "utf8")).toContain("card/card.css");
+    expect(readFileSync(join(dir, "src/components/ui/index.ts"), "utf8")).toContain("./card/card");
+    // `define` writes the manifest; doctor says so rather than guessing a contract for someone.
+    expect(ids()).toContain("undefined-components");
+  });
+
+  it("a stale generated stylesheet is a finding, because the tokens resolve to nothing without it", () => {
+    // Age the generated file rather than post-date the source: that is the shape this drift actually has.
+    const past = new Date(Date.now() - 60_000);
+    utimesSync(join(dir, "src/styles/generated/tokens.css"), past, past);
+    expect(ids()).toContain("tokens-css-stale");
+    runDoctor({ cwd: dir, fix: true });
+    expect(ids()).not.toContain("tokens-css-stale");
+  });
+
+  it("judges only the version ranges npm writes, and answers nothing for the rest", () => {
+    expect(admits("^0.1.0", "0.1.3")).toBe(true); // 0.x caret is minor-locked, which is why the hook pin was fine
+    expect(admits("^0.1.0", "0.4.1")).toBe(false);
+    expect(admits("^1.2.0", "1.9.9")).toBe(true);
+    expect(admits("~0.4.0", "0.4.9")).toBe(true);
+    expect(admits("~0.4.0", "0.5.0")).toBe(false);
+    expect(admits("0.4.1", "0.4.1")).toBe(true);
+    expect(admits("workspace:*", "0.4.1")).toBeUndefined();
+    expect(admits("link:../cli", "0.4.1")).toBeUndefined();
+    expect(admits(">=0.4.0 <1", "0.4.1")).toBeUndefined();
   });
 });

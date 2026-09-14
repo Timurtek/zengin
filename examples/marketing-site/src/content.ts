@@ -318,6 +318,7 @@ cd acme && npm install && npm run dev
 npm run add -- dialog tooltip
 npx zengin brand --name Acme --logo logo.svg   # palette, favicon, wordmark from one color
 npx zengin define                               # a component you wrote joins the manifest
+npx zengin doctor                               # the project's own plumbing: agent wiring, pins, generated files
 
 # An existing project: derive the definitions, then check
 zengin init --from shadcn                       # or: --from package @your/design-system

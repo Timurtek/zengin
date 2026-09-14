@@ -307,12 +307,31 @@ rules:
  * installed the package globally. It failed silently for everyone else, which meant the loop this product
  * is named for never engaged on a fresh clone.
  */
+/**
+ * How an agent session reaches Zengin, in one place because two commands depend on it: `create` writes it
+ * and `doctor` checks it.
+ *
+ * Everything goes through `npx --no-install`. The bins live in `node_modules/.bin`, which is on PATH inside
+ * an npm script and nowhere else, and an agent launches these directly — so a bare `zengin-mcp` starts
+ * nothing and a bare `zengin-hook` never fires, both silently. `--no-install` keeps npx from reaching for
+ * the network: the project's own version, or a clear failure.
+ */
+export const AGENT_WIRING = {
+  server: "zengin",
+  command: "npx",
+  args: ["--no-install", "zengin-mcp"],
+  hookCommand: "npx --no-install zengin-hook",
+  hookMatcher: "Write|Edit|MultiEdit",
+  configEnv: "ZENGIN_CONFIG",
+  configFile: "zengin.config.yaml",
+} as const;
+
 const MCP_JSON = `{
   "mcpServers": {
-    "zengin": {
-      "command": "npx",
-      "args": ["--no-install", "zengin-mcp"],
-      "env": { "ZENGIN_CONFIG": "zengin.config.yaml" }
+    "${AGENT_WIRING.server}": {
+      "command": "${AGENT_WIRING.command}",
+      "args": [${AGENT_WIRING.args.map((a) => `"${a}"`).join(", ")}],
+      "env": { "${AGENT_WIRING.configEnv}": "${AGENT_WIRING.configFile}" }
     }
   }
 }
@@ -322,8 +341,8 @@ const CLAUDE_SETTINGS = `{
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [{ "type": "command", "command": "npx --no-install zengin-hook", "timeout": 30, "statusMessage": "Checking against the design system..." }]
+        "matcher": "${AGENT_WIRING.hookMatcher}",
+        "hooks": [{ "type": "command", "command": "${AGENT_WIRING.hookCommand}", "timeout": 30, "statusMessage": "Checking against the design system..." }]
       }
     ]
   }

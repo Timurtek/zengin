@@ -35,6 +35,7 @@ npx zengin fonts fraunces                      # a font pairing: headlines, text
 npx zengin icons tabler                        # the icon vocabulary drawn by a react-icons set; the names in your code stay
 npx zengin define                              # a component you wrote yourself joins the manifest: props from its types, owns from its CSS
 npx zengin brand --name Acme --logo logo.svg  # your own palette, favicon and wordmark from one color
+npx zengin doctor                              # the project itself: agent wiring, pins, generated files; --fix repairs what Zengin wrote
 ```
 
 The project owns its components (`src/components/ui`, each file carrying the version it was copied from), its definitions (`zengin/`), a brand file, Storybook, and the MCP server and hook. The generator runs the engine on the result before it returns: a fresh project reports zero violations. Until the first npm release, run the CLI from a checkout with `--local <path>`.

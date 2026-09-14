@@ -776,6 +776,74 @@ The inventory records which profile checked each file, so a rollup shows the spl
 [Upgrading](#upgrade).`,
   },
   {
+    slug: "doctor",
+    section: "Making it yours",
+    title: "Checking the project itself",
+    summary: "Is this project's plumbing what this version of Zengin expects?",
+    body: `# Checking the project itself
+
+\`\`\`bash
+npx zengin doctor
+\`\`\`
+
+Every other command answers a question about your code. This one answers a question about the project: the
+agent wiring, the version pins, the definitions and the generated files. It is all local — no network, no
+clock — so it gives the same answer every time.
+
+## Why it exists
+
+A project is wired to Zengin once, when it is created, and never again. [\`zengin upgrade\`](#upgrade) carries
+the owned components forward; nothing carries the rest. So a project created before a fix keeps that fault for
+as long as it lives, and nothing tells it.
+
+That is not hypothetical. Projects created before 0.4.0 wrote the MCP server and the edit hook as bare
+binaries, which an agent cannot launch — they live in \`node_modules/.bin\`, on PATH inside an npm script and
+nowhere else. Those projects' enforcement loop never ran, and **a loop that never runs looks exactly like a
+project that never drifts**: no errors, no warnings, nothing.
+
+## What it checks
+
+| | |
+| --- | --- |
+| Agent wiring | \`.mcp.json\` and the PostToolUse hook: present, and in a form an agent can actually launch |
+| Version pins | whether this project's \`@zenginui/*\` ranges still admit what this Zengin pins |
+| Definitions | \`zengin/tokens.json\` and \`zengin/components.json\` exist and parse |
+| Generated CSS | \`src/styles/generated/tokens.css\` exists, and is not older than the tokens it came from |
+| Component wiring | every component on disk is in the manifest, the barrel, and the stylesheet index |
+
+An **error** means something is configured and broken. A **warning** means something is absent, or different
+from what \`create\` writes — which may be exactly what you meant. It exits 1 on any error, so CI can run it.
+
+## Repairing
+
+\`\`\`bash
+npx zengin doctor --fix
+\`\`\`
+
+\`--fix\` rewrites the files Zengin itself writes: the MCP entry (leaving every other server alone), the hook,
+the missing stylesheet imports and barrel lines, and the generated tokens. It then looks again and reports what
+is true afterwards.
+
+It will not touch your dependencies. Changing a pin means running an install, and that is yours to do — doctor
+prints the command.
+
+**The MCP server and the hook are read when an agent session starts**, so open a new session after a repair.
+The command says so too.
+
+## On a project that predates the command
+
+Old pins mean the project's own \`zengin\` is old, and \`npx zengin doctor\` would run that old copy, which has no
+doctor in it. Ask for the current one explicitly:
+
+\`\`\`bash
+npx -y @zenginui/cli@latest doctor
+\`\`\`
+
+## Next
+
+[What changed upstream](#upgrade).\``,
+  },
+  {
     slug: "upgrade",
     section: "Making it yours",
     title: "Upgrading",
@@ -847,6 +915,7 @@ Check options: \`--changed\`, \`--staged\`, \`--format pretty|json|github\`, \`-
 | \`zengin create <dir>\` | A new project: components copied in, engine, MCP, hook and Storybook wired. |
 | \`zengin add <items...>\` | Components or templates from the registry. |
 | \`zengin define [names...]\` | Your own components into the manifest, from their types and CSS. |
+| \`zengin doctor\` | The project itself: agent wiring, pins, definitions, generated files. \`--fix\` repairs. |
 | \`zengin upgrade [items...]\` | What changed upstream since you copied. \`--write\` takes it. |
 | \`zengin init\` | A config in an existing project. \`--from shadcn\`, \`--from package <name>\`. |
 
