@@ -1,5 +1,12 @@
 # @zenginui/adapter-css
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`1bb0588`](https://github.com/Timurtek/zengin/commit/1bb0588a2782b960d8576210643a18bfc4b45f99)]:
+  - @zenginui/engine@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
