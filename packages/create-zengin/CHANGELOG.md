@@ -1,5 +1,12 @@
 # create-zengin
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zenginui/cli@0.4.1
+
 ## 0.1.4
 
 ### Patch Changes
