@@ -120,12 +120,27 @@ describe("createProject", () => {
     expect(pkg.devDependencies["@zenginui/cli"]).toMatch(/^link:/);
   });
 
+  it("pins the Zengin packages at the versions this workspace publishes, not a version written down once", async () => {
+    const dir = join(tmp, "pinned-app");
+    const source = registryFromMemory(registry);
+    await createProject({ dir, template: "blank", source, storybook: false });
+    const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8")) as { devDependencies: Record<string, string> };
+
+    // Read from the workspace rather than repeated here: a constant in the test would go stale with the
+    // constant in the source, which is how a project scaffolded after four releases still installed the first.
+    for (const name of ["cli", "hook", "mcp"]) {
+      const { version } = JSON.parse(readFileSync(join(root, "packages", name, "package.json"), "utf8")) as { version: string };
+      expect(pkg.devDependencies[`@zenginui/${name}`]).toBe(`^${version}`);
+    }
+  });
+
   it("scaffolds blank without Storybook, and add brings in more components with their manifest and packages", async () => {
     const dir = join(tmp, "blank-app");
     const source = registryFromMemory(registry);
     const r = await createProject({ dir, template: "blank", source, storybook: false });
     expect(r.violations).toBe(0);
-    expect(r.install.components.sort()).toEqual(["Button", "Card"]);
+    // Badge is not on blank's page; Card's story demonstrates one, and a template answers its own stories.
+    expect(r.install.components.sort()).toEqual(["Badge", "Button", "Card"]);
     expect(existsSync(join(dir, ".storybook"))).toBe(false);
     expect(existsSync(join(dir, "stories"))).toBe(false);
 
@@ -133,7 +148,7 @@ describe("createProject", () => {
     const added = installItems({ projectDir: dir, items, version: registry.version });
     expect(added.written).toContain("src/components/ui/dialog/dialog.tsx");
     expect(added.skipped).toContain("src/lib/cx.ts"); // already there from create
-    expect(added.components.sort()).toEqual(["Button", "Card", "Dialog", "Icon"]);
+    expect(added.components.sort()).toEqual(["Badge", "Button", "Card", "Dialog", "Icon"]);
     expect(added.dependencies["@radix-ui/react-dialog"]).toBeDefined();
 
     // Still clean after the addition, with the new component contracted.

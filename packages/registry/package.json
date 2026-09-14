@@ -37,9 +37,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "build": "node scripts/versions.mjs && tsc -p tsconfig.json",
+    "typecheck": "node scripts/versions.mjs && tsc -p tsconfig.json --noEmit",
+    "test": "node scripts/versions.mjs && vitest run"
   },
   "dependencies": {
     "@zenginui/engine": "workspace:*"

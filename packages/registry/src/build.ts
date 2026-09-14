@@ -253,6 +253,8 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
 
   // What each story needs beyond its own item, so install can decide whether to write it.
   recordStoryRequirements(items);
+  // A template answers those requirements itself, so a new project's Storybook is whole on the first run.
+  closeTemplateStoryRequirements(items);
 
   return { schema: REGISTRY_SCHEMA, name: "zengin", version, generatedAt: new Date().toISOString(), items };
 }
@@ -392,6 +394,36 @@ export function recordStoryRequirements(items: RegistryItem[]): void {
     }
     const needs = storyImports(story.content).filter((n) => !exported.has(n));
     if (needs.length) item.storyRequires = needs.sort();
+  }
+}
+
+/**
+ * Adds to each template the components its own components' stories demonstrate.
+ *
+ * `add` deliberately does not do this — see `recordStoryRequirements` — because someone who asks for one
+ * component should not receive three. A template is the other case: it is a whole project someone opens,
+ * and its Storybook is that project's documentation of the system it owns. A scaffold whose first output
+ * is "1 story was left out" is reporting a hole the person did not make. Across the eight templates this
+ * adds two components in total: Badge to blank, Checkbox to saas.
+ *
+ * The loop runs to a fixpoint because a component pulled in this way brings its own story.
+ */
+export function closeTemplateStoryRequirements(items: RegistryItem[]): void {
+  const byName = new Map(items.map((i) => [i.name, i]));
+  for (const item of items) {
+    if (item.type !== "template") continue;
+    const deps = [...item.registryDependencies];
+    const seen = new Set(deps);
+    // Order is preserved and additions go on the end: foundation and the lib items lead for a reason.
+    for (let i = 0; i < deps.length; i++) {
+      for (const need of byName.get(deps[i]!)?.storyRequires ?? []) {
+        const name = kebab(need);
+        if (seen.has(name) || byName.get(name)?.type !== "component") continue;
+        seen.add(name);
+        deps.push(name);
+      }
+    }
+    item.registryDependencies = deps;
   }
 }
 

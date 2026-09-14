@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
+import { ZENGIN_VERSIONS } from "./generated/versions.js";
 import { installItems, STYLES_INDEX_HEAD, type InstallResult } from "./install.js";
 import type { RegistrySource } from "./load.js";
 import { resolveItems } from "./resolve.js";
@@ -43,7 +44,14 @@ export interface CreateResult {
   violations: number;
 }
 
-/** Versions pinned into a generated package.json. One place to bump. */
+/**
+ * Versions pinned into a generated package.json. One place to bump.
+ *
+ * The Zengin packages are NOT here: they are generated from the workspace at build time into
+ * `generated/versions.ts`, because a hand-written `^0.1.0` covered all three of them and was still
+ * being handed to new projects four releases later, so `zengin define`, `profiles:` and `add --install`
+ * were all documented and all absent from the project someone was given.
+ */
 export const VERSIONS = {
   react: "^19.3.0",
   "react-dom": "^19.3.0",
@@ -57,8 +65,10 @@ export const VERSIONS = {
   "@storybook/react-vite": "^10.6.0",
   "@storybook/addon-docs": "^10.6.0",
   "@storybook/addon-a11y": "^10.6.0",
-  zengin: "^0.1.0",
 } as const;
+
+/** Only reached if a build produced an incomplete version map, which is a build bug rather than a project's problem. */
+const ZENGIN_FALLBACK = "latest";
 
 export async function createProject(opts: CreateOptions): Promise<CreateResult> {
   const dir = resolve(opts.dir);
@@ -136,7 +146,8 @@ export async function createProject(opts: CreateOptions): Promise<CreateResult> 
 function packageJson(opts: { name: string; install: InstallResult; storybook: boolean; local?: string; mock?: boolean; framework?: "vite" | "next" }): string {
   const next = opts.framework === "next";
   // `link:` symlinks the checkout's package and uses its own node_modules, so workspace deps resolve. pnpm honors it; npm needs the release.
-  const z = (pkg: string): string => (opts.local ? `link:${resolve(opts.local, "packages", pkg).replace(/\\/g, "/")}` : VERSIONS.zengin);
+  const z = (pkg: string): string =>
+    opts.local ? `link:${resolve(opts.local, "packages", pkg).replace(/\\/g, "/")}` : (ZENGIN_VERSIONS[`@zenginui/${pkg}`] ?? ZENGIN_FALLBACK);
   const dependencies = sortKeys({ react: VERSIONS.react, "react-dom": VERSIONS["react-dom"], ...(next ? { next: VERSIONS.next } : {}), ...opts.install.dependencies });
   const devDependencies = sortKeys({
     "@types/react": VERSIONS["@types/react"],

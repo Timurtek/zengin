@@ -4,6 +4,8 @@ dist/
 .DS_Store
 # Built from zengin/tokens*.json by packages/ui/scripts/build.ts
 packages/ui/src/styles/generated/
+# Built from the workspace package.json versions by packages/registry/scripts/versions.mjs
+packages/registry/src/generated/
 storybook-static/
 # Built by `zengin registry build`, served by the marketing site
 examples/marketing-site/public/r/
