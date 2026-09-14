@@ -1,5 +1,102 @@
 # @zenginui/registry
 
+## 0.2.0
+
+### Minor Changes
+
+- [`fb3b596`](https://github.com/Timurtek/zengin/commit/fb3b596d806854c7de237480d06f0f362cde8c67) Thanks [@Timurtek](https://github.com/Timurtek)! - The rest of field test four.
+  
+  **`add` no longer throws a batch away for one typo.** `zengin add markdown tabs codeblock skeleton loader`
+  added nothing, because one name in five was `codeblock` rather than `code-block`. The four valid items go in
+  now and the one that is wrong is reported with the registry's own name for it: `did you mean code-block?`.
+  The full list of items stays in the error too, because that is how someone finds a name the suggestion
+  misses.
+  
+  **`add --install` runs the package manager** the project already uses, read from its lockfile. Without the
+  flag it prints the command, and now also says what to expect until someone runs it: TypeScript will report
+  the missing module and a second error inside the story that uses it, and both go away with the install. That
+  second error read as a broken registry item to the session that found it.
+  
+  **`npm create zengin -- --help` answers the question that was asked.** It forwarded to the whole CLI, so
+  someone who wanted to create a project got every command from `check` to `figma plugin`, with the create
+  flags two screens down.
+  
+  **A monospace text control.** `TextField` and `TextArea` take `font="mono"`, for content that is code or
+  data rather than prose: a JSON block, an API key, a path. There was no way to do this before, because the
+  controls own their font through `size`, so a config-editing screen had to reach for a `className` and was
+  correctly blocked. The manifest now says `font-family` is owned by the `size` and `font` props, so the
+  violation names the prop that actually helps.
+  
+  **Letter-spacing tokens.** A `tracking` family, from `tighter` to `caps`, and every hardcoded value in the
+  examples now names one. Uppercase micro-labels are common enough to deserve a token, and an agent reaching
+  for `var(--tracking-wide)` will now find it.
+  
+  **Four components an operator app had to build by hand.** `DataTable` sorts, searches and pages over
+  `Table`, sorting on the column's value rather than the text in the cell, so a formatted date or a badge
+  sorts correctly; it tells the difference between having no rows and matching none. `StatTile` colours a
+  change by what the metric means rather than by the sign of the number, because a fall in churn is good and a
+  fall in revenue is not. `EmptyState` gives the three different nothings, not yet, no match, and all clear,
+  somewhere to live. `Kbd` renders a key or a chord.
+
+- [`781d440`](https://github.com/Timurtek/zengin/commit/781d440e9530585f7c524848f8cfe7a1342b69e2) Thanks [@Timurtek](https://github.com/Timurtek)! - The three ship-blockers from field test four.
+  
+  A session built a real application on Zengin as a stranger would, from the public packages and the public
+  registry, and wrote up eighteen findings. Three of them stopped a fresh clone working.
+  
+  **The enforcement loop did not engage for anyone but its author.** `zengin create` wrote `.mcp.json` and the
+  edit hook with bare `zengin-mcp` and `zengin-hook` commands. Those live in `node_modules/.bin`, which is on
+  PATH inside an npm script and nowhere else, and an agent launches them directly. So unless the packages were
+  installed globally, the MCP server failed to start and the hook never fired, silently. It worked in this
+  repository because its own examples point at `node ../../packages/mcp/dist/index.js`. Both are now invoked
+  through `npx`, and `create` ends by saying to open a new agent session in the new directory, since MCP
+  servers and hooks are read when a session starts.
+  
+  **Projects did not compile out of the box.** A component's story ships with the component, and nothing
+  checked that the story's imports were satisfied by what the item delivers: a Loader story demonstrating a
+  Loader inside a Message landed in projects with no Message, and `tsc` failed immediately after `zengin check`
+  reported zero. Twelve items had this. Rather than make every story self-contained, which makes worse
+  documentation, or drag Button into a dozen installs that do not need it, the registry now records what each
+  story needs beyond its own item and install writes the story only where those are present, naming what was
+  left out and why.
+  
+  **A `var()` naming a family the system does not have went unreported.** `var(--tracking-wide)` against a
+  system with no tracking tokens resolves to nothing at runtime with no error anywhere, and `token-reference`
+  only looked inside namespaces the system already owned. It now reports these too, which required teaching the
+  engine two things first so the widening does not invent false positives: every custom property the project's
+  own stylesheets declare, in any file, so a theme-defined property used in a component is recognised as the
+  project's own; and the prefixes a dependency uses for properties it sets at runtime, derived from the
+  project's own dependencies rather than a hard-coded list, so Radix writing `--radix-popover-content-transform-origin`
+  from JavaScript is left alone. `rules.token-reference.externalVars` adds any the convention misses.
+  
+  Also from the same report: `create` no longer suggests adding components the chosen template already has.
+
+### Patch Changes
+
+- [`1e16ddc`](https://github.com/Timurtek/zengin/commit/1e16ddcc26e9fb27a6b16898f55c6e9ff2931d6c) Thanks [@Timurtek](https://github.com/Timurtek)! - Kanban and Combobox, the last two components field test four asked for.
+  
+  **Kanban** is a board of columns you move cards between. Every operations app rebuilds this, and the rebuild
+  is nearly always pointer-only: HTML5 drag events, a drop handler, done. That version cannot be used with a
+  keyboard at all, and drag-and-drop has no accessible fallback of its own, so the keyboard path is the
+  difference between a component and a demo. Space lifts a card, the arrow keys move it between and within
+  columns, Enter drops it and Escape puts it back, with every step announced because the move cannot be seen.
+  Both paths end in the same `onMove`. The board is controlled: it reports where a card should go and draws
+  what it is given, so an app that needs to save the move, refuse it, or animate it stays in charge.
+  
+  **Combobox** is a text field that filters a list, for one value or several. Select is right up to a few
+  dozen options; past that the answer is typing, which is a different component rather than a bigger Select.
+  It follows the WAI-ARIA combobox pattern properly, which is the reason to have it in a system: focus stays
+  in the input and owns the keyboard, the list is a real listbox, and the current option is pointed at with
+  `aria-activedescendant` instead of by moving focus. Hand-rolled comboboxes usually get that last part wrong,
+  and a screen reader then reads nothing as the user arrows through. Arrow keys wrap and step over disabled
+  options, Backspace on an empty field takes the last chip, and groups, hints, an error and three sizes come
+  with it.
+  
+  Also fixed: the story-requirements check counted type-only imports as components, so an item whose story
+  imported its own `type KanbanMove` looked like it needed a component called KanbanMove. Types are erased at
+  build time and can never be a missing component at runtime.
+- Updated dependencies [[`781d440`](https://github.com/Timurtek/zengin/commit/781d440e9530585f7c524848f8cfe7a1342b69e2), [`93aef4c`](https://github.com/Timurtek/zengin/commit/93aef4c2d739c9cd729f1c8136ac45b843da1b15)]:
+  - @zenginui/engine@0.4.0
+
 ## 0.1.3
 
 ### Patch Changes

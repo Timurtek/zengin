@@ -1,5 +1,66 @@
 # @zenginui/engine
 
+## 0.4.0
+
+### Minor Changes
+
+- [`781d440`](https://github.com/Timurtek/zengin/commit/781d440e9530585f7c524848f8cfe7a1342b69e2) Thanks [@Timurtek](https://github.com/Timurtek)! - The three ship-blockers from field test four.
+  
+  A session built a real application on Zengin as a stranger would, from the public packages and the public
+  registry, and wrote up eighteen findings. Three of them stopped a fresh clone working.
+  
+  **The enforcement loop did not engage for anyone but its author.** `zengin create` wrote `.mcp.json` and the
+  edit hook with bare `zengin-mcp` and `zengin-hook` commands. Those live in `node_modules/.bin`, which is on
+  PATH inside an npm script and nowhere else, and an agent launches them directly. So unless the packages were
+  installed globally, the MCP server failed to start and the hook never fired, silently. It worked in this
+  repository because its own examples point at `node ../../packages/mcp/dist/index.js`. Both are now invoked
+  through `npx`, and `create` ends by saying to open a new agent session in the new directory, since MCP
+  servers and hooks are read when a session starts.
+  
+  **Projects did not compile out of the box.** A component's story ships with the component, and nothing
+  checked that the story's imports were satisfied by what the item delivers: a Loader story demonstrating a
+  Loader inside a Message landed in projects with no Message, and `tsc` failed immediately after `zengin check`
+  reported zero. Twelve items had this. Rather than make every story self-contained, which makes worse
+  documentation, or drag Button into a dozen installs that do not need it, the registry now records what each
+  story needs beyond its own item and install writes the story only where those are present, naming what was
+  left out and why.
+  
+  **A `var()` naming a family the system does not have went unreported.** `var(--tracking-wide)` against a
+  system with no tracking tokens resolves to nothing at runtime with no error anywhere, and `token-reference`
+  only looked inside namespaces the system already owned. It now reports these too, which required teaching the
+  engine two things first so the widening does not invent false positives: every custom property the project's
+  own stylesheets declare, in any file, so a theme-defined property used in a component is recognised as the
+  project's own; and the prefixes a dependency uses for properties it sets at runtime, derived from the
+  project's own dependencies rather than a hard-coded list, so Radix writing `--radix-popover-content-transform-origin`
+  from JavaScript is left alone. `rules.token-reference.externalVars` adds any the convention misses.
+  
+  Also from the same report: `create` no longer suggests adding components the chosen template already has.
+
+- [`93aef4c`](https://github.com/Timurtek/zengin/commit/93aef4c2d739c9cd729f1c8136ac45b843da1b15) Thanks [@Timurtek](https://github.com/Timurtek)! - `owns` says who controls a property, accurately.
+  
+  A manifest entry's `owns` names the prop a reader should reach for when the engine rejects their `className`,
+  so naming the wrong one sends them to a prop that does not do the thing. Running `zengin define` against
+  Zengin UI's own components surfaced eleven places where the manifest and the stylesheets disagreed. Two were
+  the manifest being wrong and the rest were the deriver being wrong, which is the more useful half.
+  
+  - **A property may be controlled by more than one prop, and now says so.** A Button's background takes its hue
+    from `tone` and its treatment from `variant`; the message reads "background-color is owned by the variant
+    and tone props" instead of picking a winner.
+  - **A rule that styles a child is no longer attributed to the component.** `.z-tabs[data-variant="pill"]
+    .z-tabs__list` styles the list, and Tabs does not own its radius. Only the compound a rule actually styles
+    is read.
+  - **A rule behind a pseudo-class is a state, not a prop.** `.z-card[data-interactive]:hover` sets a border
+    color because the pointer is over it, which says nothing about which prop controls it.
+  - **Reading a project's own source no longer guesses which element's attributes pass through.** The package
+    path still guesses from a component's name and from `ComponentProps` without a literal, because a manifest
+    derived from a stranger's `.d.ts` is better off with a likely answer than none. Source is not: this
+    project's Dialog is a Radix dialog rather than an HTML one, and a wrong `extends` quietly widens what
+    `unknown-prop` accepts.
+  - **`zengin define --force`** resolves a disagreement in the stylesheet's favour instead of only reporting it,
+    which is the right way round when the manifest was written by hand and has fallen behind the CSS.
+  
+  Zengin UI's own manifest is regenerated from its stylesheets and now disagrees with them nowhere.
+
 ## 0.3.0
 
 ### Minor Changes

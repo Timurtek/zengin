@@ -1,5 +1,12 @@
 # @zenginui/hook
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`781d440`](https://github.com/Timurtek/zengin/commit/781d440e9530585f7c524848f8cfe7a1342b69e2), [`93aef4c`](https://github.com/Timurtek/zengin/commit/93aef4c2d739c9cd729f1c8136ac45b843da1b15)]:
+  - @zenginui/engine@0.4.0
+
 ## 0.1.2
 
 ### Patch Changes

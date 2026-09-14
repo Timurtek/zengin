@@ -1,5 +1,93 @@
 # @zenginui/ui
 
+## 0.2.0
+
+### Minor Changes
+
+- [`fb3b596`](https://github.com/Timurtek/zengin/commit/fb3b596d806854c7de237480d06f0f362cde8c67) Thanks [@Timurtek](https://github.com/Timurtek)! - The rest of field test four.
+  
+  **`add` no longer throws a batch away for one typo.** `zengin add markdown tabs codeblock skeleton loader`
+  added nothing, because one name in five was `codeblock` rather than `code-block`. The four valid items go in
+  now and the one that is wrong is reported with the registry's own name for it: `did you mean code-block?`.
+  The full list of items stays in the error too, because that is how someone finds a name the suggestion
+  misses.
+  
+  **`add --install` runs the package manager** the project already uses, read from its lockfile. Without the
+  flag it prints the command, and now also says what to expect until someone runs it: TypeScript will report
+  the missing module and a second error inside the story that uses it, and both go away with the install. That
+  second error read as a broken registry item to the session that found it.
+  
+  **`npm create zengin -- --help` answers the question that was asked.** It forwarded to the whole CLI, so
+  someone who wanted to create a project got every command from `check` to `figma plugin`, with the create
+  flags two screens down.
+  
+  **A monospace text control.** `TextField` and `TextArea` take `font="mono"`, for content that is code or
+  data rather than prose: a JSON block, an API key, a path. There was no way to do this before, because the
+  controls own their font through `size`, so a config-editing screen had to reach for a `className` and was
+  correctly blocked. The manifest now says `font-family` is owned by the `size` and `font` props, so the
+  violation names the prop that actually helps.
+  
+  **Letter-spacing tokens.** A `tracking` family, from `tighter` to `caps`, and every hardcoded value in the
+  examples now names one. Uppercase micro-labels are common enough to deserve a token, and an agent reaching
+  for `var(--tracking-wide)` will now find it.
+  
+  **Four components an operator app had to build by hand.** `DataTable` sorts, searches and pages over
+  `Table`, sorting on the column's value rather than the text in the cell, so a formatted date or a badge
+  sorts correctly; it tells the difference between having no rows and matching none. `StatTile` colours a
+  change by what the metric means rather than by the sign of the number, because a fall in churn is good and a
+  fall in revenue is not. `EmptyState` gives the three different nothings, not yet, no match, and all clear,
+  somewhere to live. `Kbd` renders a key or a chord.
+
+- [`1e16ddc`](https://github.com/Timurtek/zengin/commit/1e16ddcc26e9fb27a6b16898f55c6e9ff2931d6c) Thanks [@Timurtek](https://github.com/Timurtek)! - Kanban and Combobox, the last two components field test four asked for.
+  
+  **Kanban** is a board of columns you move cards between. Every operations app rebuilds this, and the rebuild
+  is nearly always pointer-only: HTML5 drag events, a drop handler, done. That version cannot be used with a
+  keyboard at all, and drag-and-drop has no accessible fallback of its own, so the keyboard path is the
+  difference between a component and a demo. Space lifts a card, the arrow keys move it between and within
+  columns, Enter drops it and Escape puts it back, with every step announced because the move cannot be seen.
+  Both paths end in the same `onMove`. The board is controlled: it reports where a card should go and draws
+  what it is given, so an app that needs to save the move, refuse it, or animate it stays in charge.
+  
+  **Combobox** is a text field that filters a list, for one value or several. Select is right up to a few
+  dozen options; past that the answer is typing, which is a different component rather than a bigger Select.
+  It follows the WAI-ARIA combobox pattern properly, which is the reason to have it in a system: focus stays
+  in the input and owns the keyboard, the list is a real listbox, and the current option is pointed at with
+  `aria-activedescendant` instead of by moving focus. Hand-rolled comboboxes usually get that last part wrong,
+  and a screen reader then reads nothing as the user arrows through. Arrow keys wrap and step over disabled
+  options, Backspace on an empty field takes the last chip, and groups, hints, an error and three sizes come
+  with it.
+  
+  Also fixed: the story-requirements check counted type-only imports as components, so an item whose story
+  imported its own `type KanbanMove` looked like it needed a component called KanbanMove. Types are erased at
+  build time and can never be a missing component at runtime.
+
+### Patch Changes
+
+- [`93aef4c`](https://github.com/Timurtek/zengin/commit/93aef4c2d739c9cd729f1c8136ac45b843da1b15) Thanks [@Timurtek](https://github.com/Timurtek)! - `owns` says who controls a property, accurately.
+  
+  A manifest entry's `owns` names the prop a reader should reach for when the engine rejects their `className`,
+  so naming the wrong one sends them to a prop that does not do the thing. Running `zengin define` against
+  Zengin UI's own components surfaced eleven places where the manifest and the stylesheets disagreed. Two were
+  the manifest being wrong and the rest were the deriver being wrong, which is the more useful half.
+  
+  - **A property may be controlled by more than one prop, and now says so.** A Button's background takes its hue
+    from `tone` and its treatment from `variant`; the message reads "background-color is owned by the variant
+    and tone props" instead of picking a winner.
+  - **A rule that styles a child is no longer attributed to the component.** `.z-tabs[data-variant="pill"]
+    .z-tabs__list` styles the list, and Tabs does not own its radius. Only the compound a rule actually styles
+    is read.
+  - **A rule behind a pseudo-class is a state, not a prop.** `.z-card[data-interactive]:hover` sets a border
+    color because the pointer is over it, which says nothing about which prop controls it.
+  - **Reading a project's own source no longer guesses which element's attributes pass through.** The package
+    path still guesses from a component's name and from `ComponentProps` without a literal, because a manifest
+    derived from a stranger's `.d.ts` is better off with a likely answer than none. Source is not: this
+    project's Dialog is a Radix dialog rather than an HTML one, and a wrong `extends` quietly widens what
+    `unknown-prop` accepts.
+  - **`zengin define --force`** resolves a disagreement in the stylesheet's favour instead of only reporting it,
+    which is the right way round when the manifest was written by hand and has fallen behind the CSS.
+  
+  Zengin UI's own manifest is regenerated from its stylesheets and now disagrees with them nowhere.
+
 ## 0.1.0
 
 ### Minor Changes

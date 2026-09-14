@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/adapter-css",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Derives Zengin definitions from a design system that ships CSS custom properties and TypeScript declarations: tokens from the variables, keeping their names, and a component manifest from the types.",
   "license": "MIT",
   "type": "module",
