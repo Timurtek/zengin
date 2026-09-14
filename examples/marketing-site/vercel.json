@@ -4,7 +4,6 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "pnpm --filter marketing-site... build && pnpm --filter marketing-site check",
   "outputDirectory": "dist",
-  "cleanUrls": true,
   "headers": [
     {
       "source": "/assets/(.*)",
