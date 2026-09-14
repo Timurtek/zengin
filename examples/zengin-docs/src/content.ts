@@ -627,6 +627,35 @@ npx zengin add dialog tooltip table
 
 Each one arrives as source in \`src/components/ui\`, with its stylesheet imported, its story written, its manifest entry added, its dependencies installed, and a line appended to the barrel. The files carry the ownership pragma, so \`zengin upgrade\` can reason about them later.
 
+Every item is in [the hosted Storybook](https://zengin.timurtek.com/storybook/) with its manifest-driven controls, which is the fastest way to decide what you want before you add it.
+
+## The packages they need
+
+Adding a component writes its files and tells you what it needs from npm. It does not install anything unless you ask:
+
+\`\`\`bash
+npx zengin add combobox --install
+\`\`\`
+
+The package manager comes from your lockfile, so the command is the one your project actually uses. Without the flag the output ends with that command and the project will not typecheck until you run it — a missing peer dependency reads like a broken component otherwise, which is exactly how it read to the first person who hit it.
+
+## A name it does not know
+
+One wrong name no longer costs you the batch. The names the registry knows go in, and the one it does not comes back with its nearest match and the full list:
+
+\`\`\`
+$ npx zengin add button card dialog codeblock
+
+Added button, card, dialog from https://zengin.timurtek.com/r (Zengin UI 0.1.0).
+
+Not added, because the registry has no such item:
+  codeblock  — did you mean code-block?
+\`\`\`
+
+## A story that is held back
+
+A component's story ships with the component, and some stories demonstrate the component inside another one — a Loader inside a Message, for instance. If your project does not have that other component, the story is withheld rather than written, and \`add\` says which one it skipped and what would bring it in. The alternative was a project that does not compile the moment it is created.
+
 ## The registry
 
 It is static JSON. The public one is served at [zengin.timurtek.com/r](https://zengin.timurtek.com/r/index.json), rebuilt on every deploy. Point somewhere else with \`--registry\`:
@@ -822,6 +851,8 @@ Check options: \`--changed\`, \`--staged\`, \`--format pretty|json|github\`, \`-
 | \`zengin init\` | A config in an existing project. \`--from shadcn\`, \`--from package <name>\`. |
 
 Create options: \`--template\`, \`--theme\`, \`--framework vite\\|next\`, \`--name\`, \`--registry\`, \`--no-storybook\`.
+
+Add options: \`--install\` (run the package manager your lockfile names), \`--registry\`, \`--force\` (overwrite files that already exist). An unknown name does not stop the rest of the batch; it comes back with the registry's own name for it.
 
 ## Making it yours
 

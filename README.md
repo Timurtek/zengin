@@ -20,7 +20,7 @@ Everyone else serves context. Zengin serves constraints.
 | [`@zenginui/registry`](packages/registry) | Phase 3 | The registry and the generator: `zengin create` scaffolds a project that owns its components shadcn-style, `zengin add` brings in more, `zengin tokens` compiles the token JSON. Items are built from `packages/ui` and `examples/`; the marketing site serves the public registry. |
 | [`@zenginui/mock`](packages/mock) | Phase 3 | `zengin mock`: typed, seeded mock data generated as plain TypeScript into the project. Presets for the entities apps show, a small schema for the rest, no runtime dependency. |
 | [`@zenginui/figma`](packages/figma) | Phase 3 | Figma both ways: tokens to Figma variables (Light and Dark modes, code syntax set to the CSS variable) and back with a report, Code Connect files from the component manifest, and a plugin that imports and exports variables in any file. |
-| [`@zenginui/ui`](packages/ui) | Phase 1, thirty-three components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
+| [`@zenginui/ui`](packages/ui) | Phase 1, thirty-nine components | The reference design system: plain CSS, custom-property tokens, light and dark themes, Radix behavior, Storybook with manifest-driven stories. Ships the `zengin/` definitions the engine enforces against, and checks itself with the engine. |
 
 ## Start a project
 
