@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/rollup",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Drift and adoption reporting across every repository that consumes a design system, from Zengin report snapshots.",
   "license": "MIT",
   "type": "module",

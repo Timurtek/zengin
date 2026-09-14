@@ -1,5 +1,116 @@
 # @zenginui/cli
 
+## 0.4.0
+
+### Minor Changes
+
+- [`fb3b596`](https://github.com/Timurtek/zengin/commit/fb3b596d806854c7de237480d06f0f362cde8c67) Thanks [@Timurtek](https://github.com/Timurtek)! - The rest of field test four.
+  
+  **`add` no longer throws a batch away for one typo.** `zengin add markdown tabs codeblock skeleton loader`
+  added nothing, because one name in five was `codeblock` rather than `code-block`. The four valid items go in
+  now and the one that is wrong is reported with the registry's own name for it: `did you mean code-block?`.
+  The full list of items stays in the error too, because that is how someone finds a name the suggestion
+  misses.
+  
+  **`add --install` runs the package manager** the project already uses, read from its lockfile. Without the
+  flag it prints the command, and now also says what to expect until someone runs it: TypeScript will report
+  the missing module and a second error inside the story that uses it, and both go away with the install. That
+  second error read as a broken registry item to the session that found it.
+  
+  **`npm create zengin -- --help` answers the question that was asked.** It forwarded to the whole CLI, so
+  someone who wanted to create a project got every command from `check` to `figma plugin`, with the create
+  flags two screens down.
+  
+  **A monospace text control.** `TextField` and `TextArea` take `font="mono"`, for content that is code or
+  data rather than prose: a JSON block, an API key, a path. There was no way to do this before, because the
+  controls own their font through `size`, so a config-editing screen had to reach for a `className` and was
+  correctly blocked. The manifest now says `font-family` is owned by the `size` and `font` props, so the
+  violation names the prop that actually helps.
+  
+  **Letter-spacing tokens.** A `tracking` family, from `tighter` to `caps`, and every hardcoded value in the
+  examples now names one. Uppercase micro-labels are common enough to deserve a token, and an agent reaching
+  for `var(--tracking-wide)` will now find it.
+  
+  **Four components an operator app had to build by hand.** `DataTable` sorts, searches and pages over
+  `Table`, sorting on the column's value rather than the text in the cell, so a formatted date or a badge
+  sorts correctly; it tells the difference between having no rows and matching none. `StatTile` colours a
+  change by what the metric means rather than by the sign of the number, because a fall in churn is good and a
+  fall in revenue is not. `EmptyState` gives the three different nothings, not yet, no match, and all clear,
+  somewhere to live. `Kbd` renders a key or a chord.
+
+- [`781d440`](https://github.com/Timurtek/zengin/commit/781d440e9530585f7c524848f8cfe7a1342b69e2) Thanks [@Timurtek](https://github.com/Timurtek)! - The three ship-blockers from field test four.
+  
+  A session built a real application on Zengin as a stranger would, from the public packages and the public
+  registry, and wrote up eighteen findings. Three of them stopped a fresh clone working.
+  
+  **The enforcement loop did not engage for anyone but its author.** `zengin create` wrote `.mcp.json` and the
+  edit hook with bare `zengin-mcp` and `zengin-hook` commands. Those live in `node_modules/.bin`, which is on
+  PATH inside an npm script and nowhere else, and an agent launches them directly. So unless the packages were
+  installed globally, the MCP server failed to start and the hook never fired, silently. It worked in this
+  repository because its own examples point at `node ../../packages/mcp/dist/index.js`. Both are now invoked
+  through `npx`, and `create` ends by saying to open a new agent session in the new directory, since MCP
+  servers and hooks are read when a session starts.
+  
+  **Projects did not compile out of the box.** A component's story ships with the component, and nothing
+  checked that the story's imports were satisfied by what the item delivers: a Loader story demonstrating a
+  Loader inside a Message landed in projects with no Message, and `tsc` failed immediately after `zengin check`
+  reported zero. Twelve items had this. Rather than make every story self-contained, which makes worse
+  documentation, or drag Button into a dozen installs that do not need it, the registry now records what each
+  story needs beyond its own item and install writes the story only where those are present, naming what was
+  left out and why.
+  
+  **A `var()` naming a family the system does not have went unreported.** `var(--tracking-wide)` against a
+  system with no tracking tokens resolves to nothing at runtime with no error anywhere, and `token-reference`
+  only looked inside namespaces the system already owned. It now reports these too, which required teaching the
+  engine two things first so the widening does not invent false positives: every custom property the project's
+  own stylesheets declare, in any file, so a theme-defined property used in a component is recognised as the
+  project's own; and the prefixes a dependency uses for properties it sets at runtime, derived from the
+  project's own dependencies rather than a hard-coded list, so Radix writing `--radix-popover-content-transform-origin`
+  from JavaScript is left alone. `rules.token-reference.externalVars` adds any the convention misses.
+  
+  Also from the same report: `create` no longer suggests adding components the chosen template already has.
+
+- [`93aef4c`](https://github.com/Timurtek/zengin/commit/93aef4c2d739c9cd729f1c8136ac45b843da1b15) Thanks [@Timurtek](https://github.com/Timurtek)! - `owns` says who controls a property, accurately.
+  
+  A manifest entry's `owns` names the prop a reader should reach for when the engine rejects their `className`,
+  so naming the wrong one sends them to a prop that does not do the thing. Running `zengin define` against
+  Zengin UI's own components surfaced eleven places where the manifest and the stylesheets disagreed. Two were
+  the manifest being wrong and the rest were the deriver being wrong, which is the more useful half.
+  
+  - **A property may be controlled by more than one prop, and now says so.** A Button's background takes its hue
+    from `tone` and its treatment from `variant`; the message reads "background-color is owned by the variant
+    and tone props" instead of picking a winner.
+  - **A rule that styles a child is no longer attributed to the component.** `.z-tabs[data-variant="pill"]
+    .z-tabs__list` styles the list, and Tabs does not own its radius. Only the compound a rule actually styles
+    is read.
+  - **A rule behind a pseudo-class is a state, not a prop.** `.z-card[data-interactive]:hover` sets a border
+    color because the pointer is over it, which says nothing about which prop controls it.
+  - **Reading a project's own source no longer guesses which element's attributes pass through.** The package
+    path still guesses from a component's name and from `ComponentProps` without a literal, because a manifest
+    derived from a stranger's `.d.ts` is better off with a likely answer than none. Source is not: this
+    project's Dialog is a Radix dialog rather than an HTML one, and a wrong `extends` quietly widens what
+    `unknown-prop` accepts.
+  - **`zengin define --force`** resolves a disagreement in the stylesheet's favour instead of only reporting it,
+    which is the right way round when the manifest was written by hand and has fallen behind the CSS.
+  
+  Zengin UI's own manifest is regenerated from its stylesheets and now disagrees with them nowhere.
+
+### Patch Changes
+
+- [`983c4d0`](https://github.com/Timurtek/zengin/commit/983c4d0c4b7873ecfbd030fe2acb287a43acef63) Thanks [@Timurtek](https://github.com/Timurtek)! - `zengin --help` attributes its options to the right command.
+  
+  The Init block had lost its last two lines into Define, so `--dir` was listed twice under Define and
+  `--force` appeared there with init's description, "overwrite existing zengin/ definitions and config".
+  Anyone reading the help to find out what `zengin define --force` does was told the wrong thing about
+  the one flag whose whole job is to overwrite something.
+- Updated dependencies [[`fb3b596`](https://github.com/Timurtek/zengin/commit/fb3b596d806854c7de237480d06f0f362cde8c67), [`781d440`](https://github.com/Timurtek/zengin/commit/781d440e9530585f7c524848f8cfe7a1342b69e2), [`1e16ddc`](https://github.com/Timurtek/zengin/commit/1e16ddcc26e9fb27a6b16898f55c6e9ff2931d6c), [`93aef4c`](https://github.com/Timurtek/zengin/commit/93aef4c2d739c9cd729f1c8136ac45b843da1b15)]:
+  - @zenginui/registry@0.2.0
+  - @zenginui/engine@0.4.0
+  - @zenginui/adapter-css@0.3.0
+  - @zenginui/adapter-shadcn@0.1.3
+  - @zenginui/figma@0.1.3
+  - @zenginui/rollup@0.1.3
+
 ## 0.3.0
 
 ### Minor Changes
