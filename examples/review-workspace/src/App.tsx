@@ -42,7 +42,12 @@ export function App() {
           </div>
         </header>
 
-        <main className="app__queue">
+        <main className="app__queue" aria-label="Review items">
+          {/* A filtered list says how many it found, so one result reads as the answer rather than as a gap. */}
+          <p className="app__count" role="status">
+            {visible.length} {visible.length === 1 ? "item" : "items"}
+            {query.trim() ? ` matching “${query.trim()}”` : ""}
+          </p>
           {visible.map((item) => (
             <ReviewCard key={item.id} item={item} onApprove={() => setStatus(item.id, "approved")} onReject={() => setRejecting(item)} />
           ))}

@@ -10,6 +10,7 @@ export const NAV: { href: string; label: string; external?: boolean }[] = [
   { href: "/rollup/", label: "Rollup", external: true },
   { href: "#surfaces", label: "Surfaces" },
   { href: "#rules", label: "Rules" },
+  { href: "#path", label: "The path" },
   { href: "#growth", label: "Growth" },
   { href: "/docs/", label: "Docs", external: true },
   { href: "#system", label: "Reference system" },
@@ -139,6 +140,110 @@ Over 3 moments since 2026-08-31: violations 38 to 34, component uses 61 to 97, s
 export type RuleRow = { id: string; family: "foundation" | "contract" | "substitution"; description: string };
 
 /** packages/engine/src/docs.ts, shortened for the table; `zengin explain` prints the full text. */
+export type PathStop = {
+  id: string;
+  /** Where it sits on the canvas. Hand-placed: five nodes do not need a layout engine. */
+  at: { x: number; y: number };
+  to: string[];
+  kind: "source" | "engine" | "surface";
+  /** The moment, not the tool. */
+  when: string;
+  title: string;
+  /** One line on the node itself. */
+  what: string;
+  badge?: string;
+  detail: string;
+  points: string[];
+};
+
+export const PATH: PathStop[] = [
+  {
+    id: "definitions",
+    at: { x: 0, y: 150 },
+    to: ["engine"],
+    kind: "source",
+    when: "Once",
+    title: "The definitions",
+    what: "tokens.json and components.json",
+    badge: "yours",
+    detail:
+      "Two files the project owns: the tokens in the W3C format, and a manifest saying what each component accepts and which CSS properties it controls. Write them by hand, or derive them from a system you already have.",
+    points: [
+      "zengin init --from shadcn, or --from package for any installed system",
+      "zengin define reads the components you wrote yourself",
+      "Nothing downstream needs configuring twice; everything else reads these",
+    ],
+  },
+  {
+    id: "engine",
+    at: { x: 300, y: 150 },
+    to: ["mcp", "hook", "ci", "rollup"],
+    kind: "engine",
+    when: "Every time",
+    title: "The engine",
+    what: "Seven rules, no model",
+    badge: "deterministic",
+    detail:
+      "Parses TSX and CSS, resolves class names through your own stylesheets, and checks every declaration against the definitions. The same input gives the same answer everywhere, in well under a second for a hundred files.",
+    points: [
+      "Three families: the tokens, the component contracts, and the system rebuilt by hand",
+      "Every violation carries a fix and how sure the engine is of it",
+      "No model in the loop, which is what lets the other four trust it",
+    ],
+  },
+  {
+    id: "mcp",
+    at: { x: 640, y: 0 },
+    to: [],
+    kind: "surface",
+    when: "Before the code exists",
+    title: "The agent plans",
+    what: "MCP tools it calls first",
+    detail:
+      "Four tools over stdio. The agent asks what the system is before it starts, and checks a snippet before it commits to it, so the wrong version is never written rather than written and corrected.",
+    points: ["zengin_describe_system, so the plan is against the real thing", "zengin_check_code on a snippet, with no file touched", "The cheapest possible moment to be wrong"],
+  },
+  {
+    id: "hook",
+    at: { x: 640, y: 100 },
+    to: [],
+    kind: "surface",
+    when: "At the moment of the write",
+    title: "The edit is checked",
+    what: "A hook that can say no",
+    detail:
+      "The MCP server relies on the agent choosing to call it. The hook does not. It runs after every file write and blocks the ones that introduce violations, returning them as the reason, which the agent reads and fixes.",
+    points: ["Claude Code PostToolUse, wired by zengin create", "Blocks rather than reports", "You never see the first version"],
+  },
+  {
+    id: "ci",
+    at: { x: 640, y: 200 },
+    to: [],
+    kind: "surface",
+    when: "On the pull request",
+    title: "The change is gated",
+    what: "CLI in the terminal and in CI",
+    detail:
+      "The same engine in a terminal, in a pre-commit hook, and on a pull request, where it writes annotations onto the lines in the diff. Checking only what changed is what makes adoption survivable on a codebase with a real backlog.",
+    points: ["--changed and --staged, so the gate is what the author owns", "--format github puts it on the diff, not in a log", "The answer matches the one the editor gave"],
+  },
+  {
+    id: "rollup",
+    at: { x: 640, y: 300 },
+    to: [],
+    kind: "surface",
+    when: "Across every repository",
+    title: "The team can see it",
+    what: "Drift and adoption over time",
+    detail:
+      "One repository's check says whether that code is on the system. A design-system team needs the other question: whether the system is winning, everywhere, over time. Each repository files a snapshot; the directory of snapshots is the history.",
+    points: ["Drift, adoption, owned forks, suppressions and their reasons", "Deltas between runs and a sparkline per repository", "Zengin publishes its own, from the example apps in this repository"],
+  },
+];
+
+export const PATH_NOTE =
+  "The order is the adoption order, not a pipeline: a team usually starts at the pull request, because that is the one that needs no agent and no new habits, and moves left as the value becomes obvious. Nothing here requires the steps before it.";
+
 export type GrowthCard = { id: string; title: string; body: string; points: string[]; code: { title: string; text: string } };
 
 export const GROWTH: GrowthCard[] = [

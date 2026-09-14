@@ -19,6 +19,7 @@ export function Hero() {
             <h1 className="hero__title">
               Your system. <em>Every change.</em>
             </h1>
+            <p className="hero__consequence">Keep AI-generated and human-written interfaces on-system without turning every pull request into a design-system review.</p>
             <p className="lead">
               A design system you own. Built to stay yours. One command creates it with the components copied in; an engine checks every edit after that, whether a person or an
               agent made it, and hands back the fix.

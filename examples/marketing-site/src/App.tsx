@@ -9,6 +9,7 @@ import { Nav } from "./sections/Nav";
 import { Proof } from "./sections/Proof";
 import { Growth } from "./sections/Growth";
 import { Rules } from "./sections/Rules";
+import { Path } from "./sections/Path";
 import { Surfaces } from "./sections/Surfaces";
 import { System } from "./sections/System";
 
@@ -42,6 +43,7 @@ export function App() {
           <Hero />
           <HowItWorks />
           <Catalog />
+          <Path />
           <Surfaces />
           <Rules />
           <Growth />

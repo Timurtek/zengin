@@ -76,3 +76,13 @@ body {
   color: var(--color-text-muted);
   font-size: var(--text-sm);
 }
+
+/* The result count above the queue: quiet, but enough that a single match looks deliberate. */
+.app__count {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
