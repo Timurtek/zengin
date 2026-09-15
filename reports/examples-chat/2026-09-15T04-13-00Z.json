@@ -1,0 +1,93 @@
+{
+  "schema": "zengin-report/1",
+  "generatedAt": "2026-09-15T04:13:00.011Z",
+  "repo": {
+    "name": "examples/chat",
+    "ref": "main",
+    "commit": "f5d4f1cc31767f41c5ff04d47000328d43d1cec8"
+  },
+  "system": {
+    "package": "@zenginui/ui",
+    "version": "0.2.1"
+  },
+  "filesChecked": 9,
+  "summary": {
+    "total": 0,
+    "bySeverity": {
+      "error": 0,
+      "warn": 0,
+      "info": 0
+    },
+    "byRule": {},
+    "byFile": {}
+  },
+  "violations": [],
+  "inventory": {
+    "files": 9,
+    "consumerFiles": 9,
+    "ownedFiles": 0,
+    "suppressions": 0,
+    "suppressionsWithoutReason": 0,
+    "components": {
+      "Tooltip": {
+        "uses": 2,
+        "files": 1
+      },
+      "Toast": {
+        "uses": 1,
+        "files": 1
+      },
+      "Avatar": {
+        "uses": 1,
+        "files": 1
+      },
+      "Button": {
+        "uses": 6,
+        "files": 1
+      },
+      "Select": {
+        "uses": 5,
+        "files": 1
+      },
+      "Conversation": {
+        "uses": 3,
+        "files": 1
+      },
+      "Suggestions": {
+        "uses": 1,
+        "files": 1
+      },
+      "Message": {
+        "uses": 5,
+        "files": 1
+      },
+      "Loader": {
+        "uses": 1,
+        "files": 1
+      },
+      "PromptInput": {
+        "uses": 1,
+        "files": 1
+      },
+      "Reasoning": {
+        "uses": 1,
+        "files": 1
+      },
+      "Markdown": {
+        "uses": 1,
+        "files": 1
+      },
+      "ToolCall": {
+        "uses": 2,
+        "files": 1
+      },
+      "Sources": {
+        "uses": 1,
+        "files": 1
+      }
+    },
+    "uncontracted": []
+  },
+  "suppressions": [],
+  "owned": []
+}
