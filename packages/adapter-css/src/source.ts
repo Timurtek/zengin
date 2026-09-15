@@ -44,6 +44,8 @@ export interface SourceDerivation {
     withOwns: number;
     /** Names found but not usable, with the reason. */
     skipped: string[];
+    /** Names the caller asked for that this pass never found, so the command can say so and fail. */
+    notFound: string[];
     /** component -> the file it came from. */
     origin: Record<string, string>;
   };
@@ -146,7 +148,11 @@ export function deriveManifestFromSource(files: SourceFile[], opts: SourceOption
     origin[name] = site.file;
   }
 
-  return { components, report: { files: code.length, components: components.length, withOwns, skipped, origin } };
+  // A name the caller asked for and this pass never saw. Reported rather than swallowed: `define Shell`
+  // used to answer "the manifest already describes this source" for a component it had never found.
+  const notFound = (opts.only ?? []).filter((n) => !sites.has(n));
+
+  return { components, report: { files: code.length, components: components.length, withOwns, skipped, notFound, origin } };
 }
 
 // ---------------------------------------------------------------------------
@@ -162,7 +168,9 @@ function componentsIn(body: Node[], file: string): ComponentSite[] {
   const out: ComponentSite[] = [];
   const locals = new Map<string, Node>(); // local function/const name -> the function node, for Object.assign roots
   const seen = (name: string, fn: Node | undefined): void => {
-    if (!isPascal(name)) return;
+    // PascalCase, and not SCREAMING_CASE: `TONES` in a lib module passed the old test and arrived in the
+    // manifest as a component with no props, where one false positive blocked a whole `--write`.
+    if (!isPascal(name) || name === name.toUpperCase()) return;
     out.push({ name, file, defaults: fn ? defaultsOf(fn) : {}, ...(fn ? { rootClass: rootClassOf(fn) } : {}) });
   };
 
@@ -311,19 +319,45 @@ function ownsFromCss(files: SourceFile[]): Map<string, OwnsTally> {
         if (!cls) continue;
         const stateful = /:(?!not\()[a-z-]/.test(subject);
         const attrs = stateful ? [] : [...subject.matchAll(/\[data-([a-z-]+)/g)].map((m) => camel(m[1]!));
-        const entry = out.get(cls) ?? {};
+        // A prop set on the root governs what it switches, even when the declaration lands on a child of the
+        // block: `.z-field[data-font="mono"] .z-field__input { font-family }` is owned by the `font` prop, and
+        // reading only the subject concluded that nothing owned it. That mattered: `define --force` would then
+        // have set the owner to null and undone the prop the manifest exists to point people at.
+        const governing = governedBy(selector, cls);
+        const entry = out.get(governing?.block ?? cls) ?? {};
         rule.walkDecls((decl: Declaration) => {
           const name = decl.prop.toLowerCase();
           if (name.startsWith("--") || !OWNABLE.has(name)) return;
           const slot = (entry[name] ??= { by: {}, bare: false });
-          if (attrs.length) for (const a of attrs) slot.by[a] = (slot.by[a] ?? 0) + 1;
-          else slot.bare = true;
+          const by = governing?.props ?? attrs;
+          if (by.length) for (const a of by) slot.by[a] = (slot.by[a] ?? 0) + 1;
+          else if (!governing) slot.bare = true;
         });
-        if (Object.keys(entry).length) out.set(cls, entry);
+        if (Object.keys(entry).length) out.set(governing?.block ?? cls, entry);
       }
     });
   }
   return out;
+}
+
+/**
+ * The block whose prop switches this rule on, when the subject is a child of that block.
+ *
+ * Only a data attribute on an ancestor that is the subject's own BEM block counts. An ancestor from somewhere
+ * else in the page is not this component's business, and an ancestor with no data attribute is unconditional
+ * child styling, which is what the deriver was taught to stop attributing to the component.
+ */
+function governedBy(selector: string, subjectClass: string): { block: string; props: string[] } | undefined {
+  const compounds = selector.trim().split(/\s*[>+~]\s*|\s+/);
+  for (const compound of compounds.slice(0, -1)) {
+    if (/:(?!not\()[a-z-]/.test(compound)) continue; // a state, not a prop
+    const block = /\.([A-Za-z0-9_-]+)/.exec(compound)?.[1];
+    if (!block) continue;
+    if (subjectClass !== block && !subjectClass.startsWith(`${block}__`)) continue;
+    const props = [...compound.matchAll(/\[data-([a-z-]+)/g)].map((m) => camel(m[1]!));
+    if (props.length) return { block, props };
+  }
+  return undefined;
 }
 
 /** The compound a rule actually styles: everything after the last combinator. */

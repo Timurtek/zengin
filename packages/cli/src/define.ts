@@ -22,6 +22,8 @@ export interface DefineResult {
   /** Components added or updated. Zero means the manifest already describes the source. */
   changes: number;
   manifestPath: string;
+  /** Names asked for that no ownership path contains. A command that found nothing should not report success. */
+  notFound: string[];
 }
 
 /**
@@ -99,7 +101,21 @@ export function runDefine(opts: DefineOptions): DefineResult {
     report += `\n  Export ${unreachable.length === 1 ? "it" : "them"} from a source in system.sources (${resolved.system.sources.join(", ")}).`;
   }
 
-  return { report, changes, manifestPath };
+  // A name that matched nothing is the whole result for the person who typed it. Saying "the manifest
+  // already describes this source" to someone teaching it about a component it never saw is worse than
+  // silence: it reports the job done.
+  const notFound = derivation.report.notFound;
+  if (notFound.length) {
+    // Not beside the claim of success: with nothing found, "the manifest already describes this source" is
+    // a statement about components this pass never saw.
+    report = report.split("The manifest already describes this source.").join("").trimEnd();
+    report +=
+      `\n\nNot found: ${notFound.join(", ")}.` +
+      `\n  Searched the ownership paths in zengin.config.yaml: ${ownership.join(", ")}.` +
+      `\n  A component outside those paths is the application's rather than the system's, and is not defined here.`;
+  }
+
+  return { report, changes, manifestPath, notFound };
 }
 
 /** The project's component barrel: the file whose exports the engine reads as the system. */

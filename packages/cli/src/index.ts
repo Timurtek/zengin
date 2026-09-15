@@ -333,6 +333,7 @@ async function main(): Promise<void> {
         ...(parsed.positional.length ? { only: parsed.positional } : {}),
       });
       process.stdout.write(result.report + "\n");
+      if (result.notFound.length) process.exitCode = 1;
       return;
     }
     case "create":

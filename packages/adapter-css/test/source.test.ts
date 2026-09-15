@@ -141,9 +141,42 @@ export const Chip = forwardRef<HTMLSpanElement, ChipProps>(function Chip({ tone 
     expect(chip.owns?.["box-shadow"]).toBeNull();
   });
 
-  it("ignores a rule that styles a child rather than the component", () => {
-    // `.z-chip[data-size] .z-chip__label` styles the label; the root does not own its font size.
-    expect(chip.owns?.["font-size"]).toBeUndefined();
+  it("does not invent an owner for a data attribute that is not a prop", () => {
+    // `.z-chip[data-size] .z-chip__label` is switched by `data-size`, and this Chip has no `size` prop, so
+    // there is no prop to send a reader to. Null, not a guess.
+    expect(chip.owns?.["font-size"]).toBeNull();
+  });
+
+  it("attributes a part's property to the prop on the root that switches it", () => {
+    // This reverses an earlier reading, deliberately. `owns` answers one question — which prop should a
+    // reader reach for when their className is rejected — and for a rejected `className="mono"` on a field
+    // the answer is `font`, whether the declaration lands on the root or on a part of it. The earlier rule
+    // distinguished by which element is styled, which is not the question, and a field report found the
+    // cost: TextField's font-family read as unowned, so `define --force` would have set the owner to null
+    // and undone the `font="mono"` prop the manifest exists to point people at.
+    const field = deriveManifestFromSource(
+      [
+        {
+          path: "src/components/ui/field/field.tsx",
+          content: `import type { HTMLAttributes } from "react";
+export interface FieldProps extends HTMLAttributes<HTMLDivElement> { font?: "sans" | "mono" }
+export function Field({ font = "sans" }: FieldProps) { return <div className="z-field" data-font={font}><input className="z-field__input" /></div>; }
+`,
+        },
+        {
+          path: "src/components/ui/field/field.css",
+          content: `.z-field[data-font="mono"] .z-field__input { font-family: var(--font-mono); }
+.z-field .z-field__input { color: var(--color-text); }
+`,
+        },
+      ],
+      opts,
+    ).components.find((c) => c.name === "Field")!;
+
+    expect(field.owns?.["font-family"]).toEqual("font");
+    // And unconditional child styling is still not the component's at all: no prop switches it, so it is not
+    // in `owns` in any form. The narrowing that keeps the earlier false positives out.
+    expect(field.owns?.["color"]).toBeUndefined();
   });
 
   it("reads the element whose attributes pass through when the type states one", () => {
