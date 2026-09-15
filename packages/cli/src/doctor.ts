@@ -1,7 +1,8 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { loadConfigFile, resolveConfig, type ComponentManifest } from "@zenginui/engine";
-import { AGENT_WIRING, LAYOUT, ZENGIN_VERSIONS, writeTokensCss } from "@zenginui/registry";
+import { AGENT_WIRING, LAYOUT, ZENGIN_VERSIONS, varsUsed, writeTokensCss } from "@zenginui/registry";
+import { loadTokens } from "@zenginui/engine";
 import { findConfig } from "./check.js";
 
 export type DoctorLevel = "error" | "warn" | "ok";
@@ -30,6 +31,8 @@ export interface DoctorOptions {
 export interface DoctorResult {
   report: string;
   findings: DoctorFinding[];
+  /** The checks that ran, named, so a clean report says what it looked at. */
+  checked: string[];
   /** Files changed by `--fix`, relative to the project. */
   fixed: string[];
   /** 1 if anything is an error, so CI can run this. */
@@ -59,12 +62,19 @@ export function runDoctor(opts: DoctorOptions): DoctorResult {
   // `--fix` in CI failing on faults it just fixed. So when anything was written, the report is a second look.
   const after = first.fixed.length ? diagnose(opts.cwd, opts.config, false) : first;
   const errors = after.findings.filter((f) => f.level === "error").length;
-  return { report: render(after.findings, first.fixed, opts.fix === true), findings: after.findings, fixed: first.fixed, exitCode: errors ? 1 : 0 };
+  return {
+    report: render(after.findings, first.fixed, opts.fix === true, after.checked),
+    findings: after.findings,
+    checked: after.checked,
+    fixed: first.fixed,
+    exitCode: errors ? 1 : 0,
+  };
 }
 
-function diagnose(cwd: string, config: string | undefined, fix: boolean): { findings: DoctorFinding[]; fixed: string[] } {
+function diagnose(cwd: string, config: string | undefined, fix: boolean): { findings: DoctorFinding[]; fixed: string[]; checked: string[] } {
   const findings: DoctorFinding[] = [];
   const fixed: string[] = [];
+  const checked: string[] = [];
 
   const configPath = findConfig(config, cwd);
   const projectDir = dirname(configPath);
@@ -91,12 +101,20 @@ function diagnose(cwd: string, config: string | undefined, fix: boolean): { find
     "@zenginui/mcp": checkMcp(at, rel, findings, fix, fixed),
     "@zenginui/hook": checkHook(at, rel, findings, fix, fixed),
   };
+  checked.push("agent wiring");
+  checkRootedness(at, rel, findings);
+  checked.push("session rootedness");
   checkPins(at, findings, wiring);
+  checked.push("version pins");
   if (resolved) {
     checkDefinitions(resolved, at, rel, findings, fix, fixed);
+    checked.push("definitions", "generated stylesheet");
     checkWiringOfComponents(resolved, at, rel, findings, fix, fixed);
+    checked.push("component wiring");
+    checkTokensComponentsNeed(resolved, at, findings);
+    checked.push("tokens the components read");
   }
-  return { findings, fixed };
+  return { findings, fixed, checked };
 }
 
 /* ------------------------------------------------------------------ the agent surfaces */
@@ -594,6 +612,97 @@ function kebabOf(name: string): string {
   return name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
+/**
+ * A correct wiring file that no session will ever read.
+ *
+ * `.mcp.json` and `.claude/settings.json` are read from the directory a session is opened in. When the app is
+ * a subdirectory of a larger repository — common, and the shape that made this visible — the files sit in the
+ * app and the sessions open at the repository root, so the server never starts and the hook never fires while
+ * every file involved is valid. Validating the file is not the same as checking that anything reads it.
+ */
+function checkRootedness(at: (r: string) => string, rel: (p: string) => string, out: DoctorFinding[]): void {
+  const projectDir = at(".");
+  const wiring = existsSync(at(HOOK_PATH)) ? at(HOOK_PATH) : existsSync(at(".mcp.json")) ? at(".mcp.json") : undefined;
+  if (!wiring) return; // nothing to be rooted wrongly; the missing-file findings cover it
+
+  let dir = projectDir;
+  for (;;) {
+    if (existsSync(join(dir, ".git"))) break;
+    const up = dirname(dir);
+    if (up === dir) return; // not in a repository: nothing to compare against
+    dir = up;
+  }
+  if (resolve(dir) === resolve(projectDir)) return;
+
+  out.push({
+    id: "session-rootedness",
+    level: "warn",
+    title: `The wiring is in this directory, but the repository root is ${dir}.`,
+    detail:
+      "An agent session reads .mcp.json and the hook from the directory it is opened in. A session opened at the repository root will not see these files, and nothing will say so: the server does not start and the hook does not fire.",
+    fix: "Open sessions in this directory, or copy the wiring to the repository root.",
+  });
+}
+
+/**
+ * Custom properties the project's own components read that its definitions do not define.
+ *
+ * This is the project-level half of what `token-reference` reports per file, and it is here because the
+ * cause is a project fact rather than a code mistake: a component added from the registry can read a token
+ * family added after the project was created. It is the finding that made `doctor` look healthy while
+ * `check` exited 1.
+ */
+function checkTokensComponentsNeed(resolved: ReturnType<typeof resolveConfig>, at: (r: string) => string, out: DoctorFinding[]): void {
+  const tokensPath = join(resolved.system.definitionsDir, "tokens.json");
+  const componentsDir = at(LAYOUT.componentsDir);
+  if (!existsSync(tokensPath) || !existsSync(componentsDir)) return;
+
+  let defined: Set<string>;
+  try {
+    defined = new Set(loadTokens(JSON.parse(readFileSync(tokensPath, "utf8"))).map((t) => t.cssVar));
+  } catch {
+    return; // an unreadable tokens.json is already an error from checkDefinitions
+  }
+
+  const styles: string[] = [];
+  const declared = new Set<string>();
+  for (const p of cssUnder(componentsDir).concat(cssUnder(at(join("src", "styles"))), cssUnder(at(join("src", "theme"))))) {
+    const content = readFileSync(p, "utf8");
+    if (p.startsWith(componentsDir)) styles.push(content);
+    for (const m of content.matchAll(/(--[A-Za-z0-9_-]+)\s*:/g)) declared.add(m[1]!);
+  }
+  if (!styles.length) return;
+
+  // The same allowance `token-reference` makes, from the same list: a property a dependency sets at runtime
+  // is defined nowhere on purpose. Without this the check reports every --radix-* property as broken, which
+  // is the exact false positive the rule was taught to avoid when it was widened.
+  const external = (v: string): boolean => {
+    const name = v.replace(/^--/, "");
+    return resolved.externalVarPrefixes.some((p) => name === p || name.startsWith(`${p}-`));
+  };
+  const missing = [...varsUsed(styles)].filter((v) => !defined.has(v) && !declared.has(v) && !external(v)).sort();
+  if (!missing.length) return;
+
+  out.push({
+    id: "tokens-components-need",
+    level: "error",
+    title: `${missing.length} custom propert${missing.length === 1 ? "y your components read is" : "ies your components read are"} not defined anywhere: ${missing.slice(0, 6).join(", ")}${missing.length > 6 ? `, and ${missing.length - 6} more` : ""}.`,
+    detail: "They resolve to nothing at runtime. A component added from the registry can read a token family added after this project was created.",
+    fix: "zengin upgrade --write takes the tokens the registry has and this project lacks, additively.",
+  });
+}
+
+function cssUnder(dir: string): string[] {
+  if (!existsSync(dir)) return [];
+  const out: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...cssUnder(p));
+    else if (entry.name.endsWith(".css")) out.push(p);
+  }
+  return out;
+}
+
 /* ------------------------------------------------------------------ plumbing */
 
 function readJson<T>(path: string): T | undefined {
@@ -617,7 +726,7 @@ const dim = paint("2");
 const MARK: Record<DoctorLevel, (s: string) => string> = { error: red, warn: yellow, ok: green };
 const GLYPH: Record<DoctorLevel, string> = { error: "×", warn: "!", ok: "✓" };
 
-function render(findings: DoctorFinding[], fixed: string[], fix: boolean): string {
+function render(findings: DoctorFinding[], fixed: string[], fix: boolean, checked: string[] = []): string {
   const lines: string[] = [];
   for (const f of findings) {
     lines.push(`${MARK[f.level](GLYPH[f.level])} ${f.title}`);
@@ -635,6 +744,9 @@ function render(findings: DoctorFinding[], fixed: string[], fix: boolean): strin
       ? `${errors} error${errors === 1 ? "" : "s"}, ${warns} warning${warns === 1 ? "" : "s"}.`
       : "Everything this command knows how to check is in order.";
   lines.push(errors ? red(tail) : warns ? yellow(tail) : green(tail));
+  // What was examined, not only what was found: a command that reports nothing should say what it looked at,
+  // or a clean run reads as "everything is fine" when it means "these five things are fine".
+  if (checked.length) lines.push(dim(`Checked: ${checked.join(", ")}. This command does not judge your code — that is zengin check.`));
 
   const fixable = findings.some((f) => f.fixable && f.level !== "ok");
   if (fixable && !fix) lines.push(dim("zengin doctor --fix repairs the ones it can: the files Zengin itself writes."));

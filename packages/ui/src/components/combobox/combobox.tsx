@@ -45,16 +45,6 @@ export interface ComboboxMultipleProps extends Base {
 export type ComboboxProps = ComboboxSingleProps | ComboboxMultipleProps;
 
 /**
- * A text field that filters a list, for choosing one thing or several from more than a Select should hold.
- *
- * Select is right up to a few dozen options; past that the answer is typing, and typing needs a different
- * component rather than a bigger Select. This follows the WAI-ARIA combobox pattern properly, which is the
- * reason to have it in a system at all: the input keeps focus and owns the keyboard, the list is a real
- * listbox, and the active option is pointed at with `aria-activedescendant` rather than by moving focus into
- * the list. Hand-rolled comboboxes almost always get that last part wrong, and a screen reader then reads
- * nothing as the user arrows through.
- */
-/**
  * An option's DOM id, from its position in the list rather than from its value.
  *
  * `aria-activedescendant` is a single IDREF and an id may not contain whitespace, so building ids out of
@@ -66,6 +56,16 @@ function optionId(base: string, index: number): string {
   return `${base}-option-${index}`;
 }
 
+/**
+ * A text field that filters a list, for choosing one thing or several from more than a Select should hold.
+ *
+ * Select is right up to a few dozen options; past that the answer is typing, and typing needs a different
+ * component rather than a bigger Select. This follows the WAI-ARIA combobox pattern properly, which is the
+ * reason to have it in a system at all: the input keeps focus and owns the keyboard, the list is a real
+ * listbox, and the active option is pointed at with `aria-activedescendant` rather than by moving focus into
+ * the list. Hand-rolled comboboxes almost always get that last part wrong, and a screen reader then reads
+ * nothing as the user arrows through.
+ */
 export function Combobox(props: ComboboxProps) {
   const {
     options,
@@ -101,9 +101,8 @@ export function Combobox(props: ComboboxProps) {
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const pool = options.filter((o) => (multiple ? true : true));
-    if (!q) return pool;
-    return pool.filter((o) => o.label.toLowerCase().includes(q) || (o.hint ?? "").toLowerCase().includes(q));
+    if (!q) return options;
+    return options.filter((o) => o.label.toLowerCase().includes(q) || (o.hint ?? "").toLowerCase().includes(q));
   }, [options, query, multiple]);
 
   // The active option is an index into what is currently shown, so it resets whenever the list changes.

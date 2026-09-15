@@ -359,6 +359,43 @@ describe("zengin doctor", () => {
     expect(ids()).not.toContain("tokens-css-stale");
   });
 
+  it("names what it checked, so a clean report is not read as a blank cheque", () => {
+    const result = runDoctor({ cwd: dir });
+    expect(result.checked).toContain("agent wiring");
+    expect(result.checked).toContain("tokens the components read");
+    expect(result.report).toContain("Checked:");
+    expect(result.report).toContain("that is zengin check");
+  });
+
+  it("warns when the wiring sits below the repository root, where a session will not read it", () => {
+    const outer = mkdtempSync(join(tmpdir(), "zengin-rooted-"));
+    try {
+      // The app is a subdirectory of a repository, which is the shape that hid this: every file valid, the
+      // hook never firing, because sessions open one directory up.
+      mkdirSync(join(outer, ".git"), { recursive: true });
+      const app = join(outer, "app");
+      cpSync(dir, app, { recursive: true });
+      const ids = runDoctor({ cwd: app }).findings.map((f) => f.id);
+      expect(ids).toContain("session-rootedness");
+    } finally {
+      rmSync(outer, { recursive: true, force: true });
+    }
+  });
+
+  it("names the custom properties the components read and the definitions do not define", () => {
+    // A component added from the registry can read a token family added after the project was created; this
+    // is the project-level half of what token-reference reports per file.
+    write("src/components/ui/button/button.css", ".z-button { letter-spacing: var(--tracking-wider); }\n");
+    const finding = runDoctor({ cwd: dir }).findings.find((f) => f.id === "tokens-components-need");
+    expect(finding?.title).toContain("--tracking-wider");
+
+    // A property a dependency sets at runtime is defined nowhere on purpose. The allowance is derived from
+    // the project's own dependencies, exactly as the engine derives it, so the dependency has to be there.
+    write("package.json", { name: "app", dependencies: { "@radix-ui/react-popover": "^1.1.0" }, devDependencies: { "@zenginui/cli": "^0.1.0" } });
+    write("src/components/ui/button/button.css", ".z-button { max-height: var(--radix-popover-content-available-height); }\n");
+    expect(runDoctor({ cwd: dir }).findings.map((f) => f.id)).not.toContain("tokens-components-need");
+  });
+
   it("judges only the version ranges npm writes, and answers nothing for the rest", () => {
     expect(admits("^0.1.0", "0.1.3")).toBe(true); // 0.x caret is minor-locked, which is why the hook pin was fine
     expect(admits("^0.1.0", "0.4.1")).toBe(false);

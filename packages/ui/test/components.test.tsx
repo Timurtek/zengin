@@ -816,6 +816,38 @@ describe("Kanban", () => {
     />
   );
 
+  it("leaves a control inside a card to handle its own keys", () => {
+    // renderCard is the extension point and a per-card menu is the common thing to put in it. Space on that
+    // button used to open the menu and lift the card from one keypress, and Escape afterwards was ambiguous.
+    render(
+      <Kanban
+        label="Board"
+        columns={columns}
+        cards={cards}
+        cardId={(t: Ticket) => t.id}
+        cardColumn={(t: Ticket) => t.column}
+        cardLabel={(t: Ticket) => t.title}
+        renderCard={(t: Ticket) => (
+          <div>
+            {t.title}
+            <button type="button">Move {t.title}</button>
+          </div>
+        )}
+      />,
+    );
+
+    const inner = screen.getByRole("button", { name: "Move Parser" });
+    inner.focus();
+    fireEvent.keyDown(inner, { key: " ", bubbles: true });
+    expect(screen.getByRole("status").textContent).toBe("");
+
+    // The card still handles the keys that are its own.
+    const card = screen.getByRole("article", { name: "Parser" });
+    card.focus();
+    fireEvent.keyDown(card, { key: " " });
+    expect(screen.getByRole("status").textContent).toContain("Parser lifted");
+  });
+
   it("moves a card to the next column with the keyboard alone", () => {
     const onMove = vi.fn();
     render(board(onMove));

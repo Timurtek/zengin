@@ -100,6 +100,11 @@ export function Kanban<Card>({
   };
 
   const onCardKeyDown = (event: KeyboardEvent<HTMLElement>, card: Card, columnIndex: number, index: number) => {
+    // `renderCard` is the extension point, and the most common thing to put in it is a per-card menu. A
+    // keydown from a control inside the card belongs to that control: Space on its menu button used to open
+    // the menu *and* lift the card, and Escape afterwards was ambiguous for the same reason.
+    if (event.target !== event.currentTarget) return;
+
     const id = cardId(card);
     const key = event.key;
 

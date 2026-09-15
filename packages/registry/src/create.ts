@@ -321,7 +321,10 @@ export const AGENT_WIRING = {
   command: "npx",
   args: ["--no-install", "zengin-mcp"],
   hookCommand: "npx --no-install zengin-hook",
-  hookMatcher: "Write|Edit|MultiEdit",
+  // Bash is in the matcher on purpose: the three editing tools are not the only way an agent changes a
+  // file, and a session told to use `sed` for small edits leaves the loop entirely without it. For a
+  // shell payload the hook asks the working tree what changed since it last looked.
+  hookMatcher: "Write|Edit|MultiEdit|Bash",
   configEnv: "ZENGIN_CONFIG",
   configFile: "zengin.config.yaml",
 } as const;
