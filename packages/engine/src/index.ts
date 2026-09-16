@@ -11,3 +11,4 @@ export * from "./types.js";
 export { renderSummary, renderViolations, summarize, type Summary } from "./format.js";
 export { RULE_DOCS, FAMILY_NOTES, type RuleFamily } from "./docs.js";
 export { readOwnedPragma, type OwnedPragma } from "./scope.js";
+export { AGENT_WIRING, hookSettings } from "./system/wiring.js";

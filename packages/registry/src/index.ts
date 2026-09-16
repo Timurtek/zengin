@@ -3,7 +3,10 @@ export { openRegistry, registryFromMemory, DEFAULT_REGISTRY, type RegistrySource
 export { resolveItems, resolveSome, unknownItemsMessage, type UnknownItem } from "./resolve.js";
 export { addBarrelLine, installItems, withPragma, stripPragma, contentHash, type InstallResult } from "./install.js";
 export { planUpgrade, applyUpgrade, diffLines, type UpgradePlan, type UpgradeEntry, type UpgradeState, type ApplyResult } from "./upgrade.js";
-export { createProject, AGENT_WIRING, VERSIONS, type CreateOptions, type CreateResult } from "./create.js";
+export { createProject, VERSIONS, type CreateOptions, type CreateResult } from "./create.js";
+// Re-exported so existing importers keep working; it is defined in the engine, the one package the
+// registry, the hook and the CLI all depend on.
+export { AGENT_WIRING } from "@zenginui/engine";
 // What a project created by this generation of Zengin pins for the tooling. Generated from the workspace at
 // build time; `create` writes it into a new project and `doctor` judges an existing one against it.
 export { ZENGIN_VERSIONS } from "./generated/versions.js";

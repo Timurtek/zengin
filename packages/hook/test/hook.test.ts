@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { AGENT_WIRING } from "@zenginui/engine";
 import { DEFAULT_OPTIONS, findConfigFrom, lineSpansOf, parseHookArgs, runHook, settingsSnippet, type HookInput } from "../src/hook.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -137,10 +138,16 @@ describe("helpers", () => {
     expect(parseHookArgs(["settings"]).settings).toBe(true);
   });
 
-  it("prints a valid settings fragment", () => {
-    const s = JSON.parse(settingsSnippet());
-    expect(s.hooks.PostToolUse[0].matcher).toBe("Write|Edit|MultiEdit");
-    expect(s.hooks.PostToolUse[0].hooks[0].command).toBe("zengin-hook");
+  it("prints the settings the rest of the toolchain writes and checks", () => {
+    // This test asserted the bare binary and a matcher without Bash -- the configuration `create` and
+    // `doctor` had both been fixed to stop producing. The hook was the third emitter and nothing tied the
+    // three together, so it kept telling people to write what its siblings would then warn about.
+    const s = JSON.parse(settingsSnippet()) as { hooks: { PostToolUse: { matcher: string; hooks: { command: string; args?: string[] }[] }[] } };
+    expect(s.hooks.PostToolUse[0]!.matcher).toBe(AGENT_WIRING.hookMatcher);
+    expect(s.hooks.PostToolUse[0]!.hooks[0]!.command).toBe(AGENT_WIRING.hookCommand);
+    // The hook schema has one string field; an args array here is the shape that runs `node` with the rest
+    // dropped, silently.
+    expect(s.hooks.PostToolUse[0]!.hooks[0]!.args).toBeUndefined();
   });
 });
 

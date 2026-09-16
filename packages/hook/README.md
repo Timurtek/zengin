@@ -4,8 +4,9 @@ Claude Code PostToolUse hook. Every time the agent writes or edits a file, the e
 
 ## What it does
 
-1. Claude Code runs `zengin-hook` after `Write`, `Edit` or `MultiEdit`, with the tool payload on stdin.
-2. The hook finds the nearest `zengin.config.yaml` above the written file, reads the file from disk, and runs the engine on it.
+1. Claude Code runs `zengin-hook` after `Write`, `Edit`, `MultiEdit` or `Bash`, with the tool payload on stdin.
+2. For a file-writing tool the hook finds the nearest `zengin.config.yaml` above the written file, reads the file from disk, and runs the engine on it.
+2b. A `Bash` payload names no file, so the hook asks the working tree instead: git for what changed, and a content hash per file for what changed since it last looked. Without this an agent told to use `sed` for small edits leaves the loop entirely, and silently.
 3. Clean file: exit 0, no output, nothing in the transcript.
 4. Violations at or above `--block-on` (default `error`): exit 2 with the violations on stderr. Claude Code shows them to the agent as the reason the write was flagged, and the agent corrects.
 5. Violations below the threshold, or any violations with `--block-on never`: exit 0 with `additionalContext` JSON on stdout, so the agent sees them without being blocked.
@@ -32,9 +33,9 @@ zengin-hook settings
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
+        "matcher": "Write|Edit|MultiEdit|Bash",
         "hooks": [
-          { "type": "command", "command": "zengin-hook", "args": [], "timeout": 30, "statusMessage": "Checking against the design system..." }
+          { "type": "command", "command": "npx --no-install zengin-hook", "timeout": 30, "statusMessage": "Checking against the design system..." }
         ]
       }
     ]
@@ -42,7 +43,16 @@ zengin-hook settings
 }
 ```
 
-Use `"command": "node", "args": ["/abs/path/packages/hook/dist/index.js"]` if the bin is not on PATH. Add options as further `args`.
+**The command goes through `npx --no-install`, and the whole command is one string.** `zengin-hook` lives in
+`node_modules/.bin`, which is on PATH inside an npm script and nowhere else, and an agent launches the hook
+directly — so a bare `zengin-hook` fails to start and says nothing, which looks exactly like a project that
+never drifts. The hook schema has one `command` field and no `args`, so a command split across `command` and
+`args` runs `node` with the rest dropped, silently, the same way.
+
+Working on Zengin itself, point it at the build in your checkout instead: `"command": "node
+packages/hook/dist/index.js"`. Options go on the end of that same string.
+
+This is what `zengin create` writes and what `zengin doctor` checks, from one definition in the engine.
 
 ## Options
 

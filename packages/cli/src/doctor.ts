@@ -346,17 +346,26 @@ function checkHook(at: (r: string) => string, rel: (p: string) => string, out: D
     return true;
   }
 
-  const matcher = entries.find((e) => (e.hooks ?? []).some((h) => (h.command ?? "").includes("zengin-hook")))?.matcher ?? "";
-  for (const tool of AGENT_WIRING.hookMatcher.split("|")) {
-    if (!matcher.includes(tool)) {
-      out.push({
-        id: "hook-matcher",
-        level: "warn",
-        title: `The hook's matcher (${matcher || "empty"}) does not cover ${tool}, so those edits go unchecked.`,
-        fix: `Matcher: ${AGENT_WIRING.hookMatcher}.`,
-      });
-      break;
+  const entry = entries.find((e) => (e.hooks ?? []).some((h) => (h.command ?? "").includes("zengin-hook")));
+  const matcher = entry?.matcher ?? "";
+  const uncovered = AGENT_WIRING.hookMatcher.split("|").filter((tool) => !matcher.includes(tool));
+  if (uncovered.length) {
+    out.push({
+      id: "hook-matcher",
+      level: "warn",
+      title: `The hook's matcher (${matcher || "empty"}) does not cover ${uncovered.join(", ")}, so those edits go unchecked.`,
+      detail: uncovered.includes("Bash") ? "An agent that edits through the shell never reaches the hook, and nothing says so." : undefined,
+      fix: `Matcher: ${AGENT_WIRING.hookMatcher}.`,
+      // The matcher lives in a file Zengin writes, which is the line --fix draws.
+      fixable: true,
+    });
+    if (fix && entry) {
+      entry.matcher = AGENT_WIRING.hookMatcher;
+      mkdirSync(dirname(path), { recursive: true });
+      writeFileSync(path, `${JSON.stringify(file, null, 2)}\n`);
+      fixed.push(rel(path));
     }
+    return true;
   }
   out.push({ id: "hook", level: "ok", title: `Edit hook wired in ${rel(path) || HOOK_PATH}: \`${AGENT_WIRING.hookCommand}\` on ${matcher || AGENT_WIRING.hookMatcher}.` });
   return true;
@@ -731,7 +740,9 @@ function render(findings: DoctorFinding[], fixed: string[], fix: boolean, checke
   for (const f of findings) {
     lines.push(`${MARK[f.level](GLYPH[f.level])} ${f.title}`);
     if (f.detail) lines.push(`  ${dim(f.detail)}`);
-    if (f.fix && f.level !== "ok") lines.push(`  ${dim("fix")}  ${f.fix}`);
+    // `fix` is what this command can do; `by hand` is what only a person can. Rendering both as "fix" under a
+    // flag named --fix told the reader the matcher had been changed when it had not.
+    if (f.fix && f.level !== "ok") lines.push(`  ${dim(f.fixable ? "fix" : "by hand")}  ${f.fix}`);
   }
 
   const errors = findings.filter((f) => f.level === "error").length;
@@ -749,7 +760,11 @@ function render(findings: DoctorFinding[], fixed: string[], fix: boolean, checke
   if (checked.length) lines.push(dim(`Checked: ${checked.join(", ")}. This command does not judge your code — that is zengin check.`));
 
   const fixable = findings.some((f) => f.fixable && f.level !== "ok");
-  if (fixable && !fix) lines.push(dim("zengin doctor --fix repairs the ones it can: the files Zengin itself writes."));
+  if (fixable && !fix) lines.push(dim("zengin doctor --fix repairs the ones marked fix: the files Zengin itself writes."));
+  // After a --fix run, everything still listed is something this command decided not to do. Say so, rather
+  // than leaving a reader to infer it from a label.
+  if (fix && findings.some((f) => f.level !== "ok"))
+    lines.push(dim("What is left needs a person: --fix writes the files Zengin writes, and nothing else."));
   if (fixed.length) lines.push(dim("The MCP server and the hook are read when an agent session starts. Open a new session for these to take effect."));
   if (errors || warns) lines.push(dim("Component drift against the registry is a different question: zengin upgrade."));
   return lines.join("\n");

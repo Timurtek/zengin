@@ -64,6 +64,8 @@ interface ComponentSite {
   defaults: Record<string, string | number | boolean>;
   /** The first class the component puts on its root element, e.g. `z-button`. */
   rootClass?: string;
+  /** `data-invalid` -> the props that feed it, because a selector names the attribute and `owns` names the prop. */
+  attrProps?: Record<string, string[]>;
 }
 
 export interface SourceOptions {
@@ -129,7 +131,7 @@ export function deriveManifestFromSource(files: SourceFile[], opts: SourceOption
     }
     for (const [prop, values] of Object.entries(info.variants)) props[prop] = { type: "enum", values };
 
-    const owns = decideOwns(site.rootClass ? ownsByClass.get(site.rootClass) : undefined, props);
+    const owns = decideOwns(site.rootClass ? ownsByClass.get(site.rootClass) : undefined, props, site.attrProps ?? {});
     if (Object.keys(owns).length) withOwns++;
     // The package path guesses `extends` and `replaces` from a component's name, because a `.d.ts` for a
     // library called Dialog usually is a dialog. Source knows better and should not guess: this project's
@@ -171,7 +173,7 @@ function componentsIn(body: Node[], file: string): ComponentSite[] {
     // PascalCase, and not SCREAMING_CASE: `TONES` in a lib module passed the old test and arrived in the
     // manifest as a component with no props, where one false positive blocked a whole `--write`.
     if (!isPascal(name) || name === name.toUpperCase()) return;
-    out.push({ name, file, defaults: fn ? defaultsOf(fn) : {}, ...(fn ? { rootClass: rootClassOf(fn) } : {}) });
+    out.push({ name, file, defaults: fn ? defaultsOf(fn) : {}, ...(fn ? { rootClass: rootClassOf(fn), attrProps: attrPropsOf(fn) } : {}) });
   };
 
   for (const node of body) {
@@ -373,16 +375,91 @@ function subjectOf(selector: string): string {
  * declares are named at all, so an attribute the component sets for itself is never mistaken for a lever.
  * A property nothing declared governs is owned by the component and nobody in particular, which is null.
  */
-function decideOwns(tally: OwnsTally | undefined, props: NonNullable<ComponentManifest["props"]>): Record<string, string | string[] | null> {
+function decideOwns(
+  tally: OwnsTally | undefined,
+  props: NonNullable<ComponentManifest["props"]>,
+  attrProps: Record<string, string[]>,
+): Record<string, string | string[] | null> {
   if (!tally) return {};
   const out: Record<string, string | string[] | null> = {};
   for (const [property, slot] of Object.entries(tally)) {
-    const ranked = Object.entries(slot.by)
+    // A stylesheet names the attribute; `owns` names the prop, and the two are often different words. A
+    // field's `data-invalid` comes from its `error` prop, and reading the attribute as the prop name found
+    // nothing and recorded null — which would have sent a reader looking for a prop that does not exist.
+    const byProp: Record<string, number> = {};
+    for (const [attr, count] of Object.entries(slot.by)) {
+      for (const prop of attrProps[attr] ?? [attr]) byProp[prop] = (byProp[prop] ?? 0) + count;
+    }
+    const ranked = Object.entries(byProp)
       .filter(([prop]) => prop in props)
       .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
       .map(([prop]) => prop);
     out[property] = ranked.length === 0 ? null : ranked.length === 1 ? ranked[0]! : ranked;
   }
+  return out;
+}
+
+/**
+ * Which props feed each `data-` attribute on the component's own elements.
+ *
+ * `data-invalid={invalid || undefined}` where `const invalid = Boolean(error)` is ordinary code, and the
+ * attribute's name is a description of the state rather than the name of the prop that causes it. One hop
+ * through the component's local consts is enough for the shapes that occur in practice.
+ */
+function attrPropsOf(fn: Node): Record<string, string[]> {
+  const locals = new Map<string, string[]>();
+  const out: Record<string, string[]> = {};
+
+  const identifiersIn = (n: unknown, into: Set<string>): void => {
+    if (!n || typeof n !== "object") return;
+    if (Array.isArray(n)) {
+      for (const c of n) identifiersIn(c, into);
+      return;
+    }
+    const node = n as Node;
+    if (node.type === "Identifier") {
+      const name = idName(node);
+      if (name) into.add(name);
+    }
+    for (const key of Object.keys(node)) {
+      if (key === "loc" || key === "range") continue;
+      identifiersIn(node[key], into);
+    }
+  };
+
+  const visit = (n: unknown): void => {
+    if (!n || typeof n !== "object") return;
+    if (Array.isArray(n)) {
+      for (const c of n) visit(c);
+      return;
+    }
+    const node = n as Node;
+    if (node.type === "VariableDeclarator" && (node["id"] as Node | undefined)?.type === "Identifier") {
+      const name = idName(node["id"]);
+      const refs = new Set<string>();
+      identifiersIn(node["init"], refs);
+      if (name) locals.set(name, [...refs]);
+    }
+    if (node.type === "JSXAttribute") {
+      const attr = idName(node["name"]);
+      if (attr?.startsWith("data-")) {
+        const refs = new Set<string>();
+        identifiersIn(node["value"], refs);
+        const resolved = new Set<string>();
+        for (const ref of refs) {
+          resolved.add(ref);
+          for (const through of locals.get(ref) ?? []) resolved.add(through);
+        }
+        out[camel(attr.slice("data-".length))] = [...resolved];
+      }
+    }
+    for (const key of Object.keys(node)) {
+      if (key === "loc" || key === "range") continue;
+      visit(node[key]);
+    }
+  };
+
+  visit(fn);
   return out;
 }
 

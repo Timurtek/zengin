@@ -3,7 +3,9 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import {
+  AGENT_WIRING,
   createEngine,
+  hookSettings,
   loadConfigFile,
   readProjectFiles,
   renderSummary,
@@ -307,18 +309,8 @@ export function parseHookArgs(argv: string[]): HookOptions & { help: boolean; se
 
 /** The settings.json fragment that installs the hook. */
 export function settingsSnippet(): string {
-  return JSON.stringify(
-    {
-      hooks: {
-        PostToolUse: [
-          {
-            matcher: "Write|Edit|MultiEdit",
-            hooks: [{ type: "command", command: "zengin-hook", args: [], timeout: 30, statusMessage: "Checking against the design system..." }],
-          },
-        ],
-      },
-    },
-    null,
-    2,
-  );
+  // The same block `zengin create` writes and `zengin doctor` checks, from the definition they share. This
+  // used to be a separate literal here, and it printed the bare binary and a matcher without Bash: the hook
+  // telling people to write the configuration its siblings had been fixed to stop writing.
+  return JSON.stringify(hookSettings(), null, 2);
 }

@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
+import { AGENT_WIRING, createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
 import { ZENGIN_VERSIONS } from "./generated/versions.js";
 import { installItems, STYLES_INDEX_HEAD, type InstallResult } from "./install.js";
 import type { RegistrySource } from "./load.js";
@@ -307,28 +307,6 @@ rules:
  * installed the package globally. It failed silently for everyone else, which meant the loop this product
  * is named for never engaged on a fresh clone.
  */
-/**
- * How an agent session reaches Zengin, in one place because two commands depend on it: `create` writes it
- * and `doctor` checks it.
- *
- * Everything goes through `npx --no-install`. The bins live in `node_modules/.bin`, which is on PATH inside
- * an npm script and nowhere else, and an agent launches these directly — so a bare `zengin-mcp` starts
- * nothing and a bare `zengin-hook` never fires, both silently. `--no-install` keeps npx from reaching for
- * the network: the project's own version, or a clear failure.
- */
-export const AGENT_WIRING = {
-  server: "zengin",
-  command: "npx",
-  args: ["--no-install", "zengin-mcp"],
-  hookCommand: "npx --no-install zengin-hook",
-  // Bash is in the matcher on purpose: the three editing tools are not the only way an agent changes a
-  // file, and a session told to use `sed` for small edits leaves the loop entirely without it. For a
-  // shell payload the hook asks the working tree what changed since it last looked.
-  hookMatcher: "Write|Edit|MultiEdit|Bash",
-  configEnv: "ZENGIN_CONFIG",
-  configFile: "zengin.config.yaml",
-} as const;
-
 const MCP_JSON = `{
   "mcpServers": {
     "${AGENT_WIRING.server}": {

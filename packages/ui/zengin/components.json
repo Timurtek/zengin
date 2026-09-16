@@ -101,7 +101,7 @@
         "variant"
       ],
       "font-size": "size",
-      "opacity": null,
+      "opacity": "loading",
       "font-family": null
     },
     "slots": [
@@ -335,7 +335,9 @@
       ],
       "gap": null,
       "font-family": "font",
-      "line-height": null
+      "line-height": null,
+      "min-height": "size",
+      "font-size": "size"
     },
     "slots": [
       "leadingIcon",
@@ -420,7 +422,9 @@
       "font": "size",
       "gap": null,
       "font-family": null,
-      "line-height": null
+      "line-height": null,
+      "height": "size",
+      "font-size": "size"
     },
     "states": [
       "unchecked",
@@ -604,14 +608,19 @@
     },
     "owns": {
       "background-color": "variant",
-      "color": null,
+      "color": "variant",
       "border-color": "variant",
-      "padding": "size",
-      "border-radius": null,
+      "padding": [
+        "size",
+        "variant"
+      ],
+      "border-radius": "variant",
       "font": "size",
       "box-shadow": "variant",
       "font-family": null,
-      "line-height": null
+      "line-height": null,
+      "font-size": "size",
+      "gap": "variant"
     },
     "slots": [
       "List",
@@ -706,7 +715,7 @@
     },
     "owns": {
       "background-color": null,
-      "border-color": null,
+      "border-color": "error",
       "color": null,
       "border-radius": null,
       "padding": "size",
@@ -714,7 +723,9 @@
       "box-shadow": null,
       "gap": null,
       "font-family": null,
-      "line-height": null
+      "line-height": null,
+      "min-height": "size",
+      "font-size": "size"
     },
     "slots": [
       "Item",
@@ -801,7 +812,9 @@
       "font": "size",
       "gap": null,
       "font-family": null,
-      "line-height": null
+      "line-height": null,
+      "height": "size",
+      "font-size": "size"
     },
     "states": [
       "unchecked",
@@ -987,7 +1000,8 @@
       "font": "density",
       "border": null,
       "font-family": null,
-      "line-height": null
+      "line-height": null,
+      "font-size": "density"
     },
     "slots": [
       "Head",
@@ -1464,7 +1478,7 @@
     },
     "owns": {
       "background-color": null,
-      "border-color": null,
+      "border-color": "error",
       "color": null,
       "border-radius": null,
       "padding": "size",
@@ -1474,7 +1488,8 @@
       ],
       "gap": null,
       "font-family": "font",
-      "line-height": null
+      "line-height": null,
+      "font-size": "size"
     },
     "states": [
       "default",
@@ -1553,7 +1568,8 @@
       "font": null,
       "background-color": null,
       "font-family": null,
-      "line-height": null
+      "line-height": null,
+      "opacity": null
     },
     "states": [
       "default",
@@ -1615,7 +1631,8 @@
       "font": null,
       "background-color": null,
       "font-family": null,
-      "line-height": null
+      "line-height": null,
+      "opacity": null
     },
     "states": [
       "default",
@@ -1872,13 +1889,14 @@
     },
     "owns": {
       "background-color": "role",
-      "color": null,
+      "color": "role",
       "border-radius": "role",
       "padding": "role",
       "font": null,
       "gap": null,
       "font-family": null,
-      "line-height": null
+      "line-height": null,
+      "font-size": "role"
     },
     "slots": [
       "Content",
@@ -2020,7 +2038,8 @@
       "border-color": null,
       "gap": null,
       "font-family": null,
-      "line-height": null
+      "line-height": null,
+      "background-color": "streaming"
     },
     "states": [
       "open",
@@ -2081,7 +2100,7 @@
       ]
     },
     "owns": {
-      "background-color": null,
+      "background-color": "state",
       "border-color": null,
       "border-radius": null,
       "padding": null,
@@ -2341,9 +2360,10 @@
       "padding": "size",
       "border": null,
       "border-radius": null,
-      "color": null,
+      "color": "tone",
       "gap": null,
-      "text-transform": null
+      "text-transform": null,
+      "font-size": "size"
     },
     "slots": [
       "title",
@@ -2392,7 +2412,8 @@
     },
     "owns": {
       "gap": null,
-      "font-family": null
+      "font-family": null,
+      "font-size": "size"
     },
     "states": [
       "default"
