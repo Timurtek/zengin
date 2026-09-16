@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { DEFAULT_CHECK, findConfig, runCheck } from "../src/check.js";
 import { renderGithub, renderJson, renderPretty } from "../src/format-cli.js";
+import { AGENT_WIRING } from "@zenginui/engine";
 import { admits, runDoctor } from "../src/doctor.js";
 import { init, initFromShadcn } from "../src/init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "../src/report.js";
@@ -357,6 +358,22 @@ describe("zengin doctor", () => {
     expect(ids()).toContain("tokens-css-stale");
     runDoctor({ cwd: dir, fix: true });
     expect(ids()).not.toContain("tokens-css-stale");
+  });
+
+  it("repairs the matcher, and labels what only a person can do", () => {
+    // The matcher lives in a file Zengin writes, so it is inside the line --fix draws. It used to print a
+    // `fix` line and change nothing, under a flag named --fix.
+    write(".claude/settings.json", {
+      hooks: { PostToolUse: [{ matcher: "Write|Edit|MultiEdit", hooks: [{ type: "command", command: AGENT_WIRING.hookCommand, timeout: 30 }] }] },
+    });
+    const before = runDoctor({ cwd: dir });
+    expect(before.findings.map((f) => f.id)).toContain("hook-matcher");
+    expect(before.report).toContain("fix  Matcher:");
+
+    runDoctor({ cwd: dir, fix: true });
+    const settings = read<{ hooks: { PostToolUse: { matcher: string }[] } }>(".claude/settings.json");
+    expect(settings.hooks.PostToolUse[0]!.matcher).toBe(AGENT_WIRING.hookMatcher);
+    expect(runDoctor({ cwd: dir }).findings.map((f) => f.id)).not.toContain("hook-matcher");
   });
 
   it("names what it checked, so a clean report is not read as a blank cheque", () => {

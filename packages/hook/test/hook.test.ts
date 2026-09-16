@@ -138,6 +138,15 @@ describe("helpers", () => {
     expect(parseHookArgs(["settings"]).settings).toBe(true);
   });
 
+  it("documents the same command the toolchain writes", () => {
+    // The README was the other half of the drift: it printed the bare binary and a matcher without Bash, as
+    // an install instruction, which is the first thing a new user copies.
+    const readme = readFileSync(join(here, "..", "README.md"), "utf8");
+    expect(readme).toContain(AGENT_WIRING.hookCommand);
+    expect(readme).toContain(AGENT_WIRING.hookMatcher);
+    expect(readme).not.toContain('"command": "zengin-hook"');
+  });
+
   it("prints the settings the rest of the toolchain writes and checks", () => {
     // This test asserted the bare binary and a matcher without Bash -- the configuration `create` and
     // `doctor` had both been fixed to stop producing. The hook was the third emitter and nothing tied the

@@ -141,6 +141,36 @@ export const Chip = forwardRef<HTMLSpanElement, ChipProps>(function Chip({ tone 
     expect(chip.owns?.["box-shadow"]).toBeNull();
   });
 
+  it("follows a data attribute back to the prop that feeds it, through the component's own consts", () => {
+    // A stylesheet names `data-invalid`; the manifest names props, and the prop here is `error`. Reading the
+    // attribute as the prop name found no such prop and recorded null -- which sent a reader looking for a
+    // prop that does not exist, and made `define --force` a way to discard a correct hand-written answer.
+    const field = deriveManifestFromSource(
+      [
+        {
+          path: "src/components/ui/entry/entry.tsx",
+          content: `import type { ReactNode, HTMLAttributes } from "react";
+export interface EntryProps extends HTMLAttributes<HTMLDivElement> { error?: ReactNode; loading?: boolean; disabled?: boolean }
+export function Entry({ error, loading, disabled }: EntryProps) {
+  const invalid = Boolean(error);
+  const isDisabled = disabled || loading;
+  return <div className="z-entry" data-invalid={invalid || undefined} data-disabled={isDisabled || undefined} />;
+}
+`,
+        },
+        {
+          path: "src/components/ui/entry/entry.css",
+          content: `.z-entry[data-invalid] { border-color: var(--color-danger); }\n.z-entry[data-disabled] { opacity: 0.55; }\n`,
+        },
+      ],
+      opts,
+    ).components.find((c) => c.name === "Entry")!;
+
+    expect(field.owns?.["border-color"]).toEqual("error");
+    // Two props feed `data-disabled`, and both are declared, so both are named.
+    expect(field.owns?.["opacity"]).toEqual(expect.arrayContaining(["disabled", "loading"]));
+  });
+
   it("does not invent an owner for a data attribute that is not a prop", () => {
     // `.z-chip[data-size] .z-chip__label` is switched by `data-size`, and this Chip has no `size` prop, so
     // there is no prop to send a reader to. Null, not a guess.

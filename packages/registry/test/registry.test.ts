@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createEngine, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
+import { AGENT_WIRING, createEngine, hookSettings, loadConfigFile, readProjectFiles, resolveConfig } from "@zenginui/engine";
 import { afterAll, describe, expect, it } from "vitest";
 import { addTokens, buildRegistry, createProject, installItems, openRegistry, registryFromMemory, resolveItems, tokenDrift, varsUsed, writeRegistry } from "../src/index.js";
 
@@ -280,6 +280,26 @@ async function applyFontsForTest(dir: string): Promise<string> {
   return readFileSync(join(dir, "src/app/layout.tsx"), "utf8");
 }
 
+
+describe("the agent wiring", () => {
+  it("is the same in the project create writes as in the fragment the hook prints", async () => {
+    // The whole reason AGENT_WIRING exists, and the thing that was missing when the hook drifted: a test that
+    // compares the emitters rather than each against a literal of its own. The hook's own test asserted its
+    // old literal and passed for as long as the literal was wrong.
+    const dir = join(tmp, "wired");
+    await createProject({ dir, template: "blank", source: registryFromMemory(registry), storybook: false });
+
+    const settings = JSON.parse(readFileSync(join(dir, ".claude/settings.json"), "utf8")) as unknown;
+    expect(settings).toEqual(hookSettings());
+
+    const mcp = JSON.parse(readFileSync(join(dir, ".mcp.json"), "utf8")) as { mcpServers: Record<string, { command: string; args: string[] }> };
+    expect(mcp.mcpServers[AGENT_WIRING.server]).toEqual({
+      command: AGENT_WIRING.command,
+      args: [...AGENT_WIRING.args],
+      env: { [AGENT_WIRING.configEnv]: AGENT_WIRING.configFile },
+    });
+  });
+});
 
 describe("definitions the project owns", () => {
   const upstream = {
