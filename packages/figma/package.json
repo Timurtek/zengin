@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/figma",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Figma both ways for a Zengin system: tokens to Figma variables and back, Code Connect files from the component manifest, and a plugin that imports and exports variables in any file.",
   "license": "MIT",
   "type": "module",
