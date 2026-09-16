@@ -1,5 +1,12 @@
 # @zenginui/adapter-shadcn
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`4d14470`](https://github.com/Timurtek/zengin/commit/4d14470b9869a6ef64a5e352296b8fb94cc1d724)]:
+  - @zenginui/engine@0.5.0
+
 ## 0.1.3
 
 ### Patch Changes

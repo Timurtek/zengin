@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/ui",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "The Zengin reference design system: plain CSS, custom-property tokens, Radix behavior, and the definitions the engine enforces against.",
   "license": "MIT",
   "type": "module",
