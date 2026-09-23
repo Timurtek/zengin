@@ -1089,3 +1089,156 @@ body {
   gap: var(--spacing-2);
   margin-top: var(--spacing-5);
 }
+
+/* The why page: the argument, one screen of it, on the same tokens as everything else. */
+.why {
+  padding: var(--spacing-20) 0 var(--spacing-24);
+}
+
+.why__head {
+  max-width: 52rem;
+  display: grid;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-16);
+}
+
+.why__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+.why__lead {
+  margin: 0;
+  max-width: 48rem;
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  color: var(--color-text-muted);
+}
+
+.why__lead--wide {
+  max-width: 52rem;
+}
+
+.why__block {
+  display: grid;
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-20);
+}
+
+.why__points {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-4);
+}
+
+.why__point-title {
+  margin: 0 0 var(--spacing-2);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.why__point-body {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-muted);
+}
+
+.why__table {
+  overflow-x: auto;
+}
+
+.why__tool {
+  display: block;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.why__tool-note {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+}
+
+.why__cta {
+  display: grid;
+  justify-items: start;
+  gap: var(--spacing-4);
+  padding: var(--spacing-8);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-sunken);
+}
+
+
+.why__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+}
+
+/* The diagram draws from the same tokens, so it follows the theme and the brand without a second palette. */
+.why-di {
+  width: 100%;
+  height: auto;
+  max-width: 42.5rem;
+}
+
+.why-di__box {
+  fill: var(--color-surface);
+  stroke: var(--color-border-strong);
+  stroke-width: var(--border-width);
+}
+
+.why-di__box--system {
+  fill: var(--color-primary-soft);
+  stroke: var(--color-primary);
+}
+
+.why-di__box--surface {
+  fill: var(--color-neutral-soft);
+  stroke: var(--color-border-strong);
+}
+
+.why-di__t {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  fill: var(--color-text);
+}
+
+.why-di__s {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  fill: var(--color-text-muted);
+}
+
+.why-di__wire {
+  fill: none;
+  stroke: var(--color-border-strong);
+  stroke-width: var(--border-width);
+}
+
+.why-di__head {
+  fill: none;
+  stroke: var(--color-border-strong);
+  stroke-width: var(--border-width);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 60rem) {
+  .why__points {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .why__title {
+    font-size: var(--text-4xl);
+  }
+}

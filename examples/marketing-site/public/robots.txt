@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# The hosted template previews are demonstrations of the templates, not pages of this site. They carry their
+# own noindex as well; this is the cheaper signal, and it keeps a crawler's budget on the pages that matter.
+Disallow: /templates/
+
+Sitemap: https://zengin.timurtek.com/sitemap.xml

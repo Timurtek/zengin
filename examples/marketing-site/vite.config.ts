@@ -1,6 +1,6 @@
 import react from "@vitejs/plugin-react";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 
 /**
@@ -25,4 +25,10 @@ function directoryIndex(): Plugin {
   };
 }
 
-export default defineConfig({ plugins: [react(), directoryIndex()], server: { port: 5174, strictPort: true } });
+export default defineConfig({
+  plugins: [react(), directoryIndex()],
+  server: { port: 5174, strictPort: true },
+  // Two entries, two URLs. /why/ is its own page so it can carry its own title, description and canonical;
+  // an anchor on the home page cannot, and the argument is the half a search or a shared link lands on.
+  build: { rollupOptions: { input: { main: resolve(__dirname, "index.html"), why: resolve(__dirname, "why/index.html") } } },
+});

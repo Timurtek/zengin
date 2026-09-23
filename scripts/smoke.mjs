@@ -22,7 +22,12 @@ const TIMEOUT_MS = 20_000;
 
 /** Pages the site's own navigation promises, and the JSON other software depends on. */
 const PAGES = [
-  { path: "/", expect: "<title>Zengin</title>", why: "the marketing page" },
+  // Match the stable half of the title, not the whole of it: the exact wording is copy, and a check that
+  // fails when someone improves a headline teaches people to ignore the check.
+  { path: "/", expect: "<title>Zengin", why: "the marketing page" },
+  { path: "/why/", expect: "Why Zengin", why: "the positioning page, first in the nav" },
+  { path: "/robots.txt", expect: "Sitemap:", why: "what a crawler reads first" },
+  { path: "/sitemap.xml", expect: "zengin.timurtek.com/why/", why: "the sitemap, and that the why page is in it" },
   { path: "/docs/", expect: "Zengin docs", why: "the documentation, linked from the nav" },
   { path: "/rollup/", expect: "rollup", why: "the hosted trends, linked from the nav" },
   { path: "/storybook/", expect: "Storybook", why: "the Storybook manager, linked from the nav" },

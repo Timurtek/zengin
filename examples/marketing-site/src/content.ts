@@ -4,6 +4,7 @@ export const REPO = "https://github.com/Timurtek/zengin";
 export const NPM = "https://www.npmjs.com/org/zenginui";
 
 export const NAV: { href: string; label: string; external?: boolean }[] = [
+  { href: "/why/", label: "Why Zengin", external: true },
   { href: "#how", label: "How it works" },
   { href: "#templates", label: "Templates" },
   { href: "/storybook/", label: "Storybook", external: true },
