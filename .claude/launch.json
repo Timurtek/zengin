@@ -102,6 +102,16 @@
         "dev"
       ],
       "port": 5180
+    },
+    {
+      "name": "zengin-docs",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "zengin-docs",
+        "dev"
+      ],
+      "port": 5181
     }
   ]
 }

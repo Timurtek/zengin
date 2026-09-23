@@ -33,8 +33,12 @@ function Page() {
   // this page is a second entry point, so it needs its own.
   return (
     <Tooltip.Provider>
-      <Nav theme={theme} onToggleTheme={toggle} />
-      <Why />
+      {/* Every base rule in site.css is scoped under `.site` — link colour, focus rings, the heading resets.
+          Without this wrapper the page renders with the browser's defaults, which is blue and purple links. */}
+      <div className="site">
+        <Nav theme={theme} onToggleTheme={toggle} />
+        <Why />
+      </div>
     </Tooltip.Provider>
   );
 }

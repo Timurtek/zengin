@@ -1,4 +1,4 @@
-import { Badge, Button, Card, CodeBlock, Table } from "@zenginui/ui";
+import { Badge, Button, Card, CodeBlock, Icon, Table } from "@zenginui/ui";
 import { REPO } from "../content";
 
 /** Where each neighbouring tool stops. The honest reading: each is good at its column, and the gap is the pair. */
@@ -213,7 +213,7 @@ export function Why() {
             <Button asChild tone="primary">
               <a href="/docs/">Read the docs</a>
             </Button>
-            <Button asChild variant="soft">
+            <Button asChild variant="soft" trailingIcon={<Icon.ExternalLink />}>
               <a href={REPO} target="_blank" rel="noreferrer">
                 The source on GitHub
               </a>

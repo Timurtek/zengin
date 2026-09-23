@@ -1,6 +1,6 @@
 import { Button, Icon, Separator, Sheet, Tooltip } from "@zenginui/ui";
 import { useState } from "react";
-import { NAV, NAV_BAR, NPM, REPO } from "../content";
+import { NAV, NAV_DESTINATIONS, NPM, REPO } from "../content";
 
 const EXTERNAL = { target: "_blank", rel: "noreferrer" } as const;
 
@@ -13,7 +13,7 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
   return (
     <header className="nav">
       <div className="nav__inner">
-        <a className="nav__mark" href="#top" aria-label="Zengin, top of page">
+        <a className="nav__mark" href="/#top" aria-label="Zengin, top of page">
           <Mark />
           <span className="nav__wordmark">
             Zengin
@@ -21,10 +21,21 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
           </span>
         </a>
         <nav aria-label="Sections">
-          <ul className="nav__links">
-            {NAV_BAR.map((item) => (
+          {/* Two lists, one shown at a time by width. Rendering both keeps the markup static and the choice
+              in CSS, where the measurement that decides it lives. */}
+          <ul className="nav__links nav__links--all">
+            {NAV.map((item) => (
               <li key={item.href}>
                 <a href={item.href} {...(item.external ? EXTERNAL : {})}>
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <ul className="nav__links nav__links--short" aria-hidden="true">
+            {NAV_DESTINATIONS.map((item) => (
+              <li key={item.href}>
+                <a href={item.href} tabIndex={-1} {...(item.external ? EXTERNAL : {})}>
                   {item.label}
                 </a>
               </li>
@@ -35,12 +46,12 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
           <Tooltip content={theme === "light" ? "Switch to dark" : "Switch to light"}>
             <Button variant="ghost" size="sm" onClick={onToggleTheme} aria-label="Toggle theme" leadingIcon={theme === "light" ? <Icon.Moon /> : <Icon.Sun />} />
           </Tooltip>
-          <Button className="nav__npm" asChild variant="ghost" size="sm">
+          <Button className="nav__npm" asChild variant="ghost" size="sm" trailingIcon={<Icon.ExternalLink />}>
             <a href={NPM} {...EXTERNAL}>
               npm
             </a>
           </Button>
-          <Button className="nav__github" asChild variant="soft" size="sm">
+          <Button className="nav__github" asChild variant="soft" size="sm" trailingIcon={<Icon.ExternalLink />}>
             <a href={REPO} {...EXTERNAL}>
               GitHub
             </a>

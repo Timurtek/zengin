@@ -164,7 +164,45 @@ body {
 }
 
 .nav__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
   text-decoration: none;
+}
+
+/*
+ * A link that leaves this tab says so before it is clicked.
+ *
+ * On the attribute rather than on each link: the icon then belongs to the behaviour, and the ninth outgoing
+ * link somebody adds gets it without remembering to. The glyph is a mask painted in currentColor, so it
+ * follows the text it sits beside through both themes and every hover state.
+ *
+ * Unscoped, unlike every other base rule here: the sheet and the dialogs render in a portal at the end of
+ * body, outside `.site`, and the three outgoing links in the phone menu are exactly the ones a reader is
+ * most likely to tap by accident. This stylesheet only loads on this site, and the previews it embeds are
+ * iframes with their own documents, so there is nothing else for it to reach.
+ */
+a[target="_blank"]::after {
+  content: "";
+  display: inline-block;
+  width: var(--spacing-3);
+  height: var(--spacing-3);
+  margin-inline-start: var(--spacing-1);
+  vertical-align: middle;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7'/%3E%3Cpath d='M9 7h8v8'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.65;
+}
+
+/* The buttons pass an Icon through `trailingIcon`, so they are drawn already; a second glyph is noise. */
+.z-button[target="_blank"]::after {
+  content: none;
+}
+
+.nav__sheet a {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
 }
 
 .nav__end {
@@ -208,7 +246,30 @@ body {
   margin-block: var(--spacing-4);
 }
 
-/* Below the width where eight labels fit inline, the links and npm move into the sheet. */
+/* The short list is the middle tier, so it stays out of the way until the full one stops fitting. */
+.nav__links--short {
+  display: none;
+}
+
+/*
+ * Three tiers, from a measurement: the twelve labels need 1530px beside the mark and the buttons, so above
+ * 100rem they all show; between 76rem and 100rem the six destinations show instead; below that everything
+ * moves into the sheet. The middle tier is the one that was missing, and its absence let the labels overlap.
+ *
+ * 100rem rather than the 96rem the measurement allows: at 1536 the full list clears the buttons by six
+ * pixels, and a label that grows by a word — or a font that renders a little wider on another machine —
+ * puts it back on top of them. The slack is the point.
+ */
+@media (max-width: 100rem) {
+  .nav__links--all {
+    display: none;
+  }
+
+  .nav__links--short {
+    display: flex;
+  }
+}
+
 @media (max-width: 76rem) {
   .nav__links,
   .nav__npm {

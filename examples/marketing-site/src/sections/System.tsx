@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Checkbox, TextField } from "@zenginui/ui";
+import { Icon, Badge, Button, Card, Checkbox, TextField } from "@zenginui/ui";
 import { REPO } from "../content";
 
 /**
@@ -35,7 +35,7 @@ export function System() {
               component, in both themes, with its manifest-driven controls:
             </p>
             <div className="hero__actions">
-              <Button asChild variant="soft">
+              <Button asChild variant="soft" trailingIcon={<Icon.ExternalLink />}>
                 <a href="/storybook/" target="_blank" rel="noreferrer">
                   Open Storybook
                 </a>

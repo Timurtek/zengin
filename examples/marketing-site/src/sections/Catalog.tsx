@@ -1,4 +1,4 @@
-import { Badge, Button, Select, Skeleton } from "@zenginui/ui";
+import { Badge, Button, Icon, Select, Skeleton } from "@zenginui/ui";
 import { useEffect, useRef, useState } from "react";
 import { CodeBlock } from "../components/CodeBlock";
 
@@ -149,7 +149,7 @@ function TemplateCard({ template, src, theme, fonts, icons, embedded }: { templa
         <p>{template.description}</p>
         <CodeBlock wrap>{command}</CodeBlock>
         <div className="catalog__actions">
-          <Button asChild variant="soft" size="sm">
+          <Button asChild variant="soft" size="sm" trailingIcon={<Icon.ExternalLink />}>
             <a href={src} target="_blank" rel="noreferrer">
               Open full page
             </a>

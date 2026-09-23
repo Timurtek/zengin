@@ -1,4 +1,4 @@
-import { Button } from "@zenginui/ui";
+import { Button, Icon } from "@zenginui/ui";
 import { CodeBlock } from "../components/CodeBlock";
 import { INSTALL, REPO } from "../content";
 
@@ -15,10 +15,10 @@ export function GetStarted() {
           </p>
           <p>An existing project keeps its own system: a shadcn project gets its definitions derived, anything else gets a config template with the questions to answer.</p>
           <div className="hero__actions">
-            <Button asChild tone="primary">
+            <Button asChild tone="primary" trailingIcon={<Icon.ExternalLink />}>
               <a href={REPO} target="_blank" rel="noreferrer">Open the repository</a>
             </Button>
-            <Button asChild variant="ghost">
+            <Button asChild variant="ghost" trailingIcon={<Icon.ExternalLink />}>
               <a href={`${REPO}/blob/main/skills/zengin/SKILL.md`} target="_blank" rel="noreferrer">The agent skill</a>
             </Button>
           </div>

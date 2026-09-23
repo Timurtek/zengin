@@ -4,27 +4,31 @@ export const REPO = "https://github.com/Timurtek/zengin";
 export const NPM = "https://www.npmjs.com/org/zenginui";
 
 /**
- * Everything the sheet lists. Adding the why page took the inline bar to eleven labels, which is past what
- * fits: the items began to overlap at full width. A bar that names every section of the page is a table of
- * contents, so the bar now carries destinations and the sheet keeps the sections.
+ * Every place this site can take you. The sheet lists all of it; the bar shows as much as fits.
+ *
+ * Measured rather than guessed: twelve labels need 1530px beside the mark and the buttons, and the bar used
+ * to collapse into the sheet at 1216px — so between those two widths the labels ran into each other. The
+ * fix is a middle tier rather than a shorter bar everywhere: full at desk width, destinations on a laptop,
+ * the sheet below that.
  */
 export const NAV: { href: string; label: string; external?: boolean }[] = [
-  { href: "/why/", label: "Why Zengin", external: true },
-  { href: "#how", label: "How it works" },
-  { href: "#templates", label: "Templates" },
-  { href: "#surfaces", label: "Surfaces" },
-  { href: "#rules", label: "Rules" },
-  { href: "#path", label: "The path" },
-  { href: "#growth", label: "Growth" },
-  { href: "#system", label: "Reference system" },
-  { href: "#proof", label: "Field tests" },
+  { href: "/why/", label: "Why Zengin" },
+  { href: "/#how", label: "How it works" },
+  { href: "/#templates", label: "Templates" },
+  { href: "/#surfaces", label: "Surfaces" },
+  { href: "/#rules", label: "Rules" },
+  { href: "/#path", label: "The path" },
+  { href: "/#growth", label: "Growth" },
+  { href: "/#system", label: "Reference system" },
+  { href: "/#proof", label: "Field tests" },
   { href: "/docs/", label: "Docs", external: true },
   { href: "/storybook/", label: "Storybook", external: true },
   { href: "/rollup/", label: "Rollup", external: true },
 ];
 
-/** The bar: the five places worth leaving the page for, plus the argument. */
-export const NAV_BAR = NAV.filter((i) => ["/why/", "#how", "#templates", "/docs/", "/storybook/"].includes(i.href));
+/** The middle tier: the places worth leaving the page for, when there is not room for the sections too. */
+export const NAV_DESTINATIONS = NAV.filter((i) => ["/why/", "/#how", "/#templates", "/docs/", "/storybook/", "/rollup/"].includes(i.href));
+
 
 export const STEPS = [
   {

@@ -172,7 +172,7 @@ export function App() {
             <Tooltip content={theme === "light" ? "Switch to dark" : "Switch to light"}>
               <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label="Toggle theme" leadingIcon={theme === "light" ? <Icon.Moon /> : <Icon.Sun />} />
             </Tooltip>
-            <Button className="docs__github" asChild variant="soft" size="sm" leadingIcon={<Icon.Code />}>
+            <Button className="docs__github" asChild variant="soft" size="sm" leadingIcon={<Icon.Code />} trailingIcon={<Icon.ExternalLink />}>
               <a href={REPO} {...EXTERNAL}>
                 GitHub
               </a>

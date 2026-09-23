@@ -33,8 +33,30 @@ function useTheme(): [Theme, () => void] {
   return [theme, () => setTheme((t) => (t === "light" ? "dark" : "light"))];
 }
 
+/**
+ * A link to a section, arriving from somewhere else.
+ *
+ * The browser looks for the target as the document loads, and on this page the sections do not exist yet:
+ * React has not rendered them. So `/#rules` from the why page, or from anyone's bookmark, used to land at
+ * the top of the page with the hash in the address bar and nothing to show for it. Once mounted, the jump is
+ * ours to make.
+ */
+function useHashLanding(): void {
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    const jump = () => document.getElementById(id)?.scrollIntoView();
+    requestAnimationFrame(jump);
+    // Fonts and images settle after the first paint and move everything below them, so the position found a
+    // frame in is not the position a moment later. Land again once the page has stopped growing.
+    window.addEventListener("load", jump, { once: true });
+    return () => window.removeEventListener("load", jump);
+  }, []);
+}
+
 export function App() {
   const [theme, toggleTheme] = useTheme();
+  useHashLanding();
   return (
     <Tooltip.Provider>
       <div className="site">
