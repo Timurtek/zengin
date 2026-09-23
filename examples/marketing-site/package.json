@@ -16,6 +16,7 @@
     "rollup": "node ../../packages/cli/dist/index.js rollup ../../reports --format html --out public/rollup/index.html"
   },
   "dependencies": {
+    "@xyflow/react": "^12.11.6",
     "@zenginui/ui": "workspace:*",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

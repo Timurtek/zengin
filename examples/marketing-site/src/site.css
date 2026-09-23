@@ -1052,61 +1052,6 @@ a[target="_blank"]::after {
 /* No padding: the cards are positioned as a percentage of this box and the wires are drawn in the same
    percentage space, so any inset here would put them in two different coordinate systems. The lanes hold
    the margin instead. */
-.path__canvas {
-  position: relative;
-  height: 30rem;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-surface-sunken);
-}
-
-/* Below this the cards would be thinner than their own words; the stops carry the section on their own. */
-@media (max-width: 52rem) {
-  .path__canvas {
-    display: none;
-  }
-}
-
-.path__wires {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.path__wire {
-  fill: none;
-  stroke: var(--color-border-strong);
-  stroke-width: 1.5;
-}
-
-.path__wire[data-live] {
-  stroke: var(--color-primary);
-}
-
-.path__node {
-  position: absolute;
-  transform: translateY(-50%);
-}
-
-.path__body {
-  display: grid;
-  gap: var(--spacing-1);
-}
-
-.path__body strong {
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-}
-
-.path__when {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  color: var(--color-text-subtle);
-}
-
-
 .path__detail {
   display: grid;
   align-content: start;
@@ -1151,68 +1096,276 @@ a[target="_blank"]::after {
   margin-top: var(--spacing-5);
 }
 
-/* The why page: the argument, one screen of it, on the same tokens as everything else. */
-.why {
-  padding: var(--spacing-20) 0 var(--spacing-24);
+/*
+ * Diagrams. React Flow places the boxes and routes the wires; everything you can see is from the tokens,
+ * which is why only its `base.css` is loaded and not its theme.
+ */
+.flow {
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-sunken);
 }
 
-.why__head {
-  max-width: 52rem;
+/* The loop on the why page: a row at desk width, a column on a phone, and taller there to suit it. */
+.flow--loop {
+  height: 22rem;
+  margin-bottom: var(--spacing-8);
+}
+
+@media (max-width: 52rem) {
+  .flow--loop {
+    height: 30rem;
+  }
+}
+
+.flow--path {
+  height: 30rem;
+}
+
+/* Below this the boxes would be narrower than their own words; the stops below carry the section alone. */
+@media (max-width: 52rem) {
+  .flow--path {
+    display: none;
+  }
+}
+
+/*
+ * The box is sized here rather than in the node data. React Flow measures it from the DOM, and a node given
+ * a width and a height in the data is never measured — which also skips the handle bounds every edge is
+ * routed from, so the boxes appear and none of the wires do.
+ */
+.flow__node {
   display: grid;
-  gap: var(--spacing-4);
-  margin-bottom: var(--spacing-16);
+  justify-items: start;
+  align-content: start;
+  gap: var(--spacing-1);
+  width: 13rem;
+  padding: var(--spacing-3);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  text-align: left;
 }
 
-.why__title {
-  margin: 0;
+.flow__node[data-kind="system"],
+.flow__node[data-kind="engine"] {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
+}
+
+.flow__node[data-kind="surface"] {
+  background-color: var(--color-neutral-soft);
+}
+
+/* The chosen stop, lifted rather than recoloured, so the kinds still read as kinds. */
+.flow__node[data-selected] {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.flow--path .flow__node {
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+/* It is clickable, so it answers the pointer before it is clicked. */
+.flow--path .flow__node:hover {
+  border-color: var(--color-border-strong);
+  transform: translateY(-2px);
+}
+
+.flow--path .flow__node[data-selected]:hover {
+  border-color: var(--color-primary);
+}
+
+.flow__when {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+.flow__title {
   font-family: var(--font-display);
-  font-size: var(--text-5xl);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-tight);
-  color: var(--color-text);
-}
-
-.why__lead {
-  margin: 0;
-  max-width: 48rem;
-  font-size: var(--text-lg);
-  line-height: var(--leading-normal);
-  color: var(--color-text-muted);
-}
-
-.why__lead--wide {
-  max-width: 52rem;
-}
-
-.why__block {
-  display: grid;
-  gap: var(--spacing-6);
-  margin-bottom: var(--spacing-20);
-}
-
-.why__points {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--spacing-4);
-}
-
-.why__point-title {
-  margin: 0 0 var(--spacing-2);
-  font-size: var(--text-base);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text);
-}
-
-.why__point-body {
-  margin: 0;
   font-size: var(--text-sm);
-  line-height: var(--leading-normal);
+  color: var(--color-text);
+}
+
+.flow__note {
+  font-size: var(--text-xs);
   color: var(--color-text-muted);
 }
 
-.why__table {
-  overflow-x: auto;
+/* The connection points are the routing, not the drawing. */
+.flow__handle {
+  opacity: 0;
+}
+
+.flow .react-flow__edge-path {
+  stroke: var(--color-border-strong);
+  stroke-width: 1.5;
+}
+
+.flow .flow__edge--live .react-flow__edge-path {
+  stroke: var(--color-primary);
+}
+
+/*
+ * Work moving along a wire.
+ *
+ * React Flow marks an edge `animated` and leaves the drawing to the stylesheet — its own theme is not loaded
+ * here — so this is that animation, in dashes short enough to read as movement rather than as a dotted line.
+ * On the loop every wire runs, because the loop never stops; on the path only the wires the chosen stop is an
+ * end of, so the motion carries the selection rather than decorating the diagram.
+ */
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+.flow .react-flow__edge.animated .react-flow__edge-path {
+  stroke-dasharray: 5 3;
+  animation: flow-dash 700ms linear infinite;
+}
+
+/*
+ * The diagram draws itself once, when it is reached.
+ *
+ * The boxes arrive in the order the section explains them, each a beat after the one before, and the wires
+ * fade in behind them once the shape they connect is there. `backwards` holds the first frame during the
+ * delay, so nothing flashes at full opacity before its turn.
+ */
+@keyframes flow-node-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-2));
+  }
+}
+
+@keyframes flow-edges-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.flow[data-seen] .flow__node {
+  animation: flow-node-in var(--duration-slow) var(--ease-emphasized) backwards;
+}
+
+/* A beat between one box and the next. Written out rather than multiplied, because a custom property set
+   from the component is not a token and the engine is right to say so. */
+.flow[data-seen] .flow__node[data-order="1"] {
+  animation-delay: 90ms;
+}
+
+.flow[data-seen] .flow__node[data-order="2"] {
+  animation-delay: 180ms;
+}
+
+.flow[data-seen] .flow__node[data-order="3"] {
+  animation-delay: 270ms;
+}
+
+.flow[data-seen] .flow__node[data-order="4"] {
+  animation-delay: 360ms;
+}
+
+.flow[data-seen] .flow__node[data-order="5"] {
+  animation-delay: 450ms;
+}
+
+.flow[data-seen] .react-flow__edges {
+  animation: flow-edges-in var(--duration-slow) var(--ease-standard) backwards;
+  animation-delay: 450ms;
+}
+
+/* Until then there is nothing to see: the boxes hold their first frame rather than sitting there finished. */
+.flow:not([data-seen]) .flow__node,
+.flow:not([data-seen]) .react-flow__edges {
+  opacity: 0;
+}
+
+.flow .react-flow__background circle {
+  fill: var(--color-border);
+}
+
+.flow .react-flow__attribution {
+  background: transparent;
+  font-size: var(--text-xs);
+}
+
+.flow .react-flow__attribution a {
+  color: var(--color-text-subtle);
+}
+
+/* Print never scrolls, so nothing is ever seen: without this the page prints two empty boxes. */
+@media print {
+  .flow:not([data-seen]) .flow__node,
+  .flow:not([data-seen]) .react-flow__edges {
+    opacity: 1;
+  }
+}
+
+/*
+ * None of the motion is load-bearing: with it off the diagram is simply there, drawn and still. The opacity
+ * rule above has to go too, or a reader who asked for no motion would be left with an empty box.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .flow .react-flow__edge.animated .react-flow__edge-path {
+    stroke-dasharray: none;
+    animation: none;
+  }
+
+  .flow[data-seen] .flow__node,
+  .flow[data-seen] .react-flow__edges,
+  .flow:not([data-seen]) .flow__node,
+  .flow:not([data-seen]) .react-flow__edges {
+    opacity: 1;
+    animation: none;
+  }
+
+  .flow--path .flow__node {
+    transition: none;
+  }
+
+  .flow--path .flow__node:hover {
+    transform: none;
+  }
+}
+
+/* The figure's text alternative: the canvas is hidden from assistive technology, this is what it said. */
+.flow-figure {
+  margin: 0;
+}
+
+.flow-figure__alt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The why page: the argument, one screen of it, on the same tokens as everything else. */
+/*
+ * The page's own parts, and only those. Everything else it needs — the ruled sections, the label column,
+ * the headline and lead, the three-cell grid, the closing note, the start block — is the site's, used as
+ * the home page uses it. What is left here is the comparison table's cells and the diagram, because
+ * nothing else on the site draws either.
+ */
+
+/* The opening headline carries the page, so it scales past a section title without changing face or fit. */
+.section--opening {
+  border-top: 0;
+}
+
+.section--opening .title {
+  font-size: clamp(var(--text-4xl), 4.5vw, var(--text-5xl));
 }
 
 .why__tool {
@@ -1227,72 +1380,19 @@ a[target="_blank"]::after {
   color: var(--color-text-subtle);
 }
 
-.why__cta {
-  display: grid;
-  justify-items: start;
-  gap: var(--spacing-4);
-  padding: var(--spacing-8);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-surface-sunken);
-}
-
-
-.why__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-3);
-}
-
-/* The diagram draws from the same tokens, so it follows the theme and the brand without a second palette. */
-.why-di {
-  width: 100%;
-  height: auto;
-  max-width: 42.5rem;
-}
-
-.why-di__box {
-  fill: var(--color-surface);
-  stroke: var(--color-border-strong);
-  stroke-width: var(--border-width);
-}
-
-.why-di__box--system {
-  fill: var(--color-primary-soft);
-  stroke: var(--color-primary);
-}
-
-.why-di__box--surface {
-  fill: var(--color-neutral-soft);
-  stroke: var(--color-border-strong);
-}
-
-.why-di__t {
-  font-family: var(--font-sans);
+/* Cells of prose rather than of figures, so the heading is the size of the text it introduces. */
+.why__point h3 {
+  font-family: var(--font-mono);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-medium);
-  fill: var(--color-text);
 }
 
-.why-di__s {
-  font-family: var(--font-sans);
-  font-size: var(--text-xs);
-  fill: var(--color-text-muted);
+.why__point p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-wrap: pretty;
 }
 
-.why-di__wire {
-  fill: none;
-  stroke: var(--color-border-strong);
-  stroke-width: var(--border-width);
-}
-
-.why-di__head {
-  fill: none;
-  stroke: var(--color-border-strong);
-  stroke-width: var(--border-width);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
 
 @media (max-width: 60rem) {
   .why__points {

@@ -4,6 +4,7 @@ import "./site.css";
 import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Tooltip } from "@zenginui/ui";
+import { Footer } from "./sections/Footer";
 import { Nav } from "./sections/Nav";
 import { Why } from "./sections/Why";
 
@@ -37,7 +38,10 @@ function Page() {
           Without this wrapper the page renders with the browser's defaults, which is blue and purple links. */}
       <div className="site">
         <Nav theme={theme} onToggleTheme={toggle} />
-        <Why />
+        <main>
+          <Why />
+        </main>
+        <Footer />
       </div>
     </Tooltip.Provider>
   );

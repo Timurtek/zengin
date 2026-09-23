@@ -1,36 +1,21 @@
-import { Badge, Button, Card } from "@zenginui/ui";
-import { useState } from "react";
+import { Button } from "@zenginui/ui";
+import { lazy, Suspense, useState } from "react";
 import { PATH, PATH_NOTE } from "../content";
+
+/*
+ * React Flow is about fifty kilobytes over the wire, and this diagram is below the fold on a page whose job
+ * is to be read. It loads after the page does, into a box of its own height, so nothing moves when it lands.
+ */
+const PathDiagram = lazy(() => import("../components/PathDiagram").then((m) => ({ default: m.PathDiagram })));
 
 /**
  * The adoption path as a diagram, because the four surfaces are the hard part to explain in prose: one engine,
  * reached from four places, at four different moments.
  *
- * Everything is laid out in one percentage space, so the connectors and the cards cannot disagree: the cards
- * are positioned by percent and the SVG uses the same 0-100 viewBox with a non-scaling stroke. The nodes are
- * Zengin Cards rather than drawn shapes, which keeps them themed, focusable and readable; the SVG draws lines
- * and nothing else, and is hidden from assistive technology because the stops below say the same thing.
+ * The stops carry their own coordinates in content.ts and React Flow places and routes from them, so moving a
+ * stop is moving one pair of numbers. It used to be two coordinate systems — percentages here for the cards
+ * and a hand-written bezier for the wires — which had to be kept in agreement by hand.
  */
-
-/** The lane each stop sits in, as a percentage of the canvas. One place to change the layout. */
-const LANES: Record<string, { x: number; y: number }> = {
-  definitions: { x: 2, y: 50 },
-  engine: { x: 37, y: 50 },
-  mcp: { x: 72, y: 13 },
-  hook: { x: 72, y: 38 },
-  ci: { x: 72, y: 62 },
-  rollup: { x: 72, y: 87 },
-};
-const CARD_WIDTH = 26;
-
-/** From the right edge of one lane to the left edge of another, bent halfway across the gap. */
-function connector(from: { x: number; y: number }, to: { x: number; y: number }): string {
-  const x1 = from.x + CARD_WIDTH;
-  const x2 = to.x;
-  const mid = x1 + (x2 - x1) / 2;
-  return `M ${x1} ${from.y} C ${mid} ${from.y}, ${mid} ${to.y}, ${x2} ${to.y}`;
-}
-
 export function Path() {
   const [active, setActive] = useState(PATH[0]!.id);
   const stop = PATH.find((s) => s.id === active) ?? PATH[0]!;
@@ -50,44 +35,9 @@ export function Path() {
         </div>
 
         <div className="path">
-          <div className="path__canvas">
-            <svg className="path__wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              {PATH.flatMap((s) =>
-                s.to.map((target) => (
-                  <path
-                    key={`${s.id}-${target}`}
-                    className="path__wire"
-                    d={connector(LANES[s.id]!, LANES[target]!)}
-                    data-live={s.id === active || target === active ? "" : undefined}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                )),
-              )}
-            </svg>
-
-            {PATH.map((s) => (
-              // A positioned wrapper, not a control: the stops below are the keyboard path to the same thing,
-              // so this only has to be clickable and must not restyle a button to get there.
-              <div
-                key={s.id}
-                className="path__node"
-                style={{ left: `${LANES[s.id]!.x}%`, top: `${LANES[s.id]!.y}%`, width: `${CARD_WIDTH}%` }}
-                onClick={() => setActive(s.id)}
-              >
-                <Card variant={s.id === active ? "elevated" : "outlined"} padding="sm" interactive data-kind={s.kind}>
-                  <span className="path__body">
-                    <span className="path__when">{s.when}</span>
-                    <strong>{s.title}</strong>
-                    {s.badge && (
-                      <Badge size="sm" tone={s.kind === "engine" ? "primary" : "neutral"} variant="outline">
-                        {s.badge}
-                      </Badge>
-                    )}
-                  </span>
-                </Card>
-              </div>
-            ))}
-          </div>
+          <Suspense fallback={<div className="flow flow--path" aria-hidden="true" />}>
+            <PathDiagram active={active} onSelect={setActive} />
+          </Suspense>
 
           <aside className="path__detail" aria-live="polite">
             <span className="eyebrow">{stop.when}</span>

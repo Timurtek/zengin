@@ -155,7 +155,7 @@ export type RuleRow = { id: string; family: "foundation" | "contract" | "substit
 /** packages/engine/src/docs.ts, shortened for the table; `zengin explain` prints the full text. */
 export type PathStop = {
   id: string;
-  /** Where it sits on the canvas. Hand-placed: five nodes do not need a layout engine. */
+  /** Where it sits on the canvas, in the diagram's own pixels. Hand-placed: six nodes need no layout engine. */
   at: { x: number; y: number };
   to: string[];
   kind: "source" | "engine" | "surface";
@@ -172,7 +172,7 @@ export type PathStop = {
 export const PATH: PathStop[] = [
   {
     id: "definitions",
-    at: { x: 0, y: 150 },
+    at: { x: 0, y: 210 },
     to: ["engine"],
     kind: "source",
     when: "Once",
@@ -189,7 +189,7 @@ export const PATH: PathStop[] = [
   },
   {
     id: "engine",
-    at: { x: 300, y: 150 },
+    at: { x: 300, y: 210 },
     to: ["mcp", "hook", "ci", "rollup"],
     kind: "engine",
     when: "Every time",
@@ -218,7 +218,7 @@ export const PATH: PathStop[] = [
   },
   {
     id: "hook",
-    at: { x: 640, y: 100 },
+    at: { x: 640, y: 140 },
     to: [],
     kind: "surface",
     when: "At the moment of the write",
@@ -230,7 +230,7 @@ export const PATH: PathStop[] = [
   },
   {
     id: "ci",
-    at: { x: 640, y: 200 },
+    at: { x: 640, y: 280 },
     to: [],
     kind: "surface",
     when: "On the pull request",
@@ -242,7 +242,7 @@ export const PATH: PathStop[] = [
   },
   {
     id: "rollup",
-    at: { x: 640, y: 300 },
+    at: { x: 640, y: 420 },
     to: [],
     kind: "surface",
     when: "Across every repository",

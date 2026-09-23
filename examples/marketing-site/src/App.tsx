@@ -1,7 +1,7 @@
 import { Tooltip } from "@zenginui/ui";
 import { useEffect, useState } from "react";
-import { NPM, REPO } from "./content";
 import { Catalog } from "./sections/Catalog";
+import { Footer } from "./sections/Footer";
 import { GetStarted } from "./sections/GetStarted";
 import { Hero } from "./sections/Hero";
 import { HowItWorks } from "./sections/HowItWorks";
@@ -73,15 +73,7 @@ export function App() {
           <Proof />
           <GetStarted />
         </main>
-        <footer className="footer">
-          <div className="wrap footer__inner">
-            <span>Zengin is MIT licensed. Built on Zengin UI, checked by Zengin.</span>
-            <span className="footer__links">
-              <a href={REPO} target="_blank" rel="noreferrer">github.com/Timurtek/zengin</a>
-              <a href={NPM} target="_blank" rel="noreferrer">npmjs.com/org/zenginui</a>
-            </span>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </Tooltip.Provider>
   );
