@@ -3,20 +3,28 @@
 export const REPO = "https://github.com/Timurtek/zengin";
 export const NPM = "https://www.npmjs.com/org/zenginui";
 
+/**
+ * Everything the sheet lists. Adding the why page took the inline bar to eleven labels, which is past what
+ * fits: the items began to overlap at full width. A bar that names every section of the page is a table of
+ * contents, so the bar now carries destinations and the sheet keeps the sections.
+ */
 export const NAV: { href: string; label: string; external?: boolean }[] = [
   { href: "/why/", label: "Why Zengin", external: true },
   { href: "#how", label: "How it works" },
   { href: "#templates", label: "Templates" },
-  { href: "/storybook/", label: "Storybook", external: true },
-  { href: "/rollup/", label: "Rollup", external: true },
   { href: "#surfaces", label: "Surfaces" },
   { href: "#rules", label: "Rules" },
   { href: "#path", label: "The path" },
   { href: "#growth", label: "Growth" },
-  { href: "/docs/", label: "Docs", external: true },
   { href: "#system", label: "Reference system" },
   { href: "#proof", label: "Field tests" },
+  { href: "/docs/", label: "Docs", external: true },
+  { href: "/storybook/", label: "Storybook", external: true },
+  { href: "/rollup/", label: "Rollup", external: true },
 ];
+
+/** The bar: the five places worth leaving the page for, plus the argument. */
+export const NAV_BAR = NAV.filter((i) => ["/why/", "#how", "#templates", "/docs/", "/storybook/"].includes(i.href));
 
 export const STEPS = [
   {

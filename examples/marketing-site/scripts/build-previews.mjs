@@ -5,7 +5,7 @@
  * template's source directory from the registry just built into public/r, so the two cannot disagree.
  */
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "vite";
@@ -72,7 +72,55 @@ function markAsDemo(t) {
     logLevel: "error",
     build: { outDir: out, emptyOutDir: true },
   });
+  writeDocPages(out);
   console.log("built public/docs/ from examples/zengin-docs");
+}
+
+/**
+ * A file per documentation page, each with its own title, description and canonical.
+ *
+ * The docs used to route on the fragment, so twenty-one pages shared one URL and one title: to a search
+ * engine they were a single page, and the only substantial prose this project has could not be found. The
+ * app now routes on the path; this writes the pages that path asks for. Every copy is the same built
+ * document with three tags rewritten, and the assets are absolute, so depth costs nothing.
+ */
+function writeDocPages(out) {
+  const source = join(out, "index.html");
+  const shell = readFileSync(source, "utf8");
+  const content = readFileSync(join(repo, "examples", "zengin-docs", "src", "content.ts"), "utf8");
+
+  // Read the pages out of the content module the app itself renders, rather than keeping a second list.
+  const docs = [...content.matchAll(/slug:\s*"([a-z0-9-]+)",\s*\n\s*section:\s*"[^"]*",\s*\n\s*title:\s*"([^"]+)",\s*\n\s*summary:\s*"([^"]+)"/g)].map((m) => ({
+    slug: m[1],
+    title: m[2],
+    summary: m[3],
+  }));
+  if (docs.length < 10) throw new Error(`Only ${docs.length} documentation pages were found in content.ts; the shape it is read with must have changed.`);
+
+  for (const doc of docs) {
+    const html = shell
+      .replace("<title>Zengin docs</title>", `<title>${escapeHtml(doc.title)} — Zengin docs</title>`)
+      .replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${escapeHtml(doc.summary)}"`)
+      .replace('<link rel="icon"', `<link rel="canonical" href="https://zengin.timurtek.com/docs/${doc.slug}/" />\n    <link rel="icon"`);
+    const dir = join(out, doc.slug);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, "index.html"), html);
+  }
+  writeFileSync(join(out, "index.html"), shell.replace('<link rel="icon"', '<link rel="canonical" href="https://zengin.timurtek.com/docs/" />\n    <link rel="icon"'));
+  writeSitemap(docs.map((d) => `/docs/${d.slug}/`));
+  console.log(`wrote ${docs.length} documentation pages, each with its own title and canonical`);
+}
+
+/** The sitemap is generated because the pages are: a hand-kept list would be wrong the day a page is added. */
+function writeSitemap(docPaths) {
+  const paths = ["/", "/why/", "/docs/", ...docPaths, "/storybook/", "/rollup/"];
+  const urls = paths.map((p) => `  <url>\n    <loc>https://zengin.timurtek.com${p}</loc>\n  </url>`).join("\n");
+  writeFileSync(join(site, "public", "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
+  console.log(`wrote public/sitemap.xml: ${paths.length} pages`);
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 // Storybook for Zengin UI, served at /storybook/. Always for a site build (--storybook); for dev only when

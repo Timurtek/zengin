@@ -1,6 +1,6 @@
 import { Button, Icon, Separator, Sheet, Tooltip } from "@zenginui/ui";
 import { useState } from "react";
-import { NAV, NPM, REPO } from "../content";
+import { NAV, NAV_BAR, NPM, REPO } from "../content";
 
 const EXTERNAL = { target: "_blank", rel: "noreferrer" } as const;
 
@@ -22,7 +22,7 @@ export function Nav({ theme, onToggleTheme }: { theme: "light" | "dark"; onToggl
         </a>
         <nav aria-label="Sections">
           <ul className="nav__links">
-            {NAV.map((item) => (
+            {NAV_BAR.map((item) => (
               <li key={item.href}>
                 <a href={item.href} {...(item.external ? EXTERNAL : {})}>
                   {item.label}

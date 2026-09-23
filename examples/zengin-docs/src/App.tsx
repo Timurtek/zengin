@@ -21,23 +21,56 @@ function useTheme(): [Theme, () => void] {
   return [theme, () => setTheme((t) => (t === "light" ? "dark" : "light"))];
 }
 
-/** The page is the hash, so every heading in the sidebar is a real link somebody can send. */
+/** `/docs/` in the build, `/` in dev. Every URL this file writes is built from it. */
+const BASE = import.meta.env.BASE_URL;
+
+/** The address of a page, which is also the href a crawler follows and a reader copies. */
+export function hrefFor(slug: string): string {
+  return `${BASE}${slug}/`;
+}
+
+function slugFromPath(): string | undefined {
+  const rest = window.location.pathname.slice(BASE.length).replace(/^\/+|\/+$/g, "");
+  return DOCS.some((d) => d.slug === rest) ? rest : undefined;
+}
+
+/**
+ * The page is the path.
+ *
+ * It was the fragment, and a fragment is not a URL to a search engine: twenty-one pages of prose were one
+ * indexable page with one title. Now each page has its own address, its own built HTML and its own metadata,
+ * and the sidebar entries are real links rather than buttons — which is the half that makes them followable.
+ */
 function useSlug(): [string, (slug: string) => void] {
-  const read = () => window.location.hash.slice(1) || DOCS[0]!.slug;
-  const [slug, setSlug] = useState(read);
+  const [slug, setSlug] = useState(() => slugFromPath() ?? DOCS[0]!.slug);
+
   useEffect(() => {
-    const onHash = () => setSlug(read());
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
+    // Links shared before this change point at /docs/#rules. Send them where that page lives now.
+    const legacy = window.location.hash.slice(1);
+    if (legacy && DOCS.some((d) => d.slug === legacy)) {
+      window.history.replaceState({}, "", hrefFor(legacy));
+      setSlug(legacy);
+    }
+    const onPop = () => setSlug(slugFromPath() ?? DOCS[0]!.slug);
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
   }, []);
+
   return [
     slug,
     (next: string) => {
-      window.location.hash = next;
+      window.history.pushState({}, "", hrefFor(next));
       setSlug(next);
       window.scrollTo({ top: 0 });
     },
   ];
+}
+
+/** A link that navigates in place, unless the reader asked for a new tab or window. */
+function linkTo(e: React.MouseEvent, slug: string, go: (slug: string) => void): void {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+  e.preventDefault();
+  go(slug);
 }
 
 export function App() {
@@ -51,6 +84,9 @@ export function App() {
   const prev = DOCS[index - 1];
   const next = DOCS[index + 1];
   const headings = useMemo(() => headingsOf(doc.body), [doc]);
+  // The prose links to other pages as `(#add)`, which was an address when the page was a fragment and is not
+  // one now. Rewritten to the page's real URL, and clicks on those links stay client-side.
+  const body = useMemo(() => doc.body.replace(/\]\(#([a-z0-9-]+)\)/g, (m, slug: string) => (DOCS.some((d) => d.slug === slug) ? `](${hrefFor(slug)})` : m)), [doc]);
   const q = query.trim().toLowerCase();
   const matches = (d: Doc) => !q || d.title.toLowerCase().includes(q) || d.summary.toLowerCase().includes(q) || d.body.toLowerCase().includes(q);
 
@@ -66,22 +102,31 @@ export function App() {
               {docs.map((d) => (
                 <li key={d.slug}>
                   <Button
+                    asChild
                     variant={d.slug === doc.slug ? "soft" : "ghost"}
                     size="sm"
                     align="start"
                     className="nav__link"
-                    aria-current={d.slug === doc.slug ? "page" : undefined}
-                    onClick={() => {
-                      go(d.slug);
-                      setDrawer(false);
-                    }}
                   >
-                    {d.title}
-                    {d.isNew && (
-                      <Badge size="sm" tone="primary">
-                        New
-                      </Badge>
-                    )}
+                    {/* A real href, so the page can be opened in a tab, sent to someone, and followed by a
+                        crawler. The click is intercepted only to keep the navigation instant. */}
+                    <a
+                      href={hrefFor(d.slug)}
+                      aria-current={d.slug === doc.slug ? "page" : undefined}
+                      onClick={(e) => {
+                        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                        e.preventDefault();
+                        go(d.slug);
+                        setDrawer(false);
+                      }}
+                    >
+                      {d.title}
+                      {d.isNew && (
+                        <Badge size="sm" tone="primary">
+                          New
+                        </Badge>
+                      )}
+                    </a>
                   </Button>
                 </li>
               ))}
@@ -144,20 +189,35 @@ export function App() {
               <Icon.ChevronRight />
               <span>{doc.title}</span>
             </p>
-            <article className="article z-rise">
-              <Markdown text={doc.body} />
+            <article
+              className="article z-rise"
+              onClick={(e) => {
+                const a = (e.target as HTMLElement).closest("a");
+                const href = a?.getAttribute("href");
+                if (!href?.startsWith(BASE) || e.metaKey || e.ctrlKey || e.shiftKey) return;
+                const slug = href.slice(BASE.length).replace(/\/+$/, "");
+                if (!DOCS.some((d) => d.slug === slug)) return;
+                e.preventDefault();
+                go(slug);
+              }}
+            >
+              <Markdown text={body} />
             </article>
             <nav className="docs__pager" aria-label="Previous and next">
               {prev ? (
-                <Button variant="soft" align="start" leadingIcon={<Icon.ArrowLeft />} onClick={() => go(prev.slug)}>
-                  {prev.title}
+                <Button asChild variant="soft" align="start" leadingIcon={<Icon.ArrowLeft />}>
+                  <a href={hrefFor(prev.slug)} onClick={(e) => linkTo(e, prev.slug, go)}>
+                    {prev.title}
+                  </a>
                 </Button>
               ) : (
                 <span />
               )}
               {next && (
-                <Button variant="soft" trailingIcon={<Icon.ArrowRight />} onClick={() => go(next.slug)}>
-                  {next.title}
+                <Button asChild variant="soft" trailingIcon={<Icon.ArrowRight />}>
+                  <a href={hrefFor(next.slug)} onClick={(e) => linkTo(e, next.slug, go)}>
+                    {next.title}
+                  </a>
                 </Button>
               )}
             </nav>

@@ -29,6 +29,9 @@ const PAGES = [
   { path: "/robots.txt", expect: "Sitemap:", why: "what a crawler reads first" },
   { path: "/sitemap.xml", expect: "zengin.timurtek.com/why/", why: "the sitemap, and that the why page is in it" },
   { path: "/docs/", expect: "Zengin docs", why: "the documentation, linked from the nav" },
+  // A page deep in the docs, with its own title: the check that the pages are pages and not one fragment.
+  { path: "/docs/rules/", expect: "The seven rules — Zengin docs", why: "a documentation page at its own URL" },
+  { path: "/docs/cli-reference/", expect: "canonical\" href=\"https://zengin.timurtek.com/docs/cli-reference/", why: "a documentation page's canonical" },
   { path: "/rollup/", expect: "rollup", why: "the hosted trends, linked from the nav" },
   { path: "/storybook/", expect: "Storybook", why: "the Storybook manager, linked from the nav" },
   // The file every story renders inside. It must answer at this exact URL: a redirect that adds a slash
