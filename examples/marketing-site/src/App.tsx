@@ -7,6 +7,7 @@ import { Hero } from "./sections/Hero";
 import { HowItWorks } from "./sections/HowItWorks";
 import { Nav } from "./sections/Nav";
 import { Proof } from "./sections/Proof";
+import { Reel } from "./sections/Reel";
 import { Growth } from "./sections/Growth";
 import { Rules } from "./sections/Rules";
 import { Path } from "./sections/Path";
@@ -63,6 +64,7 @@ export function App() {
         <Nav theme={theme} onToggleTheme={toggleTheme} />
         <main>
           <Hero />
+          <Reel />
           <HowItWorks />
           <Catalog />
           <Path />

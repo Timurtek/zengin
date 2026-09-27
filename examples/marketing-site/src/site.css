@@ -321,6 +321,20 @@ a[target="_blank"]::after {
   }
 }
 
+/* Showreel: the video at the full width of the wrap, square like the rest of the sheet. */
+.reel {
+  margin: 0;
+  border: var(--border-width) solid var(--color-border-strong);
+  background-color: var(--color-neutral);
+}
+
+.reel__video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 /* Hero: a full-bleed band in the opposite theme, so the page opens on its own inversion. */
 .hero {
   position: relative;
