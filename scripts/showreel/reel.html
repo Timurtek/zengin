@@ -659,7 +659,7 @@ scene('Start', 36, 41, 'dark', (el) => {
   });
   const fp = h('div', '', right); css(fp, { marginTop: '46px', borderTop: '2px solid #363933', paddingTop: '22px' });
   fp.innerHTML = '<span class="disp" style="font-size:88px;font-weight:900;letter-spacing:-.04em;color:#A0A98D">0</span><span class="mono" style="font-size:22px;letter-spacing:.1em;text-transform:uppercase;color:#B5B3AA;margin-left:20px">false positives</span>';
-  const sub = h('div', 'abs mono', el, 'drift found where it was already hiding'); css(sub, { left: '1190px', top: '860px', fontSize: '20px', letterSpacing: '.1em', textTransform: 'uppercase', color: '#7F7E76' });
+  const sub = h('div', 'abs mono', el, '424 violations read and classified by hand'); css(sub, { left: '1190px', top: '860px', fontSize: '20px', letterSpacing: '.1em', textTransform: 'uppercase', color: '#7F7E76' });
   return (t) => {
     box.style.transform = `translateY(${(1 - E.o4(P(t, 36, 36.5))) * 60}px)`; box.style.opacity = P(t, 36, 36.2);
     const n = Math.floor(cmd.length * P(t, 36.3, 37.5));
