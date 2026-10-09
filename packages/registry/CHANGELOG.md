@@ -1,5 +1,23 @@
 # @zenginui/registry
 
+## 0.5.2
+
+### Patch Changes
+
+- [`2f6b794`](https://github.com/Timurtek/zengin/commit/2f6b79429c6d9042f8d15f3666b30adc1db1a3ae) Thanks [@Timurtek](https://github.com/Timurtek)! - Fix suggestions follow the project's brand. `color-literal` and `spacing-literal` match a literal against what the project paints: the brand's value where `src/theme/brand.css` overrides a token, the token files' elsewhere. A token's dark value is matched too, after the light ones, from the brand's dark block or `tokens.dark.json`. In a project whose brand makes primary `#1E6B3C`, that literal is now an exact `color.primary`, and its dark `#C8F542` is `color.primary` as well; before, both were a "nearest" guess at an unrelated token. The message says where the matched value lives: the project's brand, the default theme, or dark.
+  
+  `system.brand` in `zengin.config.yaml` names the brand file (default `src/theme/brand.css`, read when it exists); `brand: false` matches the token files alone. `loadDefinitions` reads `tokens.dark.json` when there is one, resolving its aliases against `tokens.json` (`loadDarkTokens`), and a dark file it cannot read is skipped rather than stopping the check.
+  
+  New in the engine: `BRAND_CSS`, `parseBrandCss`, `resolveBrandValues`, `loadDarkTokens`, `TokenIndex.colorMatches` and `nearestColorMatch`, and `Engine.tokens` and `Engine.brand`. `zengin_describe_system` in the MCP server lists the brand's values, with the default beside each one the brand changes. `@zenginui/figma` reads brand files with the engine's parser, and the registry's `LAYOUT.brandCss` is the engine's `BRAND_CSS`.
+
+- [`b492f73`](https://github.com/Timurtek/zengin/commit/b492f7357b32b2f2276d1411b0f235ab1344ea88) Thanks [@Timurtek](https://github.com/Timurtek)! - `zengin figma export` exports a project in its own brand. `src/theme/brand.css` overrides the token files in the browser, and now in Figma too: its light block gives Light, its `[data-theme="dark"]` block gives Dark, and anything set only in the light block (fonts, radii, text sizes) carries into Dark as the cascade has it. The output lists what the brand overrode, its custom properties that name no token, and values Figma cannot hold. `--no-brand` exports the system defaults, `--brand <file>` reads another file, and `--themes` keeps its meaning and leaves the project's brand out.
+  
+  `zengin figma import` compares against the brand too. A designer's change to a token the brand sets is reported under `brand`, to make in `brand.css`, and `--write` never copies it into `tokens.json`.
+  
+  In `@zenginui/figma`: `parseBrandCss`, `resolveBrand`, `renderBrandReport`, an `overrides` option on `toFigmaVariables`, a `brand` option on `fromFigmaVariables` and `ImportReport.brand`. `parseThemeCss` accepts the same selector spellings (`[data-theme='dark']`, `[data-theme=dark]`, `html`). In `@zenginui/registry`: `LAYOUT.brandCss`, the one place the brand file's path is named.
+- Updated dependencies [[`2f6b794`](https://github.com/Timurtek/zengin/commit/2f6b79429c6d9042f8d15f3666b30adc1db1a3ae)]:
+  - @zenginui/engine@0.6.0
+
 ## 0.5.1
 
 ### Patch Changes
