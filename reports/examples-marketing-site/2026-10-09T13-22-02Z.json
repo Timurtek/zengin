@@ -1,0 +1,95 @@
+{
+  "schema": "zengin-report/1",
+  "generatedAt": "2026-10-09T13:22:02.999Z",
+  "repo": {
+    "name": "examples/marketing-site",
+    "ref": "main",
+    "commit": "0dfdf3c5cb43ad79a196cc818aba60939728ed48"
+  },
+  "system": {
+    "package": "@zenginui/ui",
+    "version": "0.2.4"
+  },
+  "filesChecked": 28,
+  "summary": {
+    "total": 0,
+    "bySeverity": {
+      "error": 0,
+      "warn": 0,
+      "info": 0
+    },
+    "byRule": {},
+    "byFile": {}
+  },
+  "violations": [],
+  "inventory": {
+    "files": 28,
+    "consumerFiles": 27,
+    "ownedFiles": 0,
+    "suppressions": 0,
+    "suppressionsWithoutReason": 0,
+    "components": {
+      "Tooltip": {
+        "uses": 3,
+        "files": 3
+      },
+      "Badge": {
+        "uses": 13,
+        "files": 6
+      },
+      "Button": {
+        "uses": 21,
+        "files": 9
+      },
+      "CodeBlock": {
+        "uses": 1,
+        "files": 1
+      },
+      "Select": {
+        "uses": 9,
+        "files": 1
+      },
+      "Icon": {
+        "uses": 11,
+        "files": 6
+      },
+      "Skeleton": {
+        "uses": 3,
+        "files": 1
+      },
+      "Sheet": {
+        "uses": 5,
+        "files": 1
+      },
+      "Separator": {
+        "uses": 1,
+        "files": 1
+      },
+      "Table": {
+        "uses": 20,
+        "files": 2
+      },
+      "Tabs": {
+        "uses": 4,
+        "files": 1
+      },
+      "Card": {
+        "uses": 1,
+        "files": 1
+      },
+      "TextField": {
+        "uses": 1,
+        "files": 1
+      },
+      "Checkbox": {
+        "uses": 1,
+        "files": 1
+      }
+    },
+    "uncontracted": [
+      "Icon"
+    ]
+  },
+  "suppressions": [],
+  "owned": []
+}
