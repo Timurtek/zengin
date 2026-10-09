@@ -87,9 +87,11 @@ Mock options:
 
 Figma options:
   --collection <name>   the variable collection (default: Zengin)
-  --themes <dir>        export: also a Theme collection, a mode per <dir>/<name>/brand.css, the tokens aliased into it
+  --brand <file>        export and import: the project's brand file (default: src/theme/brand.css, read when it exists)
+  --no-brand            export and import: the token files alone, the system defaults without the brand
+  --themes <dir>        export: also a Theme collection, a mode per <dir>/<name>/brand.css, the tokens aliased into it (the project's brand is not applied)
   --theme <name>        import: the Theme mode the aliased tokens are read from (default: that collection's default)
-  --write               import: update zengin/tokens*.json (a report only, otherwise)
+  --write               import: update zengin/tokens*.json (a report only, otherwise); never a token the brand file sets
   --map <json>          connect: Figma component URLs by component name
   --out <path>          export: the payload file; connect and plugin: the directory
 
@@ -191,6 +193,9 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a.startsWith("--seed=")) scaffold.seed = asInt(a.slice(7));
     else if (a === "--map") scaffold.map = value();
     else if (a.startsWith("--map=")) scaffold.map = a.slice(6);
+    else if (a === "--brand") scaffold.brandCss = value();
+    else if (a.startsWith("--brand=")) scaffold.brandCss = a.slice(8);
+    else if (a === "--no-brand") scaffold.noBrand = true;
     else if (a === "--themes") scaffold.themes = value();
     else if (a.startsWith("--themes=")) scaffold.themes = a.slice(9);
     else if (a === "--collection") scaffold.collection = value();

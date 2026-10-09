@@ -1,0 +1,67 @@
+/*
+ * A consumer project's brand, modeled on TekJobs (app/src/theme/brand.css): every color token overridden in a
+ * light block and a dark block, the dark block repeated for prefers-color-scheme, type and shape in the light
+ * block only, one custom property that names no token, and a component rule that sets none.
+ */
+
+:root,
+[data-theme="light"] {
+  --font-sans: "Hanken Grotesk", Helvetica, Arial, sans-serif;
+  --font-display: "Bricolage Grotesque", "Hanken Grotesk", sans-serif;
+
+  /* Type: sm is the system's 13px body. */
+  --text-sm: 0.8125rem;
+  --tracking-caps: 0.06em;
+
+  /* Shape: small corners, flat surfaces. */
+  --radius-md: 4px;
+  --shadow-sm: none;
+
+  --color-surface: #f4f8f5;
+  --color-surface-raised: #e9f0eb;
+  --color-surface-overlay: #0e1a13cc;
+  --color-text: #0e1a13;
+  --color-primary: #1e6b3c;
+  --color-primary-hover: #185a32;
+  --color-primary-soft: #d8ecdd;
+  --color-primary-soft-foreground: var(--color-primary);
+  --color-focus: #1e6b3c;
+
+  /* App-level extras the system does not name */
+  --color-text-faint: #6d7f75;
+}
+
+[data-theme="dark"] {
+  --color-surface: #0d1a14;
+  --color-surface-raised: #122119;
+  --color-surface-overlay: #08120ccc;
+  --color-text: #e9f5ee;
+  --color-primary: #c8f542;
+  --color-primary-hover: #d4f766;
+  --color-primary-soft: #1a3326;
+  --color-primary-soft-foreground: var(--color-primary);
+  --color-focus: #c8f542;
+  --color-text-faint: #6c8878;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-surface: #0d1a14;
+    --color-surface-raised: #122119;
+    --color-surface-overlay: #08120ccc;
+    --color-text: #e9f5ee;
+    --color-primary: #c8f542;
+    --color-primary-hover: #d4f766;
+    --color-primary-soft: #1a3326;
+    --color-primary-soft-foreground: var(--color-primary);
+    --color-focus: #c8f542;
+    --color-text-faint: #6c8878;
+  }
+}
+
+/* The lockup. */
+.brand-mark {
+  display: inline-flex;
+  gap: var(--spacing-2);
+  color: var(--color-text);
+}

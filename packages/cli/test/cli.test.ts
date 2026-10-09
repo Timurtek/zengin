@@ -11,6 +11,8 @@ import { admits, runDoctor } from "../src/doctor.js";
 import { init, initFromShadcn } from "../src/init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "../src/report.js";
 import { explain, parseArgs } from "../src/index.js";
+import { runFigma, type ScaffoldOptions } from "../src/scaffold.js";
+import { figmaToHex, hexToFigma, type FigmaColor, type FigmaValue, type LocalVariables, type VariablesPayload } from "@zenginui/figma";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(here, "..", "..", "engine", "test", "fixtures");
@@ -423,5 +425,79 @@ describe("zengin doctor", () => {
     expect(admits("workspace:*", "0.4.1")).toBeUndefined();
     expect(admits("link:../cli", "0.4.1")).toBeUndefined();
     expect(admits(">=0.4.0 <1", "0.4.1")).toBeUndefined();
+  });
+});
+
+describe("zengin figma with the project's brand", () => {
+  const repo = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+  let dir: string;
+  const opts = (extra: Partial<ScaffoldOptions> = {}): ScaffoldOptions => ({ write: false, ...extra }) as ScaffoldOptions;
+  const payload = (file = "figma/variables.json") => JSON.parse(readFileSync(join(dir, file), "utf8")) as VariablesPayload;
+  const hex = (p: VariablesPayload, name: string, mode: "light" | "dark") => {
+    const id = p.variables.find((v) => v.name === name)!.id;
+    return figmaToHex(p.variableModeValues.find((m) => m.variableId === id && m.modeId === `zengin-mode-${mode}`)!.value as FigmaColor);
+  };
+
+  beforeAll(() => {
+    dir = mkdtempSync(join(tmpdir(), "zengin-figma-brand-"));
+    mkdirSync(join(dir, "zengin"));
+    for (const f of ["tokens.json", "tokens.dark.json"]) cpSync(join(repo, "ui", "zengin", f), join(dir, "zengin", f));
+    mkdirSync(join(dir, "src", "theme"), { recursive: true });
+    cpSync(join(repo, "figma", "test", "fixtures", "brand.css"), join(dir, "src", "theme", "brand.css"));
+  });
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+  it("parses --brand and --no-brand", () => {
+    expect(parseArgs(["figma", "export", "--no-brand"], "/x").scaffold).toMatchObject({ noBrand: true });
+    expect(parseArgs(["figma", "export", "--brand", "app/brand.css"], "/x").scaffold).toMatchObject({ brandCss: "app/brand.css" });
+  });
+
+  it("export layers src/theme/brand.css over the token files, and says so", () => {
+    const out = runFigma("export", [], opts(), dir);
+    expect(out).toContain("from the token files with src/theme/brand.css over them");
+    expect(out).toContain("unmatched  --color-text-faint");
+    const p = payload();
+    expect([hex(p, "color/primary", "light"), hex(p, "color/primary", "dark")]).toEqual(["#1E6B3C", "#C8F542"]);
+    expect([hex(p, "color/surface", "light"), hex(p, "color/surface", "dark")]).toEqual(["#F4F8F5", "#0D1A14"]);
+  });
+
+  it("--no-brand exports the system defaults; --brand names another file and fails when it is not there", () => {
+    expect(runFigma("export", [], opts({ noBrand: true, out: "figma/bare.json" }), dir)).toContain("the token files alone (--no-brand)");
+    expect([hex(payload("figma/bare.json"), "color/primary", "light"), hex(payload("figma/bare.json"), "color/primary", "dark")]).toEqual(["#2563EB", "#3B82F6"]);
+    expect(() => runFigma("export", [], opts({ brandCss: "nope.css" }), dir)).toThrow(/No brand file at nope.css/);
+  });
+
+  it("import --write leaves the tokens the brand sets to brand.css and writes the rest", () => {
+    runFigma("export", [], opts(), dir);
+    const p = payload();
+    const local: LocalVariables = { meta: { variableCollections: {}, variables: {} } };
+    for (const c of p.variableCollections) local.meta.variableCollections[c.id] = { id: c.id, name: c.name, modes: p.variableModes.map((m) => ({ modeId: m.id, name: m.name })), defaultModeId: c.initialModeId };
+    for (const v of p.variables) {
+      const valuesByMode: Record<string, FigmaValue> = {};
+      for (const mv of p.variableModeValues) if (mv.variableId === v.id) valuesByMode[mv.modeId] = mv.value as FigmaValue;
+      local.meta.variables[v.id] = { id: v.id, name: v.name, resolvedType: v.resolvedType, variableCollectionId: v.variableCollectionId, valuesByMode };
+    }
+    const byName = (n: string) => Object.values(local.meta.variables).find((v) => v.name === n)!;
+    byName("color/primary").valuesByMode["zengin-mode-light"] = hexToFigma("#2E7D4F")!;
+    byName("color/danger").valuesByMode["zengin-mode-light"] = hexToFigma("#C0392B")!;
+    writeFileSync(join(dir, "figma", "local.json"), JSON.stringify(local));
+    const before = readFileSync(join(dir, "zengin", "tokens.json"), "utf8");
+
+    const out = runFigma("import", ["figma/local.json"], opts({ write: true }), dir);
+    expect(out).toContain("1 changed");
+    expect(out).toContain("brand    color.primary.DEFAULT (light): #1e6b3c -> #2E7D4F");
+    expect(out).toContain("1 change is to tokens src/theme/brand.css sets. Make it there");
+    const after = JSON.parse(readFileSync(join(dir, "zengin", "tokens.json"), "utf8")) as { color: { primary: { DEFAULT: { $value: string } }; danger: { DEFAULT: { $value: string } } } };
+    expect(after.color.primary.DEFAULT.$value).toBe((JSON.parse(before) as typeof after).color.primary.DEFAULT.$value);
+    expect(after.color.danger.DEFAULT.$value).toBe("#C0392B");
+  });
+
+  it("--themes keeps its meaning and notes that the project's brand is not applied", () => {
+    const themes = join(dir, "themes", "meadow");
+    mkdirSync(themes, { recursive: true });
+    writeFileSync(join(themes, "brand.css"), ':root { --color-primary: #0E7C6B; }\n[data-theme="dark"] { --color-primary: #5FD4BF; }\n');
+    const out = runFigma("export", [], opts({ themes: "themes", out: "figma/themed.json" }), dir);
+    expect(out).toContain('"Theme" (1 modes: meadow');
+    expect(out).toContain("The project's brand (src/theme/brand.css) is not applied with --themes");
   });
 });

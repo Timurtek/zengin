@@ -1,4 +1,5 @@
 import { loadTokens, type Token } from "@zenginui/engine";
+import { parseBrandCss } from "./brand.js";
 
 /**
  * Tokens to Figma variables and back. One rule carries both directions: the variable is named like the
@@ -108,6 +109,11 @@ export interface ToFigmaOptions {
   collection?: string;
   /** Mode names. Default Light and Dark. */
   modes?: { light: string; dark: string };
+  /**
+   * Values that win over the token files, by custom property: a project's brand (resolveBrand). A dark entry wins
+   * in Dark; without one, a light entry does, as the cascade has it.
+   */
+  overrides?: { light?: Record<string, string>; dark?: Record<string, string> };
 }
 
 /**
@@ -134,8 +140,9 @@ export function toFigmaVariables(light: unknown, dark: unknown | undefined, opts
     variableModeValues: [],
   };
 
+  const over = { light: opts.overrides?.light ?? {}, dark: opts.overrides?.dark ?? {} };
   lightTokens.forEach((t, i) => {
-    const lv = toFigmaValue(t);
+    const lv = toFigmaValue({ ...t, value: over.light[t.cssVar] ?? t.value });
     if (!lv) return;
     const id = `zengin-var-${i}`;
     payload.variables.push({
@@ -150,7 +157,9 @@ export function toFigmaVariables(light: unknown, dark: unknown | undefined, opts
     payload.variableModeValues.push({ variableId: id, modeId: lightId, value: lv.value });
     if (dark) {
       const d = darkByVar.get(t.cssVar);
-      const dv = d ? toFigmaValue(d) : undefined;
+      // the brand's dark value, else its light one over a token's dark (an explicit data-theme="dark" still matches :root), else the dark token
+      const raw = over.dark[t.cssVar] ?? over.light[t.cssVar] ?? d?.value;
+      const dv = raw !== undefined ? toFigmaValue({ ...(d ?? t), value: raw }) : undefined;
       payload.variableModeValues.push({ variableId: id, modeId: darkId, value: dv?.value ?? lv.value });
     }
   });
@@ -169,24 +178,8 @@ export interface FigmaTheme {
  * copy inside @media repeats dark and is ignored. Dark falls back to the light override, as the cascade does.
  */
 export function parseThemeCss(css: string): { light: Record<string, string>; dark: Record<string, string> } {
-  let text = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  // drop @media blocks, braces and all
-  for (let at = text.indexOf("@media"); at >= 0; at = text.indexOf("@media")) {
-    let depth = 0, i = text.indexOf("{", at);
-    for (; i < text.length; i++) {
-      if (text[i] === "{") depth++;
-      else if (text[i] === "}" && --depth === 0) break;
-    }
-    text = text.slice(0, at) + text.slice(i + 1);
-  }
-  const light: Record<string, string> = {}, dark: Record<string, string> = {};
-  for (const m of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-    const selectors = m[1]!.split(",").map((s) => s.trim());
-    const target = selectors.some((s) => s === ":root" || s === '[data-theme="light"]') ? light : selectors.length === 1 && selectors[0] === '[data-theme="dark"]' ? dark : undefined;
-    if (!target) continue;
-    for (const d of m[2]!.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) target[d[1]!] = d[2]!.trim();
-  }
-  return { light, dark: { ...light, ...dark } };
+  const { light, dark } = parseBrandCss(css);
+  return { light, dark };
 }
 
 export interface ThemedOptions extends ToFigmaOptions {
@@ -273,6 +266,11 @@ export interface ImportReport {
   missing: string[];
   /** Variables Figma holds that cannot map back (aliases that lead nowhere, unknown types). */
   skipped: string[];
+  /**
+   * Changes to tokens the brand file sets in that mode. Their value lives in brand.css, so they are reported
+   * against the brand's value and never written to the token files, which hold the system's defaults.
+   */
+  brand: ImportChange[];
   light: unknown;
   dark: unknown;
 }
@@ -283,6 +281,8 @@ export interface FromFigmaOptions {
   modes?: { light: string; dark: string };
   /** The mode to read in the collections an alias leads into (the Theme collection). Default: each one's default mode. */
   theme?: string;
+  /** The project's brand (resolveBrand): what the file was exported with, and what --write must not touch. */
+  brand?: { light: Record<string, string>; dark: Record<string, string> };
 }
 
 /**
@@ -304,7 +304,7 @@ export function fromFigmaVariables(local: LocalVariables, light: unknown, dark: 
   const darkOut = clone(dark ?? {});
   const lightTokens = loadTokens(light);
   const byName = new Map(lightTokens.map((t) => [variableName(t), t]));
-  const report: ImportReport = { collection: col.name, changed: [], added: [], missing: [], skipped: [], light: lightOut, dark: darkOut };
+  const report: ImportReport = { collection: col.name, changed: [], added: [], missing: [], skipped: [], brand: [], light: lightOut, dark: darkOut };
   const seen = new Set<string>();
 
   // An alias is followed to the value it lands on: in this collection, the same mode; in another (the Theme
@@ -343,13 +343,18 @@ export function fromFigmaVariables(local: LocalVariables, light: unknown, dark: 
         report.skipped.push(`${v.name} (${mode}): ${v.resolvedType}`);
         return;
       }
+      const branded = token ? opts.brand?.[mode][token.cssVar] : undefined;
       // Figma holds a font's first family; the stack's fallbacks live in code and are kept.
       if (token && token.namespace === "font") {
-        const stack = (mode === "light" ? token.value : darkValue(dark, token)) ?? token.value;
+        const stack = branded ?? (mode === "light" ? token.value : darkValue(dark, token)) ?? token.value;
         after = firstFamily(stack) === after ? stack : withFirstFamily(stack, after);
       }
       const path = token ? token.path : `${v.name.replace(/\//g, ".")}`;
-      const before = token ? (mode === "light" ? token.value : darkValue(dark, token)) : undefined;
+      if (branded !== undefined) {
+        if (normalize(branded) !== normalize(after)) report.brand.push({ path, mode, before: branded, after });
+        return;
+      }
+      const before =token ? (mode === "light" ? token.value : darkValue(dark, token)) : undefined;
       if (mode === "dark" && before === undefined && token && after === token.value) return; // no dark override, same as light: nothing to write
       if (before !== undefined && normalize(before) === normalize(after)) return;
       setValue(tree, path.split("."), after);
@@ -434,10 +439,11 @@ export function figmaToHex(c: FigmaColor): string {
 
 /** A readable summary of an import, for the terminal. */
 export function renderImportReport(r: ImportReport): string {
-  const lines = [`Collection "${r.collection}": ${r.changed.length} changed, ${r.added.length} new, ${r.missing.length} missing in Figma, ${r.skipped.length} skipped.`];
+  const lines = [`Collection "${r.collection}": ${r.changed.length} changed, ${r.added.length} new, ${r.missing.length} missing in Figma, ${r.skipped.length} skipped${r.brand.length ? `, ${r.brand.length} set by the brand file` : ""}.`];
   for (const c of r.changed) lines.push(`  changed  ${c.path} (${c.mode}): ${c.before} -> ${c.after}`);
   for (const c of r.added) lines.push(`  new      ${c.path} (${c.mode}): ${c.after}`);
   for (const m of r.missing) lines.push(`  missing  ${m}`);
   for (const s of r.skipped) lines.push(`  skipped  ${s}`);
+  for (const c of r.brand) lines.push(`  brand    ${c.path} (${c.mode}): ${c.before} -> ${c.after}`);
   return lines.join("\n");
 }

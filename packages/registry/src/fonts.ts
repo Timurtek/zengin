@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fontsHref, patchIndexHtml } from "./html.js";
 import type { RegistrySource } from "./load.js";
-import type { FontPairing, RegistryItem } from "./schema.js";
+import { LAYOUT, type FontPairing, type RegistryItem } from "./schema.js";
 
 /**
  * A pairing is three roles, display, text and code, each a Google Fonts family at the weights the
@@ -93,11 +93,11 @@ export async function applyFonts(opts: { projectDir: string; name: string; sourc
   if (!pairing) throw new Error(`The registry item "${opts.name}" carries no pairing.`);
 
   const files: string[] = [];
-  const brand = join(dir, "src", "theme", "brand.css");
+  const brand = join(dir, LAYOUT.brandCss);
   const before = existsSync(brand) ? readFileSync(brand, "utf8") : `/* Fonts, set by zengin fonts. */\n\n:root {\n}\n`;
   mkdirSync(dirname(brand), { recursive: true });
   writeFileSync(brand, applyPairingToCss(before, pairing));
-  files.push("src/theme/brand.css");
+  files.push(LAYOUT.brandCss);
 
   const families = pairingFamilies(pairing);
   let downloaded: string[] = [];

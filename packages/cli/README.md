@@ -132,10 +132,11 @@ Writes `src/mock/rng.ts` (a seeded generator and the pools, no dependency) and o
 ## figma
 
 ```bash
-zengin figma export                          # zengin/tokens*.json -> figma/variables.json (the Variables payload)
+zengin figma export                          # zengin/tokens*.json with src/theme/brand.css over them -> figma/variables.json
+zengin figma export --no-brand               # the system defaults alone; --brand <file> reads another brand file
 zengin figma plugin                          # a plugin into figma/plugin/ that imports that payload into any file
 zengin figma import figma/local.json         # what the plugin exported -> a report of what changed in Figma
-zengin figma import figma/local.json --write # and update the token files; then zengin tokens
+zengin figma import figma/local.json --write # and update the token files (never a token brand.css sets); then zengin tokens
 zengin figma connect --map figma/map.json    # Code Connect files from zengin/components.json
 ```
 

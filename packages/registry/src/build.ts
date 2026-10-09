@@ -212,7 +212,7 @@ export function buildRegistry(opts: { root: string; version?: string }): Registr
       dependencies: {},
       devDependencies: {},
       registryDependencies: [],
-      files: [{ path: "src/theme/brand.css", kind: "theme", content }],
+      files: [{ path: LAYOUT.brandCss, kind: "theme", content }],
       fonts: t.fonts ?? [],
     });
   }

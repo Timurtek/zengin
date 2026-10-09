@@ -80,6 +80,8 @@ export const LAYOUT = {
   stylesIndex: "src/styles/index.css",
   storiesDir: "stories",
   definitionsDir: "zengin",
+  /** The project's brand: token overrides, the one foundation zengin brand, zengin theme and zengin fonts write. */
+  brandCss: "src/theme/brand.css",
 } as const;
 
 export function isRegistryIndex(x: unknown): x is RegistryIndex {

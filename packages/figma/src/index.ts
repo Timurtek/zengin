@@ -23,5 +23,6 @@ export {
   type ToFigmaOptions,
   type FromFigmaOptions,
 } from "./variables.js";
+export { parseBrandCss, resolveBrand, renderBrandReport, type BrandOverlay, type ParsedBrandCss } from "./brand.js";
 export { codeConnectFiles, PLACEHOLDER_URL, kebab, title, type CodeConnectOptions } from "./code-connect.js";
 export { PLUGIN_FILES, writePlugin } from "./plugin.js";

@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
-import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaThemedVariables, toFigmaVariables, writePlugin, type FigmaTheme } from "@zenginui/figma";
+import { codeConnectFiles, fromFigmaVariables, renderBrandReport, renderImportReport, resolveBrand, toFigmaThemedVariables, toFigmaVariables, writePlugin, type BrandOverlay, type FigmaTheme } from "@zenginui/figma";
 import { loadConfigFile, type ComponentManifest } from "@zenginui/engine";
 import { generateMock, PRESETS, schemaFromPresets, type MockSchema } from "@zenginui/mock";
 import { applyFonts, applyIcons, applyTheme, applyUpgrade, planUpgrade, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, resolveSome, unknownItemsMessage, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zenginui/registry";
@@ -37,6 +37,10 @@ export interface ScaffoldOptions {
   collection?: string;
   /** figma export: a directory of themes, one <name>/brand.css each, for a Theme collection with a mode per theme. */
   themes?: string;
+  /** figma export/import: the project's brand file, when it is not at LAYOUT.brandCss. */
+  brandCss?: string;
+  /** figma export/import: leave the brand out, the token files alone. */
+  noBrand?: boolean;
   schema?: string;
   count?: number;
   seed?: number;
@@ -333,6 +337,18 @@ export function runFigma(sub: string | undefined, args: string[], opts: Scaffold
   };
   const tokensPath = join(defs, "tokens.json");
   const darkPath = join(defs, "tokens.dark.json");
+  // The project's brand overrides the token files in the browser, so it does in Figma: export layers it over the
+  // tokens, import compares against it and leaves the tokens it sets to brand.css.
+  const brandFile = opts.brandCss ?? LAYOUT.brandCss;
+  const brandPath = opts.brandCss ? resolve(cwd, opts.brandCss) : join(projectDir, LAYOUT.brandCss);
+  const loadBrand = (light: unknown, dark: unknown): BrandOverlay | undefined => {
+    if (opts.noBrand) return undefined;
+    if (!existsSync(brandPath)) {
+      if (opts.brandCss) throw new Error(`No brand file at ${opts.brandCss}.`);
+      return undefined;
+    }
+    return resolveBrand(readFileSync(brandPath, "utf8"), light, dark);
+  };
 
   switch (sub) {
     case "export": {
@@ -354,11 +370,18 @@ export function runFigma(sub: string | undefined, args: string[], opts: Scaffold
         writeText(out, JSON.stringify(payload, null, 2) + "\n");
         const themed = payload.variables.filter((v) => v.variableCollectionId === "theme-collection").length / 2;
         const zengin = payload.variables.length - themed * 2;
-        return `Wrote ${out}: "${payload.variableCollections[1]!.name}" (Light and Dark, ${zengin} variables) aliased into "Theme" (${names.length} modes: ${names.join(", ")}; ${themed} themed tokens).\nA plan limits modes per collection (Professional: 10).\n${after}`;
+        // each theme is a whole brand; the project's own would be one more theme, not a layer under all of them
+        const own = !opts.noBrand && existsSync(brandPath) ? `\nThe project's brand (${brandFile}) is not applied with --themes: each theme is its own brand.` : "";
+        return `Wrote ${out}: "${payload.variableCollections[1]!.name}" (Light and Dark, ${zengin} variables) aliased into "Theme" (${names.length} modes: ${names.join(", ")}; ${themed} themed tokens).\nA plan limits modes per collection (Professional: 10).${own}\n${after}`;
       }
-      const payload = toFigmaVariables(light, dark, { collection: opts.collection });
+      const brand = loadBrand(light, dark);
+      const payload = toFigmaVariables(light, dark, { collection: opts.collection, overrides: brand });
       writeText(out, JSON.stringify(payload, null, 2) + "\n");
-      return `Wrote ${out}: ${payload.variables.length} variables in "${payload.variableCollections[0]!.name}" with ${payload.variableModes.map((m) => m.name).join(" and ")} modes.\n${after}`;
+      const source = brand ? `the token files with ${brandFile} over them` : opts.noBrand ? "the token files alone (--no-brand)" : `the token files (no ${brandFile})`;
+      const lines = [`Wrote ${out}: ${payload.variables.length} variables in "${payload.variableCollections[0]!.name}" with ${payload.variableModes.map((m) => m.name).join(" and ")} modes, from ${source}.`];
+      if (brand) lines.push(renderBrandReport(brand, brandFile));
+      lines.push(after);
+      return lines.join("\n");
     }
     case "import": {
       const file = args[0];
@@ -368,8 +391,13 @@ export function runFigma(sub: string | undefined, args: string[], opts: Scaffold
       if (!local || typeof local !== "object" || !("meta" in local)) throw new Error(`${file} is not a Figma variables export (expected { meta: { variableCollections, variables } }).`);
       const light = readJson(tokensPath);
       const dark = existsSync(darkPath) ? readJson(darkPath) : undefined;
-      const report = fromFigmaVariables(local, light, dark, { collection: opts.collection, theme: opts.theme });
+      const brand = loadBrand(light, dark);
+      const report = fromFigmaVariables(local, light, dark, { collection: opts.collection, theme: opts.theme, brand });
       const lines = [renderImportReport(report)];
+      if (report.brand.length) {
+        const n = report.brand.length;
+        lines.push("", `${n} change${n === 1 ? " is" : "s are"} to tokens ${brandFile} sets. Make ${n === 1 ? "it" : "them"} there: the token files hold the system's defaults, and --write leaves ${n === 1 ? "it" : "them"} alone.`);
+      }
       if (opts.write) {
         writeText(`${LAYOUT.definitionsDir}/tokens.json`, JSON.stringify(report.light, null, 2) + "\n");
         if (dark !== undefined || report.changed.some((c) => c.mode === "dark") || report.added.some((c) => c.mode === "dark")) {
@@ -409,7 +437,7 @@ export function runFigma(sub: string | undefined, args: string[], opts: Scaffold
       return `Wrote ${written.length} files to ${relative(cwd, dir) || "."}.\nIn Figma: Plugins, Development, Import plugin from manifest, choose manifest.json. Import pastes the payload from zengin figma export; Export produces what zengin figma import reads.`;
     }
     default:
-      throw new Error("zengin figma supports: export [--out file] [--collection name] [--themes dir], import <local.json> [--write] [--theme name], connect [--map urls.json] [--out dir], plugin [--out dir]");
+      throw new Error("zengin figma supports: export [--out file] [--collection name] [--brand file | --no-brand] [--themes dir], import <local.json> [--write] [--theme name] [--brand file | --no-brand], connect [--map urls.json] [--out dir], plugin [--out dir]");
   }
 }
 

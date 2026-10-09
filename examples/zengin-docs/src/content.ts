@@ -651,10 +651,13 @@ Set Theme and Zengin on a frame and everything inside re-themes: meadow in dark,
 ## Your tokens, your file
 
 \`\`\`bash
-npx zengin figma export                       # figma/variables.json: the Zengin collection
+npx zengin figma export                       # figma/variables.json: the Zengin collection, in your brand
+npx zengin figma export --no-brand            # the system's defaults, without src/theme/brand.css
 npx zengin figma export --themes themes       # plus a Theme mode per themes/<name>/brand.css
 npx zengin figma plugin                       # a plugin that imports that payload into any file
 \`\`\`
+
+Your brand comes with it. \`src/theme/brand.css\` overrides the token files in the browser, so \`export\` lays it over them the same way: the light block (\`:root, [data-theme="light"]\`) for Light, the \`[data-theme="dark"]\` block for Dark, and anything set only in the light block, fonts, radii, text sizes, in both, as the cascade has it. The \`prefers-color-scheme\` copy of the dark block is skipped. The output lists every token the brand overrode, its custom properties that name no token, and anything Figma cannot hold, \`color-mix()\` or \`calc()\`, where the token's default stands. \`--brand <file>\` reads another file; \`--themes\` leaves your brand out, because each theme is a brand of its own.
 
 The REST endpoint for writing variables is Enterprise-only, which is why there is a plugin: in Figma, Plugins, Development, Import plugin from manifest. Import pastes the payload; Export produces what the next command reads.
 
@@ -665,6 +668,8 @@ npx zengin figma import figma/local.json              # a report of what a desig
 npx zengin figma import figma/local.json --write      # and the token files updated
 npx zengin figma import figma/local.json --theme meadow
 \`\`\`
+
+The token files hold the system's defaults and \`brand.css\` holds your brand, so a change comes back to the file that owns it. A token your brand sets is compared with the brand's value, and a designer's change to it is reported as \`brand\`, to make in \`brand.css\`; \`--write\` never copies it into \`tokens.json\`. Everything else is written there.
 
 Values come back in the token's own unit, a rem stays a rem. Aliases are followed into the Theme collection, its default mode unless \`--theme\` names another. A font holds its first family in Figma, the one a font picker can load; a changed family goes back in front of the stack's fallbacks.
 

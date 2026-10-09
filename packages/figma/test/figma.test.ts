@@ -9,9 +9,12 @@ import {
   firstFamily,
   fromFigmaVariables,
   hexToFigma,
+  parseBrandCss,
   parseThemeCss,
   PLUGIN_FILES,
+  renderBrandReport,
   renderImportReport,
+  resolveBrand,
   toFigmaThemedVariables,
   toFigmaValue,
   toFigmaVariables,
@@ -218,6 +221,115 @@ describe("fromFigmaVariables", () => {
     expect(meadow.changed).toEqual(expect.arrayContaining([{ path: "color.primary.DEFAULT", mode: "light", before: "#2563eb", after: "#0E7C6B" }]));
     const font = meadow.changed.find((c) => c.path === "font.sans" && c.mode === "light")!;
     expect(font.after.startsWith("'IBM Plex Sans', ")).toBe(true); // the family changes, the fallbacks stay
+  });
+});
+
+describe("a project's brand", () => {
+  const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "fixtures", "brand.css"), "utf8");
+  const brand = resolveBrand(css, light, dark);
+
+  /** The token trees with the brand written into them by hand: what the export has to equal. */
+  function overlaid(): { light: unknown; dark: unknown } {
+    const l = JSON.parse(JSON.stringify(light)) as Record<string, unknown>;
+    const d = JSON.parse(JSON.stringify(dark)) as Record<string, unknown>;
+    const put = (tree: Record<string, unknown>, path: string, type: string, value: string): void => {
+      const keys = path.split(".");
+      let node = tree;
+      for (const k of keys.slice(0, -1)) node = (node[k] ??= {}) as Record<string, unknown>;
+      node[keys.at(-1)!] = { $type: type, $value: value };
+    };
+    for (const t of loadTokens(light)) {
+      const lv = brand.light[t.cssVar], dv = brand.dark[t.cssVar];
+      if (lv !== undefined) put(l, t.path, t.type, lv);
+      if (dv !== undefined) put(d, t.path, t.type, dv);
+    }
+    return { light: l, dark: d };
+  }
+
+  it("reads the light block, the dark block over it, and skips the prefers-color-scheme copy and comments", () => {
+    const p = parseBrandCss(css);
+    expect(p.light["--color-primary"]).toBe("#1e6b3c");
+    expect(p.dark["--color-primary"]).toBe("#c8f542");
+    expect(p.dark["--radius-md"]).toBe("4px"); // set in light only: the cascade carries it into dark
+    expect(p.mediaOnly).toEqual([]); // the @media copy repeats the dark block
+    expect(p.ignored).toEqual([]); // .brand-mark sets no custom property
+  });
+
+  it("exports the token files with the brand over them: the same payload as tokens with the brand written in", () => {
+    const o = overlaid();
+    expect(toFigmaVariables(light, dark, { overrides: brand })).toEqual(toFigmaVariables(o.light, o.dark));
+  });
+
+  it("puts the brand's values in Light and Dark, and its type and shape in both", () => {
+    const p = toFigmaVariables(light, dark, { overrides: brand });
+    const value = (name: string, mode: string) => p.variableModeValues.find((m) => m.variableId === p.variables.find((v) => v.name === name)!.id && m.modeId === mode)!.value;
+    expect(figmaToHex(value("color/primary", "zengin-mode-light") as never)).toBe("#1E6B3C");
+    expect(figmaToHex(value("color/primary", "zengin-mode-dark") as never)).toBe("#C8F542");
+    expect(figmaToHex(value("color/surface", "zengin-mode-light") as never)).toBe("#F4F8F5");
+    expect(figmaToHex(value("color/surface", "zengin-mode-dark") as never)).toBe("#0D1A14");
+    expect(figmaToHex(value("color/primary/soft-foreground", "zengin-mode-dark") as never)).toBe("#C8F542"); // var() resolves per mode
+    for (const mode of ["zengin-mode-light", "zengin-mode-dark"]) {
+      expect(value("font/sans", mode)).toBe("Hanken Grotesk");
+      expect(value("radius/md", mode)).toBe(4);
+      expect(value("text/sm", mode)).toBe(13);
+    }
+    // a token the brand leaves alone keeps the system's value in each mode
+    expect(figmaToHex(value("color/danger", "zengin-mode-dark") as never)).toBe(figmaToHex(toFigmaValue(loadTokens(dark).find((t) => t.cssVar === "--color-danger")!)!.value as never));
+  });
+
+  it("reports what it overrode and what names no token", () => {
+    expect(brand.unmatched).toEqual(["--color-text-faint"]);
+    expect(brand.unsupported).toEqual([]);
+    expect(brand.overridden.find((e) => e.cssVar === "--color-primary")).toEqual({ path: "color.primary.DEFAULT", cssVar: "--color-primary", light: "#1e6b3c", dark: "#c8f542" });
+    const text = renderBrandReport(brand, "src/theme/brand.css");
+    expect(text).toContain("Brand: src/theme/brand.css overrides 15 tokens; 1 of its custom properties name no token.");
+    expect(text).toContain("brand      radius.md: 4px (light and dark)");
+    expect(text).toContain("unmatched  --color-text-faint: no token by that name, not exported");
+  });
+
+  it("names what it cannot read instead of exporting it: values Figma cannot hold, other selectors, @media only", () => {
+    const odd = resolveBrand(
+      `:root { --color-primary: color-mix(in srgb, red 50%, blue); --radius-md: calc(2px + 2px); --color-surface: rgb(244 248 245); }
+       .dark { --color-primary: #c8f542; }
+       [data-theme='dark'] { --color-text: var(--nope, #e9f5ee); }
+       @media (prefers-color-scheme: dark) { :root { --color-focus: #c8f542; } }`,
+      light,
+      dark,
+    );
+    expect(odd.unsupported).toEqual([
+      { cssVar: "--color-primary", mode: "light", value: "color-mix(in srgb, red 50%, blue)" },
+      { cssVar: "--color-primary", mode: "dark", value: "color-mix(in srgb, red 50%, blue)" },
+      { cssVar: "--radius-md", mode: "light", value: "calc(2px + 2px)" },
+      { cssVar: "--radius-md", mode: "dark", value: "calc(2px + 2px)" },
+    ]);
+    expect(odd.light["--color-surface"]).toBe("#f4f8f5"); // rgb() normalized the way the token loader writes colors
+    expect(odd.dark["--color-text"]).toBe("#e9f5ee"); // var() falls back when it names nothing; single quotes are the same selector
+    expect(odd.ignored).toEqual([{ selector: ".dark", properties: ["--color-primary"] }]);
+    expect(odd.mediaOnly).toEqual(["--color-focus"]);
+    expect(odd.light["--color-primary"]).toBeUndefined(); // the default stands
+  });
+
+  it("imports against the brand: nothing changed after a round trip, and a change to a brand token is never written", () => {
+    const exported = fromPayload(toFigmaVariables(light, dark, { overrides: brand }));
+    const clean = fromFigmaVariables(exported, light, dark, { brand });
+    expect([clean.changed, clean.added, clean.brand, clean.skipped]).toEqual([[], [], [], []]);
+    // without the brand the same file reads as a wholesale change to the defaults: the bug this guards
+    expect(fromFigmaVariables(exported, light, dark).changed.length).toBeGreaterThan(20);
+
+    const edited = fromPayload(toFigmaVariables(light, dark, { overrides: brand }));
+    const set = (name: string, mode: string, hex: string) => {
+      Object.values(edited.meta.variables).find((v) => v.name === name)!.valuesByMode[mode] = hexToFigma(hex)!;
+    };
+    set("color/primary", "zengin-mode-light", "#2E7D4F"); // the brand sets it
+    set("color/danger", "zengin-mode-light", "#C0392B"); // the brand does not
+    const r = fromFigmaVariables(edited, light, dark, { brand });
+    expect(r.brand).toEqual([{ path: "color.primary.DEFAULT", mode: "light", before: "#1e6b3c", after: "#2E7D4F" }]);
+    expect(r.changed.map((c) => [c.path, c.mode, c.after])).toEqual([["color.danger.DEFAULT", "light", "#C0392B"]]);
+    const out = loadTokens(r.light);
+    expect(out.find((t) => t.cssVar === "--color-primary")!.value).toBe("#2563eb"); // the default, untouched
+    expect(out.find((t) => t.cssVar === "--color-danger")!.value).toBe("#c0392b");
+    expect(loadTokens(r.dark).map((t) => [t.cssVar, t.value])).toEqual(loadTokens(dark).map((t) => [t.cssVar, t.value]));
+    expect(renderImportReport(r)).toContain("brand    color.primary.DEFAULT (light): #1e6b3c -> #2E7D4F");
   });
 });
 

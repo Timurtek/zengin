@@ -272,7 +272,7 @@ export async function brandProject(opts: BrandOptions): Promise<BrandResult> {
 
   const palette = derivePalette(primary);
   const radius = opts.radius ?? "soft";
-  write("src/theme/brand.css", renderBrandCss({ name: opts.name, palette, fontDisplay: opts.fontDisplay, fontSans: opts.fontSans, fontMono: opts.fontMono, radius, logo: Boolean(logoPublic) }));
+  write(LAYOUT.brandCss, renderBrandCss({ name: opts.name, palette, fontDisplay: opts.fontDisplay, fontSans: opts.fontSans, fontMono: opts.fontMono, radius, logo: Boolean(logoPublic) }));
   write(
     `${LAYOUT.definitionsDir}/brand.json`,
     JSON.stringify({ name: opts.name, primary, primarySource, logo: logoPublic ? `public/${logoPublic}` : null, fontDisplay: opts.fontDisplay ?? null, fontSans: opts.fontSans ?? null, fontMono: opts.fontMono ?? null, radius }, null, 2) + "\n",

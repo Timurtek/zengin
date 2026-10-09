@@ -102,7 +102,7 @@ export async function createProject(opts: CreateOptions): Promise<CreateResult> 
     write("next.config.ts", NEXT_CONFIG);
     write("src/app/page.tsx", NEXT_PAGE);
   }
-  write("src/theme/brand.css", BRAND_CSS);
+  write(LAYOUT.brandCss, BRAND_CSS);
   write(LAYOUT.stylesIndex, STYLES_INDEX_HEAD);
   write("tsconfig.json", framework === "vite" ? TSCONFIG(storybook) : TSCONFIG_NEXT(storybook));
   write(".gitignore", framework === "vite" ? GITIGNORE : GITIGNORE + ".next/\nnext-env.d.ts\n");
