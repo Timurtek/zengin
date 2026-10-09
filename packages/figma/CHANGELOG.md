@@ -1,5 +1,23 @@
 # @zenginui/figma
 
+## 0.2.0
+
+### Minor Changes
+
+- [`d5b87c8`](https://github.com/Timurtek/zengin/commit/d5b87c8cf863b6c25687e093d3786a367b44587c) Thanks [@Timurtek](https://github.com/Timurtek)! - `zengin figma connect` writes Code Connect template files (`<name>.figma.ts`), the format Code Connect CLI v2 reads; it no longer accepts the v1 `figma.connect()` React files this command used to write. The config sets the snippet language (React, tsx). With `--map`, only the mapped components are written, since a placeholder URL failed `figma connect publish` for the whole run, and a name the manifest does not have is an error. The import line follows the project's `system.package`. Form plumbing props (`defaultValue`, `defaultOpen`, `name`, `id`) are no longer mapped.
+
+- [`6830972`](https://github.com/Timurtek/zengin/commit/68309720d188f2a3822500b4b89db558fb17d090) Thanks [@Timurtek](https://github.com/Timurtek)! - Figma variables now carry themes and import cleanly back.
+  
+  - `zengin figma export --themes <dir>` adds a Theme collection with a mode per `<dir>/<name>/brand.css`, and aliases the Zengin collection's themed tokens into it, so a file switches theme with one mode picker within a plan's mode limit.
+  - `zengin figma import` follows aliases into the Theme collection (its default mode, or `--theme <name>`) instead of skipping them.
+  - Scopes Figma accepts: colors no longer pair `ALL_FILLS` with `TEXT_FILL` (Figma refused the payload), and spacing, weights and the border width get their own scopes instead of falling back to all of them. Line heights, letter spacing, shadows and motion are kept out of the pickers.
+  - A font variable holds its stack's first family, the one Figma can load; import puts a changed family back in front of the code's fallbacks.
+  - The plugin imports aliases.
+
+### Patch Changes
+
+- [`5acbae6`](https://github.com/Timurtek/zengin/commit/5acbae6abb45eed80b79b959e2aeefd56846a06d) Thanks [@Timurtek](https://github.com/Timurtek)! - `zengin figma connect` writes valid templates for every component: a prop like `aria-label` becomes the identifier `ariaLabel` (it was written as `const aria-label`, which does not parse), a component whose own prop reads the "Label" property no longer reads it a second time as children, and `dir`, `src` and `*Src` props (writing direction, image URLs) are left out with the other form plumbing.
+
 ## 0.1.4
 
 ### Patch Changes
