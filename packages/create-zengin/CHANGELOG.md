@@ -1,5 +1,12 @@
 # create-zengin
 
+## 0.1.10
+
+### Patch Changes
+
+- Updated dependencies [[`d5b87c8`](https://github.com/Timurtek/zengin/commit/d5b87c8cf863b6c25687e093d3786a367b44587c), [`6830972`](https://github.com/Timurtek/zengin/commit/68309720d188f2a3822500b4b89db558fb17d090)]:
+  - @zenginui/cli@0.8.0
+
 ## 0.1.9
 
 ### Patch Changes
