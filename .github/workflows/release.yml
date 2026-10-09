@@ -29,16 +29,19 @@ jobs:
 
       # With pending changesets: opens or updates the "Version Packages" PR.
       # With none pending (that PR was just merged): publishes whatever is unpublished.
+      # v2 for Changesets CLI v3. v1 found what was published by reading the "New tag:" lines the v3 CLI no
+      # longer prints, so it saw nothing published and pushed no tags and created no GitHub releases (npm still
+      # got the packages: the CLI publishes those). v2 reads the CLI's output file instead. npm auth is the
+      # .npmrc setup-node writes for registry-url, read with NODE_AUTH_TOKEN; v2 no longer writes one from NPM_TOKEN.
       - name: version or publish
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          version: pnpm version-packages
-          publish: pnpm release
-          commit: "Version packages"
-          title: "Version packages"
+          version-script: pnpm version-packages
+          publish-script: pnpm release
+          commit-message: "Version packages"
+          pr-title: "Version packages"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # Provenance needs a public source repository, which this is since 2026-09-13: npm records
           # the workflow and commit each package was built from, and shows it on the package page.
