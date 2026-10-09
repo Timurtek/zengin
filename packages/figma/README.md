@@ -28,7 +28,9 @@ The split is the plan limit: a collection holds a limited number of modes (Profe
 
 ## Code Connect
 
-`connect` writes `figma.config.json` and one `src/figma/<name>.figma.tsx` per component, mapping the Figma component's properties to the React props by the same names: enum props become `figma.enum` with the manifest's values title-cased, booleans `figma.boolean`, labels `figma.string`. Pass `--map figma/map.json` with `{ "Button": "https://www.figma.com/design/...?node-id=..." }` to fill the URLs; components without one get a placeholder and a TODO. Then `npx figma connect publish` from the Code Connect CLI.
+`connect` writes `figma.config.json` and one `src/figma/<name>.figma.ts` per component: Code Connect template files, the format the current CLI (v2) reads, in the shape `figma connect migrate` produces. Each maps the Figma component's properties to the React props by the same names: enum props read with `getEnum` and the manifest's values title-cased, booleans with `getBoolean`, labels with `getString`. Form plumbing (`defaultValue`, `defaultOpen`, `name`, `id`) is left out; a design file has no property for it. The import line is the project's `system.package` from `zengin.config.yaml`, else `@/components/ui`.
+
+Pass `--map figma/map.json` with `{ "Button": "https://www.figma.com/design/...?node-id=..." }` and only those components are written; without a map every component gets a placeholder URL and a TODO. Check the files with `npx @figma/code-connect connect parse`, then publish with `npx @figma/code-connect connect publish` and a Figma access token. Zengin UI's own mapping lives in `packages/ui/figma/`.
 
 ## Programmatic use
 

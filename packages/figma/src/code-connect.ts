@@ -1,7 +1,7 @@
 import type { ComponentManifest } from "@zenginui/engine";
 
 /**
- * Code Connect files from the component manifest: one `<name>.figma.tsx` per component mapping the
+ * Code Connect files from the component manifest: one `<name>.figma.ts` template per component mapping the
  * Figma component's properties (Variant, Size, Loading) to the React props by the same names, plus the
  * `figma.config.json` that tells the Code Connect CLI where they are. The manifest is the source of truth
  * for both the engine and the design file, which is the point.
@@ -25,47 +25,60 @@ const FORM_PLUMBING = /^(default[A-Z]\w*|name|id)$/;
 
 export const PLACEHOLDER_URL ="https://www.figma.com/design/FILE_KEY/Zengin-UI?node-id=NODE_ID";
 
+/**
+ * Code Connect template files (CLI v2): one `<name>.figma.ts` per component, in the shape `figma connect
+ * migrate` produces, plus a `figma.config.json` that sets the snippet language. The v1 `figma.connect()`
+ * React-parser files are no longer read by the current CLI.
+ */
 export function codeConnectFiles(manifests: ComponentManifest[], opts: CodeConnectOptions = {}): Record<string, string> {
   const alias = opts.alias ?? "@/components/ui";
   const dir = opts.dir ?? "src/figma";
   const out: Record<string, string> = {};
-  out["figma.config.json"] = JSON.stringify({ codeConnect: { include: [`${dir}/**/*.figma.tsx`], parser: "react" } }, null, 2) + "\n";
+  out["figma.config.json"] = JSON.stringify({ codeConnect: { include: [`${dir}/**/*.figma.ts`], label: "React", language: "tsx" } }, null, 2) + "\n";
   for (const m of manifests) {
     const url = opts.urls?.[m.name];
-    out[`${dir}/${kebab(m.name)}.figma.tsx`] = renderConnect(m, url ?? PLACEHOLDER_URL, alias, url === undefined);
+    out[`${dir}/${kebab(m.name)}.figma.ts`] = renderTemplate(m, url ?? PLACEHOLDER_URL, alias, url === undefined);
   }
   return out;
 }
 
-function renderConnect(m: ComponentManifest, url: string, alias: string, placeholder: boolean): string {
+function renderTemplate(m: ComponentManifest, url: string, alias: string, placeholder: boolean): string {
+  const reads: string[] = [];
   const props: string[] = [];
   for (const [name, p] of Object.entries(m.props ?? {})) {
     if (name === "asChild" || p.type === "function" || FORM_PLUMBING.test(name)) continue;
     if (p.type === "enum" && p.values) {
-      const pairs = p.values.map((v) => `${JSON.stringify(title(v))}: ${JSON.stringify(v)}`).join(", ");
-      props.push(`    ${name}: figma.enum(${JSON.stringify(title(name))}, { ${pairs} }),`);
+      const pairs = p.values.map((v) => `  ${JSON.stringify(title(v))}: ${JSON.stringify(v)},`).join("\n");
+      reads.push(`const ${name} = figma.selectedInstance.getEnum(${JSON.stringify(title(name))}, {\n${pairs}\n})`);
     } else if (p.type === "boolean") {
-      props.push(`    ${name}: figma.boolean(${JSON.stringify(title(name))}),`);
+      reads.push(`const ${name} = figma.selectedInstance.getBoolean(${JSON.stringify(title(name))})`);
     } else if (p.type === "string" || (p.type === "node" && /^(label|title|description|placeholder|content|name)$/.test(name))) {
-      props.push(`    ${name}: figma.string(${JSON.stringify(title(name))}),`);
-    }
+      reads.push(`const ${name} = figma.selectedInstance.getString(${JSON.stringify(title(name))})`);
+    } else continue;
+    props.push(name);
   }
   const hasChildren = m.extends === "button" || m.extends === "span" || m.name === "Button" || m.name === "Badge";
-  if (hasChildren) props.push(`    children: figma.string("Label"),`);
+  if (hasChildren) {
+    reads.push(`const children = figma.selectedInstance.getString("Label")`);
+    props.push("children");
+  }
+  const rendered = props.map((p) => `\${figma.helpers.react.renderProp(${JSON.stringify(p)}, ${p})}`).join("");
   const todo = placeholder ? `// TODO: replace the URL with the ${m.name} component's link in Figma (right-click the component, Copy link).\n` : "";
-  return `import figma from "@figma/code-connect";
-import { ${m.name} } from "${alias}";
+  return `// url=${url}
+// component=${m.name}
+${todo}// Generated from zengin/components.json by \`zengin figma connect\`. The Figma component's properties are
+// named like the props; the values are the manifest's, title-cased.
 
-/**
- * ${m.name}: generated from zengin/components.json by \`zengin figma connect\`. The Figma component's
- * properties are named like the props; the values are the manifest's, title-cased.
- */
-${todo}figma.connect(${m.name}, ${JSON.stringify(url)}, {
-  props: {
-${props.join("\n")}
-  },
-  example: (props) => <${m.name} {...props} />,
-});
+import figma from "figma"
+
+${reads.join("\n")}
+
+export default {
+  id: ${JSON.stringify(m.name)},
+  imports: [${JSON.stringify(`import { ${m.name} } from "${alias}";`)}],
+  example: figma.code\`<${m.name}${rendered}/>\`,
+  metadata: { nestable: true },
+}
 `;
 }
 

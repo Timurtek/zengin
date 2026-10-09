@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaThemedVariables, toFigmaVariables, writePlugin, type FigmaTheme } from "@zenginui/figma";
-import type { ComponentManifest } from "@zenginui/engine";
+import { loadConfigFile, type ComponentManifest } from "@zenginui/engine";
 import { generateMock, PRESETS, schemaFromPresets, type MockSchema } from "@zenginui/mock";
 import { applyFonts, applyIcons, applyTheme, applyUpgrade, planUpgrade, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, resolveSome, unknownItemsMessage, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zenginui/registry";
 
@@ -384,13 +384,22 @@ export function runFigma(sub: string | undefined, args: string[], opts: Scaffold
     case "connect": {
       const manifestPath = join(defs, "components.json");
       if (!existsSync(manifestPath)) throw new Error(`No ${LAYOUT.definitionsDir}/components.json in ${projectDir}.`);
-      const manifests = readJson(manifestPath) as ComponentManifest[];
+      const all = readJson(manifestPath) as ComponentManifest[];
       const urls = opts.map ? (readJson(resolve(cwd, opts.map)) as Record<string, string>) : {};
-      const files = codeConnectFiles(manifests, { urls, dir: opts.out ?? "src/figma" });
+      const unknown = Object.keys(urls).filter((name) => !all.some((m) => m.name === name));
+      if (unknown.length) throw new Error(`The map names components the manifest does not have: ${unknown.join(", ")}.`);
+      // With a map, only the mapped components: a placeholder URL fails figma connect publish for the whole run.
+      const manifests = opts.map ? all.filter((m) => urls[m.name]) : all;
+      // The import line is what the project's own code writes: the system package from zengin.config.yaml.
+      const configPath = join(projectDir, "zengin.config.yaml");
+      const alias = existsSync(configPath) ? loadConfigFile(configPath).config.system?.package : undefined;
+      const dir = opts.out ?? "src/figma";
+      const files = codeConnectFiles(manifests, { urls, dir, alias });
       const written = Object.entries(files).map(([rel, text]) => writeText(rel, text));
-      const todo = manifests.filter((m) => !urls[m.name]).map((m) => m.name);
-      const lines = [`Wrote ${written.length} files: figma.config.json and one *.figma.tsx per component in ${opts.out ?? "src/figma"}.`];
-      if (todo.length) lines.push(`${todo.length} without a Figma URL, marked TODO: ${todo.join(", ")}. Pass --map <json> with { "Button": "https://www.figma.com/design/...?node-id=..." }.`);
+      const lines = [`Wrote ${written.length} files: figma.config.json and one *.figma.ts template per component in ${dir}, importing from "${alias ?? "@/components/ui"}".`];
+      const todo = all.filter((m) => !urls[m.name]).map((m) => m.name);
+      if (opts.map && todo.length) lines.push(`${todo.length} components have no Figma URL in the map and were left out.`);
+      else if (todo.length) lines.push(`${todo.length} without a Figma URL, marked TODO: ${todo.join(", ")}. Pass --map <json> with { "Button": "https://www.figma.com/design/...?node-id=..." }.`);
       lines.push("Then: npx figma connect publish");
       return lines.join("\n");
     }

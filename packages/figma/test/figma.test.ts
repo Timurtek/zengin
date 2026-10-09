@@ -236,29 +236,31 @@ function fromPayload(p: VariablesPayload): LocalVariables {
 }
 
 describe("codeConnectFiles", () => {
-  it("writes one figma.tsx per component with the manifest's enums and booleans, and the config", () => {
+  it("writes one Code Connect template per component with the manifest's enums and booleans, and the config", () => {
     const files = codeConnectFiles(manifests, { urls: { Button: "https://www.figma.com/design/abc/Zengin?node-id=1-2" } });
-    expect(Object.keys(files)).toContain("figma.config.json");
-    expect(JSON.parse(files["figma.config.json"]!)).toEqual({ codeConnect: { include: ["src/figma/**/*.figma.tsx"], parser: "react" } });
-    const button = files["src/figma/button.figma.tsx"]!;
-    expect(button).toContain('import { Button } from "@/components/ui";');
-    expect(button).toContain('figma.connect(Button, "https://www.figma.com/design/abc/Zengin?node-id=1-2", {');
-    expect(button).toContain('variant: figma.enum("Variant", { "Solid": "solid", "Soft": "soft", "Ghost": "ghost", "Link": "link" }),');
-    expect(button).toContain('loading: figma.boolean("Loading"),');
-    expect(button).toContain('children: figma.string("Label"),');
+    expect(JSON.parse(files["figma.config.json"]!)).toEqual({ codeConnect: { include: ["src/figma/**/*.figma.ts"], label: "React", language: "tsx" } });
+    const button = files["src/figma/button.figma.ts"]!;
+    expect(button.startsWith("// url=https://www.figma.com/design/abc/Zengin?node-id=1-2\n// component=Button\n")).toBe(true);
+    expect(button).toContain('import figma from "figma"');
+    expect(button).toContain(`imports: ["import { Button } from \\"@/components/ui\\";"]`);
+    expect(button).toContain('const variant = figma.selectedInstance.getEnum("Variant", {\n  "Solid": "solid",');
+    expect(button).toContain('const loading = figma.selectedInstance.getBoolean("Loading")');
+    expect(button).toContain('const children = figma.selectedInstance.getString("Label")');
+    expect(button).toContain('example: figma.code`<Button${figma.helpers.react.renderProp("variant", variant)}');
     expect(button).not.toContain("asChild");
     expect(button).not.toContain("TODO");
-    const text = files["src/figma/text-field.figma.tsx"]!;
+    const text = files["src/figma/text-field.figma.ts"]!;
     expect(text).toContain("TODO: replace the URL");
-    expect(text).toContain('label: figma.string("Label"),');
+    expect(text).toContain('const label = figma.selectedInstance.getString("Label")');
     expect(Object.keys(files).length).toBe(manifests.length + 1);
+    expect(codeConnectFiles(manifests, { alias: "@zenginui/ui" })["src/figma/button.figma.ts"]).toContain(`import { Button } from \\"@zenginui/ui\\";`);
   });
 
   it("leaves out form plumbing a design file has no property for", () => {
-    const select = codeConnectFiles(manifests)["src/figma/select.figma.tsx"]!;
-    expect(select).toContain('size: figma.enum("Size"');
-    expect(select).toContain('open: figma.boolean("Open"),');
-    expect(select).toContain('value: figma.string("Value"),');
+    const select = codeConnectFiles(manifests)["src/figma/select.figma.ts"]!;
+    expect(select).toContain('getEnum("Size"');
+    expect(select).toContain('getBoolean("Open")');
+    expect(select).toContain('getString("Value")');
     for (const gone of ["Default value", "Default open", '"Name"', '"Id"']) expect(select).not.toContain(gone);
   });
 });
