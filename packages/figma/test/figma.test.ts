@@ -253,6 +253,14 @@ describe("codeConnectFiles", () => {
     expect(text).toContain('label: figma.string("Label"),');
     expect(Object.keys(files).length).toBe(manifests.length + 1);
   });
+
+  it("leaves out form plumbing a design file has no property for", () => {
+    const select = codeConnectFiles(manifests)["src/figma/select.figma.tsx"]!;
+    expect(select).toContain('size: figma.enum("Size"');
+    expect(select).toContain('open: figma.boolean("Open"),');
+    expect(select).toContain('value: figma.string("Value"),');
+    for (const gone of ["Default value", "Default open", '"Name"', '"Id"']) expect(select).not.toContain(gone);
+  });
 });
 
 describe("plugin", () => {

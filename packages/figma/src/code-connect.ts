@@ -16,7 +16,14 @@ export interface CodeConnectOptions {
   dir?: string;
 }
 
-export const PLACEHOLDER_URL = "https://www.figma.com/design/FILE_KEY/Zengin-UI?node-id=NODE_ID";
+/**
+ * Props that wire a component into a form or into uncontrolled state and look like nothing on a canvas:
+ * `defaultValue`, `defaultOpen`, `name`, `id`. A design file has no property for them, and a mapping to a
+ * property the component does not have fails `figma connect publish`.
+ */
+const FORM_PLUMBING = /^(default[A-Z]\w*|name|id)$/;
+
+export const PLACEHOLDER_URL ="https://www.figma.com/design/FILE_KEY/Zengin-UI?node-id=NODE_ID";
 
 export function codeConnectFiles(manifests: ComponentManifest[], opts: CodeConnectOptions = {}): Record<string, string> {
   const alias = opts.alias ?? "@/components/ui";
@@ -33,7 +40,7 @@ export function codeConnectFiles(manifests: ComponentManifest[], opts: CodeConne
 function renderConnect(m: ComponentManifest, url: string, alias: string, placeholder: boolean): string {
   const props: string[] = [];
   for (const [name, p] of Object.entries(m.props ?? {})) {
-    if (name === "asChild" || p.type === "function") continue;
+    if (name === "asChild" || p.type === "function" || FORM_PLUMBING.test(name)) continue;
     if (p.type === "enum" && p.values) {
       const pairs = p.values.map((v) => `${JSON.stringify(title(v))}: ${JSON.stringify(v)}`).join(", ");
       props.push(`    ${name}: figma.enum(${JSON.stringify(title(name))}, { ${pairs} }),`);
