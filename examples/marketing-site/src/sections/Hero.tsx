@@ -1,5 +1,6 @@
 import { Button } from "@zenginui/ui";
 import { CheckPanel } from "../components/CheckPanel";
+import { WorksWith } from "../components/WorksWith";
 
 /** The facts on the sheet. Each is a number the repository can back. */
 const SPEC = [
@@ -43,6 +44,7 @@ export function Hero() {
             </div>
           ))}
         </dl>
+        <WorksWith />
       </div>
     </section>
   );

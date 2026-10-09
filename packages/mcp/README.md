@@ -42,6 +42,22 @@ Or in `.mcp.json` at the project root:
 }
 ```
 
+### Codex CLI
+
+```bash
+codex mcp add zengin -- npx -y @zenginui/mcp
+```
+
+With no `--config`, the server finds the nearest `zengin.config.yaml` above the folder Codex was started in.
+
+### Cursor
+
+The same `mcpServers` block in `.cursor/mcp.json` at the project root. Approve the server the first time Cursor asks; for the headless `cursor-agent -p`, allow its tools in `.cursor/cli.json` with `{ "permissions": { "allow": ["Mcp(zengin:*)"] } }`.
+
+### ChatGPT
+
+Not yet: ChatGPT's connectors take remote (HTTP) servers, and this one is stdio.
+
 ### Inspecting
 
 ```bash

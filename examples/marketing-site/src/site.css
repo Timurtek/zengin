@@ -1435,3 +1435,61 @@ a[target="_blank"]::after {
   width: 100%;
   height: auto;
 }
+
+/* Works with: the marks sit in the muted ink and come up to full ink on hover, like the rest of the sheet. */
+.works {
+  display: grid;
+  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+  gap: var(--spacing-4);
+  align-items: start;
+  margin-top: var(--spacing-8);
+}
+.works__groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4) var(--spacing-8);
+}
+.works__group {
+  display: grid;
+  gap: var(--spacing-2);
+}
+.works__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+.works__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2) var(--spacing-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.works__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.works__item:hover {
+  color: var(--color-text);
+}
+.works__item svg {
+  width: var(--spacing-5);
+  height: var(--spacing-5);
+  flex: none;
+}
+.works__mark {
+  fill: currentColor;
+}
+@media (max-width: 52rem) {
+  .works {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

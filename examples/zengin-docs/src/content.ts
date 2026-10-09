@@ -420,7 +420,20 @@ The engine's most useful position is inside the agent's loop, before a file exis
 }
 \`\`\`
 
-\`zengin create\` writes this file for you.
+\`zengin create\` writes this file for you, as \`.mcp.json\`, which is where Claude Code reads it.
+
+## Other agents
+
+It is a standard stdio server, so any agent that launches local MCP servers can run it. Without \`ZENGIN_CONFIG\` it finds the nearest \`zengin.config.yaml\` above the folder the agent was started in. Two more agents are tested:
+
+\`\`\`bash
+# Codex CLI: once, for every project you open with it
+codex mcp add zengin -- npx -y @zenginui/mcp
+\`\`\`
+
+For Cursor, put the same \`mcpServers\` block in \`.cursor/mcp.json\` at the project root, then approve the server the first time Cursor asks.
+
+ChatGPT's connectors take remote servers only, and this one runs on your machine, next to your files.
 
 ## The tools
 

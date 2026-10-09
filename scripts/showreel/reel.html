@@ -92,6 +92,10 @@
   .node h3 { font-family: var(--display); font-size: 50px; font-weight: 800; letter-spacing: -.02em; margin-top: 6px; line-height: 1; }
   .node p { font-family: var(--mono); font-size: 19px; margin-top: 16px; color: #5B5E57; white-space: nowrap; }
   .node p b { color: var(--ink); font-weight: 500; }
+  .marks { display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: var(--mono); font-size: 17px; letter-spacing: .02em; }
+  .marks span { display: inline-flex; align-items: center; gap: 9px; white-space: nowrap; }
+  .marks svg { width: 24px; height: 24px; flex: none; }
+  .node .marks { margin-top: 16px; padding-top: 14px; border-top: 2px solid #D9D5C9; color: var(--ink); }
 
   /* rules */
   .rrow { position: absolute; left: 0; right: 0; height: 104px; display: flex; align-items: center; border-top: 2px solid var(--ink-line); padding: 0 120px; }
@@ -208,6 +212,23 @@ function markSVG(parent, size, color) {
   const polys = MARK.map(pts => { const p = document.createElementNS('http://www.w3.org/2000/svg', 'polygon'); p.setAttribute('points', pts); p.setAttribute('fill', color); svg.appendChild(p); p.style.transformBox = 'fill-box'; p.style.transformOrigin = '50% 50%'; return p; });
   parent.appendChild(svg);
   return { svg, polys };
+}
+// Brand marks (simple-icons, CC0) for what Zengin works with. Every agent here was connected to the MCP
+// server and got the engine's violations back. Codex has no mark in the set, so it gets a terminal glyph.
+const BRAND = {
+  claude: ['Claude Code', '<path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z" fill="currentColor"/>'],
+  codex: ['Codex', '<path d="M4 17l6-6-6-6M12 19h8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>'],
+  cursor: ['Cursor', '<path d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23" fill="currentColor"/>'],
+  figma: ['Figma', '<path d="M15.852 8.981h-4.588V0h4.588c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.491-4.49 4.491zM12.735 7.51h3.117c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-3.117V7.51zm0 1.471H8.148c-2.476 0-4.49-2.014-4.49-4.49S5.672 0 8.148 0h4.588v8.981zm-4.587-7.51c-1.665 0-3.019 1.355-3.019 3.019s1.354 3.02 3.019 3.02h3.117V1.471H8.148zm4.587 15.019H8.148c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h4.588v8.98zM8.148 8.981c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h3.117V8.981H8.148zM8.172 24c-2.489 0-4.515-2.014-4.515-4.49s2.014-4.49 4.49-4.49h4.588v4.441c0 2.503-2.047 4.539-4.563 4.539zm-.024-7.51a3.023 3.023 0 0 0-3.019 3.019c0 1.665 1.365 3.019 3.044 3.019 1.705 0 3.093-1.376 3.093-3.068v-2.97H8.148zm7.704 0h-.098c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h.098c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.49-4.49 4.49zm-.097-7.509c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h.098c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-.098z" fill="currentColor"/>'],
+  storybook: ['Storybook', '<path d="M16.71.243l-.12 2.71a.18.18 0 00.29.15l1.06-.8.9.7a.18.18 0 00.28-.14l-.1-2.76 1.33-.1a1.2 1.2 0 011.279 1.2v21.596a1.2 1.2 0 01-1.26 1.2l-16.096-.72a1.2 1.2 0 01-1.15-1.16l-.75-19.797a1.2 1.2 0 011.13-1.27L16.7.222zM13.64 9.3c0 .47 3.16.24 3.59-.08 0-3.2-1.72-4.89-4.859-4.89-3.15 0-4.899 1.72-4.899 4.29 0 4.45 5.999 4.53 5.999 6.959 0 .7-.32 1.1-1.05 1.1-.96 0-1.35-.49-1.3-2.16 0-.36-3.649-.48-3.769 0-.27 4.03 2.23 5.2 5.099 5.2 2.79 0 4.969-1.49 4.969-4.18 0-4.77-6.099-4.64-6.099-6.999 0-.97.72-1.1 1.13-1.1.45 0 1.25.07 1.19 1.87z" fill="currentColor"/>'],
+  react: ['React', '<path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.345-.034-.46 0-.915.01-1.36.034.44-.572.895-1.096 1.345-1.565zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.098 2.21-.098zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.345.034.46 0 .915-.01 1.36-.034-.44.572-.895 1.095-1.345 1.565-.455-.47-.91-.993-1.36-1.565z" fill="currentColor"/>'],
+  shadcn: ['shadcn/ui', '<path d="M22.219 11.784 11.784 22.219c-.407.407-.407 1.068 0 1.476.407.407 1.068.407 1.476 0L23.695 13.26c.407-.408.407-1.069 0-1.476-.408-.407-1.069-.407-1.476 0ZM20.132.305.305 20.132c-.407.407-.407 1.068 0 1.476.408.407 1.069.407 1.476 0L21.608 1.781c.407-.407.407-1.068 0-1.476-.408-.407-1.069-.407-1.476 0Z" fill="currentColor"/>'],
+  tailwind: ['Tailwind', '<path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z" fill="currentColor"/>'],
+  gha: ['GitHub Actions', '<path d="M10.984 13.836a.5.5 0 0 1-.353-.146l-.745-.743a.5.5 0 1 1 .706-.708l.392.391 1.181-1.18a.5.5 0 0 1 .708.707l-1.535 1.533a.504.504 0 0 1-.354.146zm9.353-.147l1.534-1.532a.5.5 0 0 0-.707-.707l-1.181 1.18-.392-.391a.5.5 0 1 0-.706.708l.746.743a.497.497 0 0 0 .706-.001zM4.527 7.452l2.557-1.585A1 1 0 0 0 7.09 4.17L4.533 2.56A1 1 0 0 0 3 3.406v3.196a1.001 1.001 0 0 0 1.527.85zm2.03-2.436L4 6.602V3.406l2.557 1.61zM24 12.5c0 1.93-1.57 3.5-3.5 3.5a3.503 3.503 0 0 1-3.46-3h-2.08a3.503 3.503 0 0 1-3.46 3 3.502 3.502 0 0 1-3.46-3h-.558c-.972 0-1.85-.399-2.482-1.042V17c0 1.654 1.346 3 3 3h.04c.244-1.693 1.7-3 3.46-3 1.93 0 3.5 1.57 3.5 3.5S13.43 24 11.5 24a3.502 3.502 0 0 1-3.46-3H8c-2.206 0-4-1.794-4-4V9.899A5.008 5.008 0 0 1 0 5c0-2.757 2.243-5 5-5s5 2.243 5 5a5.005 5.005 0 0 1-4.952 4.998A2.482 2.482 0 0 0 7.482 12h.558c.244-1.693 1.7-3 3.46-3a3.502 3.502 0 0 1 3.46 3h2.08a3.503 3.503 0 0 1 3.46-3c1.93 0 3.5 1.57 3.5 3.5zm-15 8c0 1.378 1.122 2.5 2.5 2.5s2.5-1.122 2.5-2.5-1.122-2.5-2.5-2.5S9 19.122 9 20.5zM5 9c2.206 0 4-1.794 4-4S7.206 1 5 1 1 2.794 1 5s1.794 4 4 4zm9 3.5c0-1.378-1.122-2.5-2.5-2.5S9 11.122 9 12.5s1.122 2.5 2.5 2.5 2.5-1.122 2.5-2.5zm9 0c0-1.378-1.122-2.5-2.5-2.5S18 11.122 18 12.5s1.122 2.5 2.5 2.5 2.5-1.122 2.5-2.5zm-13 8a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0zm2 0a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0zm12 0c0 1.93-1.57 3.5-3.5 3.5a3.503 3.503 0 0 1-3.46-3.002c-.007.001-.013.005-.021.005l-.506.017h-.017a.5.5 0 0 1-.016-.999l.506-.017c.018-.002.035.006.052.007A3.503 3.503 0 0 1 20.5 17c1.93 0 3.5 1.57 3.5 3.5zm-1 0c0-1.378-1.122-2.5-2.5-2.5S18 19.122 18 20.5s1.122 2.5 2.5 2.5 2.5-1.122 2.5-2.5z" fill="currentColor"/>'],
+};
+function marks(parent, keys) {
+  const row = h('div', 'marks', parent);
+  return keys.map(k => h('span', '', row, `<svg viewBox="0 0 24 24">${BRAND[k][1]}</svg>${BRAND[k][0]}`));
 }
 function maskLine(parent, text, cls) {
   const m = h('div', 'mask ' + (cls || ''), parent);
@@ -481,21 +502,21 @@ scene('Four surfaces', 20, 26, 'light', (el) => {
   t2.style.color = '#D7472F';
   const cam = h('div', 'abs', el); css(cam, { left: 0, top: 0, width: W + 'px', height: H + 'px', transformOrigin: PT ? '540px 980px' : '960px 600px' });
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('width', W); svg.setAttribute('height', H); svg.style.position = 'absolute'; cam.appendChild(svg);
-  const cx = PT ? 540 : 960, cy = PT ? 980 : 640, ES = PT ? 150 : 170, NH = 170; // engine half-size, node height
+  const cx = PT ? 540 : 960, cy = PT ? 980 : 640, ES = PT ? 150 : 170, NH = PT ? 222 : 170; // engine half-size, node height (portrait: the top nodes carry a row of marks)
   const engine = h('div', 'abs', cam); css(engine, { left: (cx - ES) + 'px', top: (cy - ES) + 'px', width: ES * 2 + 'px', height: ES * 2 + 'px', background: '#20231F', color: '#F4F1E9', display: 'grid', placeItems: 'center', boxShadow: '18px 18px 0 #D7472F' });
   const eIn = h('div', '', engine); css(eIn, { textAlign: 'center' });
   const em = markSVG(eIn, PT ? 120 : 140, '#FC694F');
   h('div', 'disp', eIn, 'Engine').style.cssText = 'font-size:52px;font-weight:800;letter-spacing:-.03em;margin-top:10px';
   h('div', 'mono', eIn, '7 rules · no model').style.cssText = 'font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:#B5B3AA;margin-top:6px';
   const NODES = PT ? [
-    { k: '01 · for the agent', t: 'MCP server', p: '<b>zengin_check_code</b>( snippet )', x: 40, y: 570, ax: cx - 80, ay: cy - ES },
-    { k: '02 · after every edit', t: 'Hook', p: 'PostToolUse → <b>exit 2</b>', x: 40, y: 1230, ax: cx - 80, ay: cy + ES },
-    { k: '03 · terminal + CI', t: 'CLI', p: '<b>zengin check</b> --changed', x: 560, y: 570, ax: cx + 80, ay: cy - ES },
+    { k: '01 · for the agent', t: 'MCP server', m: ['claude', 'codex', 'cursor'], p: '<b>zengin_check_code</b>( snippet )', x: 40, y: 560, ax: cx - 80, ay: cy - ES },
+    { k: '02 · after every edit', t: 'Hook', m: ['claude'], p: 'PostToolUse → <b>exit 2</b>', x: 40, y: 1230, ax: cx - 80, ay: cy + ES },
+    { k: '03 · terminal + CI', t: 'CLI', m: ['gha'], p: '<b>zengin check</b> --changed', x: 560, y: 560, ax: cx + 80, ay: cy - ES },
     { k: '04 · across repos', t: 'Rollup', p: '<b>zengin rollup</b> reports/', x: 560, y: 1230, ax: cx + 80, ay: cy + ES },
   ] : [
-    { k: '01 · for the agent', t: 'MCP server', p: '<b>zengin_check_code</b>( snippet )', x: 150, y: 380, ax: cx - 170, ay: cy - 60 },
-    { k: '02 · after every edit', t: 'Hook', p: 'PostToolUse → <b>exit 2</b>', x: 150, y: 730, ax: cx - 170, ay: cy + 80 },
-    { k: '03 · terminal + CI', t: 'CLI', p: '<b>zengin check</b> --changed main', x: 1300, y: 380, ax: cx + 170, ay: cy - 60 },
+    { k: '01 · for the agent', t: 'MCP server', m: ['claude', 'codex', 'cursor'], p: '<b>zengin_check_code</b>( snippet )', x: 150, y: 380, ax: cx - 170, ay: cy - 60 },
+    { k: '02 · after every edit', t: 'Hook', m: ['claude'], p: 'PostToolUse → <b>exit 2</b>', x: 150, y: 730, ax: cx - 170, ay: cy + 80 },
+    { k: '03 · terminal + CI', t: 'CLI', m: ['gha'], p: '<b>zengin check</b> --changed main', x: 1300, y: 380, ax: cx + 170, ay: cy - 60 },
     { k: '04 · across repos', t: 'Rollup', p: '<b>zengin rollup</b> reports/', x: 1300, y: 730, ax: cx + 170, ay: cy + 80 },
   ];
   const paths = NODES.map((n, i) => {
@@ -513,7 +534,8 @@ scene('Four surfaces', 20, 26, 'light', (el) => {
     const len = p.getTotalLength(); p.style.strokeDasharray = len;
     const pk = [0, 1, 2].map(() => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('width', 16); r.setAttribute('height', 16); r.setAttribute('fill', '#D7472F'); svg.appendChild(r); return r; });
     const node = h('div', 'node', cam, `<div class="k">${n.k}</div><h3>${n.t}</h3><p>${n.p}</p>`); css(node, { left: n.x + 'px', top: n.y + 'px' });
-    return { p, len, pk, node };
+    const ms = n.m ? marks(node, n.m) : [];
+    return { p, len, pk, node, ms };
   });
   const foot = h('div', 'abs mono', el, 'The same violations, the same fixes, in each.'); css(foot, PT ? { left: '64px', top: '500px', fontSize: '20px', letterSpacing: '.06em', color: '#5B5E57' } : { right: '120px', top: '236px', fontSize: '22px', letterSpacing: '.06em', color: '#5B5E57', textAlign: 'right' });
   return (t) => {
@@ -527,6 +549,7 @@ scene('Four surfaces', 20, 26, 'light', (el) => {
       q.p.style.strokeDashoffset = q.len * (1 - kd);
       const kn = E.oBack(P(t, t0, t0 + .4));
       q.node.style.transform = `scale(${kn})`; q.node.style.opacity = t >= t0 ? 1 : 0;
+      q.ms.forEach((s, j) => { const km = E.o4(P(t, t0 + .45 + j * .18, t0 + .8 + j * .18)); s.style.opacity = km; s.style.transform = `translateY(${(1 - km) * 12}px)`; });
       q.pk.forEach((r, j) => {
         const start = t0 + .3 + j * .55;
         const ph = (t - start) / 1.1;
@@ -742,8 +765,14 @@ scene('End card', 41, 45, 'dark', (el) => {
   const w2 = maskLine(word, 'Every change.'); w2.style.color = '#FC694F';
   const foot = h('div', 'abs mono', el); css(foot, { left: 0, width: W + 'px', textAlign: 'center', top: PT ? '1170px' : '880px', fontSize: '28px', letterSpacing: '.06em', color: '#B5B3AA', lineHeight: PT ? '1.4' : '' });
   foot.innerHTML = '<span style="color:#F4F1E9;border:2px solid #4A4D45;padding:12px 22px">npm create zengin@latest</span>' + (PT ? '<div style="margin-top:44px">zengin.timurtek.com</div>' : '<span style="margin:0 28px;color:#4A4D45">/</span>zengin.timurtek.com');
+  const ww = h('div', 'abs', el); css(ww, PT ? { left: '230px', width: '620px', top: '1330px', textAlign: 'center' } : { left: 0, width: W + 'px', top: '968px', textAlign: 'center' });
+  h('div', 'mono', ww, 'Works with').style.cssText = 'font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:#7F7E76;margin-bottom:14px';
+  const wm = marks(ww, ['claude', 'codex', 'cursor', 'figma', 'storybook', 'react', 'shadcn', 'tailwind']);
+  ww.querySelector('.marks').style.cssText = 'justify-content:center;color:#B5B3AA;gap:' + (PT ? '16px 26px' : '0 34px');
   const black = h('div', 'abs', el); css(black, { left: 0, top: 0, width: W + 'px', height: H + 'px', background: '#000' });
   return (t) => {
+    ww.firstChild.style.opacity = E.o3(P(t, 43.0, 43.4));
+    wm.forEach((s, i) => { const k = E.o4(P(t, 43.1 + i * .07, 43.5 + i * .07)); s.style.opacity = k; s.style.transform = `translateY(${(1 - k) * 14}px)`; });
     flash.style.opacity = 1 - E.o3(P(t, 41.0, 41.35));
     m.polys.forEach((p, i) => {
       const k = E.oExpo(P(t, 41.05 + i * .14, 41.6 + i * .14));
