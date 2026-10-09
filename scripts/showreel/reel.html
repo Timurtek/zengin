@@ -117,7 +117,30 @@
   .prog { height: 12px; background: var(--t-sunken); border-radius: 999px; overflow: hidden; }
   .prog i { display: block; height: 100%; background: var(--t-primary); border-radius: 999px; }
   .tdisp { font-family: var(--t-display); }
-  .kcol { background: var(--t-sunken); border-radius: var(--radius); padding: 12px; }
+  .kcol { background: var(--t-sunken); border-radius: var(--radius); padding: 12px; min-height: 150px; }
+
+  /* ---- portrait (9:16): the same film, re-laid for a phone held upright ---- */
+  body.pt .code { font-size: 21px; line-height: 36px; }
+  body.pt .code .ln { width: 58px; padding-right: 20px; }
+  body.pt .code .cursor { width: 11px; height: 26px; }
+  body.pt .vcard { width: 488px; padding: 12px 16px; font-size: 15px; }
+  body.pt .vcard .rule { font-size: 17px; }
+  body.pt .vcard .conf { font-size: 11px; padding: 2px 6px; }
+  body.pt .vcard .fx { margin-top: 6px; }
+  body.pt .node { width: 480px; padding: 22px 26px; }
+  body.pt .node h3 { font-size: 46px; }
+  body.pt .node p { font-size: 18px; }
+  body.pt .rrow { height: 150px; flex-wrap: wrap; align-content: center; padding: 0 60px; row-gap: 10px; }
+  body.pt .rrow .ix { width: 70px; font-size: 20px; }
+  body.pt .rrow .nm { font-size: 60px; flex: 1 1 800px; }
+  body.pt .rrow .fam { width: auto; margin: 0 24px 0 70px; font-size: 13px; padding: 4px 10px; }
+  body.pt .rrow .ex { width: auto; font-size: 19px; }
+  body.pt .tile { padding: 22px; }
+  body.pt .tile .cap { margin-bottom: 14px; }
+  body.pt .btn { height: 50px; padding: 0 18px; font-size: 18px; }
+  body.pt .kcol { min-height: 108px; padding: 10px; }
+  body.pt .kcard { font-size: 15px; padding: 10px 12px; }
+  body.pt .term { font-size: 23px; line-height: 40px; }
   .kcard { background: var(--t-raised); border: var(--bw) solid var(--t-border); border-radius: var(--radius); padding: 12px 14px; font-size: 16px; margin-top: 10px; box-shadow: var(--shadow); }
 
   .term { font-family: var(--mono); font-size: 28px; line-height: 46px; color: #D9D6CC; white-space: pre; }
@@ -140,7 +163,11 @@
    seek(t) paints the frame, so the renderer can step it exactly.
    120 BPM: one beat = 0.5s, one bar = 2s. Cuts land on beats.
    ============================================================ */
-const W = 1920, H = 1080, DUR = 45, BPM = 120, BEAT = 60 / BPM;
+// ?portrait renders the 9:16 cut (1080x1920). Instagram draws its own chrome over the top ~250px, the
+// bottom ~420px and a right-hand column, so everything that has to be read sits inside SAFE.
+const PT = new URLSearchParams(location.search).has('portrait');
+if (PT) document.body.classList.add('pt');
+const W = PT ? 1080 : 1920, H = PT ? 1920 : 1080, DUR = 45, BPM = 120, BEAT = 60 / BPM;
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const P = (t, a, b) => clamp((t - a) / (b - a));
 const lerp = (a, b, x) => a + (b - a) * x;
@@ -162,6 +189,8 @@ const h = (tag, cls, parent, html) => { const e = document.createElement(tag); i
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const css = (e, o) => { for (const k in o) e.style[k] = o[k]; };
 const stage = document.getElementById('stage');
+css(document.getElementById('viewport'), { width: W + 'px', height: H + 'px' });
+document.getElementById('grain').setAttribute('width', W); document.getElementById('grain').setAttribute('height', H);
 // deterministic pseudo-random
 const rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 // beat pulse: 1 on the beat decaying to 0
@@ -209,10 +238,11 @@ scene('The mark', 0, 4, 'dark', (el) => {
   const wrap = h('div', 'abs', el); css(wrap, { left: '0', top: '0', width: W + 'px', height: H + 'px' });
   const markBox = h('div', 'abs', wrap); css(markBox, { left: (W / 2 - 230) + 'px', top: (H / 2 - 230) + 'px', width: '460px', height: '460px' });
   const m = markSVG(markBox, 460, '#D7472F');
-  const word = h('div', 'abs disp', wrap); css(word, { left: '0', top: (H / 2 - 150) + 'px', fontSize: '260px', fontWeight: 800, letterSpacing: '-.045em', lineHeight: '1', whiteSpace: 'nowrap' });
+  const word = h('div', 'abs disp', wrap); css(word, { left: '0', top: (PT ? 980 : H / 2 - 150) + 'px', fontSize: PT ? '240px' : '260px', fontWeight: 800, letterSpacing: '-.045em', lineHeight: '1', whiteSpace: 'nowrap' });
   const letters = [...'Zengin'].map(ch => { const m = h('span', 'mask', word); css(m, { display: 'inline-block' }); const s = h('span', '', m, ch); css(s, { display: 'inline-block' }); return s; });
-  const sub = h('div', 'abs mono', wrap); css(sub, { top: (H / 2 + 150) + 'px', fontSize: '26px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#B5B3AA', whiteSpace: 'nowrap' });
-  sub.innerHTML = 'Authored systems <span style="color:#FC694F">/</span> for the age of coding agents';
+  const sub = h('div', 'abs mono', wrap); css(sub, { top: (PT ? 1290 : H / 2 + 150) + 'px', fontSize: PT ? '28px' : '26px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#B5B3AA', whiteSpace: 'nowrap', lineHeight: '1.6' });
+  sub.innerHTML = PT ? 'Authored systems <span style="color:#FC694F">/</span><br>for the age of coding agents' : 'Authored systems <span style="color:#FC694F">/</span> for the age of coding agents';
+  if (PT) { css(word, { width: W + 'px', textAlign: 'center' }); css(sub, { width: W + 'px', textAlign: 'center' }); }
   const ring = h('div', 'abs', wrap); css(ring, { border: '2px solid #FC694F', borderRadius: '0' });
   return (t) => {
     // grid draws in
@@ -229,12 +259,11 @@ scene('The mark', 0, 4, 'dark', (el) => {
     // punch on the lock-in at 1.75, then slide left to make room for the wordmark
     const punch = 1 + .08 * Math.exp(-Math.max(0, t - 1.75) * 9) * (t > 1.75 ? 1 : 0);
     const slide = E.io3(P(t, 2.0, 2.6));
-    const markX = lerp(W / 2 - 230, 250, slide), markS = lerp(1, .74, slide);
-    css(markBox, { left: markX + 'px', transform: `scale(${markS * punch})` });
+    const markX = PT ? W / 2 - 230 : lerp(W / 2 - 230, 250, slide), markY = PT ? lerp(H / 2 - 230, 420, slide) : H / 2 - 230, markS = lerp(1, PT ? .86 : .74, slide);
+    css(markBox, { left: markX + 'px', top: markY + 'px', transform: `scale(${markS * punch})` });
     letters.forEach((s, i) => { const k = E.o4(P(t, 2.25 + i * .06, 2.85 + i * .06)); s.style.transform = `translateY(${(1 - k) * 110}%)`; });
-    word.style.left = '720px';
-    sub.style.left = '728px';
-    const ks = E.o3(P(t, 2.9, 3.4)); sub.style.opacity = ks; sub.style.transform = `translateX(${(1 - ks) * -30}px)`;
+    if (!PT) { word.style.left = '720px'; sub.style.left = '728px'; }
+    const ks = E.o3(P(t, 2.9, 3.4)); sub.style.opacity = ks; sub.style.transform = PT ? `translateY(${(1 - ks) * 24}px)` : `translateX(${(1 - ks) * -30}px)`;
     // shock ring when the mark locks
     const kr = P(t, 1.75, 2.35);
     css(ring, { left: (W / 2 - 230 - kr * 200) + 'px', top: (H / 2 - 230 - kr * 200) + 'px', width: (460 + kr * 400) + 'px', height: (460 + kr * 400) + 'px', opacity: kr > 0 && kr < 1 ? (1 - kr) : 0 });
@@ -245,14 +274,14 @@ scene('The mark', 0, 4, 'dark', (el) => {
 
 /* ---------- 02 · The problem, in type ---------- */
 scene('The problem', 4, 8, 'light', (el) => {
-  const A = h('div', 'abs disp', el); css(A, { left: '150px', top: '170px', fontSize: '210px', fontWeight: 800, letterSpacing: '-.05em', lineHeight: '.98' });
-  const a1 = maskLine(A, 'Agents write'), a2 = maskLine(A, 'your UI.'), a3 = maskLine(A, 'Fast.');
+  const A = h('div', 'abs disp', el); css(A, { left: PT ? '80px' : '150px', top: PT ? '470px' : '170px', fontSize: PT ? '200px' : '210px', fontWeight: 800, letterSpacing: '-.05em', lineHeight: '.98' });
+  const a1 = maskLine(A, PT ? 'Agents<br>write' : 'Agents write'), a2 = maskLine(A, 'your UI.'), a3 = maskLine(A, 'Fast.');
   a3.style.color = '#D7472F';
-  const B = h('div', 'abs disp', el); css(B, { left: '150px', top: '250px', fontSize: '210px', fontWeight: 800, letterSpacing: '-.05em', lineHeight: '.98' });
-  const b1 = maskLine(B, 'Then it drifts'), b2 = maskLine(B, 'off your system.');
+  const B = h('div', 'abs disp', el); css(B, { left: PT ? '80px' : '150px', top: PT ? '520px' : '250px', fontSize: PT ? '176px' : '210px', fontWeight: 800, letterSpacing: '-.05em', lineHeight: '.98' });
+  const b1 = maskLine(B, PT ? 'Then it<br>drifts' : 'Then it drifts'), b2 = maskLine(B, PT ? 'off your<br>system.' : 'off your system.');
   const strike = h('div', 'abs', el); css(strike, { height: '22px', background: '#D7472F', left: '140px', top: '540px', transformOrigin: 'left' });
   const frags = ['#2563EB', 'gap: 13px', '<button>', 'variant="ghost-danger"', 'rounded-[7px]', 'rgb(107,114,128)', 'padding: 6px 14px', 'text-[#6B7280]', 'z-index: 9999', '--brand-blue', 'font-size: 15.5px', 'shadow-[0_2px_#000]'];
-  const F = frags.map((f, i) => { const d = h('div', 'abs mono', el, esc(f)); css(d, { fontSize: (22 + rnd(i) * 16) + 'px', color: i % 3 === 0 ? '#D7472F' : '#20231F', whiteSpace: 'nowrap', border: '2px solid currentColor', padding: '6px 12px', background: '#F4F1E9' }); return d; });
+  const F = frags.map((f, i) => { const d = h('div', 'abs mono', el, esc(f)); css(d, { fontSize: (PT ? 22 : 22 + rnd(i) * 16) + 'px', color: i % 3 === 0 ? '#D7472F' : '#20231F', whiteSpace: 'nowrap', border: '2px solid currentColor', padding: '6px 12px', background: '#F4F1E9' }); return d; });
   return (t) => {
     const lt = t;
     [a1, a2, a3].forEach((s, i) => { const k = E.o5(P(lt, 4.0 + i * .5, 4.55 + i * .5)); s.style.transform = `translateY(${(1 - k) * 105}%)`; });
@@ -272,7 +301,10 @@ scene('The problem', 4, 8, 'light', (el) => {
       const t0 = 6.2 + rnd(i + 3) * 1.2;
       const k = E.oBack(P(lt, t0, t0 + .35));
       const row = i % 2, col = Math.floor(i / 2);
-      const x = 110 + col * 300 + rnd(i + 10) * 60 + (row ? 120 : 0), y = row ? (col % 2 ? 880 : 790) : (col % 2 ? 175 : 105);
+      // portrait: two bands of three, above and below the type, inside the safe area
+      const SLOT = [[60, 270], [70, 1300], [300, 280], [360, 1300], [560, 270], [700, 1310], [60, 370], [60, 1430], [400, 375], [330, 1435], [650, 370], [580, 1430]];
+      const x = PT ? SLOT[i][0] : 110 + col * 300 + rnd(i + 10) * 60 + (row ? 120 : 0);
+      const y = PT ? SLOT[i][1] : row ? (col % 2 ? 880 : 790) : (col % 2 ? 175 : 105);
       const drift = (lt - t0) * (20 + rnd(i + 30) * 40);
       f.style.transform = `translate(${x}px, ${y - drift}px) rotate(${(rnd(i + 40) - .5) * 12}deg) scale(${k})`;
       f.style.opacity = lt > t0 ? 1 : 0;
@@ -333,34 +365,34 @@ const TOTAL_CHARS = LINES.reduce((n, l) => n + l.reduce((k, s) => k + (s.text !=
 
 scene('The catch', 8, 20, 'dark', (el) => {
   const grid = gridLines(el, 12, 7);
-  const ed = h('div', 'editor', el); css(ed, { left: '110px', top: '120px', width: '1130px', height: '850px' });
+  const ed = h('div', 'editor', el); css(ed, PT ? { left: '40px', top: '250px', width: '1000px', height: '770px' } : { left: '110px', top: '120px', width: '1130px', height: '850px' });
   const chrome = h('div', 'chrome', ed, '<span class="dots"><i></i><i></i><i></i></span><b>src/Actions.tsx</b><span class="st"></span>');
   const st = chrome.querySelector('.st'); st.style.marginLeft = 'auto';
   const code = h('div', 'code', ed);
   const beam = h('div', 'abs', ed); css(beam, { left: '0', right: '0', height: '3px', background: '#FC694F', boxShadow: '0 0 30px 8px rgba(252,105,79,.55)' });
   const beamGlow = h('div', 'abs', ed); css(beamGlow, { left: '0', right: '0', height: '160px', background: 'linear-gradient(to top, rgba(252,105,79,.16), transparent)' });
   // right panel
-  const head = h('div', 'abs', el); css(head, { left: '1290px', top: '120px', width: '560px' });
-  const hk = h('div', 'mono', head, 'zengin · engine'); css(hk, { fontSize: '17px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#7F7E76' });
-  const hn = h('div', 'disp', head); css(hn, { fontSize: '120px', fontWeight: 800, letterSpacing: '-.05em', lineHeight: '1', marginTop: '6px', fontVariantNumeric: 'tabular-nums' });
-  const hl2 = h('div', 'mono', head); css(hl2, { fontSize: '20px', color: '#B5B3AA', marginTop: '4px' });
+  const head = h('div', 'abs', el); css(head, PT ? { left: '40px', top: '1040px', width: '1000px', display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: '26px', alignItems: 'end' } : { left: '1290px', top: '120px', width: '560px' });
+  const hk = h('div', 'mono', head, 'zengin · engine'); css(hk, { gridColumn: PT ? '1 / 3' : '', fontSize: '17px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#7F7E76' });
+  const hn = h('div', 'disp', head); css(hn, { fontSize: PT ? '100px' : '120px', fontWeight: 800, letterSpacing: '-.05em', lineHeight: '1', marginTop: '6px', fontVariantNumeric: 'tabular-nums' });
+  const hl2 = h('div', 'mono', head); css(hl2, { fontSize: '20px', color: '#B5B3AA', marginTop: '4px', paddingBottom: PT ? '14px' : '' });
   const cards = V.map((v, i) => {
     const c = h('div', 'vcard', el, `<div class="r"><span class="rule">${v.rule}</span><span class="ln2">L${v.line}</span></div><div class="r fx"><span class="fxt"></span><span class="conf">${v.conf}</span></div>`);
-    css(c, { left: '1290px', top: (380 + i * 98) + 'px' });
+    css(c, PT ? { left: (40 + (i % 2) * 512) + 'px', top: (1200 + Math.floor(i / 2) * 100) + 'px' } : { left: '1290px', top: (380 + i * 98) + 'px' });
     return c;
   });
   // the stamp
   const stamp = h('div', 'abs', el); css(stamp, { left: '0', top: '0', width: W + 'px', height: H + 'px', display: 'grid', placeItems: 'center', pointerEvents: 'none' });
-  const sb = h('div', 'disp', stamp); css(sb, { background: '#D7472F', color: '#F4F1E9', padding: '28px 70px 36px', fontSize: '190px', fontWeight: 900, letterSpacing: '-.04em', lineHeight: '1', textTransform: 'uppercase', boxShadow: '24px 24px 0 #171916' });
-  sb.innerHTML = 'Blocked<div class="mono" style="font-size:28px;letter-spacing:.14em;font-weight:500;margin-top:14px;opacity:.9">PostToolUse hook · exit 2 · fixes sent back to the agent</div>';
+  const sb = h('div', 'disp', stamp); css(sb, { background: '#D7472F', color: '#F4F1E9', padding: PT ? '26px 50px 32px' : '28px 70px 36px', fontSize: PT ? '170px' : '190px', fontWeight: 900, letterSpacing: '-.04em', lineHeight: '1', textTransform: 'uppercase', boxShadow: '24px 24px 0 #171916' });
+  sb.innerHTML = 'Blocked<div class="mono" style="font-size:28px;letter-spacing:.14em;font-weight:500;margin-top:14px;opacity:.9">' + (PT ? 'PostToolUse hook · exit 2<br>fixes sent back to the agent' : 'PostToolUse hook · exit 2 · fixes sent back to the agent') + '</div>';
   // the verdict
   const zero = h('div', 'abs', el); css(zero, { left: '0', top: '0', width: W + 'px', height: H + 'px', background: '#20231F' });
-  const zn = h('div', 'abs disp', zero); css(zn, { left: '150px', top: '120px', fontSize: '560px', fontWeight: 900, letterSpacing: '-.06em', lineHeight: '1', color: '#A0A98D' });
+  const zn = h('div', 'abs disp', zero); css(zn, { left: PT ? '70px' : '150px', top: PT ? '250px' : '120px', fontSize: PT ? '600px' : '560px', fontWeight: 900, letterSpacing: '-.06em', lineHeight: '1', color: '#A0A98D' });
   zn.textContent = '0';
-  const zt = h('div', 'abs disp', zero); css(zt, { left: '620px', top: '270px', fontSize: '110px', fontWeight: 800, letterSpacing: '-.04em', lineHeight: '1.0' });
-  const zt1 = maskLine(zt, 'violations.'), zt2 = maskLine(zt, 'The agent never'), zt3 = maskLine(zt, 'shipped the first draft.');
+  const zt = h('div', 'abs disp', zero); css(zt, { left: PT ? '80px' : '620px', top: PT ? '880px' : '270px', fontSize: PT ? '104px' : '110px', fontWeight: 800, letterSpacing: '-.04em', lineHeight: '1.0' });
+  const zt1 = maskLine(zt, 'violations.'), zt2 = maskLine(zt, 'The agent never'), zt3 = maskLine(zt, PT ? 'shipped the<br>first draft.' : 'shipped the first draft.');
   zt2.style.color = '#B5B3AA'; zt3.style.color = '#B5B3AA';
-  const zk = h('div', 'abs mono', zero, 'You never see the first version'); css(zk, { left: '630px', top: '700px', fontSize: '22px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#FC694F' });
+  const zk = h('div', 'abs mono', zero, 'You never see the first version'); css(zk, { left: PT ? '84px' : '630px', top: PT ? '1400px' : '700px', fontSize: '22px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#FC694F' });
 
   const FIX0 = 15.1, FIXD = .38; // fix i runs [FIX0 + i*FIXD, +.45]
   return (t) => {
@@ -402,7 +434,7 @@ scene('The catch', 8, 20, 'dark', (el) => {
     // --- status + beam
     const scanning = t >= 10.8 && t < 11.7;
     const kb = P(t, 10.8, 11.65);
-    beam.style.top = (78 + kb * 740) + 'px'; beamGlow.style.top = (78 + kb * 740 - 160) + 'px';
+    const span = PT ? 648 : 740; beam.style.top = (78 + kb * span) + 'px'; beamGlow.style.top = (78 + kb * span - 160) + 'px';
     beam.style.opacity = beamGlow.style.opacity = scanning ? 1 : 0;
     st.innerHTML = t < 10.7 ? '<span style="color:#B5B3AA">agent · writing</span>' : t < 14 ? '<span style="color:#FC694F">zengin · checking</span>' : t < 17.8 ? '<span style="color:#FC694F">agent · applying fixes</span>' : '<span style="color:#A0A98D">zengin · clean</span>';
     // --- counter
@@ -444,34 +476,46 @@ scene('The catch', 8, 20, 'dark', (el) => {
 
 /* ---------- 05 · One engine, four surfaces ---------- */
 scene('Four surfaces', 20, 26, 'light', (el) => {
-  const title = h('div', 'abs disp', el); css(title, { left: '120px', top: '110px', fontSize: '96px', fontWeight: 800, letterSpacing: '-.045em', lineHeight: '1' });
+  const title = h('div', 'abs disp', el); css(title, { left: PT ? '60px' : '120px', top: PT ? '250px' : '110px', fontSize: PT ? '112px' : '96px', fontWeight: 800, letterSpacing: '-.045em', lineHeight: '1' });
   const t1 = maskLine(title, 'One engine.'), t2 = maskLine(title, 'Four surfaces.');
   t2.style.color = '#D7472F';
-  const cam = h('div', 'abs', el); css(cam, { left: 0, top: 0, width: W + 'px', height: H + 'px', transformOrigin: '960px 600px' });
+  const cam = h('div', 'abs', el); css(cam, { left: 0, top: 0, width: W + 'px', height: H + 'px', transformOrigin: PT ? '540px 980px' : '960px 600px' });
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('width', W); svg.setAttribute('height', H); svg.style.position = 'absolute'; cam.appendChild(svg);
-  const cx = 960, cy = 640;
-  const engine = h('div', 'abs', cam); css(engine, { left: (cx - 170) + 'px', top: (cy - 170) + 'px', width: '340px', height: '340px', background: '#20231F', color: '#F4F1E9', display: 'grid', placeItems: 'center', boxShadow: '18px 18px 0 #D7472F' });
+  const cx = PT ? 540 : 960, cy = PT ? 980 : 640, ES = PT ? 150 : 170, NH = 170; // engine half-size, node height
+  const engine = h('div', 'abs', cam); css(engine, { left: (cx - ES) + 'px', top: (cy - ES) + 'px', width: ES * 2 + 'px', height: ES * 2 + 'px', background: '#20231F', color: '#F4F1E9', display: 'grid', placeItems: 'center', boxShadow: '18px 18px 0 #D7472F' });
   const eIn = h('div', '', engine); css(eIn, { textAlign: 'center' });
-  const em = markSVG(eIn, 140, '#FC694F');
+  const em = markSVG(eIn, PT ? 120 : 140, '#FC694F');
   h('div', 'disp', eIn, 'Engine').style.cssText = 'font-size:52px;font-weight:800;letter-spacing:-.03em;margin-top:10px';
   h('div', 'mono', eIn, '7 rules · no model').style.cssText = 'font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:#B5B3AA;margin-top:6px';
-  const NODES = [
+  const NODES = PT ? [
+    { k: '01 · for the agent', t: 'MCP server', p: '<b>zengin_check_code</b>( snippet )', x: 40, y: 570, ax: cx - 80, ay: cy - ES },
+    { k: '02 · after every edit', t: 'Hook', p: 'PostToolUse → <b>exit 2</b>', x: 40, y: 1230, ax: cx - 80, ay: cy + ES },
+    { k: '03 · terminal + CI', t: 'CLI', p: '<b>zengin check</b> --changed', x: 560, y: 570, ax: cx + 80, ay: cy - ES },
+    { k: '04 · across repos', t: 'Rollup', p: '<b>zengin rollup</b> reports/', x: 560, y: 1230, ax: cx + 80, ay: cy + ES },
+  ] : [
     { k: '01 · for the agent', t: 'MCP server', p: '<b>zengin_check_code</b>( snippet )', x: 150, y: 380, ax: cx - 170, ay: cy - 60 },
     { k: '02 · after every edit', t: 'Hook', p: 'PostToolUse → <b>exit 2</b>', x: 150, y: 730, ax: cx - 170, ay: cy + 80 },
     { k: '03 · terminal + CI', t: 'CLI', p: '<b>zengin check</b> --changed main', x: 1300, y: 380, ax: cx + 170, ay: cy - 60 },
     { k: '04 · across repos', t: 'Rollup', p: '<b>zengin rollup</b> reports/', x: 1300, y: 730, ax: cx + 170, ay: cy + 80 },
   ];
   const paths = NODES.map((n, i) => {
-    const left = n.x < cx;
-    const nx = left ? n.x + 470 : n.x, ny = n.y + 90;
-    const d = `M ${n.ax} ${n.ay} C ${left ? n.ax - 200 : n.ax + 200} ${n.ay}, ${left ? nx + 200 : nx - 200} ${ny}, ${nx} ${ny}`;
+    let d;
+    if (PT) {
+      // vertical wires: from the engine's top or bottom edge to the near edge of the node
+      const up = n.y < cy, nx = n.x + 240, ny = up ? n.y + NH : n.y, dir = up ? -1 : 1;
+      d = `M ${n.ax} ${n.ay} C ${n.ax} ${n.ay + dir * 110}, ${nx} ${ny - dir * 110}, ${nx} ${ny}`;
+    } else {
+      const left = n.x < cx;
+      const nx = left ? n.x + 470 : n.x, ny = n.y + 90;
+      d = `M ${n.ax} ${n.ay} C ${left ? n.ax - 200 : n.ax + 200} ${n.ay}, ${left ? nx + 200 : nx - 200} ${ny}, ${nx} ${ny}`;
+    }
     const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke', '#20231F'); p.setAttribute('stroke-width', '3'); svg.appendChild(p);
     const len = p.getTotalLength(); p.style.strokeDasharray = len;
     const pk = [0, 1, 2].map(() => { const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('width', 16); r.setAttribute('height', 16); r.setAttribute('fill', '#D7472F'); svg.appendChild(r); return r; });
     const node = h('div', 'node', cam, `<div class="k">${n.k}</div><h3>${n.t}</h3><p>${n.p}</p>`); css(node, { left: n.x + 'px', top: n.y + 'px' });
     return { p, len, pk, node };
   });
-  const foot = h('div', 'abs mono', el, 'The same violations, the same fixes, in each.'); css(foot, { right: '120px', top: '236px', fontSize: '22px', letterSpacing: '.06em', color: '#5B5E57', textAlign: 'right' });
+  const foot = h('div', 'abs mono', el, 'The same violations, the same fixes, in each.'); css(foot, PT ? { left: '64px', top: '500px', fontSize: '20px', letterSpacing: '.06em', color: '#5B5E57' } : { right: '120px', top: '236px', fontSize: '22px', letterSpacing: '.06em', color: '#5B5E57', textAlign: 'right' });
   return (t) => {
     [t1, t2].forEach((s, i) => { const k = E.o5(P(t, 20.05 + i * .3, 20.6 + i * .3)); s.style.transform = `translateY(${(1 - k) * 105}%)`; });
     const ke = E.oBack(P(t, 20.3, 20.8));
@@ -509,18 +553,18 @@ scene('Seven rules', 26, 30, 'dark', (el) => {
     ['classname-policy', 'contract', '<s>Button className="bg-…"</s> → <em>owned</em>'],
     ['component-substitution', 'substitution', '<s>&lt;button&gt;</s> → <em>&lt;Button&gt;</em>'],
   ];
-  const top = 150;
-  const cap = h('div', 'abs mono', el, 'The engine · seven rule kinds'); css(cap, { left: '120px', top: '84px', fontSize: '18px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#7F7E76' });
+  const top = PT ? 320 : 150, RH = PT ? 150 : 106;
+  const cap = h('div', 'abs mono', el, 'The engine · seven rule kinds'); css(cap, { left: PT ? '60px' : '120px', top: PT ? '260px' : '84px', fontSize: '18px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#7F7E76' });
   const rows = R.map(([n, f, ex], i) => {
     const r = h('div', 'rrow', el, `<span class="ix">0${i + 1}</span><span class="nm">${n}</span><span class="fam">${f}</span><span class="ex">${ex}</span>`);
-    css(r, { top: (top + i * 106) + 'px' });
+    css(r, { top: (top + i * RH) + 'px' });
     r.querySelector('.fam').style.color = f === 'foundation' ? '#FC694F' : f === 'contract' ? '#F4F1E9' : '#A0A98D';
     return r;
   });
   const over = h('div', 'abs', el); css(over, { left: 0, top: 0, width: W + 'px', height: H + 'px', background: '#D7472F', color: '#20231F' });
-  const ot = h('div', 'abs disp', over); css(ot, { left: '110px', top: '300px', fontSize: '232px', fontWeight: 900, letterSpacing: '-.06em', lineHeight: '.95', whiteSpace: 'nowrap' });
-  const o1 = maskLine(ot, 'Deterministic.'), o2 = maskLine(ot, '');
-  const os = h('div', 'abs mono', over, 'Same input. Same answer. No model in the loop.'); css(os, { left: '124px', top: '640px', fontSize: '34px', letterSpacing: '.04em', color: '#F4F1E9' });
+  const ot = h('div', 'abs disp', over); css(ot, { left: PT ? '64px' : '110px', top: PT ? '520px' : '300px', fontSize: PT ? '206px' : '232px', fontWeight: 900, letterSpacing: '-.06em', lineHeight: '.95', whiteSpace: 'nowrap' });
+  const o1 = maskLine(ot, PT ? 'Determin-' : 'Deterministic.'), o2 = maskLine(ot, PT ? 'istic.' : '');
+  const os = h('div', 'abs mono', over, PT ? 'Same input. Same answer.<br>No model in the loop.' : 'Same input. Same answer. No model in the loop.'); css(os, PT ? { left: '72px', top: '1000px', width: '900px', fontSize: '34px', lineHeight: '1.5', letterSpacing: '.04em', color: '#F4F1E9' } : { left: '124px', top: '640px', fontSize: '34px', letterSpacing: '.04em', color: '#F4F1E9' });
   return (t) => {
     cap.style.opacity = P(t, 26, 26.3);
     rows.forEach((r, i) => {
@@ -551,27 +595,32 @@ const THEMES = [
 ];
 scene('The system', 30, 36, 'light', (el) => {
   const sys = h('div', 'abs', el); sys.id = 'sys'; css(sys, { left: 0, top: 0, width: W + 'px', height: H + 'px' });
-  const label = h('div', 'abs', el); css(label, { left: '120px', top: '76px', display: 'flex', alignItems: 'baseline', gap: '24px' });
+  const label = h('div', 'abs', el); css(label, { left: PT ? '50px' : '120px', top: PT ? '240px' : '76px', display: 'flex', alignItems: 'baseline', gap: '24px' });
   const lk = h('div', 'mono', label, 'zengin theme'); css(lk, { fontSize: '20px', letterSpacing: '.14em', textTransform: 'uppercase' });
   const ln = h('div', 'disp', label); css(ln, { fontSize: '64px', fontWeight: 800, letterSpacing: '-.04em' });
-  const stats = h('div', 'abs mono', el); css(stats, { right: '120px', top: '96px', fontSize: '20px', letterSpacing: '.12em', textTransform: 'uppercase', textAlign: 'right' });
+  const stats = h('div', 'abs mono', el); css(stats, PT ? { left: '50px', top: '330px', fontSize: '18px', letterSpacing: '.12em', textTransform: 'uppercase' } : { right: '120px', top: '96px', fontSize: '20px', letterSpacing: '.12em', textTransform: 'uppercase', textAlign: 'right' });
   // tiles laid on a 12-col grid, 120px margins
-  const G = (c, r, cw, rh) => ({ left: (120 + c * 140) + 'px', top: (200 + r * 130) + 'px', width: (cw * 140 - 24) + 'px', height: (rh * 130 - 24) + 'px' });
+  const G = PT
+    ? (c, r, cw, rh) => ({ left: (50 + c * 502) + 'px', top: (440 + r * 120) + 'px', width: (cw * 502 - 12) + 'px', height: (rh * 120 - 12) + 'px' })
+    : (c, r, cw, rh) => ({ left: (120 + c * 140) + 'px', top: (200 + r * 130) + 'px', width: (cw * 140 - 24) + 'px', height: (rh * 130 - 24) + 'px' });
+  // portrait places each tile on a two-column grid: [col, row, width, height]
+  const PG = { button: [0, 0, 1, 2], stat: [1, 0, 1, 2], chart: [0, 2, 2, 3], form: [0, 5, 1, 2], prog: [1, 5, 1, 2], kan: [0, 7, 2, 2], toast: [0, 0, 1, 1] };
+  const at = (k, ...land) => PT ? G(...PG[k]) : G(...land);
   const T = [];
   const tile = (pos, cap, inner) => { const d = h('div', 'tile', sys, `<div class="cap">${cap}</div>${inner}`); css(d, pos); T.push(d); return d; };
-  tile(G(0, 0, 4, 2), 'Button', `<div style="display:flex;gap:14px;flex-wrap:wrap"><span class="btn solid">Deploy</span><span class="btn soft">Preview</span><span class="btn ghost">Cancel</span></div><div style="display:flex;gap:10px;margin-top:22px"><span class="badge" style="background:var(--t-soft);color:var(--t-soft-fg)">New</span><span class="badge" style="background:var(--t-sunken);color:var(--t-text)">Draft</span><span class="badge b-ok" style="color:#fff;background:var(--t-success)">Live</span></div>`);
-  const stat = tile(G(4, 0, 4, 2), 'StatTile', `<div style="font-size:20px;color:var(--t-muted)">Monthly revenue</div><div class="tdisp num" style="font-size:78px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:6px">$48,210</div><div style="font-size:19px;color:var(--t-success);font-weight:600;margin-top:4px">▲ 12.4% vs last month</div>`);
-  const chart = tile(G(8, 0, 4, 4), 'LineChart', `<svg width="516" height="380" viewBox="0 0 516 380" style="display:block"><g class="gl"></g><path class="area" fill="var(--t-soft)" /><path class="ln" fill="none" stroke="var(--t-primary)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><circle class="dot" r="9" fill="var(--t-primary)" stroke="var(--t-raised)" stroke-width="4"/></svg>`);
-  const form = tile(G(0, 2, 4, 2), 'TextField · Switch', `<div class="field"><span class="typ"></span><span class="car" style="display:inline-block;width:2px;height:26px;background:var(--t-primary);margin-left:2px"></span></div><div style="display:flex;align-items:center;gap:16px;margin-top:22px;font-size:20px"><span class="sw"><i></i></span>Notify the team</div>`);
-  const prog = tile(G(4, 2, 4, 2), 'Progress · Avatar', `<div style="display:flex;justify-content:space-between;font-size:19px;margin-bottom:12px"><span>Migrating tokens</span><span class="pv num"></span></div><div class="prog"><i></i></div><div style="display:flex;margin-top:24px">${['TB', 'AK', 'MR', 'JS'].map((a, i) => `<span style="width:52px;height:52px;border-radius:999px;display:grid;place-items:center;font-weight:700;font-size:17px;margin-left:${i ? -12 : 0}px;border:3px solid var(--t-raised);background:${i % 2 ? 'var(--t-soft)' : 'var(--t-sunken)'};color:${i % 2 ? 'var(--t-soft-fg)' : 'var(--t-text)'}">${a}</span>`).join('')}<span style="margin-left:14px;align-self:center;color:var(--t-muted);font-size:18px">+ 12 reviewers</span></div>`);
-  const kan = tile(G(0, 4, 8, 2), 'Kanban · keyboard-first', `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">${['Backlog', 'In progress', 'Review', 'Done'].map((c, i) => `<div class="kcol"><div style="font-size:15px;font-weight:700;color:var(--t-muted);text-transform:uppercase;letter-spacing:.08em">${c}</div>${i < 3 ? `<div class="kcard">${['Tokens v2', 'Combobox', 'Dark theme'][i]}</div>` : ''}<div class="kcard" style="visibility:hidden">&nbsp;</div></div>`).join('')}</div>`);
-  const toast = tile(G(8, 4, 4, 2), 'Toast', `<div style="display:flex;gap:16px;align-items:flex-start"><span style="width:40px;height:40px;flex:none;border-radius:var(--radius);background:var(--t-success);color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px">✓</span><div><div style="font-weight:700;font-size:21px">Check passed</div><div style="color:var(--t-muted);font-size:18px;margin-top:4px">66 files · 0 violations</div></div></div>`);
-  const flying = h('div', 'abs', kan); css(flying, { pointerEvents: 'none' });
+  tile(at('button', 0, 0, 4, 2), 'Button', `<div style="display:flex;gap:14px;flex-wrap:wrap"><span class="btn solid">Deploy</span><span class="btn soft">Preview</span><span class="btn ghost">Cancel</span></div><div style="display:flex;gap:10px;margin-top:22px"><span class="badge" style="background:var(--t-soft);color:var(--t-soft-fg)">New</span><span class="badge" style="background:var(--t-sunken);color:var(--t-text)">Draft</span><span class="badge b-ok" style="color:#fff;background:var(--t-success)">Live</span></div>`);
+  const stat = tile(at('stat', 4, 0, 4, 2), 'StatTile', `<div style="font-size:20px;color:var(--t-muted)">Monthly revenue</div><div class="tdisp num" style="font-size:78px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:6px">$48,210</div><div style="font-size:19px;color:var(--t-success);font-weight:600;margin-top:4px">▲ 12.4% vs last month</div>`);
+  const cw = PT ? 944 : 516, chh = PT ? 230 : 360;
+  const chart = tile(at('chart', 8, 0, 4, 4), 'LineChart', `<svg width="${cw}" height="${chh + 20}" viewBox="0 0 ${cw} ${chh + 20}" style="display:block"><g class="gl"></g><path class="area" fill="var(--t-soft)" /><path class="ln" fill="none" stroke="var(--t-primary)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><circle class="dot" r="9" fill="var(--t-primary)" stroke="var(--t-raised)" stroke-width="4"/></svg>`);
+  const form = tile(at('form', 0, 2, 4, 2), 'TextField · Switch', `<div class="field"><span class="typ"></span><span class="car" style="display:inline-block;width:2px;height:26px;background:var(--t-primary);margin-left:2px"></span></div><div style="display:flex;align-items:center;gap:16px;margin-top:22px;font-size:20px"><span class="sw"><i></i></span>Notify the team</div>`);
+  const prog = tile(at('prog', 4, 2, 4, 2), 'Progress · Avatar', `<div style="display:flex;justify-content:space-between;font-size:19px;margin-bottom:12px"><span>Migrating tokens</span><span class="pv num"></span></div><div class="prog"><i></i></div><div style="display:flex;margin-top:24px">${['TB', 'AK', 'MR', 'JS'].map((a, i) => `<span style="width:52px;height:52px;border-radius:999px;display:grid;place-items:center;font-weight:700;font-size:17px;margin-left:${i ? -12 : 0}px;border:3px solid var(--t-raised);background:${i % 2 ? 'var(--t-soft)' : 'var(--t-sunken)'};color:${i % 2 ? 'var(--t-soft-fg)' : 'var(--t-text)'}">${a}</span>`).join('')}<span style="margin-left:14px;align-self:center;color:var(--t-muted);font-size:18px">+ 12 reviewers</span></div>`);
+  const kan = tile(at('kan', 0, 4, 8, 2), 'Kanban · keyboard-first', `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">${['Backlog', 'In progress', 'Review', 'Done'].map((c, i) => `<div class="kcol"><div style="font-size:15px;font-weight:700;color:var(--t-muted);text-transform:uppercase;letter-spacing:.08em">${c}</div>${i < 3 ? `<div class="kcard">${['Tokens v2', 'Combobox', 'Dark theme'][i]}</div>` : ''}</div>`).join('')}</div>`);
+  const toast = tile(at('toast', 8, 4, 4, 2), 'Toast', `<div style="display:flex;gap:16px;align-items:flex-start"><span style="width:40px;height:40px;flex:none;border-radius:var(--radius);background:var(--t-success);color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px">✓</span><div><div style="font-weight:700;font-size:21px">Check passed</div><div style="color:var(--t-muted);font-size:18px;margin-top:4px">66 files · 0 violations</div></div></div>`);
+  if (PT) { toast.remove(); T.splice(T.indexOf(toast), 1); }
   // chart data
   const pts = [22, 30, 26, 38, 35, 47, 44, 58, 55, 70, 66, 82];
-  const cw = 516, chh = 360;
   const xy = pts.map((v, i) => [10 + i * (cw - 20) / (pts.length - 1), chh - v / 90 * chh]);
-  const gl = chart.querySelector('.gl'); for (let i = 0; i < 5; i++) { const l = document.createElementNS('http://www.w3.org/2000/svg', 'line'); l.setAttribute('x1', 0); l.setAttribute('x2', cw); l.setAttribute('y1', 20 + i * 80); l.setAttribute('y2', 20 + i * 80); l.setAttribute('stroke', 'var(--t-border)'); l.setAttribute('stroke-width', 1.5); gl.appendChild(l); }
+  const gl = chart.querySelector('.gl'); for (let i = 0; i < 5; i++) { const l = document.createElementNS('http://www.w3.org/2000/svg', 'line'); l.setAttribute('x1', 0); l.setAttribute('x2', cw); const gy = 20 + i * (chh - 20) / 4; l.setAttribute('y1', gy); l.setAttribute('y2', gy); l.setAttribute('stroke', 'var(--t-border)'); l.setAttribute('stroke-width', 1.5); gl.appendChild(l); }
   const lnP = chart.querySelector('.ln'), arP = chart.querySelector('.area'), dot = chart.querySelector('.dot');
   // theme schedule: swaps on beats
   const SWAPS = [[30, 0], [31.5, 1], [32.0, 2], [32.5, 3], [33.0, 4], [33.5, 5], [34.5, 0]];
@@ -626,21 +675,22 @@ scene('The system', 30, 36, 'light', (el) => {
     // a kanban card travels across the columns
     const cards = kan.querySelectorAll('.kcard');
     const kk = E.io3(P(t, 32.8, 34.2));
-    cards[1].style.transform = `translate(${kk * 525}px, ${-Math.sin(kk * Math.PI) * 30}px) rotate(${Math.sin(kk * Math.PI) * 4}deg)`;
+    const cols = kan.querySelectorAll('.kcol'), travel = cols[3].offsetLeft - cols[1].offsetLeft;
+    cards[1].style.transform = `translate(${kk * travel}px, ${-Math.sin(kk * Math.PI) * 30}px) rotate(${Math.sin(kk * Math.PI) * 4}deg)`;
     cards[1].style.boxShadow = kk > 0 && kk < 1 ? '0 14px 30px rgba(0,0,0,.18)' : '';
     cards[1].style.position = 'relative'; cards[1].style.zIndex = 2;
     toast.style.transform += ` translateX(${(1 - E.oBack(P(t, 31.2, 31.7))) * 400}px)`;
     // whole grid breathes forward
-    sys.style.transform = `scale(${1.0 + .03 * E.io3(P(t, 30, 36))})`; sys.style.transformOrigin = '960px 600px';
+    sys.style.transform = `scale(${1.0 + .03 * E.io3(P(t, 30, 36))})`; sys.style.transformOrigin = PT ? '540px 960px' : '960px 600px';
   };
 });
 
 /* ---------- 08 · Start in one line; proven on real repos ---------- */
 scene('Start', 36, 41, 'dark', (el) => {
   const grid = gridLines(el, 12, 7); grid.g.style.opacity = .6;
-  const box = h('div', 'editor', el); css(box, { left: '110px', top: '150px', width: '1000px', height: '560px' });
+  const box = h('div', 'editor', el); css(box, PT ? { left: '40px', top: '250px', width: '1000px', height: '500px' } : { left: '110px', top: '150px', width: '1000px', height: '560px' });
   h('div', 'chrome', box, '<span class="dots"><i></i><i></i><i></i></span><b>~/code</b><span style="margin-left:auto">zsh</span>');
-  const term = h('div', 'term', box); css(term, { padding: '30px 34px' });
+  const term = h('div', 'term', box); css(term, { padding: PT ? '24px 26px' : '30px 34px' });
   const cmd = 'npm create zengin@latest acme -- --template saas';
   const OUT = [
     ['ok', '✓', ' Created acme from template <b style="color:#F4F1E9">saas</b>'],
@@ -649,22 +699,22 @@ scene('Start', 36, 41, 'dark', (el) => {
     ['ok', '✓', ' Tokens, 2 themes, Storybook, mock data'],
     ['ok', '✓', ' zengin check · <b style="color:#A0A98D">0 violations</b>'],
   ];
-  const right = h('div', 'abs', el); css(right, { left: '1190px', top: '150px', width: '620px' });
+  const right = h('div', 'abs', el); css(right, PT ? { left: '40px', top: '810px', width: '860px' } : { left: '1190px', top: '150px', width: '620px' });
   h('div', 'mono', right, 'Field tests · real open-source repos').style.cssText = 'font-size:17px;letter-spacing:.14em;text-transform:uppercase;color:#7F7E76';
   const FT = [['shadcn/taxonomy', 35], ['vercel/ai-chatbot', 109], ['umami-software/umami', 147]];
   const rows = FT.map(([n, v], i) => {
-    const r = h('div', '', right); css(r, { marginTop: i ? '34px' : '30px' });
+    const r = h('div', '', right); css(r, { marginTop: PT ? (i ? '22px' : '22px') : i ? '34px' : '30px' });
     r.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:baseline"><span class="mono" style="font-size:22px;color:#F4F1E9">${n}</span><span class="disp nv" style="font-size:64px;font-weight:800;letter-spacing:-.03em;color:#FC694F;font-variant-numeric:tabular-nums"></span></div><div style="height:10px;background:#2B2E29;margin-top:6px"><i style="display:block;height:100%;background:#FC694F"></i></div>`;
     return { r, v };
   });
-  const fp = h('div', '', right); css(fp, { marginTop: '46px', borderTop: '2px solid #363933', paddingTop: '22px' });
+  const fp = h('div', '', right); css(fp, { marginTop: PT ? '30px' : '46px', borderTop: '2px solid #363933', paddingTop: PT ? '12px' : '22px' });
   fp.innerHTML = '<span class="disp" style="font-size:88px;font-weight:900;letter-spacing:-.04em;color:#A0A98D">0</span><span class="mono" style="font-size:22px;letter-spacing:.1em;text-transform:uppercase;color:#B5B3AA;margin-left:20px">false positives</span>';
-  const sub = h('div', 'abs mono', el, '424 violations read and classified by hand'); css(sub, { left: '1190px', top: '860px', fontSize: '20px', letterSpacing: '.1em', textTransform: 'uppercase', color: '#7F7E76' });
+  const sub = h('div', 'abs mono', el, '424 violations read and classified by hand'); css(sub, { left: PT ? '40px' : '1190px', top: PT ? '1420px' : '860px', fontSize: PT ? '18px' : '20px', letterSpacing: '.1em', textTransform: 'uppercase', color: '#7F7E76' });
   return (t) => {
     box.style.transform = `translateY(${(1 - E.o4(P(t, 36, 36.5))) * 60}px)`; box.style.opacity = P(t, 36, 36.2);
     const n = Math.floor(cmd.length * P(t, 36.3, 37.5));
     let s = `<span class="p">❯</span> ${esc(cmd.slice(0, n))}`;
-    if (t < 37.6) s += (Math.floor(t * 4) % 2 === 0 || t < 37.5) ? '<span class="cursor" style="display:inline-block;width:15px;height:32px;background:#FC694F;vertical-align:-6px"></span>' : '';
+    if (t < 37.6) s += (Math.floor(t * 4) % 2 === 0 || t < 37.5) ? '<span class="cursor" style="display:inline-block;width:' + (PT ? 13 : 15) + 'px;height:' + (PT ? 28 : 32) + 'px;background:#FC694F;vertical-align:-6px"></span>' : '';
     s += '\n';
     OUT.forEach(([c, m, txt], i) => { if (t >= 37.7 + i * .25) s += `\n<span class="${c}">${m}</span>${txt}`; });
     if (t >= 39.1) s += `\n\n<span class="dim">  cd acme && npm run dev</span>`;
@@ -685,13 +735,13 @@ scene('Start', 36, 41, 'dark', (el) => {
 /* ---------- 09 · End card ---------- */
 scene('End card', 41, 45, 'dark', (el) => {
   const flash = h('div', 'abs', el); css(flash, { left: 0, top: 0, width: W + 'px', height: H + 'px', background: '#D7472F' });
-  const markBox = h('div', 'abs', el); css(markBox, { left: (W / 2 - 170) + 'px', top: '150px', width: '340px', height: '340px' });
+  const markBox = h('div', 'abs', el); css(markBox, { left: (W / 2 - 170) + 'px', top: PT ? '380px' : '150px', width: '340px', height: '340px' });
   const m = markSVG(markBox, 340, '#D7472F');
-  const word = h('div', 'abs disp', el); css(word, { left: 0, width: W + 'px', textAlign: 'center', top: '510px', fontSize: '150px', fontWeight: 800, letterSpacing: '-.045em', lineHeight: '1.02' });
+  const word = h('div', 'abs disp', el); css(word, { left: 0, width: W + 'px', textAlign: 'center', top: PT ? '810px' : '510px', fontSize: PT ? '132px' : '150px', fontWeight: 800, letterSpacing: '-.045em', lineHeight: '1.02' });
   const w1 = maskLine(word, 'Your system.');
   const w2 = maskLine(word, 'Every change.'); w2.style.color = '#FC694F';
-  const foot = h('div', 'abs mono', el); css(foot, { left: 0, width: W + 'px', textAlign: 'center', top: '880px', fontSize: '28px', letterSpacing: '.06em', color: '#B5B3AA' });
-  foot.innerHTML = '<span style="color:#F4F1E9;border:2px solid #4A4D45;padding:12px 22px">npm create zengin@latest</span><span style="margin:0 28px;color:#4A4D45">/</span>zengin.timurtek.com';
+  const foot = h('div', 'abs mono', el); css(foot, { left: 0, width: W + 'px', textAlign: 'center', top: PT ? '1170px' : '880px', fontSize: '28px', letterSpacing: '.06em', color: '#B5B3AA', lineHeight: PT ? '1.4' : '' });
+  foot.innerHTML = '<span style="color:#F4F1E9;border:2px solid #4A4D45;padding:12px 22px">npm create zengin@latest</span>' + (PT ? '<div style="margin-top:44px">zengin.timurtek.com</div>' : '<span style="margin:0 28px;color:#4A4D45">/</span>zengin.timurtek.com');
   const black = h('div', 'abs', el); css(black, { left: 0, top: 0, width: W + 'px', height: H + 'px', background: '#000' });
   return (t) => {
     flash.style.opacity = 1 - E.o3(P(t, 41.0, 41.35));
@@ -713,6 +763,8 @@ const CUTS = [[4, '#F4F1E9'], [8, '#20231F'], [20, '#F4F1E9'], [26, '#20231F'], 
 const wipeEl = document.getElementById('wipe');
 const slabA = h('div', '', wipeEl), slabB = h('div', '', wipeEl);
 slabA.style.background = '#D7472F';
+const SW = W + 0.7 * H, OFF = SW + 0.3 * H;
+[slabA, slabB].forEach((sl) => css(sl, { width: SW + 'px', left: '0' }));
 function wipes(t) {
   let on = false;
   for (const [c, bg] of CUTS) {
@@ -721,11 +773,11 @@ function wipes(t) {
       slabB.style.background = bg;
       // A: -170% → +170% over [c-.32, c+.3]; B trails it and holds full cover at the cut
       const ka = E.io3(P(t, c - .32, c + .3));
-      const xa = lerp(-190, 170, ka);
-      slabA.style.transform = `translateX(${xa}%) skewX(-28deg)`;
+      const xa = lerp(-OFF, W + 0.3 * H, ka);
+      slabA.style.transform = `translateX(${xa}px) skewX(-28deg)`;
       const kb = E.i3(P(t, c - .26, c));
-      const xb = lerp(-190, -25, kb);
-      slabB.style.transform = `translateX(${xb}%) skewX(-28deg)`;
+      const xb = lerp(-OFF, -0.3 * H - 20, kb);
+      slabB.style.transform = `translateX(${xb}px) skewX(-28deg)`;
       slabB.style.display = t < c ? 'block' : 'none';
     }
   }
