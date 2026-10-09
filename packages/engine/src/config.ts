@@ -3,6 +3,7 @@ import { dirname, resolve, join } from "node:path";
 import { parse as parseYaml } from "yaml";
 import type { RuleId, ResolvedConfig, ResolvedProfile, ResolvedRuleConfig, RuleConfig, Severity, ZenginConfig } from "./types.js";
 import { RULE_IDS } from "./types.js";
+import { BRAND_CSS } from "./system/brand.js";
 
 const DEFAULT_INCLUDE = ["src/**/*.{ts,tsx,js,jsx,css}"];
 const DEFAULT_EXCLUDE = ["**/*.stories.{ts,tsx}", "**/*.test.{ts,tsx}", "**/node_modules/**"];
@@ -39,6 +40,7 @@ export function resolveConfig(config: ZenginConfig, projectDir: string): Resolve
       version,
       sources: config.system.sources ?? [pkg, `${pkg}/*`],
       definitionsDir,
+      brandCss: config.system.brand === false ? undefined : resolve(projectDir, config.system.brand ?? BRAND_CSS),
     },
     scope: {
       include: config.scope?.include ?? DEFAULT_INCLUDE,

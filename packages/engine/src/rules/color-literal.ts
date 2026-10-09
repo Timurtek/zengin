@@ -2,6 +2,7 @@ import { offsetsToRange } from "../parse/css.js";
 import { findColorLiterals, findVarRefs, isColorProp, rewriteAll, tokenUtilityPrefix } from "../resolve/css-props.js";
 import type { Token, Fix, Violation } from "../types.js";
 import { rewriteKey, utilityUses, type ClassUse, type Rule, type RuleContext } from "./context.js";
+import type { ColorMatch } from "../system/tokens.js";
 
 const ID = "color-literal";
 
@@ -13,33 +14,42 @@ interface Match {
   note?: string;
 }
 
+/** Where a matched value lives: the token file's default or the project's brand, light or dark. */
+function where(m: ColorMatch): string {
+  if (m.brand) return m.mode === "dark" ? "the project's brand (dark)" : "the project's brand";
+  return m.mode === "dark" ? "the dark theme" : "the default theme";
+}
+
 /** What the engine knows about a color value relative to the token set. */
 function describe(ctx: RuleContext, literal: string): Match {
-  const exact = ctx.tokens.exactColors(literal);
+  const matches = ctx.tokens.colorMatches(literal);
+  const exact = matches.map((m) => m.token);
   if (exact.length === 1) {
     return {
-      message: `Color literal where a token reference is required. The value matches ${exact[0]!.name} in the default theme but will not follow theme changes.`,
+      message: `Color literal where a token reference is required. The value matches ${exact[0]!.name} in ${where(matches[0]!)} but will not follow theme changes.`,
       token: exact[0],
       confidence: "exact",
     };
   }
   if (exact.length > 1) {
     const names = exact.map((t) => t.name);
+    const places = [...new Set(matches.map(where))];
     return {
-      message: `Color literal where a token reference is required. The value matches ${names.length} tokens (${names.join(", ")}) in the default theme but will not follow theme changes.`,
+      message: `Color literal where a token reference is required. The value matches ${names.length} tokens (${names.join(", ")}) in ${places.join(" and ")} but will not follow theme changes.`,
       token: exact[0],
       confidence: "nearest",
       candidates: names,
       note: `Several tokens share this value. Pick by role: ${names.join(", ")}.`,
     };
   }
-  const near = ctx.tokens.nearestColor(literal);
+  const near = ctx.tokens.nearestColorMatch(literal);
   if (near) {
+    const at = near.brand || near.mode === "dark" ? ` in ${where(near)}` : "";
     return {
       message: `Color literal where a token reference is required. ${literal} has no exact token match.`,
-      token: near,
+      token: near.token,
       confidence: "nearest",
-      note: `Nearest by value: ${near.name} = ${near.value}. Verify the semantic role before applying.`,
+      note: `Nearest by value: ${near.token.name} = ${near.value}${at}. Verify the semantic role before applying.`,
     };
   }
   return { message: `Color literal where a token reference is required. ${literal} could not be matched to a token.`, confidence: "none" };

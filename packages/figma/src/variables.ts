@@ -1,5 +1,5 @@
 import { loadTokens, type Token } from "@zenginui/engine";
-import { parseBrandCss } from "./brand.js";
+import { parseBrandCss } from "@zenginui/engine";
 
 /**
  * Tokens to Figma variables and back. One rule carries both directions: the variable is named like the

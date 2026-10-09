@@ -1,7 +1,8 @@
 export { createEngine, loadDefinitions, sortViolations, type Engine } from "./engine.js";
 export { loadConfigFile, resolveConfig, compareVersions } from "./config.js";
 export { readProjectFiles } from "./project.js";
-export { loadTokens, toThemeCss, TokenIndex, normalizeColor } from "./system/tokens.js";
+export { loadTokens, loadDarkTokens, toThemeCss, TokenIndex, normalizeColor, type ColorMatch, type TokenIndexOptions } from "./system/tokens.js";
+export { BRAND_CSS, parseBrandCss, resolveBrandValues, type BrandValues, type ParsedBrandCss } from "./system/brand.js";
 export { ComponentIndex } from "./system/components.js";
 export { resolveProfiles, type ProfileResolver, type ProfileView } from "./system/profiles.js";
 export { RULES } from "./rules/index.js";

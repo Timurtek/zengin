@@ -204,9 +204,11 @@ Examples:
     async ({ component, namespace, format }) => {
       try {
         const engine = await host.engine();
-        const tokens = engine.definitions.tokens
+        // the values the project shows: the brand's where src/theme/brand.css sets one, with the default beside it
+        const defaults = new Map(engine.definitions.tokens.map((t) => [t.cssVar, t.value]));
+        const tokens = engine.tokens
           .filter((t) => !namespace || t.namespace === namespace)
-          .map(({ name, cssVar, namespace: ns, type, value }) => ({ name, cssVar, namespace: ns, type, value }));
+          .map(({ name, cssVar, namespace: ns, type, value }) => ({ name, cssVar, namespace: ns, type, value, ...(defaults.get(cssVar) !== value ? { default: defaults.get(cssVar) } : {}) }));
         const components = engine.definitions.components.filter((c) => !component || c.name === component);
         if (component && components.length === 0) {
           const names = engine.definitions.components.map((c) => c.name).join(", ");
@@ -226,7 +228,7 @@ Examples:
           const lines = [`# ${output.package}@${output.version}`, ""];
           if (output.tokens.length) {
             lines.push("## Tokens", "");
-            for (const t of output.tokens) lines.push(`- ${t.name} (${t.cssVar}) = ${t.value}`);
+            for (const t of output.tokens) lines.push(`- ${t.name} (${t.cssVar}) = ${t.value}${t.default !== undefined ? ` (brand; default ${t.default})` : ""}`);
             lines.push("");
           }
           for (const c of output.components) {

@@ -270,6 +270,8 @@ Seven rule kinds in three families. Each one answers a different way of leaving 
 
 **\`color-literal\`** finds a color literal where a token reference is required, in a class, an inline style or CSS. Hex, \`rgb()\`, \`oklch()\` and named colors all count. A literal that happens to equal a token's value is still a violation, because it will not follow a theme change. That is the whole point of the rule, and it is the one people argue with until the first rebrand.
 
+The fix is matched against what the project paints: the brand's values where \`src/theme/brand.css\` sets them, the token files' elsewhere, light first and then dark. In a project whose brand makes primary \`#1E6B3C\`, that literal is \`color.primary\`, and its dark lime is \`color.primary\` too. The message says where the value it matched lives: the project's brand, the default theme, or dark.
+
 **\`spacing-literal\`** finds an arbitrary length on margin, padding, gap or scroll offsets that is not on the spacing scale. Position offsets are coordinates, not spacing, and are left alone.
 
 **\`token-reference\`** finds a utility class or \`var()\` reference to a token that does not exist, in a namespace your system defines tokens for. This catches the typo and the token that was renamed underneath a file.
@@ -1066,6 +1068,7 @@ system:
   version: "0.2.0"                 # read from node_modules when omitted
   sources: ["@zenginui/ui", "@/components/ui/*"]
   definitions: ./zengin            # default: node_modules/<package>/zengin
+  brand: src/theme/brand.css       # the default, read when it exists; false to match the token files alone
 
 scope:
   include: ["src/**/*.{ts,tsx,css}"]

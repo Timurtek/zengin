@@ -39,6 +39,7 @@ system:
   version: "1.2.0"                 # read from node_modules when omitted
   sources: ["@zenginui/ui", "@/components/ui/*"]
   definitions: ./node_modules/@zenginui/ui/zengin   # default
+  brand: src/theme/brand.css       # default, read when it exists; false = the token files alone
 
 scope:
   include: ["src/**/*.{ts,tsx,css}"]

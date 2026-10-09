@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createEngine, loadConfigFile, readProjectFiles, resolveConfig, type Violation } from "../src/index.js";
 import { compareVersions } from "../src/config.js";
-import { loadTokens, TokenIndex } from "../src/system/tokens.js";
+import { loadDarkTokens, loadTokens, TokenIndex } from "../src/system/tokens.js";
 import { StylesheetIndex } from "../src/resolve/stylesheet.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -287,5 +287,91 @@ describe("config", () => {
   it("leaves the tailwind adapter off when the project does not depend on it", () => {
     const resolved = resolveConfig({ system: { package: "@zenginui/ui", version: "1.0.0" } }, PROJECTS[1].dir);
     expect(resolved.classes.tailwind).toBe(false);
+  });
+});
+
+describe("a project's brand", () => {
+  const tokens = { color: { $type: "color", primary: { $value: "#3B82F6" }, surface: { $value: "#FFFFFF" }, text: { $value: "#0F172A" }, border: { $value: "#E2E8F0" } }, space: { $type: "dimension", "3": { $value: "12px" }, "4": { $value: "16px" } } };
+  const dark = { color: { $type: "color", primary: { $value: "#60A5FA" }, surface: { $value: "#0F172A" }, text: { $value: "#F1F5F9" } } };
+  const brandCss = `/* The brand. */
+:root,
+[data-theme="light"] {
+  --color-primary: #1e6b3c;
+  --color-surface: #f4f8f5;
+  --spacing-4: 18px;
+  --brand-only: 2px;
+}
+[data-theme="dark"] {
+  --color-primary: #c8f542;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --color-primary: #c8f542; }
+}
+`;
+  const component = 'export const A = () => <div style={{ color: "#1E6B3C", background: "#C8F542", borderColor: "#3B82F6", outlineColor: "#F1F5F9" }} />;\n';
+
+  async function run(config: Record<string, unknown> = {}) {
+    const { mkdtempSync, writeFileSync, mkdirSync, rmSync } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const dir = mkdtempSync(join(tmpdir(), "zengin-brand-"));
+    try {
+      mkdirSync(join(dir, "zengin"), { recursive: true });
+      mkdirSync(join(dir, "src", "theme"), { recursive: true });
+      writeFileSync(join(dir, "zengin", "tokens.json"), JSON.stringify(tokens));
+      writeFileSync(join(dir, "zengin", "tokens.dark.json"), JSON.stringify(dark));
+      writeFileSync(join(dir, "zengin", "components.json"), "[]");
+      writeFileSync(join(dir, "src", "theme", "brand.css"), brandCss);
+      writeFileSync(join(dir, "src", "a.tsx"), component);
+      const resolved = resolveConfig({ system: { package: "x", version: "1.0.0", definitions: "./zengin", ...config }, scope: { include: ["src/**"], foundations: ["src/theme/**"] }, classes: { tailwind: false } }, dir);
+      const engine = await createEngine(resolved);
+      const violations = engine.check(readProjectFiles(dir, resolved.scope.include, resolved.scope.exclude)).filter((v) => v.rule === "color-literal");
+      const by = (found: string) => violations.find((v) => v.found.includes(found))!;
+      return { engine, by };
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+
+  it("matches literals against the brand's values, light and dark, and no longer against the defaults it replaces", async () => {
+    const { by } = await run();
+    expect([by("#1E6B3C").fix.token, by("#1E6B3C").fix.confidence]).toEqual(["color.primary", "exact"]);
+    expect(by("#1E6B3C").message).toContain("matches color.primary in the project's brand");
+    expect([by("#C8F542").fix.token, by("#C8F542").fix.confidence]).toEqual(["color.primary", "exact"]);
+    expect(by("#C8F542").message).toContain("in the project's brand (dark)");
+    // the default primary is not what this project paints any more: a guess, not a match
+    expect(by("#3B82F6").fix.confidence).toBe("nearest");
+    // a dark value the brand leaves alone still comes from the dark token file
+    expect([by("#F1F5F9").fix.token, by("#F1F5F9").fix.confidence]).toEqual(["color.text", "exact"]);
+    expect(by("#F1F5F9").message).toContain("in the dark theme");
+  });
+
+  it("shows the brand's values and what it could not place", async () => {
+    const { engine } = await run();
+    expect(engine.tokens.find((t) => t.cssVar === "--color-primary")!.value).toBe("#1e6b3c");
+    expect(engine.definitions.tokens.find((t) => t.cssVar === "--color-primary")!.value).toBe("#3b82f6"); // the defaults stay the defaults
+    expect(engine.brand?.unmatched).toEqual(["--brand-only"]);
+    expect(engine.brand?.dark["--color-surface"]).toBe("#f4f8f5"); // set in light only: the cascade carries it into dark
+  });
+
+  it("brand: false matches the token files alone", async () => {
+    const { engine, by } = await run({ brand: false });
+    expect(engine.brand).toBeUndefined();
+    expect([by("#3B82F6").fix.token, by("#3B82F6").fix.confidence]).toEqual(["color.primary", "exact"]);
+    expect(by("#3B82F6").message).toContain("in the default theme");
+    expect(by("#1E6B3C").fix.confidence).toBe("nearest");
+  });
+
+  it("puts the brand's spacing on the scale", () => {
+    const idx = new TokenIndex(loadTokens(tokens), { brand: { light: { "--spacing-4": "18px" }, dark: { "--spacing-4": "18px" } } });
+    expect(idx.matchSpacing("18px").exact?.name).toBe("space.4");
+    expect(idx.matchSpacing("16px").exact).toBeUndefined();
+  });
+});
+
+describe("the dark token file", () => {
+  it("resolves aliases into the light file and keeps the light token's variable name", () => {
+    const light = { color: { $type: "color", "gray-100": { $value: "#F3F4F6" }, surface: { $value: "#FFFFFF", $extensions: { zengin: { cssVar: "--surface" } } }, text: { $value: "#111111" } } };
+    const dark = { color: { surface: { $value: "{color.gray-100}" } } };
+    expect(loadDarkTokens(light, dark).map((t) => [t.path, t.cssVar, t.value])).toEqual([["color.surface", "--surface", "#f3f4f6"]]);
   });
 });

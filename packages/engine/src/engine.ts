@@ -11,9 +11,10 @@ import { makeReporter, type ClassUse, type RuleContext } from "./rules/context.j
 import { Scope } from "./scope.js";
 import { applySuppressions } from "./suppress.js";
 import { ComponentIndex } from "./system/components.js";
-import { loadTokens, toThemeCss, TokenIndex } from "./system/tokens.js";
+import { loadDarkTokens, loadTokens, toThemeCss, TokenIndex } from "./system/tokens.js";
+import { parseBrandCss, resolveBrandValues, type BrandValues } from "./system/brand.js";
 import { resolveProfiles, type ProfileView } from "./system/profiles.js";
-import type { ComponentManifest, FileInput, FileInventory, FileKind, Inventory, InventoryTotals, ResolvedConfig, SystemDefinitions, Violation } from "./types.js";
+import type { ComponentManifest, Token, FileInput, FileInventory, FileKind, Inventory, InventoryTotals, ResolvedConfig, SystemDefinitions, Violation } from "./types.js";
 import { parseSuppressions } from "./suppress.js";
 import { readOwnedPragma } from "./scope.js";
 import { RULE_IDS } from "./types.js";
@@ -21,6 +22,10 @@ import { RULE_IDS } from "./types.js";
 export interface Engine {
   readonly config: ResolvedConfig;
   readonly definitions: SystemDefinitions;
+  /** The tokens as the project shows them: the brand's value where brand.css sets one, the token file's otherwise. */
+  readonly tokens: Token[];
+  /** The brand the engine matched against, when the project has one. */
+  readonly brand: (BrandValues & { file: string }) | undefined;
   /** Checks a batch. Stylesheets in the batch resolve class names for the whole batch. */
   check(files: FileInput[]): Violation[];
   /** Checks one file against the stylesheets loaded with `loadStylesheets`. */
@@ -33,11 +38,27 @@ export interface Engine {
   inventory(files: FileInput[]): Inventory;
 }
 
-/** Reads `tokens.json` and `components.json` from a definitions directory. */
+/** Reads `tokens.json`, `components.json` and, when there is one, `tokens.dark.json` from a definitions directory. */
 export function loadDefinitions(dir: string): SystemDefinitions {
-  const tokens = loadTokens(JSON.parse(readFileSync(join(dir, "tokens.json"), "utf8")));
+  const lightJson: unknown = JSON.parse(readFileSync(join(dir, "tokens.json"), "utf8"));
+  const tokens = loadTokens(lightJson);
   const components = JSON.parse(readFileSync(join(dir, "components.json"), "utf8")) as ComponentManifest[];
-  return { tokens, components };
+  const darkPath = join(dir, "tokens.dark.json");
+  let dark: Token[] | undefined;
+  try {
+    dark = existsSync(darkPath) ? loadDarkTokens(lightJson, JSON.parse(readFileSync(darkPath, "utf8"))) : undefined;
+  } catch {
+    // the dark file is matched as an extra; one the engine cannot read must not stop the check
+    dark = undefined;
+  }
+  return { tokens, components, ...(dark ? { dark } : {}) };
+}
+
+/** The project's brand resolved against the definitions, or undefined when there is no brand file. */
+function loadBrand(config: ResolvedConfig, defs: SystemDefinitions): (BrandValues & { file: string }) | undefined {
+  const path = config.system.brandCss;
+  if (!path || !existsSync(path)) return undefined;
+  return { file: path, ...resolveBrandValues(parseBrandCss(readFileSync(path, "utf8")), defs.tokens, defs.dark) };
 }
 
 export async function createEngine(config: ResolvedConfig, definitions?: SystemDefinitions): Promise<Engine> {
@@ -46,10 +67,12 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
   // indexes are built per view rather than once. A project without profiles has exactly one view, the base,
   // and pays nothing for the machinery.
   const profiles = resolveProfiles(config, defs);
+  // brand.css is global CSS: it overrides the tokens in every part of the project, profiles included.
+  const brand = loadBrand(config, defs);
   const indexes = new Map<ProfileView, { tokens: TokenIndex; components: ComponentIndex }>();
   for (const view of profiles.views) {
     indexes.set(view, {
-      tokens: new TokenIndex(view.definitions.tokens),
+      tokens: new TokenIndex(view.definitions.tokens, { dark: defs.dark, brand }),
       components: new ComponentIndex(view.definitions.components, config.system.sources, config.rules["component-substitution"].map),
     });
   }
@@ -122,6 +145,8 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
   return {
     config,
     definitions: defs,
+    tokens: tokens.tokens,
+    brand,
     loadStylesheets(files) {
       loaded = StylesheetIndex.from(files.map((f) => ({ ...f, path: normalize(f.path) })));
     },

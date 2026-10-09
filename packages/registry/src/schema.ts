@@ -1,4 +1,4 @@
-import type { ComponentManifest } from "@zenginui/engine";
+import { BRAND_CSS, type ComponentManifest } from "@zenginui/engine";
 
 export const REGISTRY_SCHEMA = "zengin-registry/1";
 
@@ -81,7 +81,7 @@ export const LAYOUT = {
   storiesDir: "stories",
   definitionsDir: "zengin",
   /** The project's brand: token overrides, the one foundation zengin brand, zengin theme and zengin fonts write. */
-  brandCss: "src/theme/brand.css",
+  brandCss: BRAND_CSS,
 } as const;
 
 export function isRegistryIndex(x: unknown): x is RegistryIndex {

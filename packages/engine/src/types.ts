@@ -134,6 +134,11 @@ export interface ZenginConfig {
     sources?: string[];
     /** Directory holding tokens.json and components.json. Defaults to node_modules/<package>/zengin. */
     definitions?: string;
+    /**
+     * The project's brand file, whose token overrides are what the browser shows: literals are matched against
+     * its values. Default src/theme/brand.css, read when it exists; false to match the token files alone.
+     */
+    brand?: string | false;
   };
   scope?: {
     include?: string[];
@@ -193,6 +198,8 @@ export interface ResolvedConfig {
     version: string;
     sources: string[];
     definitionsDir: string;
+    /** Absolute path to the brand file, read when it exists. Undefined when the config sets brand: false. */
+    brandCss?: string;
   };
   scope: {
     include: string[];
@@ -287,4 +294,6 @@ export interface ComponentManifest {
 export interface SystemDefinitions {
   tokens: Token[];
   components: ComponentManifest[];
+  /** tokens.dark.json, when the system has one: a token's dark value is matched as well as its light one. */
+  dark?: Token[];
 }

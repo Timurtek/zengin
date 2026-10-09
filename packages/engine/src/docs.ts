@@ -6,7 +6,7 @@ export type RuleFamily = "foundation" | "contract" | "substitution";
 export const RULE_DOCS: Record<RuleId, { family: RuleFamily; description: string }> = {
   "color-literal": {
     family: "foundation",
-    description: "A color literal (hex, rgb, oklch, named) in a class, inline style or CSS where a token reference is required. In 'semantic' mode, Tailwind palette utilities such as bg-red-500 are violations too. A literal that equals a token's value is still a violation: it will not follow theme changes.",
+    description: "A color literal (hex, rgb, oklch, named) in a class, inline style or CSS where a token reference is required. In 'semantic' mode, Tailwind palette utilities such as bg-red-500 are violations too. A literal that equals a token's value is still a violation: it will not follow theme changes. The fix is matched against the project's brand (src/theme/brand.css) where it overrides a token, the token files elsewhere, light values first and dark after.",
   },
   "spacing-literal": {
     family: "foundation",

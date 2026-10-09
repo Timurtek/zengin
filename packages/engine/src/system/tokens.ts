@@ -1,4 +1,5 @@
 import type { Token, TokenType } from "../types.js";
+import type { BrandValues } from "./brand.js";
 
 /**
  * DTCG (W3C Design Tokens Community Group) JSON loader.
@@ -96,6 +97,31 @@ export function loadTokens(json: unknown): Token[] {
       extendsDefault: r.extendsDefault,
     };
   });
+}
+
+/**
+ * A dark token file read against the light one. A dark file only restates what changes, and its aliases may point
+ * at light tokens (`{color.gray-100}`), so it is resolved inside the light tree with its values laid over, and
+ * only the tokens it sets come back.
+ */
+export function loadDarkTokens(light: unknown, dark: unknown): Token[] {
+  const paths = new Set<string>();
+  const merge = (into: Record<string, unknown>, from: Record<string, unknown>, at: string[]): void => {
+    for (const [k, v] of Object.entries(from)) {
+      const here = [...at, k];
+      if (v && typeof v === "object" && !Array.isArray(v) && !("$value" in v)) {
+        const target = into[k] && typeof into[k] === "object" ? (into[k] as Record<string, unknown>) : (into[k] = {});
+        merge(target as Record<string, unknown>, v as Record<string, unknown>, here);
+      } else {
+        // a dark entry restates the value; the light token keeps its own fields ($extensions, a custom variable name)
+        into[k] = v && typeof v === "object" && into[k] && typeof into[k] === "object" ? { ...(into[k] as object), ...(v as object) } : v;
+        if (v && typeof v === "object" && "$value" in v) paths.add(here.join("."));
+      }
+    }
+  };
+  const tree = JSON.parse(JSON.stringify(light ?? {})) as Record<string, unknown>;
+  merge(tree, (dark ?? {}) as Record<string, unknown>, []);
+  return loadTokens(tree).filter((t) => paths.has(t.path));
 }
 
 function normalizeValue(v: string, type: TokenType): string {
@@ -219,7 +245,31 @@ export interface SpacingStep {
   px: number;
 }
 
+/** A token a color literal matched, and where the value it matched lives. */
+export interface ColorMatch {
+  token: Token;
+  /** The value matched, as the token loader writes it. */
+  value: string;
+  mode: "light" | "dark";
+  /** The value is the project's brand (brand.css), not the token file's default. */
+  brand: boolean;
+}
+
+export interface TokenIndexOptions {
+  /** The dark token file: a token's dark value is matched too. */
+  dark?: Token[];
+  /** The project's brand: its values replace the token files' defaults, in each mode. */
+  brand?: Pick<BrandValues, "light" | "dark">;
+}
+
+/**
+ * The tokens as a project shows them. Each token's value is the brand's where brand.css sets one and the token
+ * file's otherwise, so a literal is matched against what the browser actually paints: in a project whose brand
+ * makes primary #1E6B3C, that literal is color.primary. A token's dark value (the brand's dark block, else the
+ * dark token file) is matched as well, after the light ones.
+ */
 export class TokenIndex {
+  readonly tokens: Token[];
   readonly byVar = new Map<string, Token>();
   readonly byName = new Map<string, Token>();
   readonly colors: Token[];
@@ -227,20 +277,33 @@ export class TokenIndex {
   /** Namespaces whose framework default scale remains on-system (Tailwind `extend` semantics). */
   readonly extendedNamespaces: Set<string>;
   private readonly scale: SpacingStep[];
+  /** A color token's dark value, where it differs from its light one. */
+  private readonly darkColors: { token: Token; value: string; brand: boolean }[];
+  private readonly branded: Set<string>;
 
-  constructor(readonly tokens: Token[]) {
-    for (const t of tokens) {
+  constructor(tokens: Token[], opts: TokenIndexOptions = {}) {
+    const brand = opts.brand ?? { light: {}, dark: {} };
+    this.branded = new Set(Object.keys(brand.light));
+    this.tokens = tokens.map((t) => (brand.light[t.cssVar] !== undefined ? { ...t, value: brand.light[t.cssVar]! } : t));
+    for (const t of this.tokens) {
       this.byVar.set(t.cssVar, t);
       this.byName.set(t.name, t);
     }
-    this.colors = tokens.filter((t) => t.type === "color");
-    this.namespaces = new Set(tokens.map((t) => t.namespace));
-    this.extendedNamespaces = new Set(tokens.filter((t) => t.extendsDefault).map((t) => t.namespace));
-    this.scale = tokens
+    this.colors = this.tokens.filter((t) => t.type === "color");
+    this.namespaces = new Set(this.tokens.map((t) => t.namespace));
+    this.extendedNamespaces = new Set(this.tokens.filter((t) => t.extendsDefault).map((t) => t.namespace));
+    this.scale = this.tokens
       .filter((t) => t.namespace === "spacing")
       .map((token) => ({ token, px: toPx(token.value) }))
       .filter((s): s is SpacingStep => s.px !== undefined)
       .sort((a, b) => a.px - b.px);
+    const darkByVar = new Map((opts.dark ?? []).map((t) => [t.cssVar, t.value]));
+    this.darkColors = [];
+    for (const t of this.colors) {
+      const fromBrand = brand.dark[t.cssVar];
+      const value = fromBrand ?? darkByVar.get(t.cssVar);
+      if (value !== undefined && value !== t.value) this.darkColors.push({ token: t, value, brand: fromBrand !== undefined });
+    }
   }
 
   exactColor(literal: string): Token | undefined {
@@ -249,24 +312,43 @@ export class TokenIndex {
 
   /** Every token sharing the literal's value. More than one means the semantic choice is the reader's. */
   exactColors(literal: string): Token[] {
+    return this.colorMatches(literal).map((m) => m.token);
+  }
+
+  /**
+   * Every token whose value is the literal: its light value, or failing any, its dark one. A light match wins
+   * outright, so a value that is one token in light and another in dark names the light one.
+   */
+  colorMatches(literal: string): ColorMatch[] {
     const n = normalizeColor(literal);
     if (!n) return [];
-    return this.colors.filter((t) => t.value === n);
+    const light = this.colors.filter((t) => t.value === n).map((t) => ({ token: t, value: n, mode: "light" as const, brand: this.branded.has(t.cssVar) }));
+    if (light.length) return light;
+    return this.darkColors.filter((d) => d.value === n).map((d) => ({ token: d.token, value: n, mode: "dark" as const, brand: d.brand }));
   }
 
   /** Nearest color by RGB distance. Undefined when the literal is not a parseable hex/rgb value. */
   nearestColor(literal: string): Token | undefined {
+    return this.nearestColorMatch(literal)?.token;
+  }
+
+  /** Nearest color by RGB distance over light and dark values, with the value and mode it was nearest to. */
+  nearestColorMatch(literal: string): ColorMatch | undefined {
     const rgb = hexToRgb(literal);
     if (!rgb) return undefined;
-    let best: Token | undefined;
+    let best: ColorMatch | undefined;
     let bestD = Infinity;
-    for (const t of this.colors) {
-      const c = hexToRgb(t.value);
+    const candidates = [
+      ...this.colors.map((t) => ({ token: t, value: t.value, mode: "light" as const, brand: this.branded.has(t.cssVar) })),
+      ...this.darkColors.map((d) => ({ ...d, mode: "dark" as const })),
+    ];
+    for (const m of candidates) {
+      const c = hexToRgb(m.value);
       if (!c) continue;
       const d = (rgb[0] - c[0]) ** 2 + (rgb[1] - c[1]) ** 2 + (rgb[2] - c[2]) ** 2;
       if (d < bestD) {
         bestD = d;
-        best = t;
+        best = m;
       }
     }
     return best;
