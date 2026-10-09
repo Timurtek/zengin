@@ -21,7 +21,11 @@ export interface CodeConnectOptions {
  * `defaultValue`, `defaultOpen`, `name`, `id`. A design file has no property for them, and a mapping to a
  * property the component does not have fails `figma connect publish`.
  */
-const FORM_PLUMBING = /^(default[A-Z]\w*|name|id)$/;
+const FORM_PLUMBING = /^(default[A-Z]\w*|name|id|dir|src|\w+Src)$/;
+// (and `dir`, writing direction, and image URLs: neither is something a designer sets as text)
+
+/** A prop name as a JavaScript identifier: `aria-label` is `ariaLabel`. */
+const ident = (name: string): string => name.replace(/-(\w)/g, (_, c: string) => c.toUpperCase());
 
 export const PLACEHOLDER_URL ="https://www.figma.com/design/FILE_KEY/Zengin-UI?node-id=NODE_ID";
 
@@ -47,22 +51,24 @@ function renderTemplate(m: ComponentManifest, url: string, alias: string, placeh
   const props: string[] = [];
   for (const [name, p] of Object.entries(m.props ?? {})) {
     if (name === "asChild" || p.type === "function" || FORM_PLUMBING.test(name)) continue;
+    const id = ident(name);
     if (p.type === "enum" && p.values) {
       const pairs = p.values.map((v) => `  ${JSON.stringify(title(v))}: ${JSON.stringify(v)},`).join("\n");
-      reads.push(`const ${name} = figma.selectedInstance.getEnum(${JSON.stringify(title(name))}, {\n${pairs}\n})`);
+      reads.push(`const ${id} = figma.selectedInstance.getEnum(${JSON.stringify(title(name))}, {\n${pairs}\n})`);
     } else if (p.type === "boolean") {
-      reads.push(`const ${name} = figma.selectedInstance.getBoolean(${JSON.stringify(title(name))})`);
+      reads.push(`const ${id} = figma.selectedInstance.getBoolean(${JSON.stringify(title(name))})`);
     } else if (p.type === "string" || (p.type === "node" && /^(label|title|description|placeholder|content|name)$/.test(name))) {
-      reads.push(`const ${name} = figma.selectedInstance.getString(${JSON.stringify(title(name))})`);
+      reads.push(`const ${id} = figma.selectedInstance.getString(${JSON.stringify(title(name))})`);
     } else continue;
     props.push(name);
   }
+  // Children read the "Label" text property, unless a prop already reads it (Loader's label would render twice)
   const hasChildren = m.extends === "button" || m.extends === "span" || m.name === "Button" || m.name === "Badge";
-  if (hasChildren) {
+  if (hasChildren && !props.some((p) => title(p) === "Label")) {
     reads.push(`const children = figma.selectedInstance.getString("Label")`);
     props.push("children");
   }
-  const rendered = props.map((p) => `\${figma.helpers.react.renderProp(${JSON.stringify(p)}, ${p})}`).join("");
+  const rendered = props.map((p) => `\${figma.helpers.react.renderProp(${JSON.stringify(p)}, ${ident(p)})}`).join("");
   const todo = placeholder ? `// TODO: replace the URL with the ${m.name} component's link in Figma (right-click the component, Copy link).\n` : "";
   return `// url=${url}
 // component=${m.name}

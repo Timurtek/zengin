@@ -263,6 +263,18 @@ describe("codeConnectFiles", () => {
     expect(select).toContain('getString("Value")');
     for (const gone of ["Default value", "Default open", '"Name"', '"Id"']) expect(select).not.toContain(gone);
   });
+
+  it("writes valid identifiers, reads Label once, and skips direction and image URLs", () => {
+    const files = codeConnectFiles(manifests);
+    const chart = files["src/figma/line-chart.figma.ts"]!;
+    expect(chart).toContain('const ariaLabel = figma.selectedInstance.getString("Aria label")');
+    expect(chart).toContain('renderProp("aria-label", ariaLabel)');
+    expect(chart).not.toMatch(/const [\w$]*-/);
+    expect(files["src/figma/loader.figma.ts"]!.match(/getString\("Label"\)/g)!.length).toBe(1);
+    expect(files["src/figma/menu.figma.ts"]).not.toContain('"Dir"');
+    expect(files["src/figma/avatar.figma.ts"]).not.toContain('"Src"');
+    expect(files["src/figma/message.figma.ts"]).not.toContain('"Avatar src"');
+  });
 });
 
 describe("plugin", () => {
