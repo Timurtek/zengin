@@ -1,6 +1,7 @@
 import { Tooltip } from "@zenginui/ui";
 import { useEffect, useState } from "react";
 import { Catalog } from "./sections/Catalog";
+import { Figma } from "./sections/Figma";
 import { Footer } from "./sections/Footer";
 import { GetStarted } from "./sections/GetStarted";
 import { Hero } from "./sections/Hero";
@@ -72,6 +73,7 @@ export function App() {
           <Rules />
           <Growth />
           <System />
+          <Figma />
           <Proof />
           <GetStarted />
         </main>

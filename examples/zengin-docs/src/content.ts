@@ -615,6 +615,67 @@ Zengin UI exports \`Icon\`, a vocabulary of 63 named glyphs, and the components 
 [Components you add](#add).`,
   },
   {
+    slug: "figma",
+    section: "Making it yours",
+    title: "Figma",
+    summary: "The system in a Figma file, generated from the same definitions, and back.",
+    isNew: true,
+    body: `# Figma
+
+Zengin UI has a Figma file: [Zengin Design System on the Figma Community](https://www.figma.com/community/file/1690362604194768605). Duplicate it and you have the variables, six themes, the text styles and all 39 components, each with the props the code has.
+
+It is generated, not redrawn. That is the only way a design file stays true: the variables come from \`zengin/tokens.json\` and \`tokens.dark.json\`, and the components are built against \`zengin/components.json\`, the same files the engine checks code against.
+
+## Variables
+
+Two collections.
+
+- **Zengin** holds every token, named like the token with slashes for dots: \`color.primary.soft\` is \`color/primary/soft\`. Its modes are Light and Dark, and each variable's code syntax is its CSS custom property, so Dev Mode shows \`var(--color-primary-soft)\`. Bind to this one.
+- **Theme** holds what each registry theme overrides, one mode per theme: default, zengin, meadow, plex, spec-sheet, brutal. It is kept out of every picker; the Zengin tokens a theme changes point into it.
+
+Set Theme and Zengin on a frame and everything inside re-themes: meadow in dark, brutal in light. Six themes in two schemes would need twelve modes in one collection, and a Professional plan allows ten; two collections need six.
+
+## Your tokens, your file
+
+\`\`\`bash
+npx zengin figma export                       # figma/variables.json: the Zengin collection
+npx zengin figma export --themes themes       # plus a Theme mode per themes/<name>/brand.css
+npx zengin figma plugin                       # a plugin that imports that payload into any file
+\`\`\`
+
+The REST endpoint for writing variables is Enterprise-only, which is why there is a plugin: in Figma, Plugins, Development, Import plugin from manifest. Import pastes the payload; Export produces what the next command reads.
+
+## Back into code
+
+\`\`\`bash
+npx zengin figma import figma/local.json              # a report of what a designer changed
+npx zengin figma import figma/local.json --write      # and the token files updated
+npx zengin figma import figma/local.json --theme meadow
+\`\`\`
+
+Values come back in the token's own unit, a rem stays a rem. Aliases are followed into the Theme collection, its default mode unless \`--theme\` names another. A font holds its first family in Figma, the one a font picker can load; a changed family goes back in front of the stack's fallbacks.
+
+## Code Connect
+
+\`\`\`bash
+npx zengin figma connect --map figma/map.json   # one template per mapped component
+npx @figma/code-connect connect parse           # check them locally
+npx @figma/code-connect connect publish         # needs a Figma access token
+\`\`\`
+
+\`map.json\` is \`{ "Button": "https://www.figma.com/design/…?node-id=…" }\`. Each template reads the Figma properties named like the props, Variant, Tone, Size, Loading, and renders the snippet Dev Mode shows, importing from the \`system.package\` in your \`zengin.config.yaml\`. Props a canvas has no use for, \`defaultValue\`, \`name\`, \`id\`, image URLs, are left out.
+
+## What Figma cannot hold
+
+- **Inter Tight** is not in Figma's font catalog. The zengin theme's headlines use Inter in the file; install Inter Tight and set the variable back.
+- **Shadows** are CSS lists, so the shadow styles hold the default theme's values. Brutal's hard offsets live in code.
+- **Booleans that change nothing at rest**, a Card's interactive or a Table's sticky header, are properties for the mapping and described on the component.
+
+## Next
+
+[Components you add](#add).`,
+  },
+  {
     slug: "add",
     section: "Making it yours",
     title: "Components you add",

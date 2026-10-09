@@ -199,6 +199,11 @@ a[target="_blank"]::after {
   content: none;
 }
 
+/* An image that is a link carries no inline glyph; the button beside it says where it goes. */
+.figma-shot[target="_blank"]::after {
+  content: none;
+}
+
 .nav__sheet a {
   display: flex;
   align-items: center;
@@ -1416,4 +1421,17 @@ a[target="_blank"]::after {
   .why__title {
     font-size: var(--text-4xl);
   }
+}
+
+/* Figma: the Community thumbnail beside the copy, framed like the other specimens on the page. */
+.figma-shot {
+  display: block;
+  overflow: hidden;
+  border: var(--border-width) solid var(--color-border);
+}
+
+.figma-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
 }

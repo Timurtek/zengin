@@ -2,6 +2,8 @@
 
 export const REPO = "https://github.com/Timurtek/zengin";
 export const NPM = "https://www.npmjs.com/org/zenginui";
+/** The Zengin Design System file on the Figma Community: variables, themes and the 39 components. */
+export const FIGMA = "https://www.figma.com/community/file/1690362604194768605";
 
 /**
  * Every place this site can take you. The sheet lists all of it; the bar shows as much as fits.
