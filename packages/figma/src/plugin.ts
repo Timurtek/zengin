@@ -93,7 +93,15 @@ async function importPayload(p) {
     const variable = variables.get(mv.variableId);
     const modeId = modes.get(mv.modeId);
     if (!variable || !modeId) continue;
-    variable.setValueForMode(modeId, variable.resolvedType === "COLOR" ? rgba(mv.value) : mv.value);
+    const v = mv.value;
+    if (v && typeof v === "object" && v.type === "VARIABLE_ALIAS") {
+      // a themed payload points the Zengin collection into the Theme collection by temporary id
+      const target = variables.get(v.id);
+      if (!target) continue;
+      variable.setValueForMode(modeId, { type: "VARIABLE_ALIAS", id: target.id });
+    } else {
+      variable.setValueForMode(modeId, variable.resolvedType === "COLOR" ? rgba(v) : v);
+    }
     n++;
   }
   return p.variables.length + " variables, " + n + " values, in " + p.variableCollections.map((c) => c.name).join(", ");

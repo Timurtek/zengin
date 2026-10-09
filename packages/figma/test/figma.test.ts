@@ -3,7 +3,22 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadTokens, type ComponentManifest } from "@zenginui/engine";
 import { describe, expect, it } from "vitest";
-import { codeConnectFiles, figmaToHex, fromFigmaVariables, hexToFigma, PLUGIN_FILES, renderImportReport, toFigmaValue, toFigmaVariables, type LocalVariables } from "../src/index.js";
+import {
+  codeConnectFiles,
+  figmaToHex,
+  firstFamily,
+  fromFigmaVariables,
+  hexToFigma,
+  parseThemeCss,
+  PLUGIN_FILES,
+  renderImportReport,
+  toFigmaThemedVariables,
+  toFigmaValue,
+  toFigmaVariables,
+  type FigmaTheme,
+  type LocalVariables,
+  type VariablesPayload,
+} from "../src/index.js";
 
 const ui = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "ui");
 const light = JSON.parse(readFileSync(join(ui, "zengin", "tokens.json"), "utf8")) as unknown;
@@ -44,6 +59,11 @@ describe("toFigmaVariables", () => {
     expect(by("space/4").resolvedType).toBe("FLOAT");
     expect(by("radius/md").scopes).toEqual(["CORNER_RADIUS"]);
     expect(by("font/sans").resolvedType).toBe("STRING");
+    expect(by("font/sans").scopes).toEqual(["FONT_FAMILY"]);
+    expect(by("space/4").scopes).toEqual(["GAP", "WIDTH_HEIGHT"]);
+    expect(by("weight/semibold").scopes).toEqual(["FONT_WEIGHT"]);
+    expect(by("border/width").scopes).toEqual(["STROKE_FLOAT"]);
+    expect(by("leading/normal").scopes).toEqual([]); // unitless: Figma would read 1.5 as 1.5px
     expect(toFigmaValue({ type: "dimension", value: "1.125rem", namespace: "text" })).toEqual({ type: "FLOAT", value: 18 });
     expect(toFigmaValue({ type: "duration", value: "120ms", namespace: "duration" })).toEqual({ type: "FLOAT", value: 120 });
     expect(toFigmaValue({ type: "number", value: "1.5", namespace: "leading" })).toEqual({ type: "FLOAT", value: 1.5 });
@@ -58,6 +78,67 @@ describe("toFigmaVariables", () => {
     const space = payload.variables.find((v) => v.name === "space/4")!;
     const sv = payload.variableModeValues.filter((v) => v.variableId === space.id).map((v) => v.value);
     expect(sv).toEqual([16, 16]);
+  });
+
+  it("only uses scopes Figma accepts: ALL_FILLS never beside another fill scope, nothing falls back to ALL_SCOPES", () => {
+    for (const v of payload.variables) {
+      if (v.scopes.includes("ALL_FILLS")) expect(v.scopes.filter((s) => /FILLS?$/.test(s))).toEqual(["ALL_FILLS"]);
+      expect(v.scopes, v.name).not.toContain("ALL_SCOPES");
+    }
+  });
+
+  it("holds a font as the family Figma can load: the first in the stack", () => {
+    const sans = payload.variables.find((v) => v.name === "font/sans")!;
+    expect(payload.variableModeValues.find((m) => m.variableId === sans.id)!.value).toBe("Inter");
+    expect(firstFamily("'IBM Plex Sans', ui-sans-serif, sans-serif")).toBe("IBM Plex Sans");
+  });
+});
+
+const themesDir = join(ui, "themes");
+const themes: FigmaTheme[] = ["default", "zengin", "meadow", "plex", "spec-sheet", "brutal"].map((name) => ({ name, css: readFileSync(join(themesDir, name, "brand.css"), "utf8") }));
+
+describe("parseThemeCss", () => {
+  it("reads light from :root/[data-theme=light], dark from [data-theme=dark], and ignores the @media copy", () => {
+    const { light: l, dark: d } = parseThemeCss(themes.find((t) => t.name === "zengin")!.css);
+    expect(l["--color-primary"]).toBe("#D3442C");
+    expect(d["--color-primary"]).toBe("#FC694F");
+    expect(d["--font-display"]).toBe(l["--font-display"]); // dark inherits a light-only override
+    const css = `:root { --a: 1px; } [data-theme="dark"] { --a: 2px; } @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --a: 9px; } }`;
+    expect(parseThemeCss(css)).toEqual({ light: { "--a": "1px" }, dark: { "--a": "2px" } });
+  });
+});
+
+describe("toFigmaThemedVariables", () => {
+  const p = toFigmaThemedVariables(light, dark, themes);
+  const col = (name: string) => p.variableCollections.find((c) => c.name === name)!;
+  const variable = (name: string) => p.variables.find((v) => v.name === name)!;
+  const values = (id: string) => p.variableModeValues.filter((m) => m.variableId === id);
+
+  it("makes a Theme collection with a mode per theme beside the Zengin collection", () => {
+    expect(p.variableCollections.map((c) => c.name)).toEqual(["Theme", "Zengin"]);
+    expect(p.variableModes.filter((m) => m.variableCollectionId === col("Theme").id).map((m) => m.name)).toEqual(themes.map((t) => t.name));
+    expect(p.variables.filter((v) => v.variableCollectionId === col("Zengin").id).length).toBe(loadTokens(light).length);
+  });
+
+  it("holds each theme's raw values in Theme, out of every picker, and points the Zengin tokens at them", () => {
+    const raw = variable("light/color/primary");
+    expect(raw.scopes).toEqual([]);
+    expect(values(raw.id).map((v) => figmaToHex(v.value as never))).toEqual(["#2563EB", "#D3442C", "#0E7C6B", "#0F62FE", "#1B3FE4", "#FFD400"]);
+    expect(values(variable("dark/color/primary").id).map((v) => figmaToHex(v.value as never))[1]).toBe("#FC694F");
+    expect(values(variable("light/border/width").id).map((v) => v.value)).toEqual([1, 1, 1, 1, 1, 2]);
+    expect(values(variable("light/font/display").id).map((v) => v.value)).toEqual(["Inter", "Inter Tight", "Bricolage Grotesque", "IBM Plex Sans", "Archivo", "Archivo Black"]);
+    const primary = variable("color/primary");
+    expect(values(primary.id).map((v) => v.value)).toEqual([
+      { type: "VARIABLE_ALIAS", id: raw.id },
+      { type: "VARIABLE_ALIAS", id: variable("dark/color/primary").id },
+    ]);
+    // tokens no theme touches keep their plain value
+    expect(values(variable("space/4").id).map((v) => v.value)).toEqual([16, 16]);
+    expect(p.variables.some((v) => v.name === "light/space/4")).toBe(false);
+  });
+
+  it("names a value Figma cannot hold instead of writing a wrong one", () => {
+    expect(() => toFigmaThemedVariables(light, dark, [{ name: "odd", css: ":root { --color-primary: rgb(1 2 3); }" }])).toThrow(/odd.*--color-primary/);
   });
 });
 
@@ -128,7 +209,31 @@ describe("fromFigmaVariables", () => {
     expect(r.skipped).toEqual(["color/primary (dark): alias"]);
     expect(() => fromFigmaVariables(local, light, dark, { collection: "Brand" })).toThrow(/Collections: Zengin/);
   });
+
+  it("follows aliases into the Theme collection: the default theme reads back as the token files, another theme as its own values", () => {
+    const local = fromPayload(toFigmaThemedVariables(light, dark, themes));
+    const r = fromFigmaVariables(local, light, dark);
+    expect([r.changed, r.added, r.missing, r.skipped]).toEqual([[], [], [], []]);
+    const meadow = fromFigmaVariables(local, light, dark, { theme: "meadow" });
+    expect(meadow.changed).toEqual(expect.arrayContaining([{ path: "color.primary.DEFAULT", mode: "light", before: "#2563eb", after: "#0E7C6B" }]));
+    const font = meadow.changed.find((c) => c.path === "font.sans" && c.mode === "light")!;
+    expect(font.after.startsWith("'IBM Plex Sans', ")).toBe(true); // the family changes, the fallbacks stay
+  });
 });
+
+/** The GET shape for any payload: temporary ids stand in for real ones, the first mode is the default. */
+function fromPayload(p: VariablesPayload): LocalVariables {
+  const local: LocalVariables = { meta: { variableCollections: {}, variables: {} } };
+  for (const c of p.variableCollections) {
+    local.meta.variableCollections[c.id] = { id: c.id, name: c.name, modes: p.variableModes.filter((m) => m.variableCollectionId === c.id).map((m) => ({ modeId: m.id, name: m.name })), defaultModeId: c.initialModeId };
+  }
+  for (const v of p.variables) {
+    const valuesByMode: Record<string, never> = {};
+    for (const mv of p.variableModeValues) if (mv.variableId === v.id) (valuesByMode as Record<string, unknown>)[mv.modeId] = mv.value;
+    local.meta.variables[v.id] = { id: v.id, name: v.name, resolvedType: v.resolvedType, variableCollectionId: v.variableCollectionId, valuesByMode, codeSyntax: v.codeSyntax };
+  }
+  return local;
+}
 
 describe("codeConnectFiles", () => {
   it("writes one figma.tsx per component with the manifest's enums and booleans, and the config", () => {

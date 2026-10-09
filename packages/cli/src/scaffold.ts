@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
-import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaVariables, writePlugin } from "@zenginui/figma";
+import { codeConnectFiles, fromFigmaVariables, renderImportReport, toFigmaThemedVariables, toFigmaVariables, writePlugin, type FigmaTheme } from "@zenginui/figma";
 import type { ComponentManifest } from "@zenginui/engine";
 import { generateMock, PRESETS, schemaFromPresets, type MockSchema } from "@zenginui/mock";
 import { applyFonts, applyIcons, applyTheme, applyUpgrade, planUpgrade, brandProject, buildRegistry, createProject, installItems, LAYOUT, listThemes, openRegistry, resolveItems, resolveSome, unknownItemsMessage, writeRegistry, writeTokensCss, listFonts, listIconSets, type BrandRadius } from "@zenginui/registry";
@@ -35,6 +35,8 @@ export interface ScaffoldOptions {
   write: boolean;
   map?: string;
   collection?: string;
+  /** figma export: a directory of themes, one <name>/brand.css each, for a Theme collection with a mode per theme. */
+  themes?: string;
   schema?: string;
   count?: number;
   seed?: number;
@@ -335,10 +337,28 @@ export function runFigma(sub: string | undefined, args: string[], opts: Scaffold
   switch (sub) {
     case "export": {
       if (!existsSync(tokensPath)) throw new Error(`No ${LAYOUT.definitionsDir}/tokens.json in ${projectDir}.`);
-      const payload = toFigmaVariables(readJson(tokensPath), existsSync(darkPath) ? readJson(darkPath) : undefined, { collection: opts.collection });
+      const light = readJson(tokensPath), dark = existsSync(darkPath) ? readJson(darkPath) : undefined;
       const out = opts.out ?? "figma/variables.json";
+      const after = "Import it with the plugin (zengin figma plugin), or POST it to /v1/files/:key/variables on an Enterprise plan.";
+      if (opts.themes) {
+        const dir = resolve(cwd, opts.themes);
+        if (!existsSync(dir)) throw new Error(`No themes directory at ${opts.themes}.`);
+        // "default" first: it is the Theme collection's default mode, the one zengin figma import reads back
+        const names = readdirSync(dir, { withFileTypes: true })
+          .filter((e) => e.isDirectory() && existsSync(join(dir, e.name, "brand.css")))
+          .map((e) => e.name)
+          .sort((a, b) => (a === "default" ? -1 : b === "default" ? 1 : a.localeCompare(b)));
+        if (!names.length) throw new Error(`No <name>/brand.css under ${opts.themes}.`);
+        const themes: FigmaTheme[] = names.map((name) => ({ name, css: readFileSync(join(dir, name, "brand.css"), "utf8") }));
+        const payload = toFigmaThemedVariables(light, dark, themes, { collection: opts.collection });
+        writeText(out, JSON.stringify(payload, null, 2) + "\n");
+        const themed = payload.variables.filter((v) => v.variableCollectionId === "theme-collection").length / 2;
+        const zengin = payload.variables.length - themed * 2;
+        return `Wrote ${out}: "${payload.variableCollections[1]!.name}" (Light and Dark, ${zengin} variables) aliased into "Theme" (${names.length} modes: ${names.join(", ")}; ${themed} themed tokens).\nA plan limits modes per collection (Professional: 10).\n${after}`;
+      }
+      const payload = toFigmaVariables(light, dark, { collection: opts.collection });
       writeText(out, JSON.stringify(payload, null, 2) + "\n");
-      return `Wrote ${out}: ${payload.variables.length} variables in "${payload.variableCollections[0]!.name}" with ${payload.variableModes.map((m) => m.name).join(" and ")} modes.\nImport it with the plugin (zengin figma plugin), or POST it to /v1/files/:key/variables on an Enterprise plan.`;
+      return `Wrote ${out}: ${payload.variables.length} variables in "${payload.variableCollections[0]!.name}" with ${payload.variableModes.map((m) => m.name).join(" and ")} modes.\n${after}`;
     }
     case "import": {
       const file = args[0];
@@ -348,7 +368,7 @@ export function runFigma(sub: string | undefined, args: string[], opts: Scaffold
       if (!local || typeof local !== "object" || !("meta" in local)) throw new Error(`${file} is not a Figma variables export (expected { meta: { variableCollections, variables } }).`);
       const light = readJson(tokensPath);
       const dark = existsSync(darkPath) ? readJson(darkPath) : undefined;
-      const report = fromFigmaVariables(local, light, dark, { collection: opts.collection });
+      const report = fromFigmaVariables(local, light, dark, { collection: opts.collection, theme: opts.theme });
       const lines = [renderImportReport(report)];
       if (opts.write) {
         writeText(`${LAYOUT.definitionsDir}/tokens.json`, JSON.stringify(report.light, null, 2) + "\n");
@@ -380,7 +400,7 @@ export function runFigma(sub: string | undefined, args: string[], opts: Scaffold
       return `Wrote ${written.length} files to ${relative(cwd, dir) || "."}.\nIn Figma: Plugins, Development, Import plugin from manifest, choose manifest.json. Import pastes the payload from zengin figma export; Export produces what zengin figma import reads.`;
     }
     default:
-      throw new Error("zengin figma supports: export [--out file] [--collection name], import <local.json> [--write], connect [--map urls.json] [--out dir], plugin [--out dir]");
+      throw new Error("zengin figma supports: export [--out file] [--collection name] [--themes dir], import <local.json> [--write] [--theme name], connect [--map urls.json] [--out dir], plugin [--out dir]");
   }
 }
 
