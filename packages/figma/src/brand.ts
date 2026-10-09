@@ -1,4 +1,4 @@
-import { loadTokens, parseBrandCss, resolveBrandValues, type ParsedBrandCss } from "@zenginui/engine";
+import { loadDarkTokens, loadTokens, parseBrandCss, resolveBrandValues, type ParsedBrandCss } from "@zenginui/engine";
 import { toFigmaValue } from "./variables.js";
 
 /**
@@ -32,7 +32,7 @@ export interface BrandOverlay {
 export function resolveBrand(css: string, light: unknown, dark: unknown | undefined): BrandOverlay {
   const parsed = parseBrandCss(css);
   const tokens = loadTokens(light);
-  const values = resolveBrandValues(parsed, tokens, dark ? loadTokens(dark) : []);
+  const values = resolveBrandValues(parsed, tokens, dark ? loadDarkTokens(light, dark) : []);
   const overlay: BrandOverlay = { light: {}, dark: {}, overridden: [], unmatched: values.unmatched, unsupported: [...values.unresolved], ignored: parsed.ignored, mediaOnly: parsed.mediaOnly };
   for (const t of tokens) {
     const entry: BrandOverlay["overridden"][number] = { path: t.path, cssVar: t.cssVar };

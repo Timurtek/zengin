@@ -333,6 +333,28 @@ describe("a project's brand", () => {
   });
 });
 
+describe("a dark file that aliases light tokens", () => {
+  // what the CSS adapter writes: the dark file names light palette steps rather than restating hex
+  const aLight = { color: { $type: "color", "gray-100": { $value: "#F3F4F6" }, "gray-900": { $value: "#111827" }, surface: { $value: "{color.gray-100}" }, text: { $value: "{color.gray-900}" } }, radius: { md: { $value: "6px" } } };
+  const aDark = { color: { surface: { $value: "{color.gray-900}" }, text: { $value: "{color.gray-100}" } } };
+  const value = (p: VariablesPayload, name: string, mode: string) => p.variableModeValues.find((m) => m.variableId === p.variables.find((v) => v.name === name)!.id && m.modeId === mode)!.value;
+
+  it("exports, resolving the aliases against the light file", () => {
+    const p = toFigmaVariables(aLight, aDark);
+    expect(figmaToHex(value(p, "color/surface", "zengin-mode-dark") as never)).toBe("#111827");
+    expect(figmaToHex(value(p, "color/text", "zengin-mode-dark") as never)).toBe("#F3F4F6");
+    expect(figmaToHex(value(p, "color/gray-100", "zengin-mode-dark") as never)).toBe("#F3F4F6"); // not in the dark file: the light value
+  });
+
+  it("exports with themes and with a brand, and imports back clean", () => {
+    expect(() => toFigmaThemedVariables(aLight, aDark, [{ name: "default", css: ":root { --color-surface: #FFFFFF; }" }])).not.toThrow();
+    const brand = resolveBrand('[data-theme="dark"] { --color-text: var(--color-surface); }', aLight, aDark);
+    expect(brand.dark["--color-text"]).toBe("#111827"); // var() reads the dark surface, an alias into light
+    const r = fromFigmaVariables(fromPayload(toFigmaVariables(aLight, aDark)), aLight, aDark);
+    expect([r.changed, r.added, r.missing, r.skipped]).toEqual([[], [], [], []]);
+  });
+});
+
 /** The GET shape for any payload: temporary ids stand in for real ones, the first mode is the default. */
 function fromPayload(p: VariablesPayload): LocalVariables {
   const local: LocalVariables = { meta: { variableCollections: {}, variables: {} } };

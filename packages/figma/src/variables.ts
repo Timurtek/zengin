@@ -1,4 +1,4 @@
-import { loadTokens, type Token } from "@zenginui/engine";
+import { loadDarkTokens, loadTokens, type Token } from "@zenginui/engine";
 import { parseBrandCss } from "@zenginui/engine";
 
 /**
@@ -124,7 +124,8 @@ export function toFigmaVariables(light: unknown, dark: unknown | undefined, opts
   const collection = opts.collection ?? "Zengin";
   const modes = opts.modes ?? { light: "Light", dark: "Dark" };
   const lightTokens = loadTokens(light);
-  const darkTokens = dark ? loadTokens(dark) : [];
+  // a dark file restates what changes and may alias light tokens, so it is read against the light one
+  const darkTokens = dark ? loadDarkTokens(light, dark) : [];
   const darkByVar = new Map(darkTokens.map((t) => [t.cssVar, t]));
   const colId = "zengin-collection";
   const lightId = "zengin-mode-light";
@@ -198,7 +199,7 @@ export function toFigmaThemedVariables(light: unknown, dark: unknown | undefined
   if (!themes.length) throw new Error("toFigmaThemedVariables needs at least one theme.");
   const base = toFigmaVariables(light, dark, opts);
   const tokens = loadTokens(light);
-  const darkByVar = new Map((dark ? loadTokens(dark) : []).map((t) => [t.cssVar, t]));
+  const darkByVar = new Map((dark ? loadDarkTokens(light, dark) : []).map((t) => [t.cssVar, t]));
   const parsed = themes.map((t) => ({ name: t.name, ...parseThemeCss(t.css) }));
   const themed = tokens.filter((t) => parsed.some((p) => t.cssVar in p.light || t.cssVar in p.dark));
 
@@ -303,6 +304,7 @@ export function fromFigmaVariables(local: LocalVariables, light: unknown, dark: 
   const lightOut = clone(light);
   const darkOut = clone(dark ?? {});
   const lightTokens = loadTokens(light);
+  const darkByVar = new Map((dark ? loadDarkTokens(light, dark) : []).map((t) => [t.cssVar, t.value]));
   const byName = new Map(lightTokens.map((t) => [variableName(t), t]));
   const report: ImportReport = { collection: col.name, changed: [], added: [], missing: [], skipped: [], brand: [], light: lightOut, dark: darkOut };
   const seen = new Set<string>();
@@ -346,7 +348,7 @@ export function fromFigmaVariables(local: LocalVariables, light: unknown, dark: 
       const branded = token ? opts.brand?.[mode][token.cssVar] : undefined;
       // Figma holds a font's first family; the stack's fallbacks live in code and are kept.
       if (token && token.namespace === "font") {
-        const stack = branded ?? (mode === "light" ? token.value : darkValue(dark, token)) ?? token.value;
+        const stack = branded ?? (mode === "light" ? token.value : darkByVar.get(token.cssVar)) ?? token.value;
         after = firstFamily(stack) === after ? stack : withFirstFamily(stack, after);
       }
       const path = token ? token.path : `${v.name.replace(/\//g, ".")}`;
@@ -354,8 +356,8 @@ export function fromFigmaVariables(local: LocalVariables, light: unknown, dark: 
         if (normalize(branded) !== normalize(after)) report.brand.push({ path, mode, before: branded, after });
         return;
       }
-      const before =token ? (mode === "light" ? token.value : darkValue(dark, token)) : undefined;
-      if (mode === "dark" && before === undefined && token && after === token.value) return; // no dark override, same as light: nothing to write
+      const before = token ? (mode === "light" ? token.value : darkByVar.get(token.cssVar)) : undefined;
+      if (mode === "dark" && before === undefined && token && normalize(after) === normalize(token.value)) return; // no dark override, same as light: nothing to write
       if (before !== undefined && normalize(before) === normalize(after)) return;
       setValue(tree, path.split("."), after);
       (token ? report.changed : report.added).push({ path, mode, before, after });
@@ -387,12 +389,6 @@ function unitOf(v: string): string {
 
 function trim(n: number): string {
   return String(Number(n.toFixed(4)));
-}
-
-function darkValue(dark: unknown, token: Token): string | undefined {
-  if (!dark) return undefined;
-  const t = loadTokens(dark).find((d) => d.cssVar === token.cssVar);
-  return t?.value;
 }
 
 function normalize(v: string): string {
