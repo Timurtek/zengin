@@ -1,6 +1,6 @@
 {
   "name": "@zenginui/mcp",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "MCP server exposing the Zengin conformance engine to coding agents.",
   "license": "MIT",
   "type": "module",
