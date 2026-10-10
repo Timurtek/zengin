@@ -435,7 +435,17 @@ codex mcp add zengin -- npx -y @zenginui/mcp
 
 For Cursor, put the same \`mcpServers\` block in \`.cursor/mcp.json\` at the project root, then approve the server the first time Cursor asks.
 
-ChatGPT's connectors take remote servers only, and this one runs on your machine, next to your files.
+## Over HTTP
+
+For a client that takes a URL rather than launching a process, the same tools speak Streamable HTTP:
+
+\`\`\`bash
+npx -y @zenginui/mcp --http                   # http://127.0.0.1:3333/mcp
+\`\`\`
+
+It keeps nothing between requests, so it can run as several instances behind a load balancer, and \`GET /\` answers health checks. On your machine it accepts only local \`Host\` headers. Anywhere else it needs \`ZENGIN_MCP_TOKEN\` in the environment, which clients send as a bearer token, or \`--public\`, which serves without auth and leaves out \`zengin_get_violations\`, the one tool that returns the contents of your files. Hosted on a checkout of your repository, it checks against that checkout.
+
+ChatGPT reaches servers over a public HTTPS URL or OpenAI's Secure MCP Tunnel, not a localhost URL, so either way can carry this server. Neither has been run against ChatGPT yet.
 
 ## The tools
 

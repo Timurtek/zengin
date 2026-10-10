@@ -32,7 +32,15 @@ const ViolationSchema = z.object({
   note: z.string().optional(),
 });
 
-export function createServer(host: Host): McpServer {
+export interface ServerOptions {
+  /**
+   * Whether zengin_get_violations is offered. It reads files on disk and returns snippets of them, so a server
+   * reachable by people without access to the project (--public over HTTP) leaves it out. Default true.
+   */
+  files?: boolean;
+}
+
+export function createServer(host: Host, options: ServerOptions = {}): McpServer {
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
 
   const respond = (text: string, structured: Record<string, unknown>) => ({
@@ -102,7 +110,7 @@ Examples:
     },
   );
 
-  server.registerTool(
+  if (options.files !== false) server.registerTool(
     "zengin_get_violations",
     {
       title: "Get violations in project files",
