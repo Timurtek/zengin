@@ -34,6 +34,8 @@ Building it is what decided the next components and tokens, as the vision asks: 
 
 The site is a static Vite build; `vercel.json` pins the rest. In the Vercel project, set **Root Directory** to `examples/marketing-site` and turn on **Include source files outside of the Root Directory**, so the workspace packages are available. The build command builds the dependency chain first (`pnpm --filter marketing-site... build`: engine, then ui, then the site) and then runs `zengin check`, so a deploy fails if the page drifts from its own system, the same gate CI applies.
 
+Set **`VITE_POSTHOG_KEY`** (the PostHog project API key) in the Vercel project for the production deploy to send analytics; without it the site sends nothing. Events, the one number and the privacy settings are in [docs/analytics.md](../../docs/analytics.md).
+
 ## Wired in
 
 | File | Surface |
@@ -41,4 +43,4 @@ The site is a static Vite build; `vercel.json` pins the rest. In the Vercel proj
 | `zengin.config.yaml` | System, scope with `src/theme/**` as foundations, every rule at `error`. |
 | `.mcp.json` | The MCP server for agents working in this directory. |
 | `.claude/settings.json` | The PostToolUse hook, on every `Write` and `Edit`. |
-| `package.json` `test` | `zengin check`, so CI fails if the page drifts from its own system. |
+| `package.json` `test` | `zengin check`, so CI fails if the page drifts from its own system; then the analytics unit tests and `scripts/check-measure.mjs`, which proves the events in the built pages. |
