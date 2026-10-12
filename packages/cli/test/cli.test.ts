@@ -8,7 +8,7 @@ import { DEFAULT_CHECK, findConfig, runCheck } from "../src/check.js";
 import { renderGithub, renderJson, renderPretty } from "../src/format-cli.js";
 import { AGENT_WIRING } from "@zenginui/engine";
 import { admits, runDoctor } from "../src/doctor.js";
-import { init, initFromShadcn } from "../src/init.js";
+import { init, initFromClaudeDesign, initFromShadcn } from "../src/init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "../src/report.js";
 import { explain, parseArgs } from "../src/index.js";
 import { runFigma, type ScaffoldOptions } from "../src/scaffold.js";
@@ -137,6 +137,35 @@ describe("zengin init", () => {
       expect(r.summary.byRule).toEqual({ "unknown-prop-value": 1, "component-substitution": 1, "color-literal": 1 });
     } finally {
       rmSync(shadcn, { recursive: true, force: true });
+    }
+  });
+
+  it("derives definitions from a Claude Design export with --from claude-design, then checks it", async () => {
+    const parsed = parseArgs(["init", "--from", "claude-design", "--dir", "export", "--force"], "/x");
+    expect(parsed.init).toEqual({ from: "claude-design", dir: "export", force: true });
+
+    const exported = mkdtempSync(join(tmpdir(), "zengin-claude-design-"));
+    try {
+      cpSync(join(fixtures, "..", "..", "..", "adapter-css", "test", "fixtures", "claude-design"), exported, { recursive: true });
+      const report = initFromClaudeDesign(exported, false);
+      expect(report).toMatch(/^Wrote .*zengin[\\/]tokens\.json.*zengin[\\/]components\.json.*zengin\.config\.yaml/);
+      expect(existsSync(join(exported, "zengin.config.yaml"))).toBe(true);
+      expect(existsSync(join(exported, "zengin", "components.json"))).toBe(true);
+      expect(() => initFromClaudeDesign(exported, false)).toThrow(/Refusing to overwrite.*--force/);
+      expect(initFromClaudeDesign(exported, true)).toMatch(/^Wrote /);
+      const r = await runCheck({ ...DEFAULT_CHECK, cwd: exported });
+      expect(r.system.package).toBeTruthy();
+    } finally {
+      rmSync(exported, { recursive: true, force: true });
+    }
+  });
+
+  it("says --from claude-design needs an export when there is no manifest", () => {
+    const empty = mkdtempSync(join(tmpdir(), "zengin-claude-design-empty-"));
+    try {
+      expect(() => initFromClaudeDesign(empty, false)).toThrow(/No _ds_manifest\.json/);
+    } finally {
+      rmSync(empty, { recursive: true, force: true });
     }
   });
 

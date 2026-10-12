@@ -1,8 +1,8 @@
 // Field test 3: `zengin init --from claude-design` on a Claude Design export, then `zengin check`.
 // The export is copied to a temporary directory first; the original is never written to.
-//   pnpm -r build && node scripts/field-test-claude-design.mjs "<path to the export>" [--json]
+//   pnpm -r build && node scripts/field-test-claude-design.mjs "<path to the export>" [--json] [--sample]
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdtempSync, rmSync } from "node:fs";
+import { cpSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -42,6 +42,28 @@ function summarize(json) {
   ].join("\n");
 }
 
+/** For --sample: opens up to three findings per distinct kind (first, middle, last) and checks the source line holds the flagged text. */
+function sample(json) {
+  const groups = new Map();
+  for (const v of JSON.parse(json).violations ?? []) {
+    const k = `${v.rule} | ${v.found} | ${v.fix.replace ?? "(no fix)"} [${v.fix.confidence}]`;
+    groups.set(k, [...(groups.get(k) ?? []), v]);
+  }
+  const lines = ["", "--- sample: findings opened, per kind ---"];
+  for (const [k, vs] of [...groups].sort((a, b) => b[1].length - a[1].length)) {
+    const picks = [...new Set([0, Math.floor(vs.length / 2), vs.length - 1])].map((i) => vs[i]);
+    const opened = picks.map((v) => {
+      const line = v.range.start.line;
+      const text = readFileSync(join(dir, v.file), "utf8").split("\n")[line - 1] ?? "";
+      return `${v.file}:${line} ${text.includes(v.found.replace(/^["']|["']$/g, "")) ? "ok" : "NOT FOUND"}`;
+    });
+    lines.push(`${vs.length}  ${k}  ->  ${opened.join("; ")}`);
+  }
+  const opened = lines.filter((l) => l.includes("->")).flatMap((l) => l.split("->  ")[1].split("; "));
+  lines.push("", `${groups.size} kinds, ${opened.length} findings opened, ${opened.filter((o) => o.endsWith("NOT FOUND")).length} not found in source`);
+  return lines.join("\n") + "\n";
+}
+
 const run = (...args) => spawnSync(process.execPath, [cli, ...args, "--dir", dir], { cwd: dir, encoding: "utf8" });
 try {
   const init = run("init", "--from", "claude-design");
@@ -50,6 +72,7 @@ try {
   const check = spawnSync(process.execPath, [cli, "check", "--format", "json"], { cwd: dir, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
   process.stdout.write("\n--- zengin check ---\n");
   if (process.argv.includes("--json")) process.stdout.write(check.stdout + check.stderr);
+  else if (process.argv.includes("--sample")) process.stdout.write(sample(check.stdout) + check.stderr);
   else process.stdout.write(summarize(check.stdout) + check.stderr);
 } finally {
   rmSync(dir, { recursive: true, force: true });
