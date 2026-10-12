@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -166,6 +166,76 @@ describe("the manifest is validated before it is used", () => {
   it("will not put a namespace or path that could break the YAML into the config", () => {
     expect(derive({ namespace: 'A"\nsystem: {x' })).toThrow(/"namespace"/);
     expect(derive({ globalCssPaths: ['tokens/a".css'] })).toThrow(/globalCssPaths\[0\]/);
+  });
+});
+
+describe("every listed stylesheet and the adherence config are required and validated", () => {
+  let dir: string;
+  const original = JSON.parse(readFileSync(join(fixture, "_ds_manifest.json"), "utf8")) as { globalCssPaths: string[] };
+  beforeAll(() => {
+    dir = mkdtempSync(join(tmpdir(), "zengin-claude-design-req-"));
+    cpSync(fixture, dir, { recursive: true });
+  });
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+  const manifestWith = (globalCssPaths: string[]) => writeFileSync(join(dir, "_ds_manifest.json"), JSON.stringify({ ...original, globalCssPaths }));
+
+  it("rejects a missing stylesheet even when another one exists", () => {
+    manifestWith([...original.globalCssPaths, "tokens/missing.css"]);
+    expect(() => deriveClaudeDesign(dir)).toThrow(/globalCssPaths\[2\] "tokens\/missing\.css" does not exist/);
+  });
+
+  it("rejects a directory listed as a stylesheet", () => {
+    mkdirSync(join(dir, "tokens", "dir.css"), { recursive: true });
+    manifestWith([...original.globalCssPaths, "tokens/dir.css"]);
+    expect(() => deriveClaudeDesign(dir)).toThrow(/globalCssPaths\[2\] "tokens\/dir\.css" is not a file/);
+  });
+
+  it("names the file and the entry when the adherence config is malformed", () => {
+    manifestWith(original.globalCssPaths);
+    const adherence = join(dir, "_adherence.oxlintrc.json");
+    writeFileSync(adherence, "null");
+    expect(() => deriveClaudeDesign(dir)).toThrow(/_adherence\.oxlintrc\.json: expected a JSON object/);
+    writeFileSync(adherence, "{nope");
+    expect(() => deriveClaudeDesign(dir)).toThrow(/_adherence\.oxlintrc\.json: not valid JSON/);
+    writeFileSync(adherence, JSON.stringify({ rules: { "no-restricted-syntax": ["error", { selector: 42 }] } }));
+    expect(() => deriveClaudeDesign(dir)).toThrow(/no-restricted-syntax\[1\]\.selector must be a string/);
+    writeFileSync(adherence, JSON.stringify({ rules: { "no-restricted-syntax": ["error", null] } }));
+    expect(() => deriveClaudeDesign(dir)).toThrow(/no-restricted-syntax\[1\]\.selector/);
+    expect(() => readAdherence("null")).toThrow(/expected a JSON object/);
+  });
+});
+
+describe("generated files stay inside the export", () => {
+  let dir: string;
+  let outside: string;
+  beforeAll(() => {
+    dir = mkdtempSync(join(tmpdir(), "zengin-claude-design-escape-"));
+    outside = mkdtempSync(join(tmpdir(), "zengin-claude-design-outside-"));
+    cpSync(fixture, dir, { recursive: true });
+  });
+  afterAll(() => {
+    rmSync(dir, { recursive: true, force: true });
+    rmSync(outside, { recursive: true, force: true });
+  });
+
+  it("refuses a zengin directory that is a link out of the export, with and without force", () => {
+    symlinkSync(outside, join(dir, "zengin"), "junction");
+    const d = deriveClaudeDesign(dir);
+    expect(() => writeClaudeDesign(dir, d)).toThrow(/outside the export/);
+    expect(() => writeClaudeDesign(dir, d, true)).toThrow(/outside the export/);
+    expect(readdirSync(outside)).toEqual([]);
+    rmSync(join(dir, "zengin"), { recursive: true, force: true });
+  });
+
+  it("refuses a target file that is a link to a file outside the export, with and without force", () => {
+    const sentinel = join(outside, "sentinel.yaml");
+    writeFileSync(sentinel, "untouched");
+    rmSync(join(dir, "zengin.config.yaml"), { force: true });
+    symlinkSync(sentinel, join(dir, "zengin.config.yaml"), "file");
+    const d = deriveClaudeDesign(dir);
+    expect(() => writeClaudeDesign(dir, d)).toThrow(/link/);
+    expect(() => writeClaudeDesign(dir, d, true)).toThrow(/link/);
+    expect(readFileSync(sentinel, "utf8")).toBe("untouched");
   });
 });
 

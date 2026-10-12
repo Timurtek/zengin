@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import type { ComponentManifest } from "@zenginui/engine";
 import { deriveTokensFromCss, type CssDerivation } from "./tokens.js";
@@ -128,8 +128,13 @@ export function deriveClaudeDesign(dir: string): ClaudeDesignDerivation {
   const ds = validateManifest(readFileSync(manifestPath, "utf8"), manifestPath, dir);
 
   // Windows exports can write `tokens\colors.css`; globs and the YAML want `/`.
-  const stylesheets = (ds.globalCssPaths ?? []).map((p) => p.replace(/\\/g, "/")).filter((p) => existingInside(dir, p));
-  if (!stylesheets.length) throw new Error(`${manifestPath} lists no globalCssPaths that exist on disk, so there are no tokens to derive.`);
+  const stylesheets = (ds.globalCssPaths ?? []).map((p) => p.replace(/\\/g, "/"));
+  if (!stylesheets.length) throw new Error(`${manifestPath} lists no globalCssPaths, so there are no tokens to derive.`);
+  stylesheets.forEach((p, i) => {
+    const found = existingInside(dir, p);
+    if (!found) throw new Error(`${manifestPath}: globalCssPaths[${i}] "${p}" does not exist in the export. Every stylesheet the manifest lists is required; tokens from a partial set would be wrong.`);
+    if (!statSync(found).isFile()) throw new Error(`${manifestPath}: globalCssPaths[${i}] "${p}" is not a file.`);
+  });
   const css = stylesheets.map((p) => readFileSync(join(dir, p), "utf8")).join("\n");
   const themeSelectors = (ds.themes ?? []).map((t) => t.selector);
   const derived: CssDerivation = deriveTokensFromCss(css, { themeSelectors });
@@ -203,22 +208,39 @@ interface AdherenceContract {
 }
 
 /** Contracts as `_adherence.oxlintrc.json` states them: per component, the allowed props and the allowed values of each enum prop. */
-export function readAdherence(json: string): Record<string, AdherenceContract> {
-  const cfg = JSON.parse(json) as { rules?: Record<string, unknown> };
-  const rule = cfg.rules?.["no-restricted-syntax"];
-  const out: Record<string, AdherenceContract> = {};
-  if (!Array.isArray(rule)) return out;
-  for (const entry of rule.slice(1) as { selector?: string }[]) {
-    const sel = entry.selector ?? "";
-    const comp = /JSXOpeningElement\[name\.name='(\w+)'\]/.exec(sel)?.[1];
-    if (!comp) continue;
-    const contract = (out[comp] ??= { props: new Set(), enums: {} });
-    const allowed = /JSXIdentifier\[name!=\/\^\(\?:([^)]*)\)\$\/\]/.exec(sel)?.[1];
-    if (allowed) for (const p of allowed.split("|")) if (!ALWAYS_ALLOWED.has(p)) contract.props.add(p);
-    const en = /JSXAttribute\[name\.name='(\w+)'\] > Literal\[value!=\/\^\(\?:([^)]*)\)\$\/\]/.exec(sel);
-    if (en) contract.enums[en[1]!] = en[2]!.split("|");
+export function readAdherence(json: string, file = "_adherence.oxlintrc.json"): Record<string, AdherenceContract> {
+  const fail = (why: string): never => {
+    throw new Error(`${file}: ${why}. This is not the shape this adapter reads.`);
+  };
+  let raw: unknown;
+  try {
+    raw = JSON.parse(json);
+  } catch (e) {
+    return fail(`not valid JSON (${(e as Error).message})`);
   }
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return fail("expected a JSON object");
+  const rules = (raw as { rules?: unknown }).rules;
+  if (rules !== undefined && (!rules || typeof rules !== "object" || Array.isArray(rules))) return fail('"rules" must be an object');
+  const rule = (rules as Record<string, unknown> | undefined)?.["no-restricted-syntax"];
+  const out: Record<string, AdherenceContract> = {};
+  if (rule === undefined) return out;
+  if (!Array.isArray(rule)) return fail('"rules.no-restricted-syntax" must be an array');
+  rule.slice(1).forEach((entry: unknown, i) => {
+    const e = entry as { selector?: unknown } | null;
+    if (!e || typeof e !== "object" || typeof e.selector !== "string") fail(`rules.no-restricted-syntax[${i + 1}].selector must be a string`);
+    readSelector(out, (e as { selector: string }).selector);
+  });
   return out;
+}
+
+function readSelector(out: Record<string, AdherenceContract>, sel: string): void {
+  const comp = /JSXOpeningElement\[name\.name='(\w+)'\]/.exec(sel)?.[1];
+  if (!comp) return;
+  const contract = (out[comp] ??= { props: new Set(), enums: {} });
+  const allowed = /JSXIdentifier\[name!=\/\^\(\?:([^)]*)\)\$\/\]/.exec(sel)?.[1];
+  if (allowed) for (const p of allowed.split("|")) if (!ALWAYS_ALLOWED.has(p)) contract.props.add(p);
+  const en = /JSXAttribute\[name\.name='(\w+)'\] > Literal\[value!=\/\^\(\?:([^)]*)\)\$\/\]/.exec(sel);
+  if (en) contract.enums[en[1]!] = en[2]!.split("|");
 }
 
 /** Where the `.d.ts` contracts and the adherence config disagree. Neither wins; each disagreement is a finding. */
@@ -282,6 +304,28 @@ export interface WriteResult {
   written: string[];
 }
 
+/**
+ * Refuses a write target that would land outside the export: the nearest existing ancestor must resolve inside it,
+ * and a target that already exists must not be a link (a link is followed by the write, with or without --force).
+ */
+function assertWriteInside(dir: string, rel: string): void {
+  const root = realpathSync(dir);
+  const target = join(dir, rel);
+  let probe = target;
+  while (!existsSync(probe) && !isLink(probe)) probe = dirname(probe);
+  if (isLink(target)) throw new Error(`${rel} is a link; a generated file is not written through a link. Remove it and run again.`);
+  const real = relative(root, realpathSync(probe));
+  if (real.startsWith("..") || isAbsolute(real)) throw new Error(`${rel} would be written to ${realpathSync(probe)}, outside the export at ${dir}. A link that leaves the export is not followed.`);
+}
+
+function isLink(path: string): boolean {
+  try {
+    return lstatSync(path).isSymbolicLink();
+  } catch {
+    return false;
+  }
+}
+
 /** Writes the derivation into `dir`. Refuses to overwrite existing files unless `force`. */
 export function writeClaudeDesign(dir: string, d: ClaudeDesignDerivation, force = false): WriteResult {
   const targets: [string, string][] = [
@@ -291,6 +335,7 @@ export function writeClaudeDesign(dir: string, d: ClaudeDesignDerivation, force 
   ];
   const [theme] = Object.entries(d.themes);
   if (theme) targets.push(["zengin/tokens.dark.json", JSON.stringify(theme[1], null, 2) + "\n"]);
+  for (const [p] of targets) assertWriteInside(dir, p);
   const existing = targets.map(([p]) => p).filter((p) => existsSync(join(dir, p)));
   if (existing.length && !force) throw new Error(`Refusing to overwrite ${existing.join(", ")}. Pass --force to regenerate.`);
   for (const [p, content] of targets) {

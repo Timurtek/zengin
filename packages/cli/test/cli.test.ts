@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -181,6 +181,34 @@ describe("zengin init", () => {
     } finally {
       rmSync(exported, { recursive: true, force: true });
       rmSync(empty, { recursive: true, force: true });
+    }
+  });
+
+  it("through the built command, refuses a missing stylesheet and a link out of the export", () => {
+    const bin = join(here, "..", "dist", "index.js");
+    const run = (dir: string, ...extra: string[]) => spawnSync(process.execPath, [bin, "init", "--from", "claude-design", "--dir", dir, ...extra], { encoding: "utf8" });
+    const source = join(fixtures, "..", "..", "..", "adapter-css", "test", "fixtures", "claude-design");
+    const exported = mkdtempSync(join(tmpdir(), "zengin-claude-design-bin-bad-"));
+    const outside = mkdtempSync(join(tmpdir(), "zengin-claude-design-bin-outside-"));
+    try {
+      cpSync(source, exported, { recursive: true });
+      const manifest = JSON.parse(readFileSync(join(exported, "_ds_manifest.json"), "utf8")) as { globalCssPaths: string[] };
+      writeFileSync(join(exported, "_ds_manifest.json"), JSON.stringify({ ...manifest, globalCssPaths: [...manifest.globalCssPaths, "tokens/missing.css"] }));
+      const missing = run(exported);
+      expect(missing.status).not.toBe(0);
+      expect(missing.stderr).toMatch(/globalCssPaths\[2\] "tokens\/missing\.css" does not exist/);
+      writeFileSync(join(exported, "_ds_manifest.json"), JSON.stringify(manifest));
+
+      symlinkSync(outside, join(exported, "zengin"), "junction");
+      for (const extra of [[], ["--force"]]) {
+        const escaped = run(exported, ...extra);
+        expect(escaped.status).not.toBe(0);
+        expect(escaped.stderr).toMatch(/outside the export/);
+      }
+      expect(readdirSync(outside)).toEqual([]);
+    } finally {
+      rmSync(exported, { recursive: true, force: true });
+      rmSync(outside, { recursive: true, force: true });
     }
   });
 
