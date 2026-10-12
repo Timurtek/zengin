@@ -1,0 +1,9 @@
+:root {
+  --font-sans: "Hanken Grotesk", system-ui, sans-serif;
+  --fs-display: 40px;
+  --r-card: 22px;
+  --sp-4: 16px;
+  --dur-base: 200ms;
+  --ease-quick: .15s;
+  --hero: url(hero.png);
+}

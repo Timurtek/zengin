@@ -1,0 +1,20 @@
+{
+  "namespace": "AcmeDesignSystem_1a2b3c",
+  "components": [
+    { "name": "Badge", "sourcePath": "components/Badge.jsx" },
+    { "name": "Button", "sourcePath": "components/Button.jsx" },
+    { "name": "Ghost", "sourcePath": "components/Ghost.jsx" }
+  ],
+  "globalCssPaths": ["tokens/colors.css", "tokens/type.css", "missing.css"],
+  "tokens": [
+    { "name": "--coral-500", "value": "#FF4D3D", "kind": "color", "definedIn": "tokens/colors.css" },
+    { "name": "--brand", "value": "var(--coral-500)", "kind": "color", "definedIn": "tokens/colors.css" },
+    { "name": "--text-strong", "value": "var(--ink-900)", "kind": "font", "definedIn": "tokens/colors.css" },
+    { "name": "--ink-900", "value": "#1A1410", "kind": "color", "definedIn": "tokens/colors.css" },
+    { "name": "--fs-display", "value": "40px", "kind": "spacing", "definedIn": "tokens/type.css" },
+    { "name": "--r-card", "value": "22px", "kind": "spacing", "definedIn": "tokens/type.css" },
+    { "name": "--only-in-manifest", "value": "#000", "kind": "color", "definedIn": "tokens/colors.css" },
+    { "name": "--ink-900", "value": "#ffffff", "kind": "color", "definedIn": "tokens/colors.css", "scope": "[data-theme=\"night\"]" }
+  ],
+  "themes": [{ "selector": "[data-theme=\"night\"]", "label": "Night" }]
+}
