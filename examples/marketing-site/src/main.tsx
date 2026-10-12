@@ -5,6 +5,9 @@ import "./preview-theme";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
+import { startMeasuring } from "./measure";
+
+startMeasuring();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

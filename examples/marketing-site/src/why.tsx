@@ -7,6 +7,9 @@ import { Tooltip } from "@zenginui/ui";
 import { Footer } from "./sections/Footer";
 import { Nav } from "./sections/Nav";
 import { Why } from "./sections/Why";
+import { startMeasuring } from "./measure";
+
+startMeasuring();
 
 type Theme = "light" | "dark";
 
