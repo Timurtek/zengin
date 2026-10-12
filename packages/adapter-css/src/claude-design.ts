@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import type { ComponentManifest } from "@zenginui/engine";
 import { deriveTokensFromCss, type CssDerivation } from "./tokens.js";
@@ -99,10 +99,27 @@ export function validateManifest(json: string, manifestPath: string, dir: string
   if (m.themes !== undefined && !Array.isArray(m.themes)) return fail('"themes" must be an array');
   if (Array.isArray(m.themes)) {
     m.themes.forEach((t: unknown, i) => {
-      if (!t || typeof (t as Record<string, unknown>).selector !== "string") fail(`themes[${i}].selector must be a string`);
+      const e = t as Record<string, unknown> | null;
+      if (!e || typeof e.selector !== "string") fail(`themes[${i}].selector must be a string`);
+      if (e!.label !== undefined && typeof e!.label !== "string") fail(`themes[${i}].label must be a string`);
     });
+    if (m.themes.length > 1) {
+      fail(`"themes" names ${m.themes.length} themes; this adapter writes one alternate theme and will not merge them silently. Keep one theme in the manifest, or split the export`);
+    }
   }
   return m as unknown as DsManifest;
+}
+
+/** The path of an existing file inside the export, or undefined when it is missing. A symlink or junction that leads out of the export is an error. */
+function existingInside(dir: string, rel: string): string | undefined {
+  const full = join(dir, rel);
+  if (!existsSync(full)) return undefined;
+  const real = realpathSync(full);
+  const inside = relative(realpathSync(dir), real);
+  if (inside === "" || inside.startsWith("..") || isAbsolute(inside)) {
+    throw new Error(`${rel} resolves to ${real}, outside the export at ${dir}. A link that leaves the export is not followed.`);
+  }
+  return full;
 }
 
 export function deriveClaudeDesign(dir: string): ClaudeDesignDerivation {
@@ -110,7 +127,8 @@ export function deriveClaudeDesign(dir: string): ClaudeDesignDerivation {
   if (!existsSync(manifestPath)) throw new Error(`No _ds_manifest.json in ${dir}. This is not a Claude Design export; point --from claude-design at the exported folder.`);
   const ds = validateManifest(readFileSync(manifestPath, "utf8"), manifestPath, dir);
 
-  const stylesheets = (ds.globalCssPaths ?? []).filter((p) => existsSync(join(dir, p)));
+  // Windows exports can write `tokens\colors.css`; globs and the YAML want `/`.
+  const stylesheets = (ds.globalCssPaths ?? []).map((p) => p.replace(/\\/g, "/")).filter((p) => existingInside(dir, p));
   if (!stylesheets.length) throw new Error(`${manifestPath} lists no globalCssPaths that exist on disk, so there are no tokens to derive.`);
   const css = stylesheets.map((p) => readFileSync(join(dir, p), "utf8")).join("\n");
   const themeSelectors = (ds.themes ?? []).map((t) => t.selector);
@@ -129,8 +147,8 @@ export function deriveClaudeDesign(dir: string): ClaudeDesignDerivation {
   const components: ComponentManifest[] = [];
   const withoutTypes: string[] = [];
   for (const c of ds.components) {
-    const dts = join(dir, c.sourcePath.replace(/\.jsx?$/, ".d.ts"));
-    if (!existsSync(dts)) {
+    const dts = existingInside(dir, c.sourcePath.replace(/\.jsx?$/, ".d.ts"));
+    if (!dts) {
       withoutTypes.push(c.name);
       continue;
     }
@@ -139,13 +157,14 @@ export function deriveClaudeDesign(dir: string): ClaudeDesignDerivation {
     else withoutTypes.push(c.name);
   }
 
-  const adherenceFile = existsSync(join(dir, "_adherence.oxlintrc.json")) ? "_adherence.oxlintrc.json" : undefined;
-  const findings = adherenceFile ? crossCheck(components, readFileSync(join(dir, adherenceFile), "utf8"), ds.components.map((c) => c.name)) : [];
+  const adherencePath = existingInside(dir, "_adherence.oxlintrc.json");
+  const adherenceFile = adherencePath ? "_adherence.oxlintrc.json" : undefined;
+  const findings = adherencePath ? crossCheck(components, readFileSync(adherencePath, "utf8"), ds.components.map((c) => c.name)) : [];
 
   const themes: Record<string, Record<string, unknown>> = {};
   const themeOverrides: Record<string, number> = {};
   if (derived.tokensDark) {
-    // deriveTokensFromCss folds every named theme into one override set; with one named theme that is the theme.
+    // deriveTokensFromCss folds every named theme into one override set; validateManifest allows at most one, so that is the theme.
     const label = (ds.themes?.[0]?.label ?? "dark").toLowerCase().replace(/[^a-z0-9]+/g, "-");
     themes[label] = derived.tokensDark;
     themeOverrides[label] = derived.dark.length;
@@ -230,13 +249,14 @@ export function crossCheck(components: ComponentManifest[], adherenceJson: strin
 }
 
 function renderConfig(namespace: string, stylesheets: string[]): string {
-  const found = `[${stylesheets.map((f) => `"${f}"`).join(", ")}]`;
+  // JSON strings are valid YAML double-quoted scalars, so JSON.stringify escapes quotes, backslashes and newlines.
+  const found = JSON.stringify(stylesheets);
   return `# Derived by @zenginui/adapter-css from a Claude Design export (${namespace}). Definitions live in ./zengin; regenerate with: zengin init --from claude-design --force
 system:
-  package: "${namespace}"
+  package: ${JSON.stringify(namespace)}
   version: "0.0.0"                # a Claude Design export carries no version
   definitions: ./zengin
-  sources: ["${namespace}"]
+  sources: [${JSON.stringify(namespace)}]
 
 scope:
   include: ["ui_kits/**/*.{js,jsx,css}", "components/**/*.{js,jsx}", "*.css"]

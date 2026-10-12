@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -132,6 +132,35 @@ describe("the manifest is validated before it is used", () => {
     expect(derive({ globalCssPaths: ["../secrets.css"] })).toThrow(/globalCssPaths\[0\].*inside the export/);
     expect(derive({ globalCssPaths: [resolve(dir, "..", "x.css")] })).toThrow(/globalCssPaths\[0\]/);
     expect(derive({ components: [{ name: "Badge", sourcePath: "../../etc/Badge.jsx" }] })).toThrow(/components\[0\]\.sourcePath.*inside the export/);
+  });
+
+  it("rejects a theme label that is not a string", () => {
+    expect(derive({ themes: [{ selector: ".night", label: 42 }] })).toThrow(/themes\[0\]\.label must be a string/);
+  });
+
+  it("will not merge several named themes into one", () => {
+    expect(derive({ themes: [{ selector: ".one" }, { selector: ".two" }] })).toThrow(/names 2 themes.*will not merge/);
+  });
+
+  it("does not follow a link that leaves the export", () => {
+    const outside = mkdtempSync(join(tmpdir(), "zengin-claude-design-outside-"));
+    try {
+      writeFileSync(join(outside, "a.css"), ":root { --a: #111111; }");
+      symlinkSync(outside, join(dir, "linked"), "junction");
+      expect(derive({ globalCssPaths: ["linked/a.css"] })).toThrow(/outside the export/);
+    } finally {
+      rmSync(join(dir, "linked"), { recursive: true, force: true });
+      rmSync(outside, { recursive: true, force: true });
+    }
+  });
+
+  it("writes a Windows-style stylesheet path as a forward-slash, escaped YAML string", () => {
+    const d = deriveClaudeDesign(fixture);
+    expect(d.config).not.toMatch(/\\/);
+    writeFileSync(join(dir, "_ds_manifest.json"), JSON.stringify({ ...original, globalCssPaths: (original.globalCssPaths as string[]).map((p) => p.replace(/\//g, "\\")) }));
+    const win = deriveClaudeDesign(dir);
+    expect(win.report.stylesheets).toEqual(d.report.stylesheets);
+    expect(win.config).toBe(d.config);
   });
 
   it("will not put a namespace or path that could break the YAML into the config", () => {

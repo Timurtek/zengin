@@ -61,23 +61,25 @@ It also cannot see how the components are used. The kits do not import them: `co
 
 ## First runs
 
-| export | first run | validated (second run) | spacing | color | token-reference |
-|---|---|---|---|---|---|
-| FakeOrders | 137 | 137 | 121 | 15 | 1 |
-| PainSense | 165 | 162 | 154 | 8 | 0 |
-| AstroSense | 34 | 26 | 25 | 1 | 0 (was 8) |
-| **total** | **336** | **325** | | | |
+| export | reproducible run | spacing | color | token-reference |
+|---|---|---|---|---|
+| FakeOrders | 137 | 121 | 15 | 1 |
+| PainSense | 162 | 154 | 8 | 0 |
+| AstroSense | 26 | 25 | 1 | 0 |
+| **total** | **325** | | | |
 
-The FakeOrders "first run" is the first run that completed: the very first attempt stopped on `system.version not set` (a Claude Design export has no version, so the config now says `0.0.0`), and the first derivation report was read and corrected before it was run (the adapter defects below). PainSense and AstroSense were run after the FakeOrders engine fixes (spacing step, translucent colors), so their first-run figures do not contain the defects FakeOrders had already surfaced; they are first runs of the adapter, not of the engine as it stood before this work. Findings were classified by hand **as distinct kinds** (rule, found value, fix), 81 + 55 + 22 = 158 of them (an earlier draft of this report said 70 for FakeOrders; the script's count is 81), with each kind's count, and each classification was then **checked against a sample of the individual findings** (below). Each kind is one of: true by rule, engine defect, adapter defect, policy gap.
+**The figure this report stands on is 325, the run anyone can repeat.** An earlier draft also published a "first run" of 336 (PainSense 165, AstroSense 34). The 11 extra findings (3 PainSense `oklch(var(--sevL) var(--sevC) 145)` read as a color literal; 8 AstroSense `Unknown token --fg`) came from builds that were not kept and cannot be regenerated, so they are withdrawn from the counts rather than defended. They remain here as a history of two defects, each fixed with a regression test (`translucent-colors.test.ts`; the RGB-triplet cases in `claude-design.test.ts`), not as findings with a sample. Every figure below is the 325. Reconciliation: 336 − 3 − 8 = 325.
+
+The FakeOrders first run was the first run that completed: the very first attempt stopped on `system.version not set` (a Claude Design export has no version, so the config now says `0.0.0`), and the first derivation report was read and corrected before it was run (the adapter defects below). PainSense and AstroSense were run after the FakeOrders engine fixes (spacing step, translucent colors), so their first-run figures do not contain the defects FakeOrders had already surfaced; they are first runs of the adapter, not of the engine as it stood before this work. Findings were classified by hand **as distinct kinds** (rule, found value, fix), 81 + 55 + 22 = 158 of them (an earlier draft of this report said 70 for FakeOrders; the script's count is 81), with each kind's count, and each classification was then **checked against a sample of the individual findings** (below). Each kind is one of: true by rule, engine defect, adapter defect, policy gap.
 
 ### The sample, so it can be checked
 
-Tek's rule for this report (2026-10-12): every kind classified, plus a hand-checked sample from each kind; classifying all 336 one by one is not required.
+Tek's rule for this report (2026-10-12): every kind classified, plus a hand-checked sample from each kind; classifying all 325 one by one is not required.
 
 - **Sample rule:** for every kind, the first, the middle and the last finding of that kind, in the order `zengin check` reports them. A kind with three or fewer findings is therefore opened in full.
 - **What opening a finding meant:** reading the cited `file:line` in the export and confirming that line holds the flagged literal and that the classification above fits the context (a true literal, a fix that names a scale step, a fix that keeps transparency).
 - **What was sampled:** the findings of the current engine, which are the second-run 325 (137 + 162 + 26). The sample is committed, one file per export, so it can be checked without running anything: [FakeOrders](2026-10-12-claude-design-sample-fakeorders.md), [PainSense](2026-10-12-claude-design-sample-painsense.md), [AstroSense](2026-10-12-claude-design-sample-astrosense.md). Each lists every kind with its count and the `file:line` of each finding opened.
-- **The 11 first-run-only findings, stated honestly:** 3 PainSense (`oklch(var(--sevL) var(--sevC) 145)` read as a color literal) and 8 AstroSense (`Unknown token --fg`). They are two kinds, each a named engine or adapter defect with a regression test (`translucent-colors.test.ts`; the RGB-triplet cases in `claude-design.test.ts`). **Their individual `file:line` records are not in the appendix:** they were produced by the engine and adapter as they stood before the fixes, and those builds were not kept, so the exact lines cannot be regenerated. Searching the exports does not recover them either: `rgba(var(--fg),` occurs on 30 in-scope lines in AstroSense, and the first run reported 8, so the 8 are a subset I cannot name. The defect is shown by the regression tests instead, which fail on the pattern, not on a recorded line. This is a gap in the audit trail for those 11 of 336, and the only one.
+- **The 11 withdrawn findings:** see above. They are not in the published counts, so every published finding has a sampled kind.
 - **Result:** 235 of the 325 findings opened (FakeOrders 116 of 137, PainSense 93 of 162, AstroSense 26 of 26). Every kind has at least one opened finding. In all 235 the flagged text was on the cited line. No sampled finding contradicted its kind's classification.
 - **The sample list is committed and reproducible** (`pnpm -r build && node scripts/field-test-claude-design.mjs "<export>" --sample --out <file>` regenerates a file; the appendices above were written by it). Without `--out` it prints, per kind, its count and the `file:line` of each finding opened, and marks `ok` where the line holds the flagged text. It ends with `81 kinds, 116 findings opened, 0 not found in source` (FakeOrders), `55 kinds, 93 findings opened, 0 not found` (PainSense) and `22 kinds, 26 findings opened, 0 not found` (AstroSense). The sample is deterministic for a given export.
 - **What the sample is not:** the 90 findings in kinds of four or more that fall between the first, middle and last were not opened. They are covered by the kind's classification and by the sampled ones, which is the claim the sample supports, and no more.
@@ -92,14 +94,14 @@ Tek's rule for this report (2026-10-12): every kind classified, plus a hand-chec
 | Adapter defect | found before the first check | `--fs-*` read as spacing (9) and `--r-*` as spacing (8), `--ls-*` letter-spacing as spacing (3), `--bw*` border widths as spacing (3), `--sp-0: 0` unclassified, `cubic-bezier(...)` easings unclassified (3). Found by reading the derivation report, fixed before the check counted. |
 | Policy gap | 11 | see below |
 
-### PainSense, 165
+### PainSense, 162 (the withdrawn first run also held 3 defects, below)
 
 | Classification | Count | What |
 |---|---|---|
 | True by rule | 162 | 154 spacing literals, 8 color literals. 77 findings are in the kit, 85 in the system's own components. |
 | Engine defect | 3 | `oklch(var(--sevL) var(--sevC) 145)` reported as a color literal: the engine's color regex stops at the first `)` and read `oklch(var(--sevL)` as a literal. Its channels are the system's variables, so there is nothing to replace. Fixed. Same run: three `#fff` were told `var(--line)`, an 8%-opacity white, because a token's alpha was dropped when matching. Fixed, and the remaining `#fff` now gets `var(--ink)` as a *nearest* fix. |
 
-### AstroSense, 34
+### AstroSense, 26 (the withdrawn first run also held 8 defects, below)
 
 | Classification | Count | What |
 |---|---|---|
