@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import type { ComponentManifest } from "@zenginui/engine";
 import { deriveTokensFromCss, type CssDerivation } from "./tokens.js";
 import { deriveManifestFromTypes } from "./types.js";
@@ -57,11 +57,58 @@ export interface ClaudeDesignDerivation {
 /** The manifest's `kind` per Zengin group it would be correct for. A mismatch is a finding about the export, not about us. */
 const KIND_TO_GROUP: Record<string, string[]> = { color: ["color"], font: ["font", "other"], spacing: ["space"], radius: ["radius"], shadow: ["shadow"], other: ["other"] };
 
+/** True when `rel` resolves to a place inside `dir`. */
+function isInside(dir: string, rel: string): boolean {
+  const r = relative(resolve(dir), resolve(dir, rel));
+  return r !== "" && !r.startsWith("..") && !isAbsolute(r);
+}
+
+/** The manifest is another tool's output: check every field this adapter uses, and keep every path inside the export. */
+export function validateManifest(json: string, manifestPath: string, dir: string): DsManifest {
+  const fail = (why: string): never => {
+    throw new Error(`${manifestPath}: ${why}. This is not the shape this adapter reads.`);
+  };
+  let raw: unknown;
+  try {
+    raw = JSON.parse(json);
+  } catch (e) {
+    return fail(`not valid JSON (${(e as Error).message})`);
+  }
+  const m = raw as Record<string, unknown> | null;
+  if (!m || typeof m !== "object" || Array.isArray(m)) return fail("expected a JSON object");
+  if (typeof m.namespace !== "string" || !/^[A-Za-z_$][\w$]*$/.test(m.namespace)) return fail('"namespace" must be a JavaScript identifier');
+  if (!Array.isArray(m.components)) return fail('"components" must be an array');
+  m.components.forEach((c: unknown, i) => {
+    const e = c as Record<string, unknown> | null;
+    if (!e || typeof e.name !== "string" || !/^[A-Za-z_$][\w$]*$/.test(e.name)) fail(`components[${i}].name must be an identifier`);
+    if (typeof e!.sourcePath !== "string" || !isInside(dir, e!.sourcePath)) fail(`components[${i}].sourcePath must be a path inside the export`);
+  });
+  if (m.globalCssPaths !== undefined) {
+    if (!Array.isArray(m.globalCssPaths)) return fail('"globalCssPaths" must be an array');
+    m.globalCssPaths.forEach((p: unknown, i) => {
+      if (typeof p !== "string" || !isInside(dir, p) || /["\n\r]/.test(p)) fail(`globalCssPaths[${i}] must be a plain path inside the export`);
+    });
+  }
+  if (m.tokens !== undefined && !Array.isArray(m.tokens)) return fail('"tokens" must be an array');
+  if (Array.isArray(m.tokens)) {
+    m.tokens.forEach((t: unknown, i) => {
+      const e = t as Record<string, unknown> | null;
+      if (!e || typeof e.name !== "string" || typeof e.kind !== "string") fail(`tokens[${i}] needs a string name and kind`);
+    });
+  }
+  if (m.themes !== undefined && !Array.isArray(m.themes)) return fail('"themes" must be an array');
+  if (Array.isArray(m.themes)) {
+    m.themes.forEach((t: unknown, i) => {
+      if (!t || typeof (t as Record<string, unknown>).selector !== "string") fail(`themes[${i}].selector must be a string`);
+    });
+  }
+  return m as unknown as DsManifest;
+}
+
 export function deriveClaudeDesign(dir: string): ClaudeDesignDerivation {
   const manifestPath = join(dir, "_ds_manifest.json");
   if (!existsSync(manifestPath)) throw new Error(`No _ds_manifest.json in ${dir}. This is not a Claude Design export; point --from claude-design at the exported folder.`);
-  const ds = JSON.parse(readFileSync(manifestPath, "utf8")) as DsManifest;
-  if (!ds.namespace || !Array.isArray(ds.components)) throw new Error(`${manifestPath} has no namespace or components[]: not the shape this adapter reads.`);
+  const ds = validateManifest(readFileSync(manifestPath, "utf8"), manifestPath, dir);
 
   const stylesheets = (ds.globalCssPaths ?? []).filter((p) => existsSync(join(dir, p)));
   if (!stylesheets.length) throw new Error(`${manifestPath} lists no globalCssPaths that exist on disk, so there are no tokens to derive.`);

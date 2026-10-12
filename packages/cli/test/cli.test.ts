@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -157,6 +157,30 @@ describe("zengin init", () => {
       expect(r.system.package).toBeTruthy();
     } finally {
       rmSync(exported, { recursive: true, force: true });
+    }
+  });
+
+  it("runs `zengin init --from claude-design --dir` through the built command", () => {
+    const bin = join(here, "..", "dist", "index.js");
+    const run = (dir: string, ...extra: string[]) => spawnSync(process.execPath, [bin, "init", "--from", "claude-design", "--dir", dir, ...extra], { encoding: "utf8" });
+    const exported = mkdtempSync(join(tmpdir(), "zengin-claude-design-bin-"));
+    const empty = mkdtempSync(join(tmpdir(), "zengin-claude-design-bin-empty-"));
+    try {
+      cpSync(join(fixtures, "..", "..", "..", "adapter-css", "test", "fixtures", "claude-design"), exported, { recursive: true });
+      const first = run(exported);
+      expect(first.status).toBe(0);
+      expect(first.stdout).toMatch(/^Wrote .*zengin\.config\.yaml/);
+      expect(existsSync(join(exported, "zengin", "tokens.json"))).toBe(true);
+      const again = run(exported);
+      expect(again.status).not.toBe(0);
+      expect(again.stderr).toMatch(/Refusing to overwrite.*--force/);
+      expect(run(exported, "--force").status).toBe(0);
+      const missing = run(empty);
+      expect(missing.status).not.toBe(0);
+      expect(missing.stderr).toMatch(/No _ds_manifest\.json/);
+    } finally {
+      rmSync(exported, { recursive: true, force: true });
+      rmSync(empty, { recursive: true, force: true });
     }
   });
 

@@ -1,6 +1,6 @@
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { classify, deriveClaudeDesign, deriveTokensFromCss, readAdherence, renderClaudeDesignReport, writeClaudeDesign } from "../src/index.js";
@@ -96,6 +96,47 @@ describe("components from .d.ts, cross-checked against the adherence config", ()
     const text = renderClaudeDesignReport(d);
     expect(text).toContain("Token kind: not trusted. 3 manifest kinds disagree");
     expect(text).toContain("Contracts cross-checked against _adherence.oxlintrc.json: 5 disagreements");
+  });
+});
+
+describe("the manifest is validated before it is used", () => {
+  let dir: string;
+  const original = JSON.parse(readFileSync(join(fixture, "_ds_manifest.json"), "utf8")) as Record<string, unknown>;
+  const derive = (patch: Record<string, unknown>) => {
+    writeFileSync(join(dir, "_ds_manifest.json"), JSON.stringify({ ...original, ...patch }));
+    return () => deriveClaudeDesign(dir);
+  };
+  beforeAll(() => {
+    dir = mkdtempSync(join(tmpdir(), "zengin-claude-design-bad-"));
+    cpSync(fixture, dir, { recursive: true });
+  });
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+  it("names the field when a type is wrong", () => {
+    expect(derive({ namespace: 42 })).toThrow(/"namespace" must be a JavaScript identifier/);
+    expect(derive({ components: "Badge" })).toThrow(/"components" must be an array/);
+    expect(derive({ components: [{ name: "Badge" }] })).toThrow(/components\[0\]\.sourcePath/);
+    expect(derive({ globalCssPaths: "a.css" })).toThrow(/"globalCssPaths" must be an array/);
+    expect(derive({ tokens: [{ name: "--a" }] })).toThrow(/tokens\[0\] needs a string name and kind/);
+    expect(derive({ themes: [{ label: "Night" }] })).toThrow(/themes\[0\]\.selector/);
+  });
+
+  it("rejects a manifest that is not JSON or not an object", () => {
+    writeFileSync(join(dir, "_ds_manifest.json"), "{nope");
+    expect(() => deriveClaudeDesign(dir)).toThrow(/not valid JSON/);
+    writeFileSync(join(dir, "_ds_manifest.json"), "[]");
+    expect(() => deriveClaudeDesign(dir)).toThrow(/expected a JSON object/);
+  });
+
+  it("rejects paths that leave the export", () => {
+    expect(derive({ globalCssPaths: ["../secrets.css"] })).toThrow(/globalCssPaths\[0\].*inside the export/);
+    expect(derive({ globalCssPaths: [resolve(dir, "..", "x.css")] })).toThrow(/globalCssPaths\[0\]/);
+    expect(derive({ components: [{ name: "Badge", sourcePath: "../../etc/Badge.jsx" }] })).toThrow(/components\[0\]\.sourcePath.*inside the export/);
+  });
+
+  it("will not put a namespace or path that could break the YAML into the config", () => {
+    expect(derive({ namespace: 'A"\nsystem: {x' })).toThrow(/"namespace"/);
+    expect(derive({ globalCssPaths: ['tokens/a".css'] })).toThrow(/globalCssPaths\[0\]/);
   });
 });
 
