@@ -1,5 +1,12 @@
 # @zenginui/figma
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [[`aa22497`](https://github.com/Timurtek/zengin/commit/aa224970bd3ef4eeedd1d799af5a2d0948f0cc43)]:
+  - @zenginui/engine@0.7.0
+
 ## 0.3.0
 
 ### Minor Changes
