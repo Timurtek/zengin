@@ -63,6 +63,13 @@ describe("buildRegistry", () => {
       expect(item.source).toMatch(/^examples\//);
     }
     expect(registry.items.find((i) => i.name === "blank")!.source).toBe("examples/blank");
+    // The site measures itself with PostHog; a project created from it does not inherit that, and its entry
+    // points read exactly as they did before the site had analytics.
+    for (const f of marketing.files) expect(f.content, f.path).not.toMatch(/startMeasuring|"\.\/measure"|posthog/i);
+    expect(paths).not.toContain("src/measure.ts");
+    expect(paths).not.toContain("src/env.d.ts");
+    expect(marketing.files.find((f) => f.path === "src/main.tsx")!.content).toMatch(/import \{ App \} from "\.\/App";\r?\n\r?\ncreateRoot\(/);
+    expect(marketing.files.find((f) => f.path === "src/why.tsx")!.content).toMatch(/import \{ Why \} from "\.\/sections\/Why";\r?\n\r?\ntype Theme/);
     // The site reports its errors to Zengin's PostHog; a project made from the site's source must not.
     for (const item of registry.items.filter((i) => i.type === "template")) {
       for (const f of item.files) expect(f.content, `${item.name} ${f.path}`).not.toMatch(/site-errors|posthog/i);

@@ -276,6 +276,12 @@ export function writeRegistry(registry: Registry, outDir: string): string[] {
   return written;
 }
 
+/**
+ * The marketing site's own plumbing, which never ships in its template: the preview harness, and the site's
+ * PostHog analytics with its env typing. A created project measures itself with whatever it chooses.
+ */
+const SITE_ONLY = new Set(["src/preview-theme.ts", "src/measure.ts", "src/env.d.ts"]);
+
 function templateFrom(opts: { root: string; dir: string; name: string; title: string; description: string; rootFiles: string[]; componentNames: Set<string> }): RegistryItem {
   const base = join(opts.root, opts.dir);
   const files: RegistryFile[] = [];
@@ -288,9 +294,10 @@ function templateFrom(opts: { root: string; dir: string; name: string; title: st
   for (const p of walk(join(base, "src"))) {
     const rel = relative(base, p).replace(/\\/g, "/");
     if (rel.startsWith("src/styles/generated/")) continue;
-    if (rel === "src/preview-theme.ts") continue; // the site's preview harness, not part of the template
+    if (SITE_ONLY.has(rel)) continue;
     let content = read(p);
     if (rel === "src/main.tsx") content = content.replace(/import "\.\/preview-theme";\r?\n/, "");
+    content = content.replace(/import \{ startMeasuring \} from "\.\/measure";\r?\n(\r?\n)?startMeasuring\(\);\r?\n/, "");
     if (/\.(tsx?|css)$/.test(rel)) {
       for (const m of content.matchAll(/import\s*\{([^}]+)\}\s*from\s*"@zenginui\/ui"/g)) {
         for (const name of m[1]!.split(",")) {
