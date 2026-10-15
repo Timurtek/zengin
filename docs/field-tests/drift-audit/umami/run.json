@@ -1,0 +1,44 @@
+{
+  "schema": "zengin-audit/1",
+  "repo": {
+    "name": "umami-software/umami",
+    "ref": "master",
+    "commit": "ca661c7057984aa98ed4f7083d84dae2f65bfcb0"
+  },
+  "system": {
+    "package": "@umami/react-zen",
+    "version": "0.249.0"
+  },
+  "tool": {
+    "name": "@zenginui/cli",
+    "version": "0.9.0"
+  },
+  "generatedAt": "2026-10-15T04:58:27.092Z",
+  "durationMs": 1614,
+  "filesChecked": 934,
+  "cap": 150,
+  "totals": {
+    "findings": 155,
+    "groups": 92,
+    "hand": 150,
+    "summarised": 5,
+    "byClass": {
+      "true-drift": {
+        "findings": 86,
+        "groups": 53
+      },
+      "needs-decision": {
+        "findings": 64,
+        "groups": 34
+      },
+      "intentional-exception": {
+        "findings": 0,
+        "groups": 0
+      },
+      "false-positive": {
+        "findings": 0,
+        "groups": 0
+      }
+    }
+  }
+}

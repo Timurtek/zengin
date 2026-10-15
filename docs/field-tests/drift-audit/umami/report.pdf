@@ -1,0 +1,345 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R] /Count 6 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Title (Design System Drift Audit: umami-software/umami \(DRAFT\)) /Producer (zengin audit) >>
+endobj
+7 0 obj
+<< /Length 3812 >>
+stream
+BT /F2 16 Tf 54 717.2 Td (Design System Drift Audit: umami-software/umami \(DRAFT\)) Tj ET
+BT /F2 10 Tf 54 700.2 Td (DRAFT for review. Not for the client until it has been reviewed and edited. Every class below is) Tj ET
+BT /F2 10 Tf 54 687.2 Td (proposed by rule and confirmed by hand before the report leaves.) Tj ET
+BT /F1 10 Tf 54 668.2 Td (Run: umami-software/umami at ca661c7, against @umami/react-zen@0.249.0. 934 files checked in 1.6) Tj ET
+BT /F1 10 Tf 54 655.2 Td (seconds by @zenginui/cli@0.9.0, 2026-10-15.) Tj ET
+BT /F2 13 Tf 54 626.3 Td (Summary) Tj ET
+BT /F1 10 Tf 54 610.3 Td (- This run reported 155 findings in 92 groups. A group is one rule and one found value with one) Tj ET
+BT /F1 10 Tf 54 597.3 Td (  proposed class: one decision.) Tj ET
+BT /F1 10 Tf 54 581.3 Td (- Hand review covers 150 findings in 87 groups, up to the cap of 150, taken in rank order \(severity) Tj ET
+BT /F1 10 Tf 54 568.3 Td (  times the number of files\). 5 findings are summarised, not classified by hand. 150 + 5 = 155.) Tj ET
+BT /F1 10 Tf 54 552.3 Td (- False positives proposed in the hand-review set: 0 of 150. The rate is stated once each one has) Tj ET
+BT /F1 10 Tf 54 539.3 Td (  been confirmed by hand.) Tj ET
+BT /F1 10 Tf 54 523.3 Td (- Every number here comes from this run and is reconciled above. No figure from another run is) Tj ET
+BT /F1 10 Tf 54 510.3 Td (  quoted.) Tj ET
+BT /F3 8 Tf 54 497.9 Td (Proposed class | Findings | Groups) Tj ET
+BT /F3 8 Tf 54 485.5 Td (True drift | 86 | 53) Tj ET
+BT /F3 8 Tf 54 473.1 Td (Needs a decision | 64 | 34) Tj ET
+BT /F3 8 Tf 54 460.7 Td (Intentional exception | 0 | 0) Tj ET
+BT /F3 8 Tf 54 448.3 Td (False positive | 0 | 0) Tj ET
+BT /F3 8 Tf 54 435.9 Td (Hand-review set | 150 | 87) Tj ET
+BT /F2 13 Tf 54 407.0 Td (Top issues) Tj ET
+BT /F2 11 Tf 54 380.7 Td (G01: spacing-literal 8px \(True drift\)) Tj ET
+BT /F1 10 Tf 54 364.7 Td (- What: Spacing literal where a token reference is required. 8px matches space.padding-y-default but) Tj ET
+BT /F1 10 Tf 54 351.7 Td (  will not follow scale changes.) Tj ET
+BT /F1 10 Tf 54 335.7 Td (- Spread: 9 findings in 4 files, at error. Involves space.padding-y-default.) Tj ET
+BT /F1 10 Tf 54 319.7 Td (- Why this class: spacing-literal at error, with an exact fix.) Tj ET
+BT /F1 10 Tf 54 303.7 Td (- Fix: var\(--padding-y-default\) \(exact\)) Tj ET
+BT /F1 10 Tf 54 287.7 Td (- Examples: F001 src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:27, F002) Tj ET
+BT /F1 10 Tf 54 274.7 Td (  src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:28, F003) Tj ET
+BT /F1 10 Tf 54 261.7 Td (  src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:39.) Tj ET
+BT /F1 10 Tf 54 245.7 Td (- Findings: F001 to F009 \(9\).) Tj ET
+BT /F2 11 Tf 54 219.4 Td (G02: spacing-literal padding: '32px' \(Needs a decision\)) Tj ET
+BT /F1 10 Tf 54 203.4 Td (- What: Arbitrary spacing value in inline style \(padding\). 32px is not on the spacing scale.) Tj ET
+BT /F1 10 Tf 54 187.4 Td (- Spread: 5 findings in 4 files, at error. Involves padding: '32px'.) Tj ET
+BT /F1 10 Tf 54 171.4 Td (- Why this class: No token is near this value: either the system is missing a token or this is a) Tj ET
+BT /F1 10 Tf 54 158.4 Td (  deliberate one-off.) Tj ET
+BT /F1 10 Tf 54 142.4 Td (- Fix: space.gap-default = 12px) Tj ET
+BT /F1 10 Tf 54 126.4 Td (- Examples: F010 src/app/\(main\)/boards/[boardId]/BoardEditColumn.tsx:133, F011) Tj ET
+BT /F1 10 Tf 54 113.4 Td (  src/app/\(main\)/websites/[websiteId]/settings/SharesTable.tsx:54, F012) Tj ET
+BT /F1 10 Tf 54 100.4 Td (  src/app/\(main\)/websites/[websiteId]/settings/SharesTable.tsx:112.) Tj ET
+BT /F1 10 Tf 54 84.4 Td (- Findings: F010 to F014 \(5\).) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - umami-software/umami - page 1 of 6) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 4195 >>
+stream
+BT /F2 11 Tf 54 711.7 Td (G03: spacing-literal 2px \(Needs a decision\)) Tj ET
+BT /F1 10 Tf 54 695.7 Td (- What: Arbitrary spacing value. 2px is not on the spacing scale.) Tj ET
+BT /F1 10 Tf 54 679.7 Td (- Spread: 4 findings in 3 files, at error. Involves 2px.) Tj ET
+BT /F1 10 Tf 54 663.7 Td (- Why this class: No token is near this value: either the system is missing a token or this is a) Tj ET
+BT /F1 10 Tf 54 650.7 Td (  deliberate one-off.) Tj ET
+BT /F1 10 Tf 54 634.7 Td (- Fix: space.padding-y-default = 8px) Tj ET
+BT /F1 10 Tf 54 618.7 Td (- Examples: F015 src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:66, F016) Tj ET
+BT /F1 10 Tf 54 605.7 Td (  src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:147, F017) Tj ET
+BT /F1 10 Tf 54 592.7 Td (  src/components/common/Badge.module.css:7.) Tj ET
+BT /F1 10 Tf 54 576.7 Td (- Findings: F015, F016, F017, F018.) Tj ET
+BT /F2 11 Tf 54 550.4 Td (G04: color-literal "rgba\(0,0,0,0.8\)" \(True drift\)) Tj ET
+BT /F1 10 Tf 54 534.4 Td (- What: Color literal in inline style \(background-color\) where a token reference is required.) Tj ET
+BT /F1 10 Tf 54 521.4 Td (  rgba\(0,0,0,0.8\) has no exact token match.) Tj ET
+BT /F1 10 Tf 54 505.4 Td (- Spread: 3 findings in 3 files, at error. Involves color.gray-950.) Tj ET
+BT /F1 10 Tf 54 489.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 473.4 Td (- Fix: "var\(--gray-950\)" \(nearest\). Nearest by value: color.gray-950 = #0a0a0a. Verify the semantic) Tj ET
+BT /F1 10 Tf 54 460.4 Td (  role before applying.) Tj ET
+BT /F1 10 Tf 54 444.4 Td (- Examples: F019 src/components/charts/ChartTooltip.tsx:19, F020) Tj ET
+BT /F1 10 Tf 54 431.4 Td (  src/components/metrics/WeeklyTraffic.tsx:110, F021 src/components/metrics/WorldMap.tsx:105.) Tj ET
+BT /F1 10 Tf 54 415.4 Td (- Findings: F019, F020, F021.) Tj ET
+BT /F2 11 Tf 54 389.1 Td (G05: color-literal "white" \(True drift\)) Tj ET
+BT /F1 10 Tf 54 373.1 Td (- What: Color literal in inline style \(color\) where a token reference is required. The value matches) Tj ET
+BT /F1 10 Tf 54 360.1 Td (  4 tokens \(color.primary-foreground, color.surface-base, color.surface-overlay,) Tj ET
+BT /F1 10 Tf 54 347.1 Td (  color.focus-ring-offset\) in the default theme but will not follow theme changes.) Tj ET
+BT /F1 10 Tf 54 331.1 Td (- Spread: 3 findings in 3 files, at error. Involves color.primary-foreground.) Tj ET
+BT /F1 10 Tf 54 315.1 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 299.1 Td (- Fix: "var\(--primary-foreground\)" \(nearest\). Several tokens share this value. Pick by role:) Tj ET
+BT /F1 10 Tf 54 286.1 Td (  color.primary-foreground, color.surface-base, color.surface-overlay, color.focus-ring-offset.) Tj ET
+BT /F1 10 Tf 54 270.1 Td (- Examples: F022 src/components/charts/ChartTooltip.tsx:19, F023) Tj ET
+BT /F1 10 Tf 54 257.1 Td (  src/components/metrics/WeeklyTraffic.tsx:110, F024 src/components/metrics/WorldMap.tsx:105.) Tj ET
+BT /F1 10 Tf 54 241.1 Td (- Findings: F022, F023, F024.) Tj ET
+BT /F2 11 Tf 54 214.8 Td (G06: classname-policy padding: '32px' \(Needs a decision\)) Tj ET
+BT /F1 10 Tf 54 198.8 Td (- What: style on Dialog may not set padding. className on Dialog is limited to: margin, width,) Tj ET
+BT /F1 10 Tf 54 185.8 Td (  height, flex-item, grid-item, position, display, overflow.) Tj ET
+BT /F1 10 Tf 54 169.8 Td (- Spread: 5 findings in 4 files, at warn. Involves Dialog.) Tj ET
+BT /F1 10 Tf 54 153.8 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
+BT /F1 10 Tf 54 140.8 Td (  widen for this component is a policy call.) Tj ET
+BT /F1 10 Tf 54 124.8 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
+BT /F1 10 Tf 54 108.8 Td (- Examples: F025 src/app/\(main\)/boards/[boardId]/BoardEditColumn.tsx:133, F026) Tj ET
+BT /F1 10 Tf 54 95.8 Td (  src/app/\(main\)/websites/[websiteId]/settings/SharesTable.tsx:54, F027) Tj ET
+BT /F1 10 Tf 54 82.8 Td (  src/app/\(main\)/websites/[websiteId]/settings/SharesTable.tsx:112.) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - umami-software/umami - page 2 of 6) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 3985 >>
+stream
+BT /F1 10 Tf 54 722.0 Td (- Findings: F025 to F029 \(5\).) Tj ET
+BT /F2 11 Tf 54 695.7 Td (G07: classname-policy whiteSpace: 'nowrap' \(Needs a decision\)) Tj ET
+BT /F1 10 Tf 54 679.7 Td (- What: style on Row may not set white-space. className on Row is limited to: margin, width, height,) Tj ET
+BT /F1 10 Tf 54 666.7 Td (  flex-item, grid-item, position, display, overflow.) Tj ET
+BT /F1 10 Tf 54 650.7 Td (- Spread: 4 findings in 4 files, at warn. Involves Row.) Tj ET
+BT /F1 10 Tf 54 634.7 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
+BT /F1 10 Tf 54 621.7 Td (  widen for this component is a policy call.) Tj ET
+BT /F1 10 Tf 54 605.7 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
+BT /F1 10 Tf 54 589.7 Td (- Examples: F030 src/components/common/Pager.tsx:43, F031 src/components/input/FilterBar.tsx:240,) Tj ET
+BT /F1 10 Tf 54 576.7 Td (  F032 src/components/property-data/PropertyFilterBar.tsx:119.) Tj ET
+BT /F1 10 Tf 54 560.7 Td (- Findings: F030, F031, F032, F033.) Tj ET
+BT /F2 11 Tf 54 534.4 Td (G08: spacing-literal 10px \(True drift\)) Tj ET
+BT /F1 10 Tf 54 518.4 Td (- What: Arbitrary spacing value. 10px is not on the spacing scale.) Tj ET
+BT /F1 10 Tf 54 502.4 Td (- Spread: 6 findings in 2 files, at error. Involves space.padding-y-default.) Tj ET
+BT /F1 10 Tf 54 486.4 Td (- Why this class: spacing-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 470.4 Td (- Fix: var\(--padding-y-default\) \(nearest\). space.padding-y-default = 8px, space.padding-x-default =) Tj ET
+BT /F1 10 Tf 54 457.4 Td (  12px) Tj ET
+BT /F1 10 Tf 54 441.4 Td (- Examples: F034 src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:39, F035) Tj ET
+BT /F1 10 Tf 54 428.4 Td (  src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:80, F036) Tj ET
+BT /F1 10 Tf 54 415.4 Td (  src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:109.) Tj ET
+BT /F1 10 Tf 54 399.4 Td (- Findings: F034 to F039 \(6\).) Tj ET
+BT /F2 11 Tf 54 373.1 Td (G09: spacing-literal 20px \(True drift\)) Tj ET
+BT /F1 10 Tf 54 357.1 Td (- What: Arbitrary spacing value. 20px is not on the spacing scale.) Tj ET
+BT /F1 10 Tf 54 341.1 Td (- Spread: 5 findings in 2 files, at error. Involves space.gap-default.) Tj ET
+BT /F1 10 Tf 54 325.1 Td (- Why this class: spacing-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 309.1 Td (- Fix: var\(--gap-default\) \(nearest\). space.gap-default = 12px) Tj ET
+BT /F1 10 Tf 54 293.1 Td (- Examples: F040 src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:22, F041) Tj ET
+BT /F1 10 Tf 54 280.1 Td (  src/app/\(main\)/websites/[websiteId]/\(reports\)/journeys/Journey.module.css:22, F042) Tj ET
+BT /F1 10 Tf 54 267.1 Td (  src/app/\(main\)/websites/[websiteId]/\(reports\)/journeys/Journey.module.css:26.) Tj ET
+BT /F1 10 Tf 54 251.1 Td (- Findings: F040 to F044 \(5\).) Tj ET
+BT /F2 11 Tf 54 224.8 Td (G10: spacing-literal 6px \(True drift\)) Tj ET
+BT /F1 10 Tf 54 208.8 Td (- What: Arbitrary spacing value. 6px is not on the spacing scale.) Tj ET
+BT /F1 10 Tf 54 192.8 Td (- Spread: 4 findings in 2 files, at error. Involves space.padding-y-default.) Tj ET
+BT /F1 10 Tf 54 176.8 Td (- Why this class: spacing-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 160.8 Td (- Fix: var\(--padding-y-default\) \(nearest\). space.padding-y-default = 8px) Tj ET
+BT /F1 10 Tf 54 144.8 Td (- Examples: F045 src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:9, F046) Tj ET
+BT /F1 10 Tf 54 131.8 Td (  src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:39, F047) Tj ET
+BT /F1 10 Tf 54 118.8 Td (  src/app/\(main\)/websites/[websiteId]/\(reports\)/heatmaps/Heatmap.module.css:157.) Tj ET
+BT /F1 10 Tf 54 102.8 Td (- Findings: F045, F046, F047, F048.) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - umami-software/umami - page 3 of 6) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Length 4144 >>
+stream
+BT /F2 13 Tf 54 709.1 Td (Fix path by class) Tj ET
+BT /F2 11 Tf 54 682.8 Td (True drift) Tj ET
+BT /F1 10 Tf 54 663.8 Td (Fix in code, in group order. Apply exact fixes first; check each nearest fix by eye, since a) Tj ET
+BT /F1 10 Tf 54 650.8 Td (neighbouring step can be a different design.) Tj ET
+BT /F3 8 Tf 54 638.4 Td (Group | Rule | Found | Findings | Files) Tj ET
+BT /F3 8 Tf 54 626.0 Td (G01 | spacing-literal | 8px | F001 to F009 \(9\) | 4) Tj ET
+BT /F3 8 Tf 54 613.6 Td (G04 | color-literal | "rgba\(0,0,0,0.8\)" | F019, F020, F021 | 3) Tj ET
+BT /F3 8 Tf 54 601.2 Td (G05 | color-literal | "white" | F022, F023, F024 | 3) Tj ET
+BT /F3 8 Tf 54 588.8 Td (G08 | spacing-literal | 10px | F034 to F039 \(6\) | 2) Tj ET
+BT /F3 8 Tf 54 576.4 Td (G09 | spacing-literal | 20px | F040 to F044 \(5\) | 2) Tj ET
+BT /F3 8 Tf 54 564.0 Td (G10 | spacing-literal | 6px | F045, F046, F047, F048 | 2) Tj ET
+BT /F3 8 Tf 54 551.6 Td (G17 | spacing-literal | 4px | F067, F068, F069 | 2) Tj ET
+BT /F3 8 Tf 54 539.2 Td (G18 | spacing-literal | 12px | F070, F071 | 2) Tj ET
+BT /F3 8 Tf 54 526.8 Td (G20 | spacing-literal | paddingTop: '24px' | F074, F075 | 2) Tj ET
+BT /F3 8 Tf 54 514.4 Td (G24 | token-reference | --border-base | F082, F083, F084 | 1) Tj ET
+BT /F3 8 Tf 54 502.0 Td (G25 | spacing-literal | 16px | F085, F086 | 1) Tj ET
+BT /F3 8 Tf 54 489.6 Td (G26 | spacing-literal | gap: '16px' | F087, F088 | 1) Tj ET
+BT /F3 8 Tf 54 477.2 Td (G27 | spacing-literal | padding: '12px 0' | F089, F090 | 1) Tj ET
+BT /F3 8 Tf 54 464.8 Td (G28 | color-literal | "var\(--color-danger, red\)" | F091 | 1) Tj ET
+BT /F3 8 Tf 54 452.4 Td (G29 | color-literal | #15803d | F092 | 1) Tj ET
+BT /F3 8 Tf 54 440.0 Td (G30 | color-literal | #16a34a | F093 | 1) Tj ET
+BT /F3 8 Tf 54 427.6 Td (G31 | color-literal | #4ade80 | F094 | 1) Tj ET
+BT /F3 8 Tf 54 415.2 Td (G32 | color-literal | #86efac | F095 | 1) Tj ET
+BT /F3 8 Tf 54 402.8 Td (G33 | color-literal | #a16207 | F096 | 1) Tj ET
+BT /F3 8 Tf 54 390.4 Td (G34 | color-literal | #b91c1c | F097 | 1) Tj ET
+BT /F3 8 Tf 54 378.0 Td (G35 | color-literal | #ca8a04 | F098 | 1) Tj ET
+BT /F3 8 Tf 54 365.6 Td (G36 | color-literal | #d1d5db | F099 | 1) Tj ET
+BT /F3 8 Tf 54 353.2 Td (G37 | color-literal | #dc2626 | F100 | 1) Tj ET
+BT /F3 8 Tf 54 340.8 Td (G38 | color-literal | #dcfce7 | F101 | 1) Tj ET
+BT /F3 8 Tf 54 328.4 Td (G39 | color-literal | #f87171 | F102 | 1) Tj ET
+BT /F3 8 Tf 54 316.0 Td (G40 | color-literal | #facc15 | F103 | 1) Tj ET
+BT /F3 8 Tf 54 303.6 Td (G41 | color-literal | #fca5a5 | F104 | 1) Tj ET
+BT /F3 8 Tf 54 291.2 Td (G42 | color-literal | #fde047 | F105 | 1) Tj ET
+BT /F3 8 Tf 54 278.8 Td (G43 | color-literal | #fee2e2 | F106 | 1) Tj ET
+BT /F3 8 Tf 54 266.4 Td (G44 | color-literal | #fef9c3 | F107 | 1) Tj ET
+BT /F3 8 Tf 54 254.0 Td (G45 | color-literal | rgba\(0, 0, 0, 0.7\) | F108 | 1) Tj ET
+BT /F3 8 Tf 54 241.6 Td (G46 | color-literal | rgba\(202, 138, 4, 0.15\) | F109 | 1) Tj ET
+BT /F3 8 Tf 54 229.2 Td (G47 | color-literal | rgba\(22, 163, 74, 0.15\) | F110 | 1) Tj ET
+BT /F3 8 Tf 54 216.8 Td (G48 | color-literal | rgba\(220, 38, 38, 0.15\) | F111 | 1) Tj ET
+BT /F3 8 Tf 54 204.4 Td (G49 | color-literal | rgba\(255, 200, 0, 0.6\) | F112 | 1) Tj ET
+BT /F3 8 Tf 54 192.0 Td (G50 | color-literal | rgba\(255, 255, 255, 0.85\) | F113 | 1) Tj ET
+BT /F3 8 Tf 54 179.6 Td (G51 | color-literal | rgba\(255, 60, 0, 0.9\) | F114 | 1) Tj ET
+BT /F3 8 Tf 54 167.2 Td (G52 | component-substitution | <button type="button" onClick={handleSort} className="inline-flex) Tj ET
+BT /F3 8 Tf 54 156.8 Td (appearance-non | F115 | 1) Tj ET
+BT /F3 8 Tf 54 144.4 Td (G55 | spacing-literal | gap: 24 | F118 | 1) Tj ET
+BT /F3 8 Tf 54 132.0 Td (G56 | spacing-literal | margin: '0 6px' | F119 | 1) Tj ET
+BT /F3 8 Tf 54 119.6 Td (G57 | spacing-literal | marginLeft: 12 | F120 | 1) Tj ET
+BT /F3 8 Tf 54 107.2 Td (G59 | spacing-literal | marginTop: '12px' | F122 | 1) Tj ET
+BT /F3 8 Tf 54 94.8 Td (G61 | spacing-literal | marginTop: '8px' | F124 | 1) Tj ET
+BT /F3 8 Tf 54 82.4 Td (G62 | spacing-literal | padding: '0 0 12px' | F125 | 1) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - umami-software/umami - page 4 of 6) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 13 0 R >>
+endobj
+15 0 obj
+<< /Length 4499 >>
+stream
+BT /F3 8 Tf 54 725.6 Td (G63 | spacing-literal | padding: '24px' | F126 | 1) Tj ET
+BT /F3 8 Tf 54 713.2 Td (G64 | spacing-literal | paddingBottom: '16px' | F127 | 1) Tj ET
+BT /F3 8 Tf 54 700.8 Td (G66 | token-reference | --base-color-text-secondary | F129 | 1) Tj ET
+BT /F3 8 Tf 54 688.4 Td (G67 | token-reference | "1px solid var\(--base300\)" | F130 | 1) Tj ET
+BT /F3 8 Tf 54 676.0 Td (G68 | token-reference | "var\(--anchor-width\)" | F131 | 1) Tj ET
+BT /F3 8 Tf 54 663.6 Td (G69 | token-reference | "var\(--available-width\)" | F132 | 1) Tj ET
+BT /F3 8 Tf 54 651.2 Td (G70 | token-reference | "var\(--base75\)" | F133 | 1) Tj ET
+BT /F3 8 Tf 54 638.8 Td (G71 | token-reference | "var\(--color-danger, red\)" | F134 | 1) Tj ET
+BT /F3 8 Tf 54 626.4 Td (G72 | unknown-prop | flex-direction="column" | F135 | 1) Tj ET
+BT /F2 11 Tf 54 600.1 Td (Needs a decision) Tj ET
+BT /F1 10 Tf 54 581.1 Td (A decision for the team before any code changes: add the missing token, name the file as a) Tj ET
+BT /F1 10 Tf 54 568.1 Td (foundation, or widen the component's className.allow. Each decision closes a whole group.) Tj ET
+BT /F3 8 Tf 54 555.7 Td (Group | Rule | Found | Findings | Files) Tj ET
+BT /F3 8 Tf 54 543.3 Td (G02 | spacing-literal | padding: '32px' | F010 to F014 \(5\) | 4) Tj ET
+BT /F3 8 Tf 54 530.9 Td (G03 | spacing-literal | 2px | F015, F016, F017, F018 | 3) Tj ET
+BT /F3 8 Tf 54 518.5 Td (G06 | classname-policy | padding: '32px' | F025 to F029 \(5\) | 4) Tj ET
+BT /F3 8 Tf 54 506.1 Td (G07 | classname-policy | whiteSpace: 'nowrap' | F030, F031, F032, F033 | 4) Tj ET
+BT /F3 8 Tf 54 493.7 Td (G11 | classname-policy | backgroundColor: 'rgba\(0,0,0,0.8\)' | F049, F050, F051 | 3) Tj ET
+BT /F3 8 Tf 54 481.3 Td (G12 | classname-policy | color: 'white' | F052, F053, F054 | 3) Tj ET
+BT /F3 8 Tf 54 468.9 Td (G13 | classname-policy | cursor: 'pointer' | F055, F056, F057 | 3) Tj ET
+BT /F3 8 Tf 54 456.5 Td (G14 | classname-policy | padding: 0 | F058, F059, F060 | 3) Tj ET
+BT /F3 8 Tf 54 444.1 Td (G15 | classname-policy | rounded-lg | F061, F062, F063 | 3) Tj ET
+BT /F3 8 Tf 54 431.7 Td (G16 | classname-policy | textOverflow: 'ellipsis' | F064, F065, F066 | 3) Tj ET
+BT /F3 8 Tf 54 419.3 Td (G19 | spacing-literal | gap-1 | F072, F073 | 2) Tj ET
+BT /F3 8 Tf 54 406.9 Td (G21 | classname-policy | contain: 'layout' | F076, F077 | 2) Tj ET
+BT /F3 8 Tf 54 394.5 Td (G22 | classname-policy | justifyContent: 'flex-start' | F078, F079 | 2) Tj ET
+BT /F3 8 Tf 54 382.1 Td (G23 | classname-policy | paddingTop: '24px' | F080, F081 | 2) Tj ET
+BT /F3 8 Tf 54 369.7 Td (G53 | spacing-literal | 100px | F116 | 1) Tj ET
+BT /F3 8 Tf 54 357.3 Td (G54 | spacing-literal | 1px | F117 | 1) Tj ET
+BT /F3 8 Tf 54 344.9 Td (G58 | spacing-literal | marginTop: '-6px' | F121 | 1) Tj ET
+BT /F3 8 Tf 54 332.5 Td (G60 | spacing-literal | marginTop: '3px' | F123 | 1) Tj ET
+BT /F3 8 Tf 54 320.1 Td (G65 | spacing-literal | paddingLeft: 28 | F128 | 1) Tj ET
+BT /F3 8 Tf 54 307.7 Td (G73 | classname-policy | alignContent: 'start' | F136 | 1) Tj ET
+BT /F3 8 Tf 54 295.3 Td (G74 | classname-policy | color: 'var\(--color-danger, red\)' | F137 | 1) Tj ET
+BT /F3 8 Tf 54 282.9 Td (G75 | classname-policy | cursor: 'col-resize' | F138 | 1) Tj ET
+BT /F3 8 Tf 54 270.5 Td (G76 | classname-policy | cursor: 'row-resize' | F139 | 1) Tj ET
+BT /F3 8 Tf 54 258.1 Td (G77 | classname-policy | flex-col | F140 | 1) Tj ET
+BT /F3 8 Tf 54 245.7 Td (G78 | classname-policy | gap-2 | F141 | 1) Tj ET
+BT /F3 8 Tf 54 233.3 Td (G79 | classname-policy | gridTemplateRows: 'auto 1fr' | F142 | 1) Tj ET
+BT /F3 8 Tf 54 220.9 Td (G80 | classname-policy | justify-between | F143 | 1) Tj ET
+BT /F3 8 Tf 54 208.5 Td (G81 | classname-policy | opacity: 0.7 | F144 | 1) Tj ET
+BT /F3 8 Tf 54 196.1 Td (G82 | classname-policy | padding: '24px' | F145 | 1) Tj ET
+BT /F3 8 Tf 54 183.7 Td (G83 | classname-policy | paddingBottom: '16px' | F146 | 1) Tj ET
+BT /F3 8 Tf 54 171.3 Td (G84 | classname-policy | paddingLeft: 28 | F147 | 1) Tj ET
+BT /F3 8 Tf 54 158.9 Td (G85 | classname-policy | paddingTop: '15vh' | F148 | 1) Tj ET
+BT /F3 8 Tf 54 146.5 Td (G86 | classname-policy | tableLayout: 'fixed' | F149 | 1) Tj ET
+BT /F3 8 Tf 54 134.1 Td (G87 | classname-policy | textWrap: 'nowrap' | F150 | 1) Tj ET
+BT /F2 11 Tf 54 107.8 Td (Intentional exception) Tj ET
+BT /F1 10 Tf 54 88.8 Td (Keep it and write the reason after the zengin-allow comment's colon, so the engine honours it and) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - umami-software/umami - page 5 of 6) Tj ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 15 0 R >>
+endobj
+17 0 obj
+<< /Length 2604 >>
+stream
+BT /F1 10 Tf 54 725.0 Td (the next reader knows why; or remove the exception.) Tj ET
+BT /F1 10 Tf 54 706.0 Td (No group in the hand-review set.) Tj ET
+BT /F2 11 Tf 54 679.7 Td (False positive) Tj ET
+BT /F1 10 Tf 54 660.7 Td (Not a code change. Tune the definitions \(a passthrough type, a foundation file\) so the engine stops) Tj ET
+BT /F1 10 Tf 54 647.7 Td (reporting it, and count it in the report's false-positive rate.) Tj ET
+BT /F1 10 Tf 54 628.7 Td (No group in the hand-review set.) Tj ET
+BT /F2 13 Tf 54 599.8 Td (Beyond the hand-review cap) Tj ET
+BT /F1 10 Tf 54 580.8 Td (5 findings past the cap ship as engine output with a proposed class and no hand review. A second) Tj ET
+BT /F1 10 Tf 54 567.8 Td (pass is a separate piece of work.) Tj ET
+BT /F3 8 Tf 54 555.4 Td (Group | Rule | Found | Proposed class | Findings past the cap) Tj ET
+BT /F3 8 Tf 54 543.0 Td (G88 | classname-policy | transform: 'translate\(-50%, -50%\)' | Needs a decision | F151) Tj ET
+BT /F3 8 Tf 54 530.6 Td (G89 | classname-policy | transform: 'translateY\(-50%\)' | Needs a decision | F152) Tj ET
+BT /F3 8 Tf 54 518.2 Td (G90 | classname-policy | transition: 'width 0.2s ease-in-out' | Needs a decision | F153) Tj ET
+BT /F3 8 Tf 54 505.8 Td (G91 | classname-policy | whiteSpace: 'pre-wrap' | Needs a decision | F154) Tj ET
+BT /F3 8 Tf 54 493.4 Td (G92 | classname-policy | wordBreak: 'break-word' | Needs a decision | F155) Tj ET
+BT /F2 13 Tf 54 464.5 Td (What the scan cannot see) Tj ET
+BT /F1 10 Tf 54 448.5 Td (- Drift outside the engine's seven rule kinds \(color-literal, spacing-literal, token-reference,) Tj ET
+BT /F1 10 Tf 54 435.5 Td (  unknown-prop, unknown-prop-value, classname-policy, component-substitution\): behavioural,) Tj ET
+BT /F1 10 Tf 54 422.5 Td (  architectural and most accessibility drift.) Tj ET
+BT /F1 10 Tf 54 406.5 Td (- What renders at runtime: class names built from runtime values, styles set from JavaScript, and) Tj ET
+BT /F1 10 Tf 54 393.5 Td (  the visual result of an override.) Tj ET
+BT /F1 10 Tf 54 377.5 Td (- Files outside the configured scope, and any system the definitions do not describe.) Tj ET
+BT /F1 10 Tf 54 361.5 Td (- Whether a finding matters to a user. That judgement is the hand review.) Tj ET
+BT /F2 13 Tf 54 332.6 Td (Evidence) Tj ET
+BT /F1 10 Tf 54 313.6 Td (Every finding id above resolves in findings.json, with its file:line, rule, found value, the token) Tj ET
+BT /F1 10 Tf 54 300.6 Td (or component involved, its proposed class and the reason for it. run.json records the run.) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - umami-software/umami - page 6 of 6) Tj ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 17 0 R >>
+endobj
+xref
+0 19
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000150 00000 n 
+0000000247 00000 n 
+0000000349 00000 n 
+0000000444 00000 n 
+0000000557 00000 n 
+0000004421 00000 n 
+0000004567 00000 n 
+0000008814 00000 n 
+0000008961 00000 n 
+0000012999 00000 n 
+0000013147 00000 n 
+0000017344 00000 n 
+0000017492 00000 n 
+0000022044 00000 n 
+0000022192 00000 n 
+0000024849 00000 n 
+trailer
+<< /Size 19 /Root 1 0 R /Info 6 0 R >>
+startxref
+24997
+%%EOF

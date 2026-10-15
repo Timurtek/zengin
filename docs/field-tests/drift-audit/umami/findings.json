@@ -1,0 +1,4725 @@
+{
+  "schema": "zengin-audit-findings/1",
+  "groups": [
+    {
+      "id": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "findings": [
+        "F001",
+        "F002",
+        "F003",
+        "F004",
+        "F005",
+        "F006",
+        "F007",
+        "F008",
+        "F009"
+      ],
+      "files": 4,
+      "score": 12,
+      "review": "hand"
+    },
+    {
+      "id": "G02",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "padding: '32px'",
+      "involves": "padding: '32px'",
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "findings": [
+        "F010",
+        "F011",
+        "F012",
+        "F013",
+        "F014"
+      ],
+      "files": 4,
+      "score": 12,
+      "review": "hand"
+    },
+    {
+      "id": "G03",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "2px",
+      "involves": "2px",
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "findings": [
+        "F015",
+        "F016",
+        "F017",
+        "F018"
+      ],
+      "files": 3,
+      "score": 9,
+      "review": "hand"
+    },
+    {
+      "id": "G04",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "\"rgba(0,0,0,0.8)\"",
+      "involves": "color.gray-950",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F019",
+        "F020",
+        "F021"
+      ],
+      "files": 3,
+      "score": 9,
+      "review": "hand"
+    },
+    {
+      "id": "G05",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "\"white\"",
+      "involves": "color.primary-foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F022",
+        "F023",
+        "F024"
+      ],
+      "files": 3,
+      "score": 9,
+      "review": "hand"
+    },
+    {
+      "id": "G06",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "padding: '32px'",
+      "involves": "Dialog",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F025",
+        "F026",
+        "F027",
+        "F028",
+        "F029"
+      ],
+      "files": 4,
+      "score": 8,
+      "review": "hand"
+    },
+    {
+      "id": "G07",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "whiteSpace: 'nowrap'",
+      "involves": "Row",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F030",
+        "F031",
+        "F032",
+        "F033"
+      ],
+      "files": 4,
+      "score": 8,
+      "review": "hand"
+    },
+    {
+      "id": "G08",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "10px",
+      "involves": "space.padding-y-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F034",
+        "F035",
+        "F036",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G09",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "20px",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F040",
+        "F041",
+        "F042",
+        "F043",
+        "F044"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G10",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "6px",
+      "involves": "space.padding-y-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F045",
+        "F046",
+        "F047",
+        "F048"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G11",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "backgroundColor: 'rgba(0,0,0,0.8)'",
+      "involves": "Column",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F049",
+        "F050",
+        "F051"
+      ],
+      "files": 3,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G12",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "color: 'white'",
+      "involves": "Column",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F052",
+        "F053",
+        "F054"
+      ],
+      "files": 3,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G13",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "cursor: 'pointer'",
+      "involves": "Row",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F055",
+        "F056",
+        "F057"
+      ],
+      "files": 3,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G14",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "padding: 0",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F058",
+        "F059",
+        "F060"
+      ],
+      "files": 3,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G15",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "rounded-lg",
+      "involves": "Dialog",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F061",
+        "F062",
+        "F063"
+      ],
+      "files": 3,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G16",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "textOverflow: 'ellipsis'",
+      "involves": "Text",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F064",
+        "F065",
+        "F066"
+      ],
+      "files": 3,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G17",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "4px",
+      "involves": "space.padding-y-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F067",
+        "F068",
+        "F069"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G18",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "12px",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "findings": [
+        "F070",
+        "F071"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G19",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "gap-1",
+      "involves": "space.padding-y-default",
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "findings": [
+        "F072",
+        "F073"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G20",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "paddingTop: '24px'",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F074",
+        "F075"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G21",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "contain: 'layout'",
+      "involves": "Column",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F076",
+        "F077"
+      ],
+      "files": 2,
+      "score": 4,
+      "review": "hand"
+    },
+    {
+      "id": "G22",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "justifyContent: 'flex-start'",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F078",
+        "F079"
+      ],
+      "files": 2,
+      "score": 4,
+      "review": "hand"
+    },
+    {
+      "id": "G23",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "paddingTop: '24px'",
+      "involves": "Row",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F080",
+        "F081"
+      ],
+      "files": 2,
+      "score": 4,
+      "review": "hand"
+    },
+    {
+      "id": "G24",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "--border-base",
+      "involves": "--border-base",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F082",
+        "F083",
+        "F084"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G25",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "16px",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F085",
+        "F086"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G26",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "gap: '16px'",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F087",
+        "F088"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G27",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "padding: '12px 0'",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "findings": [
+        "F089",
+        "F090"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G28",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "\"var(--color-danger, red)\"",
+      "involves": "color.status-error",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F091"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G29",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#15803d",
+      "involves": "color.status-success-text",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F092"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G30",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#16a34a",
+      "involves": "color.status-success",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F093"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G31",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#4ade80",
+      "involves": "color.status-success",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F094"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G32",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#86efac",
+      "involves": "color.gray-400",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F095"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G33",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#a16207",
+      "involves": "color.status-warning-text",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F096"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G34",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#b91c1c",
+      "involves": "color.status-error-text",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F097"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G35",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#ca8a04",
+      "involves": "color.status-warning",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F098"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G36",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#d1d5db",
+      "involves": "color.gray-300",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F099"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G37",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#dc2626",
+      "involves": "color.status-error",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F100"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G38",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#dcfce7",
+      "involves": "color.status-success-text",
+      "class": "true-drift",
+      "basis": "color-literal at error, with an exact fix.",
+      "findings": [
+        "F101"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G39",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#f87171",
+      "involves": "color.status-error",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F102"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G40",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#facc15",
+      "involves": "color.status-warning",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F103"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G41",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#fca5a5",
+      "involves": "color.gray-300",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F104"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G42",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#fde047",
+      "involves": "color.status-warning",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F105"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G43",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#fee2e2",
+      "involves": "color.status-error-text",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F106"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G44",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "#fef9c3",
+      "involves": "color.status-warning-text",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F107"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G45",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "rgba(0, 0, 0, 0.7)",
+      "involves": "color.gray-950",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F108"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G46",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "rgba(202, 138, 4, 0.15)",
+      "involves": "color.status-warning",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F109"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G47",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "rgba(22, 163, 74, 0.15)",
+      "involves": "color.status-success",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F110"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G48",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "rgba(220, 38, 38, 0.15)",
+      "involves": "color.status-error",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F111"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G49",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "rgba(255, 200, 0, 0.6)",
+      "involves": "color.status-warning",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F112"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G50",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "rgba(255, 255, 255, 0.85)",
+      "involves": "color.primary-foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F113"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G51",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "rgba(255, 60, 0, 0.9)",
+      "involves": "color.status-error",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F114"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G52",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n      type=\"button\"\r\n      onClick={handleSort}\r\n      className=\"inline-flex appearance-none items-center gap-1 border-0 bg-transparent p-0 text-inherit\"\r\n      aria-pressed={isActive}\r\n    >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F115"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G53",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "100px",
+      "involves": "100px",
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "findings": [
+        "F116"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G54",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "1px",
+      "involves": "1px",
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "findings": [
+        "F117"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G55",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "gap: 24",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F118"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G56",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "margin: '0 6px'",
+      "involves": "space.padding-y-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F119"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G57",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "marginLeft: 12",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "findings": [
+        "F120"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G58",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "marginTop: '-6px'",
+      "involves": "marginTop: '-6px'",
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "findings": [
+        "F121"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G59",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "marginTop: '12px'",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "findings": [
+        "F122"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G60",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "marginTop: '3px'",
+      "involves": "marginTop: '3px'",
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "findings": [
+        "F123"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G61",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "marginTop: '8px'",
+      "involves": "space.padding-y-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "findings": [
+        "F124"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G62",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "padding: '0 0 12px'",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "findings": [
+        "F125"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G63",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "padding: '24px'",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F126"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G64",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "paddingBottom: '16px'",
+      "involves": "space.gap-default",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F127"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G65",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "paddingLeft: 28",
+      "involves": "paddingLeft: 28",
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "findings": [
+        "F128"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G66",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "--base-color-text-secondary",
+      "involves": "--base-color-text-secondary",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F129"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G67",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "\"1px solid var(--base300)\"",
+      "involves": "\"1px solid var(--base300)\"",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F130"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G68",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "\"var(--anchor-width)\"",
+      "involves": "\"var(--anchor-width)\"",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F131"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G69",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "\"var(--available-width)\"",
+      "involves": "\"var(--available-width)\"",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F132"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G70",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "\"var(--base75)\"",
+      "involves": "\"var(--base75)\"",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F133"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G71",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "\"var(--color-danger, red)\"",
+      "involves": "\"var(--color-danger, red)\"",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F134"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G72",
+      "rule": "unknown-prop",
+      "severity": "error",
+      "found": "flex-direction=\"column\"",
+      "involves": "Column",
+      "class": "true-drift",
+      "basis": "unknown-prop at error, with a fix to be written by hand.",
+      "findings": [
+        "F135"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G73",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "alignContent: 'start'",
+      "involves": "Grid",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F136"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G74",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "color: 'var(--color-danger, red)'",
+      "involves": "Text",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F137"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G75",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "cursor: 'col-resize'",
+      "involves": "Row",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F138"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G76",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "cursor: 'row-resize'",
+      "involves": "Row",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F139"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G77",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "flex-col",
+      "involves": "Menu",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F140"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G78",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "gap-2",
+      "involves": "Menu",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F141"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G79",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "gridTemplateRows: 'auto 1fr'",
+      "involves": "Tabs",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F142"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G80",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "justify-between",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F143"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G81",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "opacity: 0.7",
+      "involves": "Icon",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F144"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G82",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "padding: '24px'",
+      "involves": "Dialog",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F145"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G83",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "paddingBottom: '16px'",
+      "involves": "FormButtons",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F146"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G84",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "paddingLeft: 28",
+      "involves": "Row",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F147"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G85",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "paddingTop: '15vh'",
+      "involves": "Column",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F148"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G86",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "tableLayout: 'fixed'",
+      "involves": "DataTable",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F149"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G87",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "textWrap: 'nowrap'",
+      "involves": "Row",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F150"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G88",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "transform: 'translate(-50%, -50%)'",
+      "involves": "Box",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F151"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "summarised"
+    },
+    {
+      "id": "G89",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "transform: 'translateY(-50%)'",
+      "involves": "Column",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F152"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "summarised"
+    },
+    {
+      "id": "G90",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "transition: 'width 0.2s ease-in-out'",
+      "involves": "Column",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F153"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "summarised"
+    },
+    {
+      "id": "G91",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "whiteSpace: 'pre-wrap'",
+      "involves": "Text",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F154"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "summarised"
+    },
+    {
+      "id": "G92",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "wordBreak: 'break-word'",
+      "involves": "Text",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F155"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "summarised"
+    }
+  ],
+  "findings": [
+    {
+      "id": "F001",
+      "group": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:27",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 27,
+      "col": 16,
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F002",
+      "group": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:28",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 28,
+      "col": 18,
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F003",
+      "group": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:39",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 39,
+      "col": 12,
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F004",
+      "group": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:39",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 39,
+      "col": 21,
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F005",
+      "group": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:147",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 147,
+      "col": 16,
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F006",
+      "group": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:273",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 273,
+      "col": 10,
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F007",
+      "group": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:48",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 48,
+      "col": 16,
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F008",
+      "group": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:7",
+      "file": "src/components/common/Badge.module.css",
+      "line": 7,
+      "col": 16,
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F009",
+      "group": "G01",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/modals/TwoFactorSuccessModal.module.css:9",
+      "file": "src/components/modals/TwoFactorSuccessModal.module.css",
+      "line": 9,
+      "col": 8,
+      "found": "8px",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F010",
+      "group": "G02",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/boards/[boardId]/BoardEditColumn.tsx:133",
+      "file": "src/app/(main)/boards/[boardId]/BoardEditColumn.tsx",
+      "line": 133,
+      "col": 24,
+      "found": "padding: '32px'",
+      "involves": "padding: '32px'",
+      "message": "Arbitrary spacing value in inline style (padding). 32px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F011",
+      "group": "G02",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/settings/SharesTable.tsx:54",
+      "file": "src/app/(main)/websites/[websiteId]/settings/SharesTable.tsx",
+      "line": 54,
+      "col": 24,
+      "found": "padding: '32px'",
+      "involves": "padding: '32px'",
+      "message": "Arbitrary spacing value in inline style (padding). 32px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F012",
+      "group": "G02",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/settings/SharesTable.tsx:112",
+      "file": "src/app/(main)/websites/[websiteId]/settings/SharesTable.tsx",
+      "line": 112,
+      "col": 22,
+      "found": "padding: '32px'",
+      "involves": "padding: '32px'",
+      "message": "Arbitrary spacing value in inline style (padding). 32px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F013",
+      "group": "G02",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/input/FilterBar.tsx:191",
+      "file": "src/components/input/FilterBar.tsx",
+      "line": 191,
+      "col": 26,
+      "found": "padding: '32px'",
+      "involves": "padding: '32px'",
+      "message": "Arbitrary spacing value in inline style (padding). 32px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F014",
+      "group": "G02",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/input/SegmentSaveButton.tsx:26",
+      "file": "src/components/input/SegmentSaveButton.tsx",
+      "line": 26,
+      "col": 22,
+      "found": "padding: '32px'",
+      "involves": "padding: '32px'",
+      "message": "Arbitrary spacing value in inline style (padding). 32px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F015",
+      "group": "G03",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:66",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 66,
+      "col": 18,
+      "found": "2px",
+      "involves": "2px",
+      "message": "Arbitrary spacing value. 2px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F016",
+      "group": "G03",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:147",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 147,
+      "col": 12,
+      "found": "2px",
+      "involves": "2px",
+      "message": "Arbitrary spacing value. 2px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F017",
+      "group": "G03",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:7",
+      "file": "src/components/common/Badge.module.css",
+      "line": 7,
+      "col": 12,
+      "found": "2px",
+      "involves": "2px",
+      "message": "Arbitrary spacing value. 2px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F018",
+      "group": "G03",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/common/OverlayScrollArea.module.css:21",
+      "file": "src/components/common/OverlayScrollArea.module.css",
+      "line": 21,
+      "col": 11,
+      "found": "2px",
+      "involves": "2px",
+      "message": "Arbitrary spacing value. 2px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F019",
+      "group": "G04",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/charts/ChartTooltip.tsx:19",
+      "file": "src/components/charts/ChartTooltip.tsx",
+      "line": 19,
+      "col": 35,
+      "found": "\"rgba(0,0,0,0.8)\"",
+      "involves": "color.gray-950",
+      "message": "Color literal in inline style (background-color) where a token reference is required. rgba(0,0,0,0.8) has no exact token match.",
+      "fix": {
+        "replace": "\"var(--gray-950)\"",
+        "confidence": "nearest",
+        "token": "color.gray-950",
+        "note": "Nearest by value: color.gray-950 = #0a0a0a. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F020",
+      "group": "G04",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/metrics/WeeklyTraffic.tsx:110",
+      "file": "src/components/metrics/WeeklyTraffic.tsx",
+      "line": 110,
+      "col": 53,
+      "found": "\"rgba(0,0,0,0.8)\"",
+      "involves": "color.gray-950",
+      "message": "Color literal in inline style (background-color) where a token reference is required. rgba(0,0,0,0.8) has no exact token match.",
+      "fix": {
+        "replace": "\"var(--gray-950)\"",
+        "confidence": "nearest",
+        "token": "color.gray-950",
+        "note": "Nearest by value: color.gray-950 = #0a0a0a. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F021",
+      "group": "G04",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/metrics/WorldMap.tsx:105",
+      "file": "src/components/metrics/WorldMap.tsx",
+      "line": 105,
+      "col": 39,
+      "found": "\"rgba(0,0,0,0.8)\"",
+      "involves": "color.gray-950",
+      "message": "Color literal in inline style (background-color) where a token reference is required. rgba(0,0,0,0.8) has no exact token match.",
+      "fix": {
+        "replace": "\"var(--gray-950)\"",
+        "confidence": "nearest",
+        "token": "color.gray-950",
+        "note": "Nearest by value: color.gray-950 = #0a0a0a. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F022",
+      "group": "G05",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/charts/ChartTooltip.tsx:19",
+      "file": "src/components/charts/ChartTooltip.tsx",
+      "line": 19,
+      "col": 61,
+      "found": "\"white\"",
+      "involves": "color.primary-foreground",
+      "message": "Color literal in inline style (color) where a token reference is required. The value matches 4 tokens (color.primary-foreground, color.surface-base, color.surface-overlay, color.focus-ring-offset) in the default theme but will not follow theme changes.",
+      "fix": {
+        "replace": "\"var(--primary-foreground)\"",
+        "confidence": "nearest",
+        "token": "color.primary-foreground",
+        "candidates": [
+          "color.primary-foreground",
+          "color.surface-base",
+          "color.surface-overlay",
+          "color.focus-ring-offset"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.primary-foreground, color.surface-base, color.surface-overlay, color.focus-ring-offset."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F023",
+      "group": "G05",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/metrics/WeeklyTraffic.tsx:110",
+      "file": "src/components/metrics/WeeklyTraffic.tsx",
+      "line": 110,
+      "col": 79,
+      "found": "\"white\"",
+      "involves": "color.primary-foreground",
+      "message": "Color literal in inline style (color) where a token reference is required. The value matches 4 tokens (color.primary-foreground, color.surface-base, color.surface-overlay, color.focus-ring-offset) in the default theme but will not follow theme changes.",
+      "fix": {
+        "replace": "\"var(--primary-foreground)\"",
+        "confidence": "nearest",
+        "token": "color.primary-foreground",
+        "candidates": [
+          "color.primary-foreground",
+          "color.surface-base",
+          "color.surface-overlay",
+          "color.focus-ring-offset"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.primary-foreground, color.surface-base, color.surface-overlay, color.focus-ring-offset."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F024",
+      "group": "G05",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/metrics/WorldMap.tsx:105",
+      "file": "src/components/metrics/WorldMap.tsx",
+      "line": 105,
+      "col": 65,
+      "found": "\"white\"",
+      "involves": "color.primary-foreground",
+      "message": "Color literal in inline style (color) where a token reference is required. The value matches 4 tokens (color.primary-foreground, color.surface-base, color.surface-overlay, color.focus-ring-offset) in the default theme but will not follow theme changes.",
+      "fix": {
+        "replace": "\"var(--primary-foreground)\"",
+        "confidence": "nearest",
+        "token": "color.primary-foreground",
+        "candidates": [
+          "color.primary-foreground",
+          "color.surface-base",
+          "color.surface-overlay",
+          "color.focus-ring-offset"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.primary-foreground, color.surface-base, color.surface-overlay, color.focus-ring-offset."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F025",
+      "group": "G06",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/boards/[boardId]/BoardEditColumn.tsx:133",
+      "file": "src/app/(main)/boards/[boardId]/BoardEditColumn.tsx",
+      "line": 133,
+      "col": 15,
+      "found": "padding: '32px'",
+      "involves": "Dialog",
+      "message": "style on Dialog may not set padding. className on Dialog is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F026",
+      "group": "G06",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/websites/[websiteId]/settings/SharesTable.tsx:54",
+      "file": "src/app/(main)/websites/[websiteId]/settings/SharesTable.tsx",
+      "line": 54,
+      "col": 15,
+      "found": "padding: '32px'",
+      "involves": "Dialog",
+      "message": "style on Dialog may not set padding. className on Dialog is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F027",
+      "group": "G06",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/websites/[websiteId]/settings/SharesTable.tsx:112",
+      "file": "src/app/(main)/websites/[websiteId]/settings/SharesTable.tsx",
+      "line": 112,
+      "col": 13,
+      "found": "padding: '32px'",
+      "involves": "Dialog",
+      "message": "style on Dialog may not set padding. className on Dialog is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F028",
+      "group": "G06",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/FilterBar.tsx:191",
+      "file": "src/components/input/FilterBar.tsx",
+      "line": 191,
+      "col": 17,
+      "found": "padding: '32px'",
+      "involves": "Dialog",
+      "message": "style on Dialog may not set padding. className on Dialog is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F029",
+      "group": "G06",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/SegmentSaveButton.tsx:26",
+      "file": "src/components/input/SegmentSaveButton.tsx",
+      "line": 26,
+      "col": 13,
+      "found": "padding: '32px'",
+      "involves": "Dialog",
+      "message": "style on Dialog may not set padding. className on Dialog is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F030",
+      "group": "G07",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/common/Pager.tsx:43",
+      "file": "src/components/common/Pager.tsx",
+      "line": 43,
+      "col": 18,
+      "found": "whiteSpace: 'nowrap'",
+      "involves": "Row",
+      "message": "style on Row may not set white-space. className on Row is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F031",
+      "group": "G07",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/FilterBar.tsx:240",
+      "file": "src/components/input/FilterBar.tsx",
+      "line": 240,
+      "col": 68,
+      "found": "whiteSpace: 'nowrap'",
+      "involves": "Text",
+      "message": "style on Text may not set white-space. className on Text is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F032",
+      "group": "G07",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/property-data/PropertyFilterBar.tsx:119",
+      "file": "src/components/property-data/PropertyFilterBar.tsx",
+      "line": 119,
+      "col": 66,
+      "found": "whiteSpace: 'nowrap'",
+      "involves": "Text",
+      "message": "style on Text may not set white-space. className on Text is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F033",
+      "group": "G07",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/property-data/PropertyFilterRecord.tsx:158",
+      "file": "src/components/property-data/PropertyFilterRecord.tsx",
+      "line": 158,
+      "col": 11,
+      "found": "whiteSpace: 'nowrap'",
+      "involves": "Label",
+      "message": "style on Label may not set white-space. className on Label is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F034",
+      "group": "G08",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:39",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 39,
+      "col": 16,
+      "found": "10px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 10px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px, space.padding-x-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F035",
+      "group": "G08",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:80",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 80,
+      "col": 12,
+      "found": "10px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 10px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px, space.padding-x-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F036",
+      "group": "G08",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:109",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 109,
+      "col": 16,
+      "found": "10px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 10px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px, space.padding-x-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F037",
+      "group": "G08",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:34",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 34,
+      "col": 8,
+      "found": "10px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 10px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px, space.padding-x-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F038",
+      "group": "G08",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:80",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 80,
+      "col": 19,
+      "found": "10px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 10px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px, space.padding-x-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F039",
+      "group": "G08",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:86",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 86,
+      "col": 12,
+      "found": "10px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 10px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px, space.padding-x-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F040",
+      "group": "G09",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:22",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 22,
+      "col": 17,
+      "found": "20px",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value. 20px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--gap-default)",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F041",
+      "group": "G09",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:22",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 22,
+      "col": 18,
+      "found": "20px",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value. 20px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--gap-default)",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F042",
+      "group": "G09",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:26",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 26,
+      "col": 18,
+      "found": "20px",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value. 20px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--gap-default)",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F043",
+      "group": "G09",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:64",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 64,
+      "col": 18,
+      "found": "20px",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value. 20px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--gap-default)",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F044",
+      "group": "G09",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:86",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 86,
+      "col": 17,
+      "found": "20px",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value. 20px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--gap-default)",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F045",
+      "group": "G10",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:9",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 9,
+      "col": 18,
+      "found": "6px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 6px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F046",
+      "group": "G10",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:39",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 39,
+      "col": 25,
+      "found": "6px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 6px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F047",
+      "group": "G10",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:157",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 157,
+      "col": 16,
+      "found": "6px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 6px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F048",
+      "group": "G10",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:6",
+      "file": "src/components/common/Badge.module.css",
+      "line": 6,
+      "col": 8,
+      "found": "6px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 6px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F049",
+      "group": "G11",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/charts/ChartTooltip.tsx:19",
+      "file": "src/components/charts/ChartTooltip.tsx",
+      "line": 19,
+      "col": 18,
+      "found": "backgroundColor: 'rgba(0,0,0,0.8)'",
+      "involves": "Column",
+      "message": "style on Column may not set background-color. className on Column is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F050",
+      "group": "G11",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/metrics/WeeklyTraffic.tsx:110",
+      "file": "src/components/metrics/WeeklyTraffic.tsx",
+      "line": 110,
+      "col": 36,
+      "found": "backgroundColor: 'rgba(0,0,0,0.8)'",
+      "involves": "Tooltip",
+      "message": "style on Tooltip may not set background-color. className on Tooltip is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F051",
+      "group": "G11",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/metrics/WorldMap.tsx:105",
+      "file": "src/components/metrics/WorldMap.tsx",
+      "line": 105,
+      "col": 22,
+      "found": "backgroundColor: 'rgba(0,0,0,0.8)'",
+      "involves": "Box",
+      "message": "style on Box may not set background-color. className on Box is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F052",
+      "group": "G12",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/charts/ChartTooltip.tsx:19",
+      "file": "src/components/charts/ChartTooltip.tsx",
+      "line": 19,
+      "col": 54,
+      "found": "color: 'white'",
+      "involves": "Column",
+      "message": "style on Column may not set color. className on Column is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F053",
+      "group": "G12",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/metrics/WeeklyTraffic.tsx:110",
+      "file": "src/components/metrics/WeeklyTraffic.tsx",
+      "line": 110,
+      "col": 72,
+      "found": "color: 'white'",
+      "involves": "Tooltip",
+      "message": "style on Tooltip may not set color. className on Tooltip is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F054",
+      "group": "G12",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/metrics/WorldMap.tsx:105",
+      "file": "src/components/metrics/WorldMap.tsx",
+      "line": 105,
+      "col": 58,
+      "found": "color: 'white'",
+      "involves": "Box",
+      "message": "style on Box may not set color. className on Box is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F055",
+      "group": "G13",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/boards/[boardId]/BoardComponentSelect.tsx:471",
+      "file": "src/app/(main)/boards/[boardId]/BoardComponentSelect.tsx",
+      "line": 471,
+      "col": 36,
+      "found": "cursor: 'pointer'",
+      "involves": "Row",
+      "message": "style on Row may not set cursor. className on Row is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F056",
+      "group": "G13",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/FilterBar.tsx:245",
+      "file": "src/components/input/FilterBar.tsx",
+      "line": 245,
+      "col": 65,
+      "found": "cursor: 'pointer'",
+      "involves": "Icon",
+      "message": "style on Icon may not set cursor. className on Icon is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F057",
+      "group": "G13",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/property-data/PropertyFilterBar.tsx:124",
+      "file": "src/components/property-data/PropertyFilterBar.tsx",
+      "line": 124,
+      "col": 51,
+      "found": "cursor: 'pointer'",
+      "involves": "Icon",
+      "message": "style on Icon may not set cursor. className on Icon is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F058",
+      "group": "G14",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/SideNav.tsx:171",
+      "file": "src/app/(main)/SideNav.tsx",
+      "line": 171,
+      "col": 16,
+      "found": "padding: 0",
+      "involves": "Button",
+      "message": "style on Button may not set padding. padding is owned by the size prop.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F059",
+      "group": "G14",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/PanelButton.tsx:12",
+      "file": "src/components/input/PanelButton.tsx",
+      "line": 12,
+      "col": 16,
+      "found": "padding: 0",
+      "involves": "Button",
+      "message": "style on Button may not set padding. padding is owned by the size prop.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F060",
+      "group": "G14",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/UserButton.tsx:120",
+      "file": "src/components/input/UserButton.tsx",
+      "line": 120,
+      "col": 9,
+      "found": "padding: 0",
+      "involves": "Button",
+      "message": "style on Button may not set padding. padding is owned by the size prop.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F061",
+      "group": "G15",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/websites/[websiteId]/replays/ReplayModal.tsx:61",
+      "file": "src/app/(main)/websites/[websiteId]/replays/ReplayModal.tsx",
+      "line": 61,
+      "col": 37,
+      "found": "rounded-lg",
+      "involves": "Dialog",
+      "message": "className on Dialog may not set border-radius (.rounded-lg in D:/Projects/field-tests/umami/node_modules/@umami/react-zen/styles.full.css). className on Dialog is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F062",
+      "group": "G15",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/websites/[websiteId]/sessions/SessionModal.tsx:36",
+      "file": "src/app/(main)/websites/[websiteId]/sessions/SessionModal.tsx",
+      "line": 36,
+      "col": 37,
+      "found": "rounded-lg",
+      "involves": "Dialog",
+      "message": "className on Dialog may not set border-radius (.rounded-lg in D:/Projects/field-tests/umami/node_modules/@umami/react-zen/styles.full.css). className on Dialog is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F063",
+      "group": "G15",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/websites/[websiteId]/sessions/SessionProfileModal.tsx:36",
+      "file": "src/app/(main)/websites/[websiteId]/sessions/SessionProfileModal.tsx",
+      "line": 36,
+      "col": 37,
+      "found": "rounded-lg",
+      "involves": "Dialog",
+      "message": "className on Dialog may not set border-radius (.rounded-lg in D:/Projects/field-tests/umami/node_modules/@umami/react-zen/styles.full.css). className on Dialog is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F064",
+      "group": "G16",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/FilterBar.tsx:240",
+      "file": "src/components/input/FilterBar.tsx",
+      "line": 240,
+      "col": 42,
+      "found": "textOverflow: 'ellipsis'",
+      "involves": "Text",
+      "message": "style on Text may not set text-overflow. className on Text is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F065",
+      "group": "G16",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/property-data/PropertyFilterBar.tsx:119",
+      "file": "src/components/property-data/PropertyFilterBar.tsx",
+      "line": 119,
+      "col": 40,
+      "found": "textOverflow: 'ellipsis'",
+      "involves": "Text",
+      "message": "style on Text may not set text-overflow. className on Text is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F066",
+      "group": "G16",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/property-data/PropertyFilterRecord.tsx:157",
+      "file": "src/components/property-data/PropertyFilterRecord.tsx",
+      "line": 157,
+      "col": 11,
+      "found": "textOverflow: 'ellipsis'",
+      "involves": "Label",
+      "message": "style on Label may not set text-overflow. className on Label is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F067",
+      "group": "G17",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:66",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 66,
+      "col": 12,
+      "found": "4px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 4px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F068",
+      "group": "G17",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:109",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 109,
+      "col": 12,
+      "found": "4px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 4px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F069",
+      "group": "G17",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:48",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 48,
+      "col": 12,
+      "found": "4px",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value. 4px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--padding-y-default)",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F070",
+      "group": "G18",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:80",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 80,
+      "col": 17,
+      "found": "12px",
+      "involves": "space.gap-default",
+      "message": "Spacing literal where a token reference is required. 12px matches space.gap-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--gap-default)",
+        "confidence": "exact",
+        "token": "space.gap-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F071",
+      "group": "G18",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/modals/TwoFactorSuccessModal.module.css:10",
+      "file": "src/components/modals/TwoFactorSuccessModal.module.css",
+      "line": 10,
+      "col": 12,
+      "found": "12px",
+      "involves": "space.gap-default",
+      "message": "Spacing literal where a token reference is required. 12px matches space.gap-default but will not follow scale changes.",
+      "fix": {
+        "replace": "var(--gap-default)",
+        "confidence": "exact",
+        "token": "space.gap-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F072",
+      "group": "G19",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/common/SortableLabel.tsx:47",
+      "file": "src/components/common/SortableLabel.tsx",
+      "line": 47,
+      "col": 59,
+      "found": "gap-1",
+      "involves": "space.padding-y-default",
+      "message": "gap-1 resolves to the Tailwind default spacing scale (4px), not the system scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F073",
+      "group": "G19",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/input/WebsiteValueComboBox.tsx:67",
+      "file": "src/components/input/WebsiteValueComboBox.tsx",
+      "line": 67,
+      "col": 39,
+      "found": "gap-1",
+      "involves": "space.padding-y-default",
+      "message": "gap-1 resolves to the Tailwind default spacing scale (4px), not the system scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F074",
+      "group": "G20",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/input/FieldFilters.tsx:179",
+      "file": "src/components/input/FieldFilters.tsx",
+      "line": 179,
+      "col": 36,
+      "found": "paddingTop: '24px'",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value in inline style (padding-top). 24px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"var(--gap-default)\"",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F075",
+      "group": "G20",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/property-data/PropertyFilters.tsx:176",
+      "file": "src/components/property-data/PropertyFilters.tsx",
+      "line": 176,
+      "col": 38,
+      "found": "paddingTop: '24px'",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value in inline style (padding-top). 24px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"var(--gap-default)\"",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F076",
+      "group": "G21",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/FieldFilters.tsx:141",
+      "file": "src/components/input/FieldFilters.tsx",
+      "line": 141,
+      "col": 49,
+      "found": "contain: 'layout'",
+      "involves": "Column",
+      "message": "style on Column may not set contain. className on Column is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F077",
+      "group": "G21",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/property-data/PropertyFilters.tsx:154",
+      "file": "src/components/property-data/PropertyFilters.tsx",
+      "line": 154,
+      "col": 51,
+      "found": "contain: 'layout'",
+      "involves": "Column",
+      "message": "style on Column may not set contain. className on Column is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F078",
+      "group": "G22",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/UserButton.tsx:123",
+      "file": "src/components/input/UserButton.tsx",
+      "line": 123,
+      "col": 9,
+      "found": "justifyContent: 'flex-start'",
+      "involves": "Button",
+      "message": "style on Button may not set justify-content. className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F079",
+      "group": "G22",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/property-data/PropertyFilterRecord.tsx:273",
+      "file": "src/components/property-data/PropertyFilterRecord.tsx",
+      "line": 273,
+      "col": 33,
+      "found": "justifyContent: 'flex-start'",
+      "involves": "Button",
+      "message": "style on Button may not set justify-content. className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F080",
+      "group": "G23",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/FieldFilters.tsx:179",
+      "file": "src/components/input/FieldFilters.tsx",
+      "line": 179,
+      "col": 24,
+      "found": "paddingTop: '24px'",
+      "involves": "Row",
+      "message": "style on Row may not set padding-top. className on Row is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F081",
+      "group": "G23",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/property-data/PropertyFilters.tsx:176",
+      "file": "src/components/property-data/PropertyFilters.tsx",
+      "line": 176,
+      "col": 26,
+      "found": "paddingTop: '24px'",
+      "involves": "Row",
+      "message": "style on Row may not set padding-top. className on Row is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F082",
+      "group": "G24",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:77",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 77,
+      "col": 25,
+      "found": "--border-base",
+      "involves": "--border-base",
+      "message": "Unknown token --border-base. Nothing defines it: the system has no border tokens and no stylesheet in this project declares it, so it resolves to nothing at runtime.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F083",
+      "group": "G24",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:112",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 112,
+      "col": 25,
+      "found": "--border-base",
+      "involves": "--border-base",
+      "message": "Unknown token --border-base. Nothing defines it: the system has no border tokens and no stylesheet in this project declares it, so it resolves to nothing at runtime.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F084",
+      "group": "G24",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:178",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 178,
+      "col": 25,
+      "found": "--border-base",
+      "involves": "--border-base",
+      "message": "Unknown token --border-base. Nothing defines it: the system has no border tokens and no stylesheet in this project declares it, so it resolves to nothing at runtime.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F085",
+      "group": "G25",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/common/OverlayScrollArea.module.css:15",
+      "file": "src/components/common/OverlayScrollArea.module.css",
+      "line": 15,
+      "col": 11,
+      "found": "16px",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value. 16px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--gap-default)",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F086",
+      "group": "G25",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/common/OverlayScrollArea.module.css:21",
+      "file": "src/components/common/OverlayScrollArea.module.css",
+      "line": 21,
+      "col": 15,
+      "found": "16px",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value. 16px is not on the spacing scale.",
+      "fix": {
+        "replace": "var(--gap-default)",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F087",
+      "group": "G26",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/share/SharedSharesTable.tsx:44",
+      "file": "src/components/share/SharedSharesTable.tsx",
+      "line": 44,
+      "col": 18,
+      "found": "gap: '16px'",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value in inline style (gap). 16px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"var(--gap-default)\"",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F088",
+      "group": "G26",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/share/SharedSharesTable.tsx:85",
+      "file": "src/components/share/SharedSharesTable.tsx",
+      "line": 85,
+      "col": 22,
+      "found": "gap: '16px'",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value in inline style (gap). 16px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"var(--gap-default)\"",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F089",
+      "group": "G27",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/share/SharedSharesTable.tsx:64",
+      "file": "src/components/share/SharedSharesTable.tsx",
+      "line": 64,
+      "col": 28,
+      "found": "padding: '12px 0'",
+      "involves": "space.gap-default",
+      "message": "Spacing literal in inline style (padding) where a token reference is required. 12px matches space.gap-default but will not follow scale changes.",
+      "fix": {
+        "replace": "\"var(--gap-default) 0\"",
+        "confidence": "exact",
+        "token": "space.gap-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F090",
+      "group": "G27",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/share/SharedSharesTable.tsx:88",
+      "file": "src/components/share/SharedSharesTable.tsx",
+      "line": 88,
+      "col": 26,
+      "found": "padding: '12px 0'",
+      "involves": "space.gap-default",
+      "message": "Spacing literal in inline style (padding) where a token reference is required. 12px matches space.gap-default but will not follow scale changes.",
+      "fix": {
+        "replace": "\"var(--gap-default) 0\"",
+        "confidence": "exact",
+        "token": "space.gap-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F091",
+      "group": "G28",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/app/login/two-factor/LoginTwoFactorPage.tsx:100",
+      "file": "src/app/login/two-factor/LoginTwoFactorPage.tsx",
+      "line": 100,
+      "col": 33,
+      "found": "\"var(--color-danger, red)\"",
+      "involves": "color.status-error",
+      "message": "Color literal in inline style (color) where a token reference is required. red has no exact token match.",
+      "fix": {
+        "replace": "\"var(--color-danger, var(--status-error))\"",
+        "confidence": "nearest",
+        "token": "color.status-error",
+        "note": "Nearest by value: color.status-error = #fb2c36. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F092",
+      "group": "G29",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:23",
+      "file": "src/components/common/Badge.module.css",
+      "line": 23,
+      "col": 10,
+      "found": "#15803d",
+      "involves": "color.status-success-text",
+      "message": "Color literal where a token reference is required. #15803d has no exact token match.",
+      "fix": {
+        "replace": "var(--status-success-text)",
+        "confidence": "nearest",
+        "token": "color.status-success-text",
+        "note": "Nearest by value: color.status-success-text = #0d542b. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F093",
+      "group": "G30",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:28",
+      "file": "src/components/common/Badge.module.css",
+      "line": 28,
+      "col": 15,
+      "found": "#16a34a",
+      "involves": "color.status-success",
+      "message": "Color literal where a token reference is required. #16a34a has no exact token match.",
+      "fix": {
+        "replace": "var(--status-success)",
+        "confidence": "nearest",
+        "token": "color.status-success",
+        "note": "Nearest by value: color.status-success = #00c950. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F094",
+      "group": "G31",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:64",
+      "file": "src/components/common/Badge.module.css",
+      "line": 64,
+      "col": 15,
+      "found": "#4ade80",
+      "involves": "color.status-success",
+      "message": "Color literal where a token reference is required. #4ade80 has no exact token match.",
+      "fix": {
+        "replace": "var(--status-success)",
+        "confidence": "nearest",
+        "token": "color.status-success",
+        "note": "Nearest by value: color.status-success = #00c950. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F095",
+      "group": "G32",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:59",
+      "file": "src/components/common/Badge.module.css",
+      "line": 59,
+      "col": 10,
+      "found": "#86efac",
+      "involves": "color.gray-400",
+      "message": "Color literal where a token reference is required. #86efac has no exact token match.",
+      "fix": {
+        "replace": "var(--gray-400)",
+        "confidence": "nearest",
+        "token": "color.gray-400",
+        "note": "Nearest by value: color.gray-400 = #a1a1a1. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F096",
+      "group": "G33",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:32",
+      "file": "src/components/common/Badge.module.css",
+      "line": 32,
+      "col": 10,
+      "found": "#a16207",
+      "involves": "color.status-warning-text",
+      "message": "Color literal where a token reference is required. #a16207 has no exact token match.",
+      "fix": {
+        "replace": "var(--status-warning-text)",
+        "confidence": "nearest",
+        "token": "color.status-warning-text",
+        "note": "Nearest by value: color.status-warning-text = #733e0a. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F097",
+      "group": "G34",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:41",
+      "file": "src/components/common/Badge.module.css",
+      "line": 41,
+      "col": 10,
+      "found": "#b91c1c",
+      "involves": "color.status-error-text",
+      "message": "Color literal where a token reference is required. #b91c1c has no exact token match.",
+      "fix": {
+        "replace": "var(--status-error-text)",
+        "confidence": "nearest",
+        "token": "color.status-error-text",
+        "note": "Nearest by value: color.status-error-text = #82181a. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F098",
+      "group": "G35",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:37",
+      "file": "src/components/common/Badge.module.css",
+      "line": 37,
+      "col": 15,
+      "found": "#ca8a04",
+      "involves": "color.status-warning",
+      "message": "Color literal where a token reference is required. #ca8a04 has no exact token match.",
+      "fix": {
+        "replace": "var(--status-warning)",
+        "confidence": "nearest",
+        "token": "color.status-warning",
+        "note": "Nearest by value: color.status-warning = #f0b100. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F099",
+      "group": "G36",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:15",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 15,
+      "col": 31,
+      "found": "#d1d5db",
+      "involves": "color.gray-300",
+      "message": "Color literal where a token reference is required. #d1d5db has no exact token match.",
+      "fix": {
+        "replace": "var(--gray-300)",
+        "confidence": "nearest",
+        "token": "color.gray-300",
+        "note": "Nearest by value: color.gray-300 = #d4d4d4. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F100",
+      "group": "G37",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:46",
+      "file": "src/components/common/Badge.module.css",
+      "line": 46,
+      "col": 15,
+      "found": "#dc2626",
+      "involves": "color.status-error",
+      "message": "Color literal where a token reference is required. #dc2626 has no exact token match.",
+      "fix": {
+        "replace": "var(--status-error)",
+        "confidence": "nearest",
+        "token": "color.status-error",
+        "note": "Nearest by value: color.status-error = #fb2c36. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F101",
+      "group": "G38",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:24",
+      "file": "src/components/common/Badge.module.css",
+      "line": 24,
+      "col": 15,
+      "found": "#dcfce7",
+      "involves": "color.status-success-text",
+      "message": "Color literal where a token reference is required. The value matches color.status-success-text in the dark theme but will not follow theme changes.",
+      "fix": {
+        "replace": "var(--status-success-text)",
+        "confidence": "exact",
+        "token": "color.status-success-text"
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F102",
+      "group": "G39",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:82",
+      "file": "src/components/common/Badge.module.css",
+      "line": 82,
+      "col": 15,
+      "found": "#f87171",
+      "involves": "color.status-error",
+      "message": "Color literal where a token reference is required. #f87171 has no exact token match.",
+      "fix": {
+        "replace": "var(--status-error)",
+        "confidence": "nearest",
+        "token": "color.status-error",
+        "note": "Nearest by value: color.status-error = #fb2c36. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F103",
+      "group": "G40",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:73",
+      "file": "src/components/common/Badge.module.css",
+      "line": 73,
+      "col": 15,
+      "found": "#facc15",
+      "involves": "color.status-warning",
+      "message": "Color literal where a token reference is required. #facc15 has no exact token match.",
+      "fix": {
+        "replace": "var(--status-warning)",
+        "confidence": "nearest",
+        "token": "color.status-warning",
+        "note": "Nearest by value: color.status-warning = #f0b100. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F104",
+      "group": "G41",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:77",
+      "file": "src/components/common/Badge.module.css",
+      "line": 77,
+      "col": 10,
+      "found": "#fca5a5",
+      "involves": "color.gray-300",
+      "message": "Color literal where a token reference is required. #fca5a5 has no exact token match.",
+      "fix": {
+        "replace": "var(--gray-300)",
+        "confidence": "nearest",
+        "token": "color.gray-300",
+        "note": "Nearest by value: color.gray-300 = #d4d4d4. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F105",
+      "group": "G42",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:68",
+      "file": "src/components/common/Badge.module.css",
+      "line": 68,
+      "col": 10,
+      "found": "#fde047",
+      "involves": "color.status-warning",
+      "message": "Color literal where a token reference is required. #fde047 has no exact token match.",
+      "fix": {
+        "replace": "var(--status-warning)",
+        "confidence": "nearest",
+        "token": "color.status-warning",
+        "note": "Nearest by value: color.status-warning = #f0b100. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F106",
+      "group": "G43",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:42",
+      "file": "src/components/common/Badge.module.css",
+      "line": 42,
+      "col": 15,
+      "found": "#fee2e2",
+      "involves": "color.status-error-text",
+      "message": "Color literal where a token reference is required. #fee2e2 has no exact token match.",
+      "fix": {
+        "replace": "var(--status-error-text)",
+        "confidence": "nearest",
+        "token": "color.status-error-text",
+        "note": "Nearest by value: color.status-error-text = #ffe2e2 in the dark theme. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F107",
+      "group": "G44",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:33",
+      "file": "src/components/common/Badge.module.css",
+      "line": 33,
+      "col": 15,
+      "found": "#fef9c3",
+      "involves": "color.status-warning-text",
+      "message": "Color literal where a token reference is required. #fef9c3 has no exact token match.",
+      "fix": {
+        "replace": "var(--status-warning-text)",
+        "confidence": "nearest",
+        "token": "color.status-warning-text",
+        "note": "Nearest by value: color.status-warning-text = #fef9c2 in the dark theme. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F108",
+      "group": "G45",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:154",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 154,
+      "col": 10,
+      "found": "rgba(0, 0, 0, 0.7)",
+      "involves": "color.gray-950",
+      "message": "Color literal where a token reference is required. rgba(0, 0, 0, 0.7) has no exact token match.",
+      "fix": {
+        "replace": "var(--gray-950)",
+        "confidence": "nearest",
+        "token": "color.gray-950",
+        "note": "Nearest by value: color.gray-950 = #0a0a0a. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F109",
+      "group": "G46",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:69",
+      "file": "src/components/common/Badge.module.css",
+      "line": 69,
+      "col": 15,
+      "found": "rgba(202, 138, 4, 0.15)",
+      "involves": "color.status-warning",
+      "message": "Color literal where a token reference is required. rgba(202, 138, 4, 0.15) has no exact token match.",
+      "fix": {
+        "replace": "var(--status-warning)",
+        "confidence": "nearest",
+        "token": "color.status-warning",
+        "note": "Nearest by value: color.status-warning = #f0b100. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F110",
+      "group": "G47",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:60",
+      "file": "src/components/common/Badge.module.css",
+      "line": 60,
+      "col": 15,
+      "found": "rgba(22, 163, 74, 0.15)",
+      "involves": "color.status-success",
+      "message": "Color literal where a token reference is required. rgba(22, 163, 74, 0.15) has no exact token match.",
+      "fix": {
+        "replace": "var(--status-success)",
+        "confidence": "nearest",
+        "token": "color.status-success",
+        "note": "Nearest by value: color.status-success = #00c950. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F111",
+      "group": "G48",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/components/common/Badge.module.css:78",
+      "file": "src/components/common/Badge.module.css",
+      "line": 78,
+      "col": 15,
+      "found": "rgba(220, 38, 38, 0.15)",
+      "involves": "color.status-error",
+      "message": "Color literal where a token reference is required. rgba(220, 38, 38, 0.15) has no exact token match.",
+      "fix": {
+        "replace": "var(--status-error)",
+        "confidence": "nearest",
+        "token": "color.status-error",
+        "note": "Nearest by value: color.status-error = #fb2c36. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F112",
+      "group": "G49",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:258",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 258,
+      "col": 5,
+      "found": "rgba(255, 200, 0, 0.6)",
+      "involves": "color.status-warning",
+      "message": "Color literal where a token reference is required. rgba(255, 200, 0, 0.6) has no exact token match.",
+      "fix": {
+        "replace": "var(--status-warning)",
+        "confidence": "nearest",
+        "token": "color.status-warning",
+        "note": "Nearest by value: color.status-warning = #f0b100. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F113",
+      "group": "G50",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:155",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 155,
+      "col": 15,
+      "found": "rgba(255, 255, 255, 0.85)",
+      "involves": "color.primary-foreground",
+      "message": "Color literal where a token reference is required. The value matches 4 tokens (color.primary-foreground, color.surface-base, color.surface-overlay, color.focus-ring-offset) in the default theme but will not follow theme changes.",
+      "fix": {
+        "replace": "var(--primary-foreground)",
+        "confidence": "nearest",
+        "token": "color.primary-foreground",
+        "candidates": [
+          "color.primary-foreground",
+          "color.surface-base",
+          "color.surface-overlay",
+          "color.focus-ring-offset"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.primary-foreground, color.surface-base, color.surface-overlay, color.focus-ring-offset."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F114",
+      "group": "G51",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:257",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 257,
+      "col": 5,
+      "found": "rgba(255, 60, 0, 0.9)",
+      "involves": "color.status-error",
+      "message": "Color literal where a token reference is required. rgba(255, 60, 0, 0.9) has no exact token match.",
+      "fix": {
+        "replace": "var(--status-error)",
+        "confidence": "nearest",
+        "token": "color.status-error",
+        "note": "Nearest by value: color.status-error = #fb2c36. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F115",
+      "group": "G52",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "src/components/common/SortableLabel.tsx:44",
+      "file": "src/components/common/SortableLabel.tsx",
+      "line": 44,
+      "col": 5,
+      "found": "<button\r\n      type=\"button\"\r\n      onClick={handleSort}\r\n      className=\"inline-flex appearance-none items-center gap-1 border-0 bg-transparent p-0 text-inherit\"\r\n      aria-pressed={isActive}\r\n    >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, padding). Use Button from @umami/react-zen.",
+      "fix": {
+        "replace": "<Button onClick={handleSort} aria-pressed={isActive}>\r\n      <span>{label}</span>\r\n      <span\r\n        aria-hidden\r\n        style={{\r\n          display: 'inline-flex',\r\n          flexDirection: 'column',\r\n          gap: 0,\r\n          lineHeight: 0,\r\n          color: 'var(--text-muted)',\r\n          opacity: 0.8,\r\n        }}\r\n      >\r\n        <span\r\n          style={{\r\n            color: direction === 'asc' ? activeColor : undefined,\r\n            opacity: direction === 'asc' ? 1 : 0.55,\r\n            transform: 'scale(0.9)',\r\n            transformOrigin: 'center',\r\n          }}\r\n        >\r\n          <Icon size=\"sm\" color={direction === 'asc' ? undefined : 'muted'}>\r\n            <ChevronUp />\r\n          </Icon>\r\n        </span>\r\n        <span\r\n          style={{\r\n            color: direction === 'desc' ? activeColor : undefined,\r\n            opacity: direction === 'desc' ? 1 : 0.55,\r\n            marginTop: '-6px',\r\n            transform: 'scale(0.9)',\r\n            transformOrigin: 'center',\r\n          }}\r\n        >\r\n          <Icon size=\"sm\" color={direction === 'desc' ? undefined : 'muted'}>\r\n            <ChevronDown />\r\n          </Icon>\r\n        </span>\r\n      </span>\r\n    </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@umami/react-zen\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F116",
+      "group": "G53",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css:21",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/journeys/Journey.module.css",
+      "line": 21,
+      "col": 8,
+      "found": "100px",
+      "involves": "100px",
+      "message": "Arbitrary spacing value. 100px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F117",
+      "group": "G54",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css:157",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.module.css",
+      "line": 157,
+      "col": 12,
+      "found": "1px",
+      "involves": "1px",
+      "message": "Arbitrary spacing value. 1px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F118",
+      "group": "G55",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/utm/BoardUTM.tsx:84",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/utm/BoardUTM.tsx",
+      "line": 84,
+      "col": 18,
+      "found": "gap: 24",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value in inline style (gap). 24px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"var(--gap-default)\"",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F119",
+      "group": "G56",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/TopNav.tsx:55",
+      "file": "src/app/(main)/TopNav.tsx",
+      "line": 55,
+      "col": 74,
+      "found": "margin: '0 6px'",
+      "involves": "space.padding-y-default",
+      "message": "Arbitrary spacing value in inline style (margin). 6px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"0 var(--padding-y-default)\"",
+        "confidence": "nearest",
+        "token": "space.padding-y-default",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F120",
+      "group": "G57",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/share/[slug]/[[...path]]/ShareBranding.tsx:17",
+      "file": "src/app/share/[slug]/[[...path]]/ShareBranding.tsx",
+      "line": 17,
+      "col": 78,
+      "found": "marginLeft: 12",
+      "involves": "space.gap-default",
+      "message": "Spacing literal in inline style (margin-left) where a token reference is required. 12px matches space.gap-default but will not follow scale changes.",
+      "fix": {
+        "replace": "\"var(--gap-default)\"",
+        "confidence": "exact",
+        "token": "space.gap-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F121",
+      "group": "G58",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/common/SortableLabel.tsx:78",
+      "file": "src/components/common/SortableLabel.tsx",
+      "line": 78,
+      "col": 24,
+      "found": "marginTop: '-6px'",
+      "involves": "marginTop: '-6px'",
+      "message": "Arbitrary spacing value in inline style (margin-top). -6px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F122",
+      "group": "G59",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/share/SharedSharesTable.tsx:72",
+      "file": "src/components/share/SharedSharesTable.tsx",
+      "line": 72,
+      "col": 68,
+      "found": "marginTop: '12px'",
+      "involves": "space.gap-default",
+      "message": "Spacing literal in inline style (margin-top) where a token reference is required. 12px matches space.gap-default but will not follow scale changes.",
+      "fix": {
+        "replace": "\"var(--gap-default)\"",
+        "confidence": "exact",
+        "token": "space.gap-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F123",
+      "group": "G60",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/input/WebsiteFilterButton.tsx:86",
+      "file": "src/components/input/WebsiteFilterButton.tsx",
+      "line": 86,
+      "col": 39,
+      "found": "marginTop: '3px'",
+      "involves": "marginTop: '3px'",
+      "message": "Arbitrary spacing value in inline style (margin-top). 3px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.padding-y-default = 8px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F124",
+      "group": "G61",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/share/SharedSharesTable.tsx:69",
+      "file": "src/components/share/SharedSharesTable.tsx",
+      "line": 69,
+      "col": 42,
+      "found": "marginTop: '8px'",
+      "involves": "space.padding-y-default",
+      "message": "Spacing literal in inline style (margin-top) where a token reference is required. 8px matches space.padding-y-default but will not follow scale changes.",
+      "fix": {
+        "replace": "\"var(--padding-y-default)\"",
+        "confidence": "exact",
+        "token": "space.padding-y-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F125",
+      "group": "G62",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/components/share/SharedSharesTable.tsx:46",
+      "file": "src/components/share/SharedSharesTable.tsx",
+      "line": 46,
+      "col": 22,
+      "found": "padding: '0 0 12px'",
+      "involves": "space.gap-default",
+      "message": "Spacing literal in inline style (padding) where a token reference is required. 12px matches space.gap-default but will not follow scale changes.",
+      "fix": {
+        "replace": "\"0 0 var(--gap-default)\"",
+        "confidence": "exact",
+        "token": "space.gap-default"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F126",
+      "group": "G63",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.tsx:194",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.tsx",
+      "line": 194,
+      "col": 28,
+      "found": "padding: '24px'",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value in inline style (padding). 24px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"var(--gap-default)\"",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F127",
+      "group": "G64",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/funnels/FunnelEditForm.tsx:252",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/funnels/FunnelEditForm.tsx",
+      "line": 252,
+      "col": 44,
+      "found": "paddingBottom: '16px'",
+      "involves": "space.gap-default",
+      "message": "Arbitrary spacing value in inline style (padding-bottom). 16px is not on the spacing scale.",
+      "fix": {
+        "replace": "\"var(--gap-default)\"",
+        "confidence": "nearest",
+        "token": "space.gap-default",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F128",
+      "group": "G65",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/funnels/Funnel.tsx:104",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/funnels/Funnel.tsx",
+      "line": 104,
+      "col": 68,
+      "found": "paddingLeft: 28",
+      "involves": "paddingLeft: 28",
+      "message": "Arbitrary spacing value in inline style (padding-left). 28px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none",
+        "note": "space.gap-default = 12px"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F129",
+      "group": "G66",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/performance/Performance.module.css:2",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/performance/Performance.module.css",
+      "line": 2,
+      "col": 14,
+      "found": "--base-color-text-secondary",
+      "involves": "--base-color-text-secondary",
+      "message": "Unknown token --base-color-text-secondary. Nothing defines it: the system has no base tokens and no stylesheet in this project declares it, so it resolves to nothing at runtime.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F130",
+      "group": "G67",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/replays/[replayId]/ReplayPlayer.tsx:172",
+      "file": "src/app/(main)/websites/[websiteId]/replays/[replayId]/ReplayPlayer.tsx",
+      "line": 172,
+      "col": 21,
+      "found": "\"1px solid var(--base300)\"",
+      "involves": "\"1px solid var(--base300)\"",
+      "message": "Unknown token --base300 in inline style (border).",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F131",
+      "group": "G68",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "src/components/common/MultiSelect.tsx:71",
+      "file": "src/components/common/MultiSelect.tsx",
+      "line": 71,
+      "col": 18,
+      "found": "\"var(--anchor-width)\"",
+      "involves": "\"var(--anchor-width)\"",
+      "message": "Unknown token --anchor-width in inline style (width).",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F132",
+      "group": "G69",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "src/components/common/MultiSelect.tsx:72",
+      "file": "src/components/common/MultiSelect.tsx",
+      "line": 72,
+      "col": 21,
+      "found": "\"var(--available-width)\"",
+      "involves": "\"var(--available-width)\"",
+      "message": "Unknown token --available-width in inline style (max-width).",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F133",
+      "group": "G70",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "src/app/(main)/websites/[websiteId]/replays/[replayId]/ReplayPlayer.tsx:173",
+      "file": "src/app/(main)/websites/[websiteId]/replays/[replayId]/ReplayPlayer.tsx",
+      "line": 173,
+      "col": 25,
+      "found": "\"var(--base75)\"",
+      "involves": "\"var(--base75)\"",
+      "message": "Unknown token --base75 in inline style (background).",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F134",
+      "group": "G71",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "src/app/login/two-factor/LoginTwoFactorPage.tsx:100",
+      "file": "src/app/login/two-factor/LoginTwoFactorPage.tsx",
+      "line": 100,
+      "col": 33,
+      "found": "\"var(--color-danger, red)\"",
+      "involves": "\"var(--color-danger, red)\"",
+      "message": "Unknown token --color-danger in inline style (color).",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F135",
+      "group": "G72",
+      "rule": "unknown-prop",
+      "severity": "error",
+      "evidence": "src/app/(main)/MobileNav.tsx:52",
+      "file": "src/app/(main)/MobileNav.tsx",
+      "line": 52,
+      "col": 44,
+      "found": "flex-direction=\"column\"",
+      "involves": "Column",
+      "message": "Column has no prop \"flex-direction\". Props: reverse, display, direction, wrap, justifyContent, justifyItems, alignContent, alignItems, gap, gapX, gapY, color, backgroundColor, border, borderWidth, borderColor, borderRadius, shadow, padding, paddingX, paddingY, paddingTop, paddingRight, paddingBottom, paddingLeft, margin, marginX, marginY, marginTop, marginRight, marginBottom, marginLeft, spaceX, spaceY, width, minWidth, maxWidth, height, minHeight, maxHeight, position, textAlign, top, right, bottom, left, overflow, overflowX, overflowY, cursor, opacity, pointerEvents, alignSelf, justifySelf, flexBasis, flexGrow, flexShrink, fill, gridArea, gridRow, gridColumn, order, zIndex, theme, hover, focus, active, as, render.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "unknown-prop at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F136",
+      "group": "G73",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/property-data/PropertyFilters.tsx:107",
+      "file": "src/components/property-data/PropertyFilters.tsx",
+      "line": 107,
+      "col": 60,
+      "found": "alignContent: 'start'",
+      "involves": "Grid",
+      "message": "style on Grid may not set align-content. className on Grid is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F137",
+      "group": "G74",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/login/two-factor/LoginTwoFactorPage.tsx:100",
+      "file": "src/app/login/two-factor/LoginTwoFactorPage.tsx",
+      "line": 100,
+      "col": 26,
+      "found": "color: 'var(--color-danger, red)'",
+      "involves": "Text",
+      "message": "style on Text may not set color. className on Text is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F138",
+      "group": "G75",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/boards/[boardId]/BoardEditRow.tsx:128",
+      "file": "src/app/(main)/boards/[boardId]/BoardEditRow.tsx",
+      "line": 128,
+      "col": 28,
+      "found": "cursor: 'col-resize'",
+      "involves": "Row",
+      "message": "style on Row may not set cursor. className on Row is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F139",
+      "group": "G76",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/boards/[boardId]/BoardEditBody.tsx:153",
+      "file": "src/app/(main)/boards/[boardId]/BoardEditBody.tsx",
+      "line": 153,
+      "col": 28,
+      "found": "cursor: 'row-resize'",
+      "involves": "Row",
+      "message": "style on Row may not set cursor. className on Row is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F140",
+      "group": "G77",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/common/MultiSelect.tsx:69",
+      "file": "src/components/common/MultiSelect.tsx",
+      "line": 69,
+      "col": 25,
+      "found": "flex-col",
+      "involves": "Menu",
+      "message": "className on Menu may not set flex-direction (.flex-col in D:/Projects/field-tests/umami/node_modules/@umami/react-zen/styles.full.css). className on Menu is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F141",
+      "group": "G78",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/common/MultiSelect.tsx:69",
+      "file": "src/components/common/MultiSelect.tsx",
+      "line": 69,
+      "col": 34,
+      "found": "gap-2",
+      "involves": "Menu",
+      "message": "className on Menu may not set gap (.gap-2 in D:/Projects/field-tests/umami/node_modules/@umami/react-zen/styles.full.css). className on Menu is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F142",
+      "group": "G79",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/FilterEditForm.tsx:108",
+      "file": "src/components/input/FilterEditForm.tsx",
+      "line": 108,
+      "col": 11,
+      "found": "gridTemplateRows: 'auto 1fr'",
+      "involves": "Tabs",
+      "message": "style on Tabs may not set grid-template-rows. className on Tabs is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F143",
+      "group": "G80",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/common/MultiSelect.tsx:53",
+      "file": "src/components/common/MultiSelect.tsx",
+      "line": 53,
+      "col": 27,
+      "found": "justify-between",
+      "involves": "Button",
+      "message": "className on Button may not set justify-content (.justify-between in D:/Projects/field-tests/umami/node_modules/@umami/react-zen/styles.full.css). className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F144",
+      "group": "G81",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/TopNav.tsx:55",
+      "file": "src/app/(main)/TopNav.tsx",
+      "line": 55,
+      "col": 52,
+      "found": "opacity: 0.7",
+      "involves": "Icon",
+      "message": "style on Icon may not set opacity. className on Icon is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F145",
+      "group": "G82",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.tsx:194",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/heatmaps/Heatmap.tsx",
+      "line": 194,
+      "col": 19,
+      "found": "padding: '24px'",
+      "involves": "Dialog",
+      "message": "style on Dialog may not set padding. className on Dialog is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F146",
+      "group": "G83",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/funnels/FunnelEditForm.tsx:252",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/funnels/FunnelEditForm.tsx",
+      "line": 252,
+      "col": 29,
+      "found": "paddingBottom: '16px'",
+      "involves": "FormButtons",
+      "message": "style on FormButtons may not set padding-bottom. className on FormButtons is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F147",
+      "group": "G84",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/funnels/Funnel.tsx:104",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/funnels/Funnel.tsx",
+      "line": 104,
+      "col": 55,
+      "found": "paddingLeft: 28",
+      "involves": "Row",
+      "message": "style on Row may not set padding-left. className on Row is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F148",
+      "group": "G85",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/login/LoginPage.tsx:29",
+      "file": "src/app/login/LoginPage.tsx",
+      "line": 29,
+      "col": 16,
+      "found": "paddingTop: '15vh'",
+      "involves": "Column",
+      "message": "style on Column may not set padding-top. className on Column is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F149",
+      "group": "G86",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/websites/[websiteId]/(reports)/breakdown/Breakdown.tsx:31",
+      "file": "src/app/(main)/websites/[websiteId]/(reports)/breakdown/Breakdown.tsx",
+      "line": 31,
+      "col": 41,
+      "found": "tableLayout: 'fixed'",
+      "involves": "DataTable",
+      "message": "style on DataTable may not set table-layout. className on DataTable is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F150",
+      "group": "G87",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/components/input/UserButton.tsx:133",
+      "file": "src/components/input/UserButton.tsx",
+      "line": 133,
+      "col": 18,
+      "found": "textWrap: 'nowrap'",
+      "involves": "Row",
+      "message": "style on Row may not set text-wrap. className on Row is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F151",
+      "group": "G88",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/boards/[boardId]/BoardEditColumn.tsx:91",
+      "file": "src/app/(main)/boards/[boardId]/BoardEditColumn.tsx",
+      "line": 91,
+      "col": 20,
+      "found": "transform: 'translate(-50%, -50%)'",
+      "involves": "Box",
+      "message": "style on Box may not set transform. className on Box is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "summarised"
+    },
+    {
+      "id": "F152",
+      "group": "G89",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/boards/[boardId]/BoardEditRow.tsx:149",
+      "file": "src/app/(main)/boards/[boardId]/BoardEditRow.tsx",
+      "line": 149,
+      "col": 20,
+      "found": "transform: 'translateY(-50%)'",
+      "involves": "Column",
+      "message": "style on Column may not set transform. className on Column is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "summarised"
+    },
+    {
+      "id": "F153",
+      "group": "G90",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/SideNav.tsx:83",
+      "file": "src/app/(main)/SideNav.tsx",
+      "line": 83,
+      "col": 9,
+      "found": "transition: 'width 0.2s ease-in-out'",
+      "involves": "Column",
+      "message": "style on Column may not set transition. className on Column is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "summarised"
+    },
+    {
+      "id": "F154",
+      "group": "G91",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/boards/TextBlock.tsx:9",
+      "file": "src/app/(main)/boards/TextBlock.tsx",
+      "line": 9,
+      "col": 25,
+      "found": "whiteSpace: 'pre-wrap'",
+      "involves": "Text",
+      "message": "style on Text may not set white-space. className on Text is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "summarised"
+    },
+    {
+      "id": "F155",
+      "group": "G92",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "src/app/(main)/boards/TextBlock.tsx:9",
+      "file": "src/app/(main)/boards/TextBlock.tsx",
+      "line": 9,
+      "col": 49,
+      "found": "wordBreak: 'break-word'",
+      "involves": "Text",
+      "message": "style on Text may not set word-break. className on Text is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "summarised"
+    }
+  ]
+}

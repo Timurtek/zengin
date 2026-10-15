@@ -152,6 +152,14 @@ zengin rollup reports/*.json --format html --out rollup.html
 
 `report` is the check plus an inventory: component usage (adoption), suppressions with and without reasons, owned forks with their versions, uncontracted components, and the pinned system version. `rollup` ranks repositories by drift, shows violations per 100 files so sizes compare, flags who is behind the latest version, computes deltas against a previous rollup, and lists what needs attention in priority order. See [`@zenginui/rollup`](../rollup) for the workflow recipe.
 
+## audit
+
+```bash
+zengin audit ../client-repo --out ../engagement/deliverables
+```
+
+The Design System Drift Audit in one run, against a repository whose definitions were derived in prework (`zengin init --from shadcn` or `--from package`). Findings are grouped by cause (one rule, one found value: one decision), ranked by severity times the number of files, and each gets a proposed class (true drift, needs a decision, intentional exception, false positive) with its `file:line` evidence and the reason the class was proposed. The first 150 findings in rank order go to hand review (`--cap`); the rest are summarised. Four files are written to `--out` and nowhere else: `findings.json`, `run.json` (the run, its time and the reconciled totals), and the report draft as `report.md` and `report.pdf`, marked DRAFT for review before it reaches the client. The repository is only read.
+
 ## explain
 
 ```bash

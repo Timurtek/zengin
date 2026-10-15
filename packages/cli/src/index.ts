@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { dirname, relative, resolve } from "node:path";
 import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity } from "@zenginui/engine";
+import { AUDIT_FILES, runAudit } from "./audit.js";
 import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check.js";
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { runDefine } from "./define.js";
@@ -23,6 +24,7 @@ Usage:
   zengin report [--out file]          one repository's snapshot: violations plus inventory, as JSON, for the rollup
   zengin report --into <dir>          the same, filed as <dir>/<repo>/<time>.json so the directory is the history
   zengin rollup <snapshots|dirs...>   drift, adoption and trends across repositories, from report snapshots
+  zengin audit <repo> --out <dir>     the Drift Audit: findings classed and ranked, a DRAFT report (md, pdf), written only to <dir>
   zengin create <dir>                 a new project on Zengin UI: components copied in, engine, MCP, hook, Storybook wired
   zengin add <items...>               components or templates from the registry into this project
   zengin upgrade [items...]           what changed upstream since the components were copied; --write takes it
@@ -111,6 +113,12 @@ Rollup options:
   --format <fmt>        markdown | json | html (default: markdown)
   --out <file>          write the rollup here instead of stdout
 
+Audit options:
+  --out <dir>           the engagement's deliverables folder (required): findings.json, run.json, report.md, report.pdf
+  --config <path>       zengin.config.yaml (default: the one at the repository root, written in prework)
+  --cap <n>             findings taken into hand review, in rank order (default: 150)
+  --repo <name>         repository name in the report (default: from the git remote, else the directory)
+
 Check options:
   --config <path>       zengin.config.yaml (default: nearest one above cwd)
   --changed [ref]       only files changed since <ref> (default HEAD), plus uncommitted and untracked
@@ -125,7 +133,7 @@ Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 us
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "define" | "doctor" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "help";
+  command: "check" | "explain" | "init" | "define" | "doctor" | "report" | "rollup" | "audit" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "help";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
@@ -133,6 +141,7 @@ interface Parsed {
   rollup: { previous?: string; format: "markdown" | "json" | "html"; out?: string };
   scaffold: ScaffoldOptions;
   doctor: { fix: boolean };
+  audit: { cap?: number };
 }
 
 export function parseArgs(argv: string[], cwd: string): Parsed {
@@ -145,6 +154,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
   const rollupOpts: Parsed["rollup"] = { format: "markdown" };
   const scaffold: ScaffoldOptions = { storybook: true, force: false, list: false, write: false };
   const doctor: Parsed["doctor"] = { fix: false };
+  const audit: Parsed["audit"] = {};
   let rawFormat: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
@@ -155,7 +165,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       return v;
     };
     if (!a.startsWith("-") && !command) {
-      if (a === "check" || a === "explain" || a === "init" || a === "define" || a === "doctor" || a === "report" || a === "rollup" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "fonts" || a === "icons" || a === "upgrade" || a === "brand" || a === "figma" || a === "mock" || a === "help") command = a;
+      if (a === "check" || a === "explain" || a === "init" || a === "define" || a === "doctor" || a === "report" || a === "rollup" || a === "audit" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "fonts" || a === "icons" || a === "upgrade" || a === "brand" || a === "figma" || a === "mock" || a === "help") command = a;
       else {
         command = "check";
         positional.push(a);
@@ -177,6 +187,8 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a.startsWith("--format=")) rawFormat = a.slice(9);
     else if (a === "--max") check.max = asInt(value());
     else if (a.startsWith("--max=")) check.max = asInt(a.slice(6));
+    else if (a === "--cap") audit.cap = asInt(value(), "--cap");
+    else if (a.startsWith("--cap=")) audit.cap = asInt(a.slice(6), "--cap");
     else if (a === "--from") initOpts.from = value();
     else if (a.startsWith("--from=")) initOpts.from = a.slice(7);
     else if (a === "--dir") initOpts.dir = scaffold.dir = value();
@@ -259,7 +271,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     }
   }
   if (initOpts.from && initOpts.from !== "shadcn" && initOpts.from !== "package") throw new Error(`--from supports "shadcn" and "package <name>" (got ${initOpts.from}).`);
-  return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold, doctor };
+  return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold, doctor, audit };
 }
 
 function asRadius(s: string): "sharp" | "soft" | "round" {
@@ -282,9 +294,9 @@ function asFormat(s: string): Format {
   if (!["pretty", "json", "github"].includes(s)) throw new Error(`--format must be pretty, json or github (got ${s}).`);
   return s as Format;
 }
-function asInt(s: string): number {
+function asInt(s: string, flag = "--max"): number {
   const n = Number(s);
-  if (!Number.isInteger(n) || n < 1) throw new Error(`--max must be a positive integer (got ${s}).`);
+  if (!Number.isInteger(n) || n < 1) throw new Error(`${flag} must be a positive integer (got ${s}).`);
   return n;
 }
 
@@ -408,6 +420,22 @@ async function main(): Promise<void> {
       } else {
         process.stdout.write(text + "\n");
       }
+      return;
+    }
+    case "audit": {
+      const repo = parsed.positional[0];
+      if (!repo || !parsed.report.out) throw new Error("zengin audit needs the repository and the deliverables folder: zengin audit <repo> --out <workspace>/deliverables");
+      const { run } = await runAudit({
+        repo: resolve(process.cwd(), repo),
+        out: resolve(process.cwd(), parsed.report.out),
+        ...(parsed.check.config ? { config: resolve(process.cwd(), parsed.check.config) } : {}),
+        ...(parsed.audit.cap ? { cap: parsed.audit.cap } : {}),
+        ...(parsed.report.repo ? { name: parsed.report.repo } : {}),
+      });
+      const t = run.totals;
+      process.stdout.write(
+        `Wrote ${AUDIT_FILES.join(", ")} to ${parsed.report.out}: ${t.findings} findings in ${t.groups} groups, ${t.hand} in hand review (cap ${run.cap}), ${t.summarised} summarised, ${(run.durationMs / 1000).toFixed(1)}s. The report is a DRAFT.\n`,
+      );
       return;
     }
     case "check": {
