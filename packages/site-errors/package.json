@@ -1,0 +1,37 @@
+{
+  "name": "site-errors",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Error reporting for Zengin's own site and docs: PostHog exception capture behind VITE_POSTHOG_KEY, and the screen a reader sees when a page fails. Not published; the CLI and the templates send nothing.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run && node ../cli/dist/index.js check"
+  },
+  "peerDependencies": {
+    "@zenginui/ui": "workspace:*",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "dependencies": {
+    "posthog-js": "1.438.10"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@zenginui/cli": "workspace:*",
+    "@zenginui/ui": "workspace:*",
+    "jsdom": "^30.0.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.0"
+  }
+}
