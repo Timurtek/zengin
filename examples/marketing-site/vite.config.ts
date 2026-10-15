@@ -25,10 +25,28 @@ function directoryIndex(): Plugin {
   };
 }
 
+/**
+ * Adds the site's error reporting to every page, ahead of the page's own script. It is added here rather than
+ * imported from src/ because src/ is also the marketing template, and the projects made from it must not
+ * report to Zengin. Ordered before Vite's HTML processing, so the script is bundled like any other entry.
+ */
+function siteErrors(): Plugin {
+  return {
+    name: "zengin-site-errors",
+    transformIndexHtml: {
+      order: "pre",
+      handler: () => [{ tag: "script", attrs: { type: "module", src: "/site/errors.ts" }, injectTo: "head" }],
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), directoryIndex()],
+  plugins: [react(), directoryIndex(), siteErrors()],
   server: { port: 5174, strictPort: true },
+  // The commit Vercel built, so a reported error names the release it happened in.
+  define: { "import.meta.env.VITE_RELEASE": JSON.stringify(process.env.VERCEL_GIT_COMMIT_SHA ?? "local") },
   // Two entries, two URLs. /why/ is its own page so it can carry its own title, description and canonical;
   // an anchor on the home page cannot, and the argument is the half a search or a shared link lands on.
-  build: { rollupOptions: { input: { main: resolve(__dirname, "index.html"), why: resolve(__dirname, "why/index.html") } } },
+  // 404.html is what the host serves for an address it has no file for.
+  build: { rollupOptions: { input: { main: resolve(__dirname, "index.html"), why: resolve(__dirname, "why/index.html"), notFound: resolve(__dirname, "404.html") } } },
 });

@@ -63,6 +63,10 @@ describe("buildRegistry", () => {
       expect(item.source).toMatch(/^examples\//);
     }
     expect(registry.items.find((i) => i.name === "blank")!.source).toBe("examples/blank");
+    // The site reports its errors to Zengin's PostHog; a project made from the site's source must not.
+    for (const item of registry.items.filter((i) => i.type === "template")) {
+      for (const f of item.files) expect(f.content, `${item.name} ${f.path}`).not.toMatch(/site-errors|posthog/i);
+    }
     // The default theme spells out the system's tokens so it resets any brand it is applied over.
     const def = registry.items.find((i) => i.name === "default")!;
     expect(def.files[0]!.content).toContain("--color-primary: #2563eb;");
