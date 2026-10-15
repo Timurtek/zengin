@@ -1,0 +1,254 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [8 0 R 10 0 R 12 0 R 14 0 R 16 0 R] /Count 5 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Title (Design System Drift Audit: shadcn-ui/taxonomy \(DRAFT\)) /Producer (zengin audit) >>
+endobj
+7 0 obj
+<< /Length 3641 >>
+stream
+BT /F2 16 Tf 54 717.2 Td (Design System Drift Audit: shadcn-ui/taxonomy \(DRAFT\)) Tj ET
+BT /F2 10 Tf 54 700.2 Td (DRAFT for review. Not for the client until it has been reviewed and edited. Every class below is) Tj ET
+BT /F2 10 Tf 54 687.2 Td (proposed by rule and confirmed by hand before the report leaves.) Tj ET
+BT /F1 10 Tf 54 668.2 Td (Run: shadcn-ui/taxonomy at 298a885, against @/components/ui@0.0.0. 117 files checked in 0.4 seconds) Tj ET
+BT /F1 10 Tf 54 655.2 Td (by @zenginui/cli@0.9.0, 2026-10-15.) Tj ET
+BT /F2 13 Tf 54 626.3 Td (Summary) Tj ET
+BT /F1 10 Tf 54 610.3 Td (- This run reported 35 findings in 31 groups. A group is one rule and one found value with one) Tj ET
+BT /F1 10 Tf 54 597.3 Td (  proposed class: one decision.) Tj ET
+BT /F1 10 Tf 54 581.3 Td (- Hand review covers 35 findings in 31 groups, up to the cap of 150, taken in rank order \(severity) Tj ET
+BT /F1 10 Tf 54 568.3 Td (  times the number of files\). 0 findings are summarised, not classified by hand. 35 + 0 = 35.) Tj ET
+BT /F1 10 Tf 54 552.3 Td (- False positives proposed in the hand-review set: 0 of 35. The rate is stated once each one has) Tj ET
+BT /F1 10 Tf 54 539.3 Td (  been confirmed by hand.) Tj ET
+BT /F1 10 Tf 54 523.3 Td (- Every number here comes from this run and is reconciled above. No figure from another run is) Tj ET
+BT /F1 10 Tf 54 510.3 Td (  quoted.) Tj ET
+BT /F3 8 Tf 54 497.9 Td (Proposed class | Findings | Groups) Tj ET
+BT /F3 8 Tf 54 485.5 Td (True drift | 31 | 27) Tj ET
+BT /F3 8 Tf 54 473.1 Td (Needs a decision | 4 | 4) Tj ET
+BT /F3 8 Tf 54 460.7 Td (Intentional exception | 0 | 0) Tj ET
+BT /F3 8 Tf 54 448.3 Td (False positive | 0 | 0) Tj ET
+BT /F3 8 Tf 54 435.9 Td (Hand-review set | 35 | 31) Tj ET
+BT /F2 13 Tf 54 407.0 Td (Top issues) Tj ET
+BT /F2 11 Tf 54 380.7 Td (G01: token-reference hover:text-brand \(True drift\)) Tj ET
+BT /F1 10 Tf 54 364.7 Td (- What: No token matches "hover:text-brand".) Tj ET
+BT /F1 10 Tf 54 348.7 Td (- Spread: 3 findings in 2 files, at error. Involves hover:text-brand.) Tj ET
+BT /F1 10 Tf 54 332.7 Td (- Why this class: token-reference at error, with a fix to be written by hand.) Tj ET
+BT /F1 10 Tf 54 316.7 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
+BT /F1 10 Tf 54 300.7 Td (- Examples: F001 app/\(auth\)/login/page.tsx:43, F002 app/\(auth\)/register/page.tsx:42, F003) Tj ET
+BT /F1 10 Tf 54 287.7 Td (  app/\(auth\)/register/page.tsx:49.) Tj ET
+BT /F1 10 Tf 54 271.7 Td (- Findings: F001, F002, F003.) Tj ET
+BT /F2 11 Tf 54 245.4 Td (G02: color-literal text-red-600 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 229.4 Td (- What: text-red-600 references the Tailwind default palette \(--color-red-600\), not a system token.) Tj ET
+BT /F1 10 Tf 54 213.4 Td (- Spread: 2 findings in 2 files, at error. Involves color.destructive.) Tj ET
+BT /F1 10 Tf 54 197.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 181.4 Td (- Fix: text-destructive \(nearest\). destructive is the system's token for this role. Chosen by role,) Tj ET
+BT /F1 10 Tf 54 168.4 Td (  not by value; verify it reads correctly here.) Tj ET
+BT /F1 10 Tf 54 152.4 Td (- Examples: F004 components/user-auth-form.tsx:78, F005 components/user-name-form.tsx:102.) Tj ET
+BT /F1 10 Tf 54 136.4 Td (- Findings: F004, F005.) Tj ET
+BT /F2 11 Tf 54 110.1 Td (G03: spacing-literal p-[1px] \(True drift\)) Tj ET
+BT /F1 10 Tf 54 94.1 Td (- What: Arbitrary spacing value. 1px is not on the spacing scale.) Tj ET
+BT /F1 10 Tf 54 78.1 Td (- Spread: 2 findings in 1 file, at error. Involves p-[1px].) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - shadcn-ui/taxonomy - page 1 of 5) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 3632 >>
+stream
+BT /F1 10 Tf 54 722.0 Td (- Why this class: spacing-literal at error, with an exact fix.) Tj ET
+BT /F1 10 Tf 54 706.0 Td (- Fix: p-px \(exact\)) Tj ET
+BT /F1 10 Tf 54 690.0 Td (- Examples: F006 components/ui/scroll-area.tsx:36, F007 components/ui/scroll-area.tsx:38.) Tj ET
+BT /F1 10 Tf 54 674.0 Td (- Findings: F006, F007.) Tj ET
+BT /F2 11 Tf 54 647.7 Td (G04: color-literal bg-black \(True drift\)) Tj ET
+BT /F1 10 Tf 54 631.7 Td (- What: bg-black references the Tailwind default palette \(--color-black\), not a system token.) Tj ET
+BT /F1 10 Tf 54 615.7 Td (- Spread: 1 finding in 1 file, at error. Involves color.primary.foreground.) Tj ET
+BT /F1 10 Tf 54 599.7 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 583.7 Td (- Fix: bg-primary-foreground \(nearest\). Nearest by value: color.primary.foreground = #020205 in the) Tj ET
+BT /F1 10 Tf 54 570.7 Td (  dark theme. Verify the semantic role before applying.) Tj ET
+BT /F1 10 Tf 54 554.7 Td (- Examples: F008 components/mdx-components.tsx:135.) Tj ET
+BT /F1 10 Tf 54 538.7 Td (- Findings: F008.) Tj ET
+BT /F2 11 Tf 54 512.4 Td (G05: color-literal bg-gray-800 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 496.4 Td (- What: bg-gray-800 references the Tailwind default palette \(--color-gray-800\), not a system token.) Tj ET
+BT /F1 10 Tf 54 480.4 Td (- Spread: 1 finding in 1 file, at error. Involves color.border.) Tj ET
+BT /F1 10 Tf 54 464.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 448.4 Td (- Fix: bg-border \(nearest\). Nearest by value: color.border = #1d283a in the dark theme. Verify the) Tj ET
+BT /F1 10 Tf 54 435.4 Td (  semantic role before applying.) Tj ET
+BT /F1 10 Tf 54 419.4 Td (- Examples: F009 components/tailwind-indicator.tsx:5.) Tj ET
+BT /F1 10 Tf 54 403.4 Td (- Findings: F009.) Tj ET
+BT /F2 11 Tf 54 377.1 Td (G06: color-literal bg-red-50 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 361.1 Td (- What: bg-red-50 references the Tailwind default palette \(--color-red-50\), not a system token.) Tj ET
+BT /F1 10 Tf 54 345.1 Td (- Spread: 1 finding in 1 file, at error. Involves color.destructive.) Tj ET
+BT /F1 10 Tf 54 329.1 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 313.1 Td (- Fix: bg-destructive \(nearest\). destructive is the system's token for this role. Chosen by role,) Tj ET
+BT /F1 10 Tf 54 300.1 Td (  not by value; verify it reads correctly here.) Tj ET
+BT /F1 10 Tf 54 284.1 Td (- Examples: F010 components/callout.tsx:18.) Tj ET
+BT /F1 10 Tf 54 268.1 Td (- Findings: F010.) Tj ET
+BT /F2 11 Tf 54 241.8 Td (G07: color-literal bg-red-600 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 225.8 Td (- What: bg-red-600 references the Tailwind default palette \(--color-red-600\), not a system token.) Tj ET
+BT /F1 10 Tf 54 209.8 Td (- Spread: 1 finding in 1 file, at error. Involves color.destructive.) Tj ET
+BT /F1 10 Tf 54 193.8 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 177.8 Td (- Fix: bg-destructive \(nearest\). destructive is the system's token for this role. Chosen by role,) Tj ET
+BT /F1 10 Tf 54 164.8 Td (  not by value; verify it reads correctly here.) Tj ET
+BT /F1 10 Tf 54 148.8 Td (- Examples: F011 components/post-operations.tsx:100.) Tj ET
+BT /F1 10 Tf 54 132.8 Td (- Findings: F011.) Tj ET
+BT /F2 11 Tf 54 106.5 Td (G08: color-literal bg-slate-50 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 90.5 Td (- What: bg-slate-50 references the Tailwind default palette \(--color-slate-50\), not a system token.) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - shadcn-ui/taxonomy - page 2 of 5) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 3679 >>
+stream
+BT /F1 10 Tf 54 722.0 Td (- Spread: 1 finding in 1 file, at error. Involves color.primary.foreground.) Tj ET
+BT /F1 10 Tf 54 706.0 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 690.0 Td (- Fix: bg-primary-foreground \(nearest\). Several tokens share this value. Pick by role:) Tj ET
+BT /F1 10 Tf 54 677.0 Td (  color.primary.foreground, color.destructive.foreground.) Tj ET
+BT /F1 10 Tf 54 661.0 Td (- Examples: F012 app/\(marketing\)/page.tsx:73.) Tj ET
+BT /F1 10 Tf 54 645.0 Td (- Findings: F012.) Tj ET
+BT /F2 11 Tf 54 618.7 Td (G09: color-literal bg-white \(True drift\)) Tj ET
+BT /F1 10 Tf 54 602.7 Td (- What: bg-white references the Tailwind default palette \(--color-white\), not a system token.) Tj ET
+BT /F1 10 Tf 54 586.7 Td (- Spread: 1 finding in 1 file, at error. Involves color.background.) Tj ET
+BT /F1 10 Tf 54 570.7 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 554.7 Td (- Fix: bg-background \(nearest\). Several tokens share this value. Pick by role: color.background,) Tj ET
+BT /F1 10 Tf 54 541.7 Td (  color.popover, color.card.) Tj ET
+BT /F1 10 Tf 54 525.7 Td (- Examples: F013 app/\(marketing\)/blog/[...slug]/page.tsx:135.) Tj ET
+BT /F1 10 Tf 54 509.7 Td (- Findings: F013.) Tj ET
+BT /F2 11 Tf 54 483.4 Td (G10: color-literal bg-yellow-50 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 467.4 Td (- What: bg-yellow-50 references the Tailwind default palette \(--color-yellow-50\), not a system) Tj ET
+BT /F1 10 Tf 54 454.4 Td (  token.) Tj ET
+BT /F1 10 Tf 54 438.4 Td (- Spread: 1 finding in 1 file, at error. Involves color.primary.foreground.) Tj ET
+BT /F1 10 Tf 54 422.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 406.4 Td (- Fix: bg-primary-foreground \(nearest\). Nearest by value: color.primary.foreground = #f8fafc. Verify) Tj ET
+BT /F1 10 Tf 54 393.4 Td (  the semantic role before applying.) Tj ET
+BT /F1 10 Tf 54 377.4 Td (- Examples: F014 components/callout.tsx:19.) Tj ET
+BT /F1 10 Tf 54 361.4 Td (- Findings: F014.) Tj ET
+BT /F2 13 Tf 54 332.5 Td (Fix path by class) Tj ET
+BT /F2 11 Tf 54 306.2 Td (True drift) Tj ET
+BT /F1 10 Tf 54 287.2 Td (Fix in code, in group order. Apply exact fixes first; check each nearest fix by eye, since a) Tj ET
+BT /F1 10 Tf 54 274.2 Td (neighbouring step can be a different design.) Tj ET
+BT /F3 8 Tf 54 261.8 Td (Group | Rule | Found | Findings | Files) Tj ET
+BT /F3 8 Tf 54 249.4 Td (G01 | token-reference | hover:text-brand | F001, F002, F003 | 2) Tj ET
+BT /F3 8 Tf 54 237.0 Td (G02 | color-literal | text-red-600 | F004, F005 | 2) Tj ET
+BT /F3 8 Tf 54 224.6 Td (G03 | spacing-literal | p-[1px] | F006, F007 | 1) Tj ET
+BT /F3 8 Tf 54 212.2 Td (G04 | color-literal | bg-black | F008 | 1) Tj ET
+BT /F3 8 Tf 54 199.8 Td (G05 | color-literal | bg-gray-800 | F009 | 1) Tj ET
+BT /F3 8 Tf 54 187.4 Td (G06 | color-literal | bg-red-50 | F010 | 1) Tj ET
+BT /F3 8 Tf 54 175.0 Td (G07 | color-literal | bg-red-600 | F011 | 1) Tj ET
+BT /F3 8 Tf 54 162.6 Td (G08 | color-literal | bg-slate-50 | F012 | 1) Tj ET
+BT /F3 8 Tf 54 150.2 Td (G09 | color-literal | bg-white | F013 | 1) Tj ET
+BT /F3 8 Tf 54 137.8 Td (G10 | color-literal | bg-yellow-50 | F014 | 1) Tj ET
+BT /F3 8 Tf 54 125.4 Td (G11 | color-literal | border-red-900 | F015 | 1) Tj ET
+BT /F3 8 Tf 54 113.0 Td (G12 | color-literal | border-yellow-900 | F016 | 1) Tj ET
+BT /F3 8 Tf 54 100.6 Td (G13 | color-literal | group-[.destructive]:hover:text-red-50 | F017 | 1) Tj ET
+BT /F3 8 Tf 54 88.2 Td (G14 | color-literal | group-[.destructive]:text-red-300 | F018 | 1) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - shadcn-ui/taxonomy - page 3 of 5) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Length 4032 >>
+stream
+BT /F3 8 Tf 54 725.6 Td (G15 | color-literal | text-gray-500 | F019 | 1) Tj ET
+BT /F3 8 Tf 54 713.2 Td (G16 | color-literal | text-white | F020 | 1) Tj ET
+BT /F3 8 Tf 54 700.8 Td (G17 | component-substitution | <button type="submit" className={cn\(buttonVariants\(\), className\)}) Tj ET
+BT /F3 8 Tf 54 690.4 Td (disabled={isSa | F021 | 1) Tj ET
+BT /F3 8 Tf 54 678.0 Td (G18 | component-substitution | <button type="submit" className={cn\(buttonVariants\(\)\)}) Tj ET
+BT /F3 8 Tf 54 667.6 Td (disabled={isLoading} > | F022 | 1) Tj ET
+BT /F3 8 Tf 54 655.2 Td (G19 | component-substitution | <button type="button" className={cn\(buttonVariants\({ variant: "outline") Tj ET
+BT /F3 8 Tf 54 644.8 Td (}\)\)} onC | F023 | 1) Tj ET
+BT /F3 8 Tf 54 632.4 Td (G20 | component-substitution | <button onClick={onClick} className={cn\( buttonVariants\({ variant }\), {) Tj ET
+BT /F3 8 Tf 54 622.0 Td ("cursor- | F024 | 1) Tj ET
+BT /F3 8 Tf 54 609.6 Td (G21 | component-substitution | <button className={cn\(buttonVariants\(\)\)} disabled={isLoading}> | F025 | 1) Tj ET
+BT /F3 8 Tf 54 597.2 Td (G22 | component-substitution | <button type="submit" className={cn\(buttonVariants\(\)\)}> | F026 | 1) Tj ET
+BT /F3 8 Tf 54 584.8 Td (G24 | spacing-literal | px-[0.3rem] | F028 | 1) Tj ET
+BT /F3 8 Tf 54 572.4 Td (G25 | spacing-literal | py-[0.2rem] | F029 | 1) Tj ET
+BT /F3 8 Tf 54 560.0 Td (G26 | token-reference | divide-border-200 | F030 | 1) Tj ET
+BT /F3 8 Tf 54 547.6 Td (G27 | token-reference | placeholder:text-foreground-muted | F031 | 1) Tj ET
+BT /F3 8 Tf 54 535.2 Td (G28 | token-reference | text-on-popover | F032 | 1) Tj ET
+BT /F2 11 Tf 54 508.9 Td (Needs a decision) Tj ET
+BT /F1 10 Tf 54 489.9 Td (A decision for the team before any code changes: add the missing token, name the file as a) Tj ET
+BT /F1 10 Tf 54 476.9 Td (foundation, or widen the component's className.allow. Each decision closes a whole group.) Tj ET
+BT /F3 8 Tf 54 464.5 Td (Group | Rule | Found | Findings | Files) Tj ET
+BT /F3 8 Tf 54 452.1 Td (G23 | spacing-literal | marginLeft: "-3px" | F027 | 1) Tj ET
+BT /F3 8 Tf 54 439.7 Td (G29 | classname-policy | !pl-14 | F033 | 1) Tj ET
+BT /F3 8 Tf 54 427.3 Td (G30 | classname-policy | px-0 | F034 | 1) Tj ET
+BT /F3 8 Tf 54 414.9 Td (G31 | classname-policy | sm:pr-12 | F035 | 1) Tj ET
+BT /F2 11 Tf 54 388.6 Td (Intentional exception) Tj ET
+BT /F1 10 Tf 54 369.6 Td (Keep it and write the reason after the zengin-allow comment's colon, so the engine honours it and) Tj ET
+BT /F1 10 Tf 54 356.6 Td (the next reader knows why; or remove the exception.) Tj ET
+BT /F1 10 Tf 54 337.6 Td (No group in the hand-review set.) Tj ET
+BT /F2 11 Tf 54 311.3 Td (False positive) Tj ET
+BT /F1 10 Tf 54 292.3 Td (Not a code change. Tune the definitions \(a passthrough type, a foundation file\) so the engine stops) Tj ET
+BT /F1 10 Tf 54 279.3 Td (reporting it, and count it in the report's false-positive rate.) Tj ET
+BT /F1 10 Tf 54 260.3 Td (No group in the hand-review set.) Tj ET
+BT /F2 13 Tf 54 231.4 Td (Beyond the hand-review cap) Tj ET
+BT /F1 10 Tf 54 212.4 Td (Every finding is in the hand-review set; the cap of 150 was not reached.) Tj ET
+BT /F2 13 Tf 54 183.5 Td (What the scan cannot see) Tj ET
+BT /F1 10 Tf 54 167.5 Td (- Drift outside the engine's seven rule kinds \(color-literal, spacing-literal, token-reference,) Tj ET
+BT /F1 10 Tf 54 154.5 Td (  unknown-prop, unknown-prop-value, classname-policy, component-substitution\): behavioural,) Tj ET
+BT /F1 10 Tf 54 141.5 Td (  architectural and most accessibility drift.) Tj ET
+BT /F1 10 Tf 54 125.5 Td (- What renders at runtime: class names built from runtime values, styles set from JavaScript, and) Tj ET
+BT /F1 10 Tf 54 112.5 Td (  the visual result of an override.) Tj ET
+BT /F1 10 Tf 54 96.5 Td (- Files outside the configured scope, and any system the definitions do not describe.) Tj ET
+BT /F1 10 Tf 54 80.5 Td (- Whether a finding matters to a user. That judgement is the hand review.) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - shadcn-ui/taxonomy - page 4 of 5) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 13 0 R >>
+endobj
+15 0 obj
+<< /Length 367 >>
+stream
+BT /F2 13 Tf 54 709.1 Td (Evidence) Tj ET
+BT /F1 10 Tf 54 690.1 Td (Every finding id above resolves in findings.json, with its file:line, rule, found value, the token) Tj ET
+BT /F1 10 Tf 54 677.1 Td (or component involved, its proposed class and the reason for it. run.json records the run.) Tj ET
+BT /F1 8 Tf 54 36 Td (DRAFT - shadcn-ui/taxonomy - page 5 of 5) Tj ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 15 0 R >>
+endobj
+xref
+0 17
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000143 00000 n 
+0000000240 00000 n 
+0000000342 00000 n 
+0000000437 00000 n 
+0000000548 00000 n 
+0000004241 00000 n 
+0000004387 00000 n 
+0000008071 00000 n 
+0000008218 00000 n 
+0000011950 00000 n 
+0000012098 00000 n 
+0000016183 00000 n 
+0000016331 00000 n 
+0000016750 00000 n 
+trailer
+<< /Size 17 /Root 1 0 R /Info 6 0 R >>
+startxref
+16898
+%%EOF

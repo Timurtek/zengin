@@ -1,0 +1,44 @@
+{
+  "schema": "zengin-audit/1",
+  "repo": {
+    "name": "vercel/ai-chatbot",
+    "ref": "main",
+    "commit": "c2f8235e1f3ea903ad8b7f61447c4f74164b5c58"
+  },
+  "system": {
+    "package": "@/components/ui",
+    "version": "0.0.0"
+  },
+  "tool": {
+    "name": "@zenginui/cli",
+    "version": "0.9.0"
+  },
+  "generatedAt": "2026-10-15T13:47:53.097Z",
+  "durationMs": 477,
+  "filesChecked": 124,
+  "cap": 150,
+  "totals": {
+    "findings": 109,
+    "groups": 82,
+    "hand": 109,
+    "summarised": 0,
+    "byClass": {
+      "true-drift": {
+        "findings": 75,
+        "groups": 56
+      },
+      "needs-decision": {
+        "findings": 34,
+        "groups": 26
+      },
+      "intentional-exception": {
+        "findings": 0,
+        "groups": 0
+      },
+      "false-positive": {
+        "findings": 0,
+        "groups": 0
+      }
+    }
+  }
+}

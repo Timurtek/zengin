@@ -2,7 +2,7 @@
 
 > DRAFT for review. Not for the client until it has been reviewed and edited. Every class below is proposed by rule and confirmed by hand before the report leaves.
 
-Run: umami-software/umami at ca661c7, against @umami/react-zen@0.249.0. 934 files checked in 1.6 seconds by @zenginui/cli@0.9.0, 2026-10-15.
+Run: umami-software/umami at ca661c7, against @umami/react-zen@0.249.0. 934 files checked in 4.3 seconds by @zenginui/cli@0.9.0, 2026-10-15.
 
 ## Summary
 

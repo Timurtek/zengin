@@ -1,0 +1,1228 @@
+{
+  "schema": "zengin-audit-findings/1",
+  "groups": [
+    {
+      "id": "G01",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "hover:text-brand",
+      "involves": "hover:text-brand",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F001",
+        "F002",
+        "F003"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G02",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-red-600",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F004",
+        "F005"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "hand"
+    },
+    {
+      "id": "G03",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "p-[1px]",
+      "involves": "p-[1px]",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "findings": [
+        "F006",
+        "F007"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G04",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-black",
+      "involves": "color.primary.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F008"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G05",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-gray-800",
+      "involves": "color.border",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F009"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G06",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-red-50",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F010"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G07",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-red-600",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F011"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G08",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-slate-50",
+      "involves": "color.primary.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F012"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G09",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-white",
+      "involves": "color.background",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F013"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G10",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-yellow-50",
+      "involves": "color.primary.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F014"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G11",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "border-red-900",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F015"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G12",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "border-yellow-900",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F016"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G13",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "group-[.destructive]:hover:text-red-50",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F017"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G14",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "group-[.destructive]:text-red-300",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F018"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G15",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-gray-500",
+      "involves": "color.muted.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F019"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G16",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-white",
+      "involves": "color.background",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F020"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G17",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n            type=\"submit\"\r\n            className={cn(buttonVariants(), className)}\r\n            disabled={isSaving}\r\n          >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F021"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G18",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n            type=\"submit\"\r\n            className={cn(buttonVariants())}\r\n            disabled={isLoading}\r\n          >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F022"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G19",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n        type=\"button\"\r\n        className={cn(buttonVariants({ variant: \"outline\" }))}\r\n        onClick={() => {\r\n          setIsGitHubLoading(true)\r\n          signIn(\"github\")\r\n        }}\r\n        disabled={isLoading || isGitHubLoading}\r\n      >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F023"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G20",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n      onClick={onClick}\r\n      className={cn(\r\n        buttonVariants({ variant }),\r\n        {\r\n          \"cursor-not-allowed opacity-60\": isLoading,\r\n        },\r\n        className\r\n      )}\r\n      disabled={isLoading}\r\n      {...props}\r\n    >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F024"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G21",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button className={cn(buttonVariants())} disabled={isLoading}>",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F025"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G22",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button type=\"submit\" className={cn(buttonVariants())}>",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F026"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G23",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "marginLeft: \"-3px\"",
+      "involves": "marginLeft: \"-3px\"",
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "findings": [
+        "F027"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G24",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "px-[0.3rem]",
+      "involves": "px-[0.3rem]",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F028"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G25",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "py-[0.2rem]",
+      "involves": "py-[0.2rem]",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F029"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G26",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "divide-border-200",
+      "involves": "divide-border-200",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F030"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G27",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "placeholder:text-foreground-muted",
+      "involves": "placeholder:text-foreground-muted",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F031"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G28",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "text-on-popover",
+      "involves": "text-on-popover",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F032"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "hand"
+    },
+    {
+      "id": "G29",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "!pl-14",
+      "involves": "Alert",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F033"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G30",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "px-0",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F034"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    },
+    {
+      "id": "G31",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "sm:pr-12",
+      "involves": "Input",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F035"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "hand"
+    }
+  ],
+  "findings": [
+    {
+      "id": "F001",
+      "group": "G01",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "app/(auth)/login/page.tsx:43",
+      "file": "app/(auth)/login/page.tsx",
+      "line": 43,
+      "col": 24,
+      "found": "hover:text-brand",
+      "involves": "hover:text-brand",
+      "message": "No token matches \"hover:text-brand\".",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F002",
+      "group": "G01",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "app/(auth)/register/page.tsx:42",
+      "file": "app/(auth)/register/page.tsx",
+      "line": 42,
+      "col": 26,
+      "found": "hover:text-brand",
+      "involves": "hover:text-brand",
+      "message": "No token matches \"hover:text-brand\".",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F003",
+      "group": "G01",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "app/(auth)/register/page.tsx:49",
+      "file": "app/(auth)/register/page.tsx",
+      "line": 49,
+      "col": 26,
+      "found": "hover:text-brand",
+      "involves": "hover:text-brand",
+      "message": "No token matches \"hover:text-brand\".",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F004",
+      "group": "G02",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/user-auth-form.tsx:78",
+      "file": "components/user-auth-form.tsx",
+      "line": 78,
+      "col": 42,
+      "found": "text-red-600",
+      "involves": "color.destructive",
+      "message": "text-red-600 references the Tailwind default palette (--color-red-600), not a system token.",
+      "fix": {
+        "replace": "text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F005",
+      "group": "G02",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/user-name-form.tsx:102",
+      "file": "components/user-name-form.tsx",
+      "line": 102,
+      "col": 42,
+      "found": "text-red-600",
+      "involves": "color.destructive",
+      "message": "text-red-600 references the Tailwind default palette (--color-red-600), not a system token.",
+      "fix": {
+        "replace": "text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F006",
+      "group": "G03",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "components/ui/scroll-area.tsx:36",
+      "file": "components/ui/scroll-area.tsx",
+      "line": 36,
+      "col": 53,
+      "found": "p-[1px]",
+      "involves": "p-[1px]",
+      "message": "Arbitrary spacing value. 1px is not on the spacing scale.",
+      "fix": {
+        "replace": "p-px",
+        "confidence": "exact"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F007",
+      "group": "G03",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "components/ui/scroll-area.tsx:38",
+      "file": "components/ui/scroll-area.tsx",
+      "line": 38,
+      "col": 46,
+      "found": "p-[1px]",
+      "involves": "p-[1px]",
+      "message": "Arbitrary spacing value. 1px is not on the spacing scale.",
+      "fix": {
+        "replace": "p-px",
+        "confidence": "exact"
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with an exact fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F008",
+      "group": "G04",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/mdx-components.tsx:135",
+      "file": "components/mdx-components.tsx",
+      "line": 135,
+      "col": 54,
+      "found": "bg-black",
+      "involves": "color.primary.foreground",
+      "message": "bg-black references the Tailwind default palette (--color-black), not a system token.",
+      "fix": {
+        "replace": "bg-primary-foreground",
+        "confidence": "nearest",
+        "token": "color.primary.foreground",
+        "note": "Nearest by value: color.primary.foreground = #020205 in the dark theme. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F009",
+      "group": "G05",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/tailwind-indicator.tsx:5",
+      "file": "components/tailwind-indicator.tsx",
+      "line": 5,
+      "col": 102,
+      "found": "bg-gray-800",
+      "involves": "color.border",
+      "message": "bg-gray-800 references the Tailwind default palette (--color-gray-800), not a system token.",
+      "fix": {
+        "replace": "bg-border",
+        "confidence": "nearest",
+        "token": "color.border",
+        "note": "Nearest by value: color.border = #1d283a in the dark theme. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F010",
+      "group": "G06",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/callout.tsx:18",
+      "file": "components/callout.tsx",
+      "line": 18,
+      "col": 25,
+      "found": "bg-red-50",
+      "involves": "color.destructive",
+      "message": "bg-red-50 references the Tailwind default palette (--color-red-50), not a system token.",
+      "fix": {
+        "replace": "bg-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F011",
+      "group": "G07",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/post-operations.tsx:100",
+      "file": "components/post-operations.tsx",
+      "line": 100,
+      "col": 26,
+      "found": "bg-red-600",
+      "involves": "color.destructive",
+      "message": "bg-red-600 references the Tailwind default palette (--color-red-600), not a system token.",
+      "fix": {
+        "replace": "bg-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F012",
+      "group": "G08",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "app/(marketing)/page.tsx:73",
+      "file": "app/(marketing)/page.tsx",
+      "line": 73,
+      "col": 40,
+      "found": "bg-slate-50",
+      "involves": "color.primary.foreground",
+      "message": "bg-slate-50 references the Tailwind default palette (--color-slate-50), not a system token.",
+      "fix": {
+        "replace": "bg-primary-foreground",
+        "confidence": "nearest",
+        "token": "color.primary.foreground",
+        "candidates": [
+          "color.primary.foreground",
+          "color.destructive.foreground"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.primary.foreground, color.destructive.foreground."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F013",
+      "group": "G09",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "app/(marketing)/blog/[...slug]/page.tsx:135",
+      "file": "app/(marketing)/blog/[...slug]/page.tsx",
+      "line": 135,
+      "col": 45,
+      "found": "bg-white",
+      "involves": "color.background",
+      "message": "bg-white references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "bg-background",
+        "confidence": "nearest",
+        "token": "color.background",
+        "candidates": [
+          "color.background",
+          "color.popover",
+          "color.card"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.background, color.popover, color.card."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F014",
+      "group": "G10",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/callout.tsx:19",
+      "file": "components/callout.tsx",
+      "line": 19,
+      "col": 28,
+      "found": "bg-yellow-50",
+      "involves": "color.primary.foreground",
+      "message": "bg-yellow-50 references the Tailwind default palette (--color-yellow-50), not a system token.",
+      "fix": {
+        "replace": "bg-primary-foreground",
+        "confidence": "nearest",
+        "token": "color.primary.foreground",
+        "note": "Nearest by value: color.primary.foreground = #f8fafc. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F015",
+      "group": "G11",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/callout.tsx:18",
+      "file": "components/callout.tsx",
+      "line": 18,
+      "col": 10,
+      "found": "border-red-900",
+      "involves": "color.destructive",
+      "message": "border-red-900 references the Tailwind default palette (--color-red-900), not a system token.",
+      "fix": {
+        "replace": "border-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F016",
+      "group": "G12",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/callout.tsx:19",
+      "file": "components/callout.tsx",
+      "line": 19,
+      "col": 10,
+      "found": "border-yellow-900",
+      "involves": "color.destructive",
+      "message": "border-yellow-900 references the Tailwind default palette (--color-yellow-900), not a system token.",
+      "fix": {
+        "replace": "border-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "Nearest by value: color.destructive = #811d1d in the dark theme. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F017",
+      "group": "G13",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ui/toast.tsx:78",
+      "file": "components/ui/toast.tsx",
+      "line": 78,
+      "col": 224,
+      "found": "group-[.destructive]:hover:text-red-50",
+      "involves": "color.destructive",
+      "message": "group-[.destructive]:hover:text-red-50 references the Tailwind default palette (--color-red-50), not a system token.",
+      "fix": {
+        "replace": "group-[.destructive]:hover:text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F018",
+      "group": "G14",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ui/toast.tsx:78",
+      "file": "components/ui/toast.tsx",
+      "line": 78,
+      "col": 190,
+      "found": "group-[.destructive]:text-red-300",
+      "involves": "color.destructive",
+      "message": "group-[.destructive]:text-red-300 references the Tailwind default palette (--color-red-300), not a system token.",
+      "fix": {
+        "replace": "group-[.destructive]:text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F019",
+      "group": "G15",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/editor.tsx:158",
+      "file": "components/editor.tsx",
+      "line": 158,
+      "col": 33,
+      "found": "text-gray-500",
+      "involves": "color.muted.foreground",
+      "message": "text-gray-500 references the Tailwind default palette (--color-gray-500), not a system token.",
+      "fix": {
+        "replace": "text-muted-foreground",
+        "confidence": "nearest",
+        "token": "color.muted.foreground",
+        "note": "Nearest by value: color.muted.foreground = #64748b. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F020",
+      "group": "G16",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/tailwind-indicator.tsx:5",
+      "file": "components/tailwind-indicator.tsx",
+      "line": 5,
+      "col": 136,
+      "found": "text-white",
+      "involves": "color.background",
+      "message": "text-white references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-background",
+        "confidence": "nearest",
+        "token": "color.background",
+        "candidates": [
+          "color.background",
+          "color.popover",
+          "color.card"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.background, color.popover, color.card."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F021",
+      "group": "G17",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/user-name-form.tsx:107",
+      "file": "components/user-name-form.tsx",
+      "line": 107,
+      "col": 11,
+      "found": "<button\r\n            type=\"submit\"\r\n            className={cn(buttonVariants(), className)}\r\n            disabled={isSaving}\r\n          >",
+      "involves": "Button",
+      "message": "Raw <button> styled with buttonVariants(). Use Button from @/components/ui; it applies the same variants and carries the behavior.",
+      "fix": {
+        "replace": "<Button disabled={isSaving}>\r\n            {isSaving && (\r\n              <Icons.spinner className=\"mr-2 h-4 w-4 animate-spin\" />\r\n            )}\r\n            <span>Save</span>\r\n          </Button>",
+        "confidence": "nearest",
+        "note": "Pass the buttonVariants() arguments as props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F022",
+      "group": "G18",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/billing-form.tsx:68",
+      "file": "components/billing-form.tsx",
+      "line": 68,
+      "col": 11,
+      "found": "<button\r\n            type=\"submit\"\r\n            className={cn(buttonVariants())}\r\n            disabled={isLoading}\r\n          >",
+      "involves": "Button",
+      "message": "Raw <button> styled with buttonVariants(). Use Button from @/components/ui; it applies the same variants and carries the behavior.",
+      "fix": {
+        "replace": "<Button disabled={isLoading}>\r\n            {isLoading && (\r\n              <Icons.spinner className=\"mr-2 h-4 w-4 animate-spin\" />\r\n            )}\r\n            {subscriptionPlan.isPro ? \"Manage Subscription\" : \"Upgrade to PRO\"}\r\n          </Button>",
+        "confidence": "nearest",
+        "note": "Pass the buttonVariants() arguments as props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F023",
+      "group": "G19",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/user-auth-form.tsx:101",
+      "file": "components/user-auth-form.tsx",
+      "line": 101,
+      "col": 7,
+      "found": "<button\r\n        type=\"button\"\r\n        className={cn(buttonVariants({ variant: \"outline\" }))}\r\n        onClick={() => {\r\n          setIsGitHubLoading(true)\r\n          signIn(\"github\")\r\n        }}\r\n        disabled={isLoading || isGitHubLoading}\r\n      >",
+      "involves": "Button",
+      "message": "Raw <button> styled with buttonVariants(). Use Button from @/components/ui; it applies the same variants and carries the behavior.",
+      "fix": {
+        "replace": "<Button onClick={() => {\r\n          setIsGitHubLoading(true)\r\n          signIn(\"github\")\r\n        }} disabled={isLoading || isGitHubLoading}>\r\n        {isGitHubLoading ? (\r\n          <Icons.spinner className=\"mr-2 h-4 w-4 animate-spin\" />\r\n        ) : (\r\n          <Icons.gitHub className=\"mr-2 h-4 w-4\" />\r\n        )}{\" \"}\r\n        Github\r\n      </Button>",
+        "confidence": "nearest",
+        "note": "Pass the buttonVariants() arguments as props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F024",
+      "group": "G20",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/post-create-button.tsx:61",
+      "file": "components/post-create-button.tsx",
+      "line": 61,
+      "col": 5,
+      "found": "<button\r\n      onClick={onClick}\r\n      className={cn(\r\n        buttonVariants({ variant }),\r\n        {\r\n          \"cursor-not-allowed opacity-60\": isLoading,\r\n        },\r\n        className\r\n      )}\r\n      disabled={isLoading}\r\n      {...props}\r\n    >",
+      "involves": "Button",
+      "message": "Raw <button> styled with buttonVariants(). Use Button from @/components/ui; it applies the same variants and carries the behavior.",
+      "fix": {
+        "replace": "<Button onClick={onClick} disabled={isLoading}>\r\n      {isLoading ? (\r\n        <Icons.spinner className=\"mr-2 h-4 w-4 animate-spin\" />\r\n      ) : (\r\n        <Icons.add className=\"mr-2 h-4 w-4\" />\r\n      )}\r\n      New post\r\n    </Button>",
+        "confidence": "nearest",
+        "note": "Pass the buttonVariants() arguments as props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F025",
+      "group": "G21",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/user-auth-form.tsx:83",
+      "file": "components/user-auth-form.tsx",
+      "line": 83,
+      "col": 11,
+      "found": "<button className={cn(buttonVariants())} disabled={isLoading}>",
+      "involves": "Button",
+      "message": "Raw <button> styled with buttonVariants(). Use Button from @/components/ui; it applies the same variants and carries the behavior.",
+      "fix": {
+        "replace": "<Button disabled={isLoading}>\r\n            {isLoading && (\r\n              <Icons.spinner className=\"mr-2 h-4 w-4 animate-spin\" />\r\n            )}\r\n            Sign In with Email\r\n          </Button>",
+        "confidence": "nearest",
+        "note": "Pass the buttonVariants() arguments as props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F026",
+      "group": "G22",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/editor.tsx:141",
+      "file": "components/editor.tsx",
+      "line": 141,
+      "col": 11,
+      "found": "<button type=\"submit\" className={cn(buttonVariants())}>",
+      "involves": "Button",
+      "message": "Raw <button> styled with buttonVariants(). Use Button from @/components/ui; it applies the same variants and carries the behavior.",
+      "fix": {
+        "replace": "<Button>\r\n            {isSaving && (\r\n              <Icons.spinner className=\"mr-2 h-4 w-4 animate-spin\" />\r\n            )}\r\n            <span>Save</span>\r\n          </Button>",
+        "confidence": "nearest",
+        "note": "Pass the buttonVariants() arguments as props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F027",
+      "group": "G23",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "app/api/og/route.tsx:85",
+      "file": "app/api/og/route.tsx",
+      "line": 85,
+      "col": 29,
+      "found": "marginLeft: \"-3px\"",
+      "involves": "marginLeft: \"-3px\"",
+      "message": "Arbitrary spacing value in inline style (margin-left). -3px is not on the spacing scale.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "No token is near this value: either the system is missing a token or this is a deliberate one-off.",
+      "review": "hand"
+    },
+    {
+      "id": "F028",
+      "group": "G24",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "components/mdx-components.tsx:144",
+      "file": "components/mdx-components.tsx",
+      "line": 144,
+      "col": 34,
+      "found": "px-[0.3rem]",
+      "involves": "px-[0.3rem]",
+      "message": "Arbitrary spacing value. 4.8px is not on the spacing scale.",
+      "fix": {
+        "replace": "px-1",
+        "confidence": "nearest",
+        "note": "Nearest step: 1 = 4px."
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F029",
+      "group": "G25",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "components/mdx-components.tsx:144",
+      "file": "components/mdx-components.tsx",
+      "line": 144,
+      "col": 46,
+      "found": "py-[0.2rem]",
+      "involves": "py-[0.2rem]",
+      "message": "Arbitrary spacing value. 3.2px is not on the spacing scale.",
+      "fix": {
+        "replace": "py-1",
+        "confidence": "nearest",
+        "note": "Nearest step: 1 = 4px."
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "hand"
+    },
+    {
+      "id": "F030",
+      "group": "G26",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "app/(dashboard)/dashboard/loading.tsx:12",
+      "file": "app/(dashboard)/dashboard/loading.tsx",
+      "line": 12,
+      "col": 23,
+      "found": "divide-border-200",
+      "involves": "divide-border-200",
+      "message": "No token matches \"divide-border-200\".",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F031",
+      "group": "G27",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "components/ui/command.tsx:49",
+      "file": "components/ui/command.tsx",
+      "line": 49,
+      "col": 10,
+      "found": "placeholder:text-foreground-muted",
+      "involves": "placeholder:text-foreground-muted",
+      "message": "No token matches \"placeholder:text-foreground-muted\".",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F032",
+      "group": "G28",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "components/ui/dropdown-menu.tsx:50",
+      "file": "components/ui/dropdown-menu.tsx",
+      "line": 50,
+      "col": 8,
+      "found": "text-on-popover",
+      "involves": "text-on-popover",
+      "message": "No token matches \"text-on-popover\".",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "hand"
+    },
+    {
+      "id": "F033",
+      "group": "G29",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "app/(dashboard)/dashboard/billing/page.tsx:50",
+      "file": "app/(dashboard)/dashboard/billing/page.tsx",
+      "line": 50,
+      "col": 27,
+      "found": "!pl-14",
+      "involves": "Alert",
+      "message": "className on Alert may not set padding-left. padding is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F034",
+      "group": "G30",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/mode-toggle.tsx:21",
+      "file": "components/mode-toggle.tsx",
+      "line": 21,
+      "col": 62,
+      "found": "px-0",
+      "involves": "Button",
+      "message": "className on Button may not set padding-inline. padding is owned by the size prop.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    },
+    {
+      "id": "F035",
+      "group": "G31",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/search.tsx:30",
+      "file": "components/search.tsx",
+      "line": 30,
+      "col": 39,
+      "found": "sm:pr-12",
+      "involves": "Input",
+      "message": "className on Input may not set padding-right. className on Input is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "hand"
+    }
+  ]
+}
