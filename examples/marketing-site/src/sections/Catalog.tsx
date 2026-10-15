@@ -29,17 +29,24 @@ const PREVIEW_WIDTH = 1280;
 export function Catalog() {
   const [index, setIndex] = useState<Index | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [theme, setTheme] = useState(AUTHORED);
   const [fonts, setFonts] = useState(AUTHORED);
   const [icons, setIcons] = useState(AUTHORED);
   const embedded = typeof window !== "undefined" && window.self !== window.top;
 
   useEffect(() => {
+    setError(null);
     fetch("/r/index.json")
       .then((r) => (r.ok ? (r.json() as Promise<Index>) : Promise.reject(new Error(`the registry answered ${r.status}`))))
       .then(setIndex)
-      .catch((e: Error) => setError(e.message));
-  }, []);
+      .catch((e: Error) => {
+        // The standard way to record an error the page recovers from: it reaches the window's error handlers
+        // and the console without throwing, so whatever watches for errors sees it.
+        reportError(e);
+        setError(e.message);
+      });
+  }, [attempt]);
 
   const templates = index?.items.filter((i) => i.type === "template") ?? [];
   const themes = index?.items.filter((i) => i.type === "theme") ?? [];
@@ -97,7 +104,16 @@ export function Catalog() {
           </div>
         )}
 
-        {error && <p className="catalog__error">The previews need the registry this site serves at /r, and {error}. On the deployed site they are live.</p>}
+        {error && (
+          <div className="catalog__error" role="alert">
+            <p>
+              The previews could not load. They read the registry this site serves at /r, and {error}.
+            </p>
+            <Button variant="soft" size="sm" leadingIcon={<Icon.Refresh />} onClick={() => setAttempt((n) => n + 1)}>
+              Try again
+            </Button>
+          </div>
+        )}
 
         <div className="catalog">
           {index

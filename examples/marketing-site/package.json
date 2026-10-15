@@ -20,7 +20,8 @@
     "@zenginui/ui": "workspace:*",
     "posthog-js": "^1.438.9",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "site-errors": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",

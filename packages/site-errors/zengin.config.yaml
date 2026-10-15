@@ -1,0 +1,15 @@
+# The failure page is part of the site, so it is held to the same system as the pages it stands in for.
+system:
+  package: "@zenginui/ui"
+
+scope:
+  include: ["src/**/*.{ts,tsx,css}"]
+
+rules:
+  color-literal: { severity: error, allow: semantic }
+  spacing-literal: error
+  token-reference: error
+  unknown-prop: error
+  unknown-prop-value: error
+  classname-policy: error
+  component-substitution: error

@@ -36,6 +36,16 @@ The site is a static Vite build; `vercel.json` pins the rest. In the Vercel proj
 
 Set **`VITE_POSTHOG_KEY`** (the PostHog project API key) in the Vercel project for the production deploy to send analytics; without it the site sends nothing. Events, the one number and the privacy settings are in [docs/analytics.md](../../docs/analytics.md).
 
+## Errors
+
+The site and the docs report their errors to PostHog's error tracking, through `packages/site-errors`: an error nothing caught, a promise nobody handled, and an error the page caught and passed to the standard `reportError()` (the catalog does, when the registry does not answer). Each is tagged with `release` (Vercel's `VERCEL_GIT_COMMIT_SHA`, `local` elsewhere) and `surface` (`site` or `docs`). Only errors are sent: no pageviews, no autocapture, no recordings, no cookie or storage, and Do Not Track is honoured.
+
+Set **`VITE_POSTHOG_KEY`** (the project API key) in the Vercel project, for Production and Preview; `VITE_POSTHOG_HOST` only if the project is not on PostHog's US cloud. Without the key nothing is loaded and nothing is sent. In the PostHog project, turn on **Discard client IP data** and leave **exception autocapture** off, since the site reports every error itself.
+
+When an error takes a page down, the page is replaced by a screen that says so and offers Reload and a way back to the start; an address with no page gets `404.html`, which links to the home page and the docs.
+
+All of it is added from outside `src/`: `vite.config.ts` puts `site/errors.ts` on every page. `src/` is also the marketing template, and the projects made from it must not report to Zengin; a registry test fails if a template mentions `site-errors` or PostHog.
+
 ## Wired in
 
 | File | Surface |
