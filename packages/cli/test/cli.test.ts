@@ -1,5 +1,5 @@
-import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,7 +8,7 @@ import { DEFAULT_CHECK, findConfig, runCheck } from "../src/check.js";
 import { renderGithub, renderJson, renderPretty } from "../src/format-cli.js";
 import { AGENT_WIRING } from "@zenginui/engine";
 import { admits, runDoctor } from "../src/doctor.js";
-import { init, initFromShadcn } from "../src/init.js";
+import { init, initFromClaudeDesign, initFromShadcn } from "../src/init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "../src/report.js";
 import { explain, parseArgs } from "../src/index.js";
 import { runFigma, type ScaffoldOptions } from "../src/scaffold.js";
@@ -137,6 +137,87 @@ describe("zengin init", () => {
       expect(r.summary.byRule).toEqual({ "unknown-prop-value": 1, "component-substitution": 1, "color-literal": 1 });
     } finally {
       rmSync(shadcn, { recursive: true, force: true });
+    }
+  });
+
+  it("derives definitions from a Claude Design export with --from claude-design, then checks it", async () => {
+    const parsed = parseArgs(["init", "--from", "claude-design", "--dir", "export", "--force"], "/x");
+    expect(parsed.init).toEqual({ from: "claude-design", dir: "export", force: true });
+
+    const exported = mkdtempSync(join(tmpdir(), "zengin-claude-design-"));
+    try {
+      cpSync(join(fixtures, "..", "..", "..", "adapter-css", "test", "fixtures", "claude-design"), exported, { recursive: true });
+      const report = initFromClaudeDesign(exported, false);
+      expect(report).toMatch(/^Wrote .*zengin[\\/]tokens\.json.*zengin[\\/]components\.json.*zengin\.config\.yaml/);
+      expect(existsSync(join(exported, "zengin.config.yaml"))).toBe(true);
+      expect(existsSync(join(exported, "zengin", "components.json"))).toBe(true);
+      expect(() => initFromClaudeDesign(exported, false)).toThrow(/Refusing to overwrite.*--force/);
+      expect(initFromClaudeDesign(exported, true)).toMatch(/^Wrote /);
+      const r = await runCheck({ ...DEFAULT_CHECK, cwd: exported });
+      expect(r.system.package).toBeTruthy();
+    } finally {
+      rmSync(exported, { recursive: true, force: true });
+    }
+  });
+
+  it("runs `zengin init --from claude-design --dir` through the built command", () => {
+    const bin = join(here, "..", "dist", "index.js");
+    const run = (dir: string, ...extra: string[]) => spawnSync(process.execPath, [bin, "init", "--from", "claude-design", "--dir", dir, ...extra], { encoding: "utf8" });
+    const exported = mkdtempSync(join(tmpdir(), "zengin-claude-design-bin-"));
+    const empty = mkdtempSync(join(tmpdir(), "zengin-claude-design-bin-empty-"));
+    try {
+      cpSync(join(fixtures, "..", "..", "..", "adapter-css", "test", "fixtures", "claude-design"), exported, { recursive: true });
+      const first = run(exported);
+      expect(first.status).toBe(0);
+      expect(first.stdout).toMatch(/^Wrote .*zengin\.config\.yaml/);
+      expect(existsSync(join(exported, "zengin", "tokens.json"))).toBe(true);
+      const again = run(exported);
+      expect(again.status).not.toBe(0);
+      expect(again.stderr).toMatch(/Refusing to overwrite.*--force/);
+      expect(run(exported, "--force").status).toBe(0);
+      const missing = run(empty);
+      expect(missing.status).not.toBe(0);
+      expect(missing.stderr).toMatch(/No _ds_manifest\.json/);
+    } finally {
+      rmSync(exported, { recursive: true, force: true });
+      rmSync(empty, { recursive: true, force: true });
+    }
+  });
+
+  it("through the built command, refuses a missing stylesheet and a link out of the export", () => {
+    const bin = join(here, "..", "dist", "index.js");
+    const run = (dir: string, ...extra: string[]) => spawnSync(process.execPath, [bin, "init", "--from", "claude-design", "--dir", dir, ...extra], { encoding: "utf8" });
+    const source = join(fixtures, "..", "..", "..", "adapter-css", "test", "fixtures", "claude-design");
+    const exported = mkdtempSync(join(tmpdir(), "zengin-claude-design-bin-bad-"));
+    const outside = mkdtempSync(join(tmpdir(), "zengin-claude-design-bin-outside-"));
+    try {
+      cpSync(source, exported, { recursive: true });
+      const manifest = JSON.parse(readFileSync(join(exported, "_ds_manifest.json"), "utf8")) as { globalCssPaths: string[] };
+      writeFileSync(join(exported, "_ds_manifest.json"), JSON.stringify({ ...manifest, globalCssPaths: [...manifest.globalCssPaths, "tokens/missing.css"] }));
+      const missing = run(exported);
+      expect(missing.status).not.toBe(0);
+      expect(missing.stderr).toMatch(/globalCssPaths\[2\] "tokens\/missing\.css" does not exist/);
+      writeFileSync(join(exported, "_ds_manifest.json"), JSON.stringify(manifest));
+
+      symlinkSync(outside, join(exported, "zengin"), "junction");
+      for (const extra of [[], ["--force"]]) {
+        const escaped = run(exported, ...extra);
+        expect(escaped.status).not.toBe(0);
+        expect(escaped.stderr).toMatch(/outside the export/);
+      }
+      expect(readdirSync(outside)).toEqual([]);
+    } finally {
+      rmSync(exported, { recursive: true, force: true });
+      rmSync(outside, { recursive: true, force: true });
+    }
+  });
+
+  it("says --from claude-design needs an export when there is no manifest", () => {
+    const empty = mkdtempSync(join(tmpdir(), "zengin-claude-design-empty-"));
+    try {
+      expect(() => initFromClaudeDesign(empty, false)).toThrow(/No _ds_manifest\.json/);
+    } finally {
+      rmSync(empty, { recursive: true, force: true });
     }
   });
 

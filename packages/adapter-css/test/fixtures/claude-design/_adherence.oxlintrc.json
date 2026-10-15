@@ -1,0 +1,21 @@
+{
+  "rules": {
+    "react/forbid-elements": ["warn", { "forbid": [] }],
+    "no-restricted-syntax": [
+      "warn",
+      { "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]", "message": "Raw hex color" },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute > JSXIdentifier[name!=/^(?:tone|variant|size|children|style|key|ref|className|style|children)$/]",
+        "message": "<Badge> doesn't accept that prop."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:deal|scarcity|savings|neutral)$/]",
+        "message": "<Badge> tone"
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tab'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|key|ref|className|style|children)$/]",
+        "message": "<Tab> doesn't accept that prop."
+      }
+    ]
+  }
+}

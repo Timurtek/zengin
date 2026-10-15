@@ -85,6 +85,18 @@ export function findColorLiterals(value: string): LiteralMatch[] {
   let m: RegExpExecArray | null;
   while ((m = re.exec(value)) !== null) {
     const lit = m[0];
+    if (lit.includes("(") && lit.includes("var(")) {
+      // oklch(var(--l) var(--c) 145): the channels are tokens, so there is no literal to replace. Skip to the closing paren.
+      let depth = 0;
+      for (let i = m.index; i < value.length; i++) {
+        if (value[i] === "(") depth++;
+        else if (value[i] === ")" && --depth === 0) {
+          re.lastIndex = i + 1;
+          break;
+        }
+      }
+      continue;
+    }
     if (lit.startsWith("#") || lit.includes("(")) {
       if (isTransparent(lit)) continue; // #0000 and rgba(0 0 0 / 0) are `transparent`, a keyword, not a color choice
       out.push({ literal: lit, offset: m.index });

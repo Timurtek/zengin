@@ -1,6 +1,6 @@
 import { existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { derivePackage, renderReport as renderPackageReport, writePackage } from "@zenginui/adapter-css";
+import { deriveClaudeDesign, derivePackage, renderClaudeDesignReport, renderReport as renderPackageReport, writeClaudeDesign, writePackage } from "@zenginui/adapter-css";
 import { deriveShadcn, renderReport, writeShadcn } from "@zenginui/adapter-shadcn";
 
 export const CONFIG_TEMPLATE = `# Zengin policy for this project. The design system ships the definitions; this file says how strictly they apply.
@@ -54,6 +54,15 @@ export function initFromShadcn(dir: string, force: boolean): string {
   return `Wrote ${written.join(", ")}
 
 ${renderReport(derivation)}`;
+}
+
+/** Derives definitions and a config from a Claude Design export (its `_ds_manifest.json` and `.d.ts` files) and writes them. Returns the report text. */
+export function initFromClaudeDesign(dir: string, force: boolean): string {
+  const derivation = deriveClaudeDesign(dir);
+  const { written } = writeClaudeDesign(dir, derivation, force);
+  return `Wrote ${written.join(", ")}
+
+${renderClaudeDesignReport(derivation)}`;
 }
 
 /** Derives definitions and a config from an installed package's stylesheet and type declarations. Returns the report text. */

@@ -5,7 +5,7 @@ import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { runDefine } from "./define.js";
 import { runDoctor } from "./doctor.js";
-import { init, initFromPackage, initFromShadcn } from "./init.js";
+import { init, initFromClaudeDesign, initFromPackage, initFromShadcn } from "./init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "./report.js";
 import { runAdd, runBrand, runCreate, runFigma, runFonts, runIcons, runMock, runUpgrade, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -18,7 +18,8 @@ Usage:
   zengin init                         write a zengin.config.yaml in the current directory
   zengin init --from shadcn           derive tokens, manifest and config from a shadcn/ui project
   zengin init --from package <name>   derive them from an installed package: its CSS variables and type declarations
-  zengin define [names...]            teach the manifest the components this project owns, from their own types and CSS
+  zengin init --from claude-design    derive them from a Claude Design export: _ds_manifest.json, its stylesheets and .d.ts files
+  zengin define [names...]           teach the manifest the components this project owns, from their own types and CSS
   zengin doctor [--fix]               is this project's plumbing what this version expects: agent wiring, pins, generated files
   zengin report [--out file]          one repository's snapshot: violations plus inventory, as JSON, for the rollup
   zengin report --into <dir>          the same, filed as <dir>/<repo>/<time>.json so the directory is the history
@@ -41,6 +42,7 @@ Usage:
 Init options:
   --from shadcn         read the theme CSS, Tailwind config and components/ui; write zengin/ and zengin.config.yaml
   --from package <name> read node_modules/<name>: tokens from its stylesheet (names kept), manifest from its .d.ts
+  --from claude-design  read the export in --dir (default: here); contracts are cross-checked against _adherence.oxlintrc.json
   --dir <path>          project directory (default: cwd)
   --force               overwrite existing zengin/ definitions and config
 
@@ -258,7 +260,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       check.format = asFormat(rawFormat);
     }
   }
-  if (initOpts.from && initOpts.from !== "shadcn" && initOpts.from !== "package") throw new Error(`--from supports "shadcn" and "package <name>" (got ${initOpts.from}).`);
+  if (initOpts.from && !["shadcn", "package", "claude-design"].includes(initOpts.from)) throw new Error(`--from supports "shadcn", "claude-design" and "package <name>" (got ${initOpts.from}).`);
   return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold, doctor };
 }
 
@@ -312,6 +314,10 @@ async function main(): Promise<void> {
       const dir = parsed.init.dir ? resolve(process.cwd(), parsed.init.dir) : process.cwd();
       if (parsed.init.from === "shadcn") {
         process.stdout.write(initFromShadcn(dir, parsed.init.force) + "\n");
+        return;
+      }
+      if (parsed.init.from === "claude-design") {
+        process.stdout.write(initFromClaudeDesign(dir, parsed.init.force) + "\n");
         return;
       }
       if (parsed.init.from === "package") {
