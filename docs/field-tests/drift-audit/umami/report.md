@@ -2,13 +2,14 @@
 
 > DRAFT for review. Not for the client until it has been reviewed and edited. Every class below is proposed by rule and confirmed by hand before the report leaves.
 
-Run: umami-software/umami at ca661c7, against @umami/react-zen@0.249.0. 934 files checked in 4.3 seconds by @zenginui/cli@0.9.0, 2026-10-15.
+Run: umami-software/umami at ca661c7, against @umami/react-zen@0.249.0. 934 files checked in 4.0 seconds by @zenginui/cli@0.9.0, 2026-10-15.
 
 ## Summary
 
 - This run reported 155 findings in 92 groups. A group is one rule and one found value with one proposed class: one decision.
-- Hand review covers 150 findings in 87 groups, up to the cap of 150, taken in rank order (severity times the number of files). 5 findings are summarised, not classified by hand. 150 + 5 = 155.
-- False positives proposed in the hand-review set: 0 of 150. The rate is stated once each one has been confirmed by hand.
+- 150 findings in 87 groups are queued for hand review, up to the cap of 150, taken in rank order (severity times the number of files). 5 findings past the cap are summarised. 150 + 5 = 155.
+- Confirmed by hand so far: 0 of 150. Until a reviewer confirms a finding, its class is a proposal made by rule.
+- False positives proposed in the queue: 0 of 150. The rate is stated once each one has been confirmed by hand.
 - Every number here comes from this run and is reconciled above. No figure from another run is quoted.
 
 | Proposed class | Findings | Groups |
@@ -17,7 +18,7 @@ Run: umami-software/umami at ca661c7, against @umami/react-zen@0.249.0. 934 file
 | Needs a decision | 64 | 34 |
 | Intentional exception | 0 | 0 |
 | False positive | 0 | 0 |
-| Hand-review set | 150 | 87 |
+| Queued for hand review | 150 | 87 |
 
 ## Top issues
 
@@ -218,13 +219,13 @@ A decision for the team before any code changes: add the missing token, name the
 
 Keep it and write the reason after the zengin-allow comment's colon, so the engine honours it and the next reader knows why; or remove the exception.
 
-No group in the hand-review set.
+No group in the hand-review queue.
 
 ### False positive
 
 Not a code change. Tune the definitions (a passthrough type, a foundation file) so the engine stops reporting it, and count it in the report's false-positive rate.
 
-No group in the hand-review set.
+No group in the hand-review queue.
 
 ## Beyond the hand-review cap
 

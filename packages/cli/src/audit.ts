@@ -8,7 +8,7 @@ import { repoInfo } from "./report.js";
 
 /**
  * The Design System Drift Audit, run end to end: the check, every finding given a proposed class with its
- * evidence, findings grouped by cause and ranked, the hand-review set capped, and the report drafted.
+ * evidence, findings grouped by cause and ranked, the hand-review queue capped, and the report drafted.
  * Classes here are proposals made by rule from the field tests; the audit's promise is that a person
  * confirms each one, so the report says DRAFT and never claims otherwise.
  */
@@ -47,7 +47,10 @@ export interface AuditFinding {
   class: AuditClass;
   /** Why that class was proposed: the rule from the field tests that matched. */
   basis: string;
-  review: "hand" | "summarised";
+  /** Queued for hand review (within the cap, in rank order) or summarised past it. Queued is not reviewed. */
+  review: "queued" | "summarised";
+  /** Whether a person has confirmed the class. The runner never does: it writes false, and only a reviewer sets it. */
+  confirmed: boolean;
 }
 
 export interface AuditGroup {
@@ -63,7 +66,7 @@ export interface AuditGroup {
   files: number;
   /** Impact (severity weight) times spread (files). */
   score: number;
-  review: "hand" | "partial" | "summarised";
+  review: "queued" | "partial" | "summarised";
 }
 
 export interface AuditRun {
@@ -78,9 +81,12 @@ export interface AuditRun {
   totals: {
     findings: number;
     groups: number;
-    hand: number;
+    /** Queued for hand review, up to the cap. */
+    queued: number;
     summarised: number;
-    /** Over the hand-review set only. */
+    /** Confirmed by a person. Zero in every DRAFT the runner writes. */
+    confirmed: number;
+    /** Over the queued set only. */
     byClass: Record<AuditClass, { findings: number; groups: number }>;
   };
 }
@@ -168,17 +174,17 @@ export function buildAudit(violations: Violation[], cap: number): { groups: Audi
   const groups: AuditGroup[] = [];
   const findings: AuditFinding[] = [];
   const width = Math.max(3, String(violations.length).length);
-  let hand = 0;
+  let queued = 0;
   ranked.forEach(({ d, files, score }, gi) => {
     const id = `G${pad(gi + 1, Math.max(2, String(ranked.length).length))}`;
     const members = [...d.members].sort((a, b) => a.file.localeCompare(b.file) || a.range.start.line - b.range.start.line || a.range.start.col - b.range.start.col);
     const ids: string[] = [];
-    let inHand = 0;
+    let inQueue = 0;
     for (const v of members) {
-      const review = hand < cap ? "hand" : "summarised";
-      if (review === "hand") {
-        hand++;
-        inHand++;
+      const review = queued < cap ? "queued" : "summarised";
+      if (review === "queued") {
+        queued++;
+        inQueue++;
       }
       const c = classify(v);
       const fid = `F${pad(findings.length + 1, width)}`;
@@ -200,32 +206,34 @@ export function buildAudit(violations: Violation[], cap: number): { groups: Audi
         class: c.class,
         basis: c.basis,
         review,
+        confirmed: false,
       });
     }
-    const review = inHand === members.length ? "hand" : inHand === 0 ? "summarised" : "partial";
+    const review = inQueue === members.length ? "queued" : inQueue === 0 ? "summarised" : "partial";
     groups.push({ id, rule: d.rule, severity: d.severity, found: d.found, involves: d.involves, class: d.class, basis: d.basis, findings: ids, files, score, review });
   });
   return { groups, findings };
 }
 
-function totals(groups: AuditGroup[], findings: AuditFinding[]): AuditRun["totals"] {
+export function totals(groups: AuditGroup[], findings: AuditFinding[]): AuditRun["totals"] {
   const byClass = Object.fromEntries(CLASS_ORDER.map((c) => [c, { findings: 0, groups: 0 }])) as AuditRun["totals"]["byClass"];
-  const handGroups = new Set<string>();
+  const queuedGroups = new Set<string>();
   for (const f of findings) {
-    if (f.review !== "hand") continue;
+    if (f.review !== "queued") continue;
     byClass[f.class].findings++;
-    if (!handGroups.has(f.group)) {
-      handGroups.add(f.group);
+    if (!queuedGroups.has(f.group)) {
+      queuedGroups.add(f.group);
       byClass[f.class].groups++;
     }
   }
-  const hand = findings.filter((f) => f.review === "hand").length;
-  const t = { findings: findings.length, groups: groups.length, hand, summarised: findings.length - hand, byClass };
+  const queued = findings.filter((f) => f.review === "queued").length;
+  const confirmed = findings.filter((f) => f.confirmed).length;
+  const t = { findings: findings.length, groups: groups.length, queued, summarised: findings.length - queued, confirmed, byClass };
   // The report prints these numbers; they must add up, or it must not be written.
   const classSum = CLASS_ORDER.reduce((n, c) => n + byClass[c].findings, 0);
   const grouped = groups.reduce((n, g) => n + g.findings.length, 0);
-  if (t.hand + t.summarised !== t.findings || classSum !== t.hand || grouped !== t.findings)
-    throw new Error(`Audit counts do not reconcile: ${t.hand} hand + ${t.summarised} summarised vs ${t.findings}; classes ${classSum}; groups ${grouped}.`);
+  if (t.queued + t.summarised !== t.findings || classSum !== t.queued || grouped !== t.findings)
+    throw new Error(`Audit counts do not reconcile: ${t.queued} queued + ${t.summarised} summarised vs ${t.findings}; classes ${classSum}; groups ${grouped}.`);
   return t;
 }
 
@@ -253,7 +261,13 @@ const FIX_PATH: Record<AuditClass, string> = {
 export function renderAuditMarkdown(run: AuditRun, groups: AuditGroup[], findings: AuditFinding[]): string {
   const byId = new Map(findings.map((f) => [f.id, f]));
   const t = run.totals;
-  const handGroups = groups.filter((g) => g.review !== "summarised");
+  // A partial group is in the queue only up to the cap: its hand-review sections show the queued part alone.
+  const queuedGroups = groups
+    .filter((g) => g.review !== "summarised")
+    .map((g) => {
+      const members = g.findings.map((id) => byId.get(id)!).filter((f) => f.review === "queued");
+      return { ...g, members, files: new Set(members.map((f) => f.file)).size };
+    });
   const L: string[] = [];
   L.push(`# Design System Drift Audit: ${run.repo.name} (DRAFT)`, "");
   L.push("> DRAFT for review. Not for the client until it has been reviewed and edited. Every class below is proposed by rule and confirmed by hand before the report leaves.", "");
@@ -264,43 +278,43 @@ export function renderAuditMarkdown(run: AuditRun, groups: AuditGroup[], finding
 
   L.push("## Summary", "");
   L.push(`- This run reported ${t.findings} findings in ${t.groups} groups. A group is one rule and one found value with one proposed class: one decision.`);
-  L.push(`- Hand review covers ${t.hand} findings in ${handGroups.length} groups, up to the cap of ${run.cap}, taken in rank order (severity times the number of files). ${t.summarised} findings are summarised, not classified by hand. ${t.hand} + ${t.summarised} = ${t.findings}.`);
-  L.push(`- False positives proposed in the hand-review set: ${t.byClass["false-positive"].findings} of ${t.hand}. The rate is stated once each one has been confirmed by hand.`);
+  L.push(`- ${t.queued} findings in ${queuedGroups.length} groups are queued for hand review, up to the cap of ${run.cap}, taken in rank order (severity times the number of files). ${t.summarised} findings past the cap are summarised. ${t.queued} + ${t.summarised} = ${t.findings}.`);
+  L.push(`- Confirmed by hand so far: ${t.confirmed} of ${t.queued}. Until a reviewer confirms a finding, its class is a proposal made by rule.`);
+  L.push(`- False positives proposed in the queue: ${t.byClass["false-positive"].findings} of ${t.queued}. The rate is stated once each one has been confirmed by hand.`);
   L.push("- Every number here comes from this run and is reconciled above. No figure from another run is quoted.", "");
   L.push("| Proposed class | Findings | Groups |", "|---|---|---|");
   for (const c of CLASS_ORDER) L.push(`| ${CLASS_LABEL[c]} | ${t.byClass[c].findings} | ${t.byClass[c].groups} |`);
-  L.push(`| Hand-review set | ${t.hand} | ${handGroups.length} |`, "");
+  L.push(`| Queued for hand review | ${t.queued} | ${queuedGroups.length} |`, "");
 
   L.push("## Top issues", "");
-  const top = handGroups.slice(0, 10);
+  const top = queuedGroups.slice(0, 10);
   if (top.length === 0) L.push("The scan reported nothing within the engine's rule kinds. See what the scan cannot see, below.", "");
   for (const g of top) {
-    const members = g.findings.map((id) => byId.get(id)!);
-    const first = members[0]!;
+    const first = g.members[0]!;
     L.push(`### ${g.id}: ${g.rule} ${code(g.found)} (${CLASS_LABEL[g.class]})`, "");
     L.push(`- What: ${first.message}`);
-    L.push(`- Spread: ${count(members.length, "finding")} in ${count(g.files, "file")}, at ${g.severity}. Involves ${code(g.involves)}.`);
+    L.push(`- Spread: ${count(g.members.length, "finding")} in ${count(g.files, "file")}, at ${g.severity}. Involves ${code(g.involves)}.`);
     L.push(`- Why this class: ${g.basis}`);
     L.push(`- Fix: ${fixLine(first)}`);
-    L.push(`- Examples: ${members.slice(0, 3).map((f) => `${f.id} ${code(f.evidence)}`).join(", ")}.`);
-    L.push(`- Findings: ${idRange(g.findings)}.`, "");
+    L.push(`- Examples: ${g.members.slice(0, 3).map((f) => `${f.id} ${code(f.evidence)}`).join(", ")}.`);
+    L.push(`- Findings: ${idRange(g.members.map((f) => f.id))}.`, "");
   }
 
   L.push("## Fix path by class", "");
   for (const c of CLASS_ORDER) {
-    const gs = handGroups.filter((g) => g.class === c);
+    const gs = queuedGroups.filter((g) => g.class === c);
     L.push(`### ${CLASS_LABEL[c]}`, "", FIX_PATH[c], "");
-    if (gs.length === 0) L.push("No group in the hand-review set.", "");
+    if (gs.length === 0) L.push("No group in the hand-review queue.", "");
     else {
       L.push("| Group | Rule | Found | Findings | Files |", "|---|---|---|---|---|");
-      for (const g of gs) L.push(`| ${g.id} | ${g.rule} | ${cell(code(g.found))} | ${idRange(g.findings)} | ${g.files} |`);
+      for (const g of gs) L.push(`| ${g.id} | ${g.rule} | ${cell(code(g.found))} | ${idRange(g.members.map((f) => f.id))} | ${g.files} |`);
       L.push("");
     }
   }
 
-  const rest = groups.filter((g) => g.review !== "hand");
+  const rest = groups.filter((g) => g.review !== "queued");
   L.push("## Beyond the hand-review cap", "");
-  if (rest.length === 0) L.push(`Every finding is in the hand-review set; the cap of ${run.cap} was not reached.`, "");
+  if (rest.length === 0) L.push(`Every finding is queued for hand review; the cap of ${run.cap} was not reached.`, "");
   else {
     L.push(`${t.summarised} findings past the cap ship as engine output with a proposed class and no hand review. A second pass is a separate piece of work.`, "");
     L.push("| Group | Rule | Found | Proposed class | Findings past the cap |", "|---|---|---|---|---|");

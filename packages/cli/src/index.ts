@@ -116,7 +116,7 @@ Rollup options:
 Audit options:
   --out <dir>           the engagement's deliverables folder (required): findings.json, run.json, report.md, report.pdf
   --config <path>       zengin.config.yaml (default: the one at the repository root, written in prework)
-  --cap <n>             findings taken into hand review, in rank order (default: 150)
+  --cap <n>             findings queued for hand review, in rank order (default: 150)
   --repo <name>         repository name in the report (default: from the git remote, else the directory)
 
 Check options:
@@ -434,7 +434,7 @@ async function main(): Promise<void> {
       });
       const t = run.totals;
       process.stdout.write(
-        `Wrote ${AUDIT_FILES.join(", ")} to ${parsed.report.out}: ${t.findings} findings in ${t.groups} groups, ${t.hand} in hand review (cap ${run.cap}), ${t.summarised} summarised, ${(run.durationMs / 1000).toFixed(1)}s. The report is a DRAFT.\n`,
+        `Wrote ${AUDIT_FILES.join(", ")} to ${parsed.report.out}: ${t.findings} findings in ${t.groups} groups, ${t.queued} queued for hand review (cap ${run.cap}), ${t.summarised} summarised, ${t.confirmed} confirmed, ${(run.durationMs / 1000).toFixed(1)}s. The report is a DRAFT: every class is a proposal until confirmed by hand.\n`,
       );
       return;
     }

@@ -7,8 +7,9 @@ Run: vercel/ai-chatbot at c2f8235, against @/components/ui@0.0.0. 124 files chec
 ## Summary
 
 - This run reported 109 findings in 82 groups. A group is one rule and one found value with one proposed class: one decision.
-- Hand review covers 109 findings in 82 groups, up to the cap of 150, taken in rank order (severity times the number of files). 0 findings are summarised, not classified by hand. 109 + 0 = 109.
-- False positives proposed in the hand-review set: 0 of 109. The rate is stated once each one has been confirmed by hand.
+- 109 findings in 82 groups are queued for hand review, up to the cap of 150, taken in rank order (severity times the number of files). 0 findings past the cap are summarised. 109 + 0 = 109.
+- Confirmed by hand so far: 0 of 109. Until a reviewer confirms a finding, its class is a proposal made by rule.
+- False positives proposed in the queue: 0 of 109. The rate is stated once each one has been confirmed by hand.
 - Every number here comes from this run and is reconciled above. No figure from another run is quoted.
 
 | Proposed class | Findings | Groups |
@@ -17,7 +18,7 @@ Run: vercel/ai-chatbot at c2f8235, against @/components/ui@0.0.0. 124 files chec
 | Needs a decision | 34 | 26 |
 | Intentional exception | 0 | 0 |
 | False positive | 0 | 0 |
-| Hand-review set | 109 | 82 |
+| Queued for hand review | 109 | 82 |
 
 ## Top issues
 
@@ -213,17 +214,17 @@ A decision for the team before any code changes: add the missing token, name the
 
 Keep it and write the reason after the zengin-allow comment's colon, so the engine honours it and the next reader knows why; or remove the exception.
 
-No group in the hand-review set.
+No group in the hand-review queue.
 
 ### False positive
 
 Not a code change. Tune the definitions (a passthrough type, a foundation file) so the engine stops reporting it, and count it in the report's false-positive rate.
 
-No group in the hand-review set.
+No group in the hand-review queue.
 
 ## Beyond the hand-review cap
 
-Every finding is in the hand-review set; the cap of 150 was not reached.
+Every finding is queued for hand review; the cap of 150 was not reached.
 
 ## What the scan cannot see
 

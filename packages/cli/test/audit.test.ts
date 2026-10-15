@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, it } from "vitest";
 import type { Violation } from "@zenginui/engine";
-import { AUDIT_FILES, buildAudit, classify, type AuditFinding, type AuditRun } from "../src/audit.js";
+import { AUDIT_FILES, buildAudit, classify, renderAuditMarkdown, totals, type AuditFinding, type AuditRun } from "../src/audit.js";
 import { markdownToPdf } from "../src/pdf.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -60,7 +60,8 @@ describe("zengin audit, through the built CLI", () => {
   it("writes the four deliverables to the given folder and nothing else anywhere", () => {
     expect(result.stderr).toBe("");
     expect(result.status).toBe(0);
-    expect(result.stdout).toMatch(/Wrote findings\.json, run\.json, report\.md, report\.pdf .*16 findings in 15 groups, 16 in hand review \(cap 150\), 0 summarised/);
+    expect(result.stdout).toMatch(/Wrote findings\.json, run\.json, report\.md, report\.pdf .*16 findings in 15 groups, 16 queued for hand review \(cap 150\), 0 summarised, 0 confirmed/);
+    expect(result.stdout).not.toMatch(/\bin hand review\b/);
     expect(readdirSync(out).sort()).toEqual([...AUDIT_FILES].sort());
     expect(snapshot(repo)).toEqual(before);
   });
@@ -91,7 +92,16 @@ describe("zengin audit, through the built CLI", () => {
     expect(run.schema).toBe("zengin-audit/1");
     expect(run.repo.name).toBe("acme/checkout");
     expect(run.durationMs).toBeGreaterThanOrEqual(0);
-    expect(run.totals).toMatchObject({ findings: 16, hand: 16, summarised: 0 });
+    expect(run.totals).toMatchObject({ findings: 16, queued: 16, summarised: 0, confirmed: 0 });
+  });
+
+  it("never states that an unconfirmed DRAFT has been hand-reviewed", () => {
+    const md = readFileSync(join(out, "report.md"), "utf8");
+    const { findings } = read<{ findings: AuditFinding[] }>(out, "findings.json");
+    expect(findings.every((f) => f.confirmed === false && f.review !== ("hand" as string))).toBe(true);
+    expect(md).not.toMatch(/hand review covers|hand-reviewed|reviewed by hand|validated|classified by hand/i);
+    expect(md).toContain("16 findings in 15 groups are queued for hand review");
+    expect(md).toContain("Confirmed by hand so far: 0 of 16.");
   });
 
   it("follows the services copy rules: no delivery claims, no completeness claims, only this run's numbers", () => {
@@ -123,17 +133,17 @@ describe("zengin audit, through the built CLI", () => {
     expect(r.status).toBe(0);
     const run = read<AuditRun>(ws, "run.json");
     expect(run.cap).toBe(150);
-    expect(run.totals.hand).toBe(150);
+    expect(run.totals.queued).toBe(150);
     expect(run.totals.summarised).toBe(run.totals.findings - 150);
     const { findings } = read<{ findings: AuditFinding[] }>(ws, "findings.json");
-    expect(findings.filter((f) => f.review === "hand")).toHaveLength(150);
+    expect(findings.filter((f) => f.review === "queued")).toHaveLength(150);
     const md = readFileSync(join(ws, "report.md"), "utf8");
     expect(md).toContain(`150 + ${run.totals.summarised} = ${run.totals.findings}`);
     expect(md).toMatch(/## Beyond the hand-review cap\n\n\d+ findings past the cap/);
 
     const capped = join(mkdtempSync(join(tmpdir(), "zengin-audit-ws-")), "deliverables");
     expect(audit([big, "--out", capped, "--cap", "20"]).status).toBe(0);
-    expect(read<AuditRun>(capped, "run.json").totals.hand).toBe(20);
+    expect(read<AuditRun>(capped, "run.json").totals.queued).toBe(20);
   });
 
   it("refuses without a deliverables folder or prework definitions, and writes nothing", () => {
@@ -196,7 +206,33 @@ describe("audit classification", () => {
     const many = Array.from({ length: 5 }, (_, i) => violation({ file: `src/f${i}.tsx` }));
     const { groups, findings } = buildAudit(many, 3);
     expect(groups[0]!.review).toBe("partial");
-    expect(findings.map((f) => f.review)).toEqual(["hand", "hand", "hand", "summarised", "summarised"]);
+    expect(findings.map((f) => f.review)).toEqual(["queued", "queued", "queued", "summarised", "summarised"]);
+  });
+
+  it("keeps a partial group's summarised findings out of the hand-review sections", () => {
+    const many = Array.from({ length: 5 }, (_, i) => violation({ file: `src/f${i}.tsx` }));
+    const { groups, findings } = buildAudit(many, 3);
+    const run: AuditRun = {
+      schema: "zengin-audit/1",
+      repo: { name: "acme/split" },
+      system: { package: "@acme/ds", version: "1.0.0" },
+      tool: { name: "@zenginui/cli", version: "0.0.0" },
+      generatedAt: "2026-10-15T00:00:00.000Z",
+      durationMs: 1,
+      filesChecked: 5,
+      cap: 3,
+      totals: totals(groups, findings),
+    };
+    const md = renderAuditMarkdown(run, groups, findings);
+    const section = (name: string) => md.split(`## ${name}\n`)[1]!.split("\n## ")[0]!;
+    for (const name of ["Top issues", "Fix path by class"]) {
+      const ids = section(name).match(/\bF\d{3}\b/g)!;
+      expect([...new Set(ids)].sort()).toEqual(["F001", "F002", "F003"]);
+    }
+    expect(section("Top issues")).toContain("- Spread: 3 findings in 3 files");
+    expect(section("Fix path by class")).toContain("| G01 | color-literal | `#123456` | F001, F002, F003 | 3 |");
+    expect(section("Beyond the hand-review cap").match(/\bF\d{3}\b/g)).toEqual(["F004", "F005"]);
+    expect(md).toContain("3 + 2 = 5");
   });
 });
 

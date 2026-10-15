@@ -18,7 +18,7 @@ endobj
 << /Title (Design System Drift Audit: vercel/ai-chatbot \(DRAFT\)) /Producer (zengin audit) >>
 endobj
 7 0 obj
-<< /Length 3700 >>
+<< /Length 3805 >>
 stream
 BT /F2 16 Tf 54 717.2 Td (Design System Drift Audit: vercel/ai-chatbot \(DRAFT\)) Tj ET
 BT /F2 10 Tf 54 700.2 Td (DRAFT for review. Not for the client until it has been reviewed and edited. Every class below is) Tj ET
@@ -28,38 +28,39 @@ BT /F1 10 Tf 54 655.2 Td (by @zenginui/cli@0.9.0, 2026-10-15.) Tj ET
 BT /F2 13 Tf 54 626.3 Td (Summary) Tj ET
 BT /F1 10 Tf 54 610.3 Td (- This run reported 109 findings in 82 groups. A group is one rule and one found value with one) Tj ET
 BT /F1 10 Tf 54 597.3 Td (  proposed class: one decision.) Tj ET
-BT /F1 10 Tf 54 581.3 Td (- Hand review covers 109 findings in 82 groups, up to the cap of 150, taken in rank order \(severity) Tj ET
-BT /F1 10 Tf 54 568.3 Td (  times the number of files\). 0 findings are summarised, not classified by hand. 109 + 0 = 109.) Tj ET
-BT /F1 10 Tf 54 552.3 Td (- False positives proposed in the hand-review set: 0 of 109. The rate is stated once each one has) Tj ET
-BT /F1 10 Tf 54 539.3 Td (  been confirmed by hand.) Tj ET
-BT /F1 10 Tf 54 523.3 Td (- Every number here comes from this run and is reconciled above. No figure from another run is) Tj ET
-BT /F1 10 Tf 54 510.3 Td (  quoted.) Tj ET
-BT /F3 8 Tf 54 497.9 Td (Proposed class | Findings | Groups) Tj ET
-BT /F3 8 Tf 54 485.5 Td (True drift | 75 | 56) Tj ET
-BT /F3 8 Tf 54 473.1 Td (Needs a decision | 34 | 26) Tj ET
-BT /F3 8 Tf 54 460.7 Td (Intentional exception | 0 | 0) Tj ET
-BT /F3 8 Tf 54 448.3 Td (False positive | 0 | 0) Tj ET
-BT /F3 8 Tf 54 435.9 Td (Hand-review set | 109 | 82) Tj ET
-BT /F2 13 Tf 54 407.0 Td (Top issues) Tj ET
-BT /F2 11 Tf 54 380.7 Td (G01: classname-policy rounded-full \(Needs a decision\)) Tj ET
-BT /F1 10 Tf 54 364.7 Td (- What: className on Button may not set border-radius. border-radius is owned by the component; use) Tj ET
-BT /F1 10 Tf 54 351.7 Td (  a variant or a token.) Tj ET
-BT /F1 10 Tf 54 335.7 Td (- Spread: 4 findings in 3 files, at warn. Involves Button.) Tj ET
-BT /F1 10 Tf 54 319.7 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
-BT /F1 10 Tf 54 306.7 Td (  widen for this component is a policy call.) Tj ET
-BT /F1 10 Tf 54 290.7 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
-BT /F1 10 Tf 54 274.7 Td (- Examples: F001 components/ai-elements/conversation.tsx:88, F002) Tj ET
-BT /F1 10 Tf 54 261.7 Td (  components/ai-elements/conversation.tsx:155, F003 components/ai-elements/suggestion.tsx:48.) Tj ET
-BT /F1 10 Tf 54 245.7 Td (- Findings: F001, F002, F003, F004.) Tj ET
-BT /F2 11 Tf 54 219.4 Td (G02: color-literal text-red-500 \(True drift\)) Tj ET
-BT /F1 10 Tf 54 203.4 Td (- What: text-red-500 references the Tailwind default palette \(--color-red-500\), not a system token.) Tj ET
-BT /F1 10 Tf 54 187.4 Td (- Spread: 4 findings in 2 files, at error. Involves color.destructive.) Tj ET
-BT /F1 10 Tf 54 171.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
-BT /F1 10 Tf 54 155.4 Td (- Fix: text-destructive \(nearest\). destructive is the system's token for this role. Chosen by role,) Tj ET
-BT /F1 10 Tf 54 142.4 Td (  not by value; verify it reads correctly here.) Tj ET
-BT /F1 10 Tf 54 126.4 Td (- Examples: F005 components/chat/message.tsx:264, F006 components/chat/message.tsx:287, F007) Tj ET
-BT /F1 10 Tf 54 113.4 Td (  components/chat/message.tsx:323.) Tj ET
-BT /F1 10 Tf 54 97.4 Td (- Findings: F005, F006, F007, F008.) Tj ET
+BT /F1 10 Tf 54 581.3 Td (- 109 findings in 82 groups are queued for hand review, up to the cap of 150, taken in rank order) Tj ET
+BT /F1 10 Tf 54 568.3 Td (  \(severity times the number of files\). 0 findings past the cap are summarised. 109 + 0 = 109.) Tj ET
+BT /F1 10 Tf 54 552.3 Td (- Confirmed by hand so far: 0 of 109. Until a reviewer confirms a finding, its class is a proposal) Tj ET
+BT /F1 10 Tf 54 539.3 Td (  made by rule.) Tj ET
+BT /F1 10 Tf 54 523.3 Td (- False positives proposed in the queue: 0 of 109. The rate is stated once each one has been) Tj ET
+BT /F1 10 Tf 54 510.3 Td (  confirmed by hand.) Tj ET
+BT /F1 10 Tf 54 494.3 Td (- Every number here comes from this run and is reconciled above. No figure from another run is) Tj ET
+BT /F1 10 Tf 54 481.3 Td (  quoted.) Tj ET
+BT /F3 8 Tf 54 468.9 Td (Proposed class | Findings | Groups) Tj ET
+BT /F3 8 Tf 54 456.5 Td (True drift | 75 | 56) Tj ET
+BT /F3 8 Tf 54 444.1 Td (Needs a decision | 34 | 26) Tj ET
+BT /F3 8 Tf 54 431.7 Td (Intentional exception | 0 | 0) Tj ET
+BT /F3 8 Tf 54 419.3 Td (False positive | 0 | 0) Tj ET
+BT /F3 8 Tf 54 406.9 Td (Queued for hand review | 109 | 82) Tj ET
+BT /F2 13 Tf 54 378.0 Td (Top issues) Tj ET
+BT /F2 11 Tf 54 351.7 Td (G01: classname-policy rounded-full \(Needs a decision\)) Tj ET
+BT /F1 10 Tf 54 335.7 Td (- What: className on Button may not set border-radius. border-radius is owned by the component; use) Tj ET
+BT /F1 10 Tf 54 322.7 Td (  a variant or a token.) Tj ET
+BT /F1 10 Tf 54 306.7 Td (- Spread: 4 findings in 3 files, at warn. Involves Button.) Tj ET
+BT /F1 10 Tf 54 290.7 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
+BT /F1 10 Tf 54 277.7 Td (  widen for this component is a policy call.) Tj ET
+BT /F1 10 Tf 54 261.7 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
+BT /F1 10 Tf 54 245.7 Td (- Examples: F001 components/ai-elements/conversation.tsx:88, F002) Tj ET
+BT /F1 10 Tf 54 232.7 Td (  components/ai-elements/conversation.tsx:155, F003 components/ai-elements/suggestion.tsx:48.) Tj ET
+BT /F1 10 Tf 54 216.7 Td (- Findings: F001, F002, F003, F004.) Tj ET
+BT /F2 11 Tf 54 190.4 Td (G02: color-literal text-red-500 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 174.4 Td (- What: text-red-500 references the Tailwind default palette \(--color-red-500\), not a system token.) Tj ET
+BT /F1 10 Tf 54 158.4 Td (- Spread: 4 findings in 2 files, at error. Involves color.destructive.) Tj ET
+BT /F1 10 Tf 54 142.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 126.4 Td (- Fix: text-destructive \(nearest\). destructive is the system's token for this role. Chosen by role,) Tj ET
+BT /F1 10 Tf 54 113.4 Td (  not by value; verify it reads correctly here.) Tj ET
+BT /F1 10 Tf 54 97.4 Td (- Examples: F005 components/chat/message.tsx:264, F006 components/chat/message.tsx:287, F007) Tj ET
+BT /F1 10 Tf 54 84.4 Td (  components/chat/message.tsx:323.) Tj ET
 BT /F1 8 Tf 54 36 Td (DRAFT - vercel/ai-chatbot - page 1 of 6) Tj ET
 endstream
 endobj
@@ -67,47 +68,47 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 7 0 R >>
 endobj
 9 0 obj
-<< /Length 3732 >>
+<< /Length 3708 >>
 stream
-BT /F2 11 Tf 54 711.7 Td (G03: color-literal text-white \(True drift\)) Tj ET
-BT /F1 10 Tf 54 695.7 Td (- What: text-white references the Tailwind default palette \(--color-white\), not a system token.) Tj ET
-BT /F1 10 Tf 54 679.7 Td (- Spread: 3 findings in 2 files, at error. Involves color.card.) Tj ET
-BT /F1 10 Tf 54 663.7 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
-BT /F1 10 Tf 54 647.7 Td (- Fix: text-card \(nearest\). Several tokens share this value. Pick by role: color.card,) Tj ET
-BT /F1 10 Tf 54 634.7 Td (  color.popover.) Tj ET
-BT /F1 10 Tf 54 618.7 Td (- Examples: F009 components/chat/preview-attachment.tsx:47, F010 components/chat/weather.tsx:363,) Tj ET
-BT /F1 10 Tf 54 605.7 Td (  F011 components/chat/weather.tsx:412.) Tj ET
-BT /F1 10 Tf 54 589.7 Td (- Findings: F009, F010, F011.) Tj ET
-BT /F2 11 Tf 54 563.4 Td (G04: color-literal bg-black/80 \(True drift\)) Tj ET
-BT /F1 10 Tf 54 547.4 Td (- What: bg-black/80 references the Tailwind default palette \(--color-black\), not a system token.) Tj ET
-BT /F1 10 Tf 54 531.4 Td (- Spread: 2 findings in 2 files, at error. Involves color.foreground.) Tj ET
-BT /F1 10 Tf 54 515.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
-BT /F1 10 Tf 54 499.4 Td (- Fix: bg-foreground \(nearest\). Nearest by value: color.foreground = #060606. Verify the semantic) Tj ET
-BT /F1 10 Tf 54 486.4 Td (  role before applying.) Tj ET
-BT /F1 10 Tf 54 470.4 Td (- Examples: F012 components/ui/alert-dialog.tsx:39, F013 components/ui/dialog.tsx:42.) Tj ET
-BT /F1 10 Tf 54 454.4 Td (- Findings: F012, F013.) Tj ET
-BT /F2 11 Tf 54 428.1 Td (G05: classname-policy gap-1.5 \(Needs a decision\)) Tj ET
-BT /F1 10 Tf 54 412.1 Td (- What: className on Badge may not set gap. className on Badge is limited to: margin, flex-item,) Tj ET
-BT /F1 10 Tf 54 399.1 Td (  grid-item, position, display.) Tj ET
-BT /F1 10 Tf 54 383.1 Td (- Spread: 2 findings in 2 files, at warn. Involves Badge.) Tj ET
-BT /F1 10 Tf 54 367.1 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
-BT /F1 10 Tf 54 354.1 Td (  widen for this component is a policy call.) Tj ET
-BT /F1 10 Tf 54 338.1 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
-BT /F1 10 Tf 54 322.1 Td (- Examples: F014 components/ai-elements/tool.tsx:69, F015) Tj ET
-BT /F1 10 Tf 54 309.1 Td (  components/chat/visibility-selector.tsx:117.) Tj ET
-BT /F1 10 Tf 54 293.1 Td (- Findings: F014, F015.) Tj ET
-BT /F2 11 Tf 54 266.8 Td (G06: classname-policy px-4 \(Needs a decision\)) Tj ET
-BT /F1 10 Tf 54 250.8 Td (- What: className on Button may not set padding-inline. padding is owned by the size prop.) Tj ET
-BT /F1 10 Tf 54 234.8 Td (- Spread: 2 findings in 2 files, at warn. Involves Button.) Tj ET
-BT /F1 10 Tf 54 218.8 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
-BT /F1 10 Tf 54 205.8 Td (  widen for this component is a policy call.) Tj ET
-BT /F1 10 Tf 54 189.8 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
-BT /F1 10 Tf 54 173.8 Td (- Examples: F016 components/ai-elements/suggestion.tsx:48, F017 components/chat/chat-header.tsx:55.) Tj ET
-BT /F1 10 Tf 54 157.8 Td (- Findings: F016, F017.) Tj ET
-BT /F2 11 Tf 54 131.5 Td (G07: classname-policy rounded-lg \(Needs a decision\)) Tj ET
-BT /F1 10 Tf 54 115.5 Td (- What: className on Button may not set border-radius. border-radius is owned by the component; use) Tj ET
-BT /F1 10 Tf 54 102.5 Td (  a variant or a token.) Tj ET
-BT /F1 10 Tf 54 86.5 Td (- Spread: 2 findings in 2 files, at warn. Involves Button.) Tj ET
+BT /F1 10 Tf 54 722.0 Td (- Findings: F005, F006, F007, F008.) Tj ET
+BT /F2 11 Tf 54 695.7 Td (G03: color-literal text-white \(True drift\)) Tj ET
+BT /F1 10 Tf 54 679.7 Td (- What: text-white references the Tailwind default palette \(--color-white\), not a system token.) Tj ET
+BT /F1 10 Tf 54 663.7 Td (- Spread: 3 findings in 2 files, at error. Involves color.card.) Tj ET
+BT /F1 10 Tf 54 647.7 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 631.7 Td (- Fix: text-card \(nearest\). Several tokens share this value. Pick by role: color.card,) Tj ET
+BT /F1 10 Tf 54 618.7 Td (  color.popover.) Tj ET
+BT /F1 10 Tf 54 602.7 Td (- Examples: F009 components/chat/preview-attachment.tsx:47, F010 components/chat/weather.tsx:363,) Tj ET
+BT /F1 10 Tf 54 589.7 Td (  F011 components/chat/weather.tsx:412.) Tj ET
+BT /F1 10 Tf 54 573.7 Td (- Findings: F009, F010, F011.) Tj ET
+BT /F2 11 Tf 54 547.4 Td (G04: color-literal bg-black/80 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 531.4 Td (- What: bg-black/80 references the Tailwind default palette \(--color-black\), not a system token.) Tj ET
+BT /F1 10 Tf 54 515.4 Td (- Spread: 2 findings in 2 files, at error. Involves color.foreground.) Tj ET
+BT /F1 10 Tf 54 499.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 483.4 Td (- Fix: bg-foreground \(nearest\). Nearest by value: color.foreground = #060606. Verify the semantic) Tj ET
+BT /F1 10 Tf 54 470.4 Td (  role before applying.) Tj ET
+BT /F1 10 Tf 54 454.4 Td (- Examples: F012 components/ui/alert-dialog.tsx:39, F013 components/ui/dialog.tsx:42.) Tj ET
+BT /F1 10 Tf 54 438.4 Td (- Findings: F012, F013.) Tj ET
+BT /F2 11 Tf 54 412.1 Td (G05: classname-policy gap-1.5 \(Needs a decision\)) Tj ET
+BT /F1 10 Tf 54 396.1 Td (- What: className on Badge may not set gap. className on Badge is limited to: margin, flex-item,) Tj ET
+BT /F1 10 Tf 54 383.1 Td (  grid-item, position, display.) Tj ET
+BT /F1 10 Tf 54 367.1 Td (- Spread: 2 findings in 2 files, at warn. Involves Badge.) Tj ET
+BT /F1 10 Tf 54 351.1 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
+BT /F1 10 Tf 54 338.1 Td (  widen for this component is a policy call.) Tj ET
+BT /F1 10 Tf 54 322.1 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
+BT /F1 10 Tf 54 306.1 Td (- Examples: F014 components/ai-elements/tool.tsx:69, F015) Tj ET
+BT /F1 10 Tf 54 293.1 Td (  components/chat/visibility-selector.tsx:117.) Tj ET
+BT /F1 10 Tf 54 277.1 Td (- Findings: F014, F015.) Tj ET
+BT /F2 11 Tf 54 250.8 Td (G06: classname-policy px-4 \(Needs a decision\)) Tj ET
+BT /F1 10 Tf 54 234.8 Td (- What: className on Button may not set padding-inline. padding is owned by the size prop.) Tj ET
+BT /F1 10 Tf 54 218.8 Td (- Spread: 2 findings in 2 files, at warn. Involves Button.) Tj ET
+BT /F1 10 Tf 54 202.8 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
+BT /F1 10 Tf 54 189.8 Td (  widen for this component is a policy call.) Tj ET
+BT /F1 10 Tf 54 173.8 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
+BT /F1 10 Tf 54 157.8 Td (- Examples: F016 components/ai-elements/suggestion.tsx:48, F017 components/chat/chat-header.tsx:55.) Tj ET
+BT /F1 10 Tf 54 141.8 Td (- Findings: F016, F017.) Tj ET
+BT /F2 11 Tf 54 115.5 Td (G07: classname-policy rounded-lg \(Needs a decision\)) Tj ET
+BT /F1 10 Tf 54 99.5 Td (- What: className on Button may not set border-radius. border-radius is owned by the component; use) Tj ET
+BT /F1 10 Tf 54 86.5 Td (  a variant or a token.) Tj ET
 BT /F1 8 Tf 54 36 Td (DRAFT - vercel/ai-chatbot - page 2 of 6) Tj ET
 endstream
 endobj
@@ -115,48 +116,47 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 9 0 R >>
 endobj
 11 0 obj
-<< /Length 3698 >>
+<< /Length 3620 >>
 stream
-BT /F1 10 Tf 54 722.0 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
-BT /F1 10 Tf 54 709.0 Td (  widen for this component is a policy call.) Tj ET
-BT /F1 10 Tf 54 693.0 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
-BT /F1 10 Tf 54 677.0 Td (- Examples: F018 components/chat/chat-header.tsx:55, F019) Tj ET
-BT /F1 10 Tf 54 664.0 Td (  components/chat/visibility-selector.tsx:117.) Tj ET
-BT /F1 10 Tf 54 648.0 Td (- Findings: F018, F019.) Tj ET
-BT /F2 11 Tf 54 621.7 Td (G08: color-literal text-white/60 \(True drift\)) Tj ET
-BT /F1 10 Tf 54 605.7 Td (- What: text-white/60 references the Tailwind default palette \(--color-white\), not a system token.) Tj ET
-BT /F1 10 Tf 54 589.7 Td (- Spread: 3 findings in 1 file, at error. Involves color.card.) Tj ET
-BT /F1 10 Tf 54 573.7 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
-BT /F1 10 Tf 54 557.7 Td (- Fix: text-card \(nearest\). Several tokens share this value. Pick by role: color.card,) Tj ET
-BT /F1 10 Tf 54 544.7 Td (  color.popover.) Tj ET
-BT /F1 10 Tf 54 528.7 Td (- Examples: F020 components/chat/weather.tsx:348, F021 components/chat/weather.tsx:404, F022) Tj ET
-BT /F1 10 Tf 54 515.7 Td (  components/chat/weather.tsx:421.) Tj ET
-BT /F1 10 Tf 54 499.7 Td (- Findings: F020, F021, F022.) Tj ET
-BT /F2 11 Tf 54 473.4 Td (G09: color-literal text-white/80 \(True drift\)) Tj ET
-BT /F1 10 Tf 54 457.4 Td (- What: text-white/80 references the Tailwind default palette \(--color-white\), not a system token.) Tj ET
-BT /F1 10 Tf 54 441.4 Td (- Spread: 3 findings in 1 file, at error. Involves color.card.) Tj ET
-BT /F1 10 Tf 54 425.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
-BT /F1 10 Tf 54 409.4 Td (- Fix: text-card \(nearest\). Several tokens share this value. Pick by role: color.card,) Tj ET
-BT /F1 10 Tf 54 396.4 Td (  color.popover.) Tj ET
-BT /F1 10 Tf 54 380.4 Td (- Examples: F023 components/chat/weather.tsx:347, F024 components/chat/weather.tsx:365, F025) Tj ET
-BT /F1 10 Tf 54 367.4 Td (  components/chat/weather.tsx:380.) Tj ET
-BT /F1 10 Tf 54 351.4 Td (- Findings: F023, F024, F025.) Tj ET
-BT /F2 11 Tf 54 325.1 Td (G10: color-literal bg-red-50 \(True drift\)) Tj ET
-BT /F1 10 Tf 54 309.1 Td (- What: bg-red-50 references the Tailwind default palette \(--color-red-50\), not a system token.) Tj ET
-BT /F1 10 Tf 54 293.1 Td (- Spread: 2 findings in 1 file, at error. Involves color.destructive.) Tj ET
-BT /F1 10 Tf 54 277.1 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
-BT /F1 10 Tf 54 261.1 Td (- Fix: bg-destructive \(nearest\). destructive is the system's token for this role. Chosen by role,) Tj ET
-BT /F1 10 Tf 54 248.1 Td (  not by value; verify it reads correctly here.) Tj ET
-BT /F1 10 Tf 54 232.1 Td (- Examples: F026 components/chat/message.tsx:264, F027 components/chat/message.tsx:287.) Tj ET
-BT /F1 10 Tf 54 216.1 Td (- Findings: F026, F027.) Tj ET
-BT /F2 13 Tf 54 187.2 Td (Fix path by class) Tj ET
-BT /F2 11 Tf 54 160.9 Td (True drift) Tj ET
-BT /F1 10 Tf 54 141.9 Td (Fix in code, in group order. Apply exact fixes first; check each nearest fix by eye, since a) Tj ET
-BT /F1 10 Tf 54 128.9 Td (neighbouring step can be a different design.) Tj ET
-BT /F3 8 Tf 54 116.5 Td (Group | Rule | Found | Findings | Files) Tj ET
-BT /F3 8 Tf 54 104.1 Td (G02 | color-literal | text-red-500 | F005, F006, F007, F008 | 2) Tj ET
-BT /F3 8 Tf 54 91.7 Td (G03 | color-literal | text-white | F009, F010, F011 | 2) Tj ET
-BT /F3 8 Tf 54 79.3 Td (G04 | color-literal | bg-black/80 | F012, F013 | 2) Tj ET
+BT /F1 10 Tf 54 722.0 Td (- Spread: 2 findings in 2 files, at warn. Involves Button.) Tj ET
+BT /F1 10 Tf 54 706.0 Td (- Why this class: True by the component's contract, reported at warn: whether className.allow should) Tj ET
+BT /F1 10 Tf 54 693.0 Td (  widen for this component is a policy call.) Tj ET
+BT /F1 10 Tf 54 677.0 Td (- Fix: No fix the engine can write; decided by hand.) Tj ET
+BT /F1 10 Tf 54 661.0 Td (- Examples: F018 components/chat/chat-header.tsx:55, F019) Tj ET
+BT /F1 10 Tf 54 648.0 Td (  components/chat/visibility-selector.tsx:117.) Tj ET
+BT /F1 10 Tf 54 632.0 Td (- Findings: F018, F019.) Tj ET
+BT /F2 11 Tf 54 605.7 Td (G08: color-literal text-white/60 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 589.7 Td (- What: text-white/60 references the Tailwind default palette \(--color-white\), not a system token.) Tj ET
+BT /F1 10 Tf 54 573.7 Td (- Spread: 3 findings in 1 file, at error. Involves color.card.) Tj ET
+BT /F1 10 Tf 54 557.7 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 541.7 Td (- Fix: text-card \(nearest\). Several tokens share this value. Pick by role: color.card,) Tj ET
+BT /F1 10 Tf 54 528.7 Td (  color.popover.) Tj ET
+BT /F1 10 Tf 54 512.7 Td (- Examples: F020 components/chat/weather.tsx:348, F021 components/chat/weather.tsx:404, F022) Tj ET
+BT /F1 10 Tf 54 499.7 Td (  components/chat/weather.tsx:421.) Tj ET
+BT /F1 10 Tf 54 483.7 Td (- Findings: F020, F021, F022.) Tj ET
+BT /F2 11 Tf 54 457.4 Td (G09: color-literal text-white/80 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 441.4 Td (- What: text-white/80 references the Tailwind default palette \(--color-white\), not a system token.) Tj ET
+BT /F1 10 Tf 54 425.4 Td (- Spread: 3 findings in 1 file, at error. Involves color.card.) Tj ET
+BT /F1 10 Tf 54 409.4 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 393.4 Td (- Fix: text-card \(nearest\). Several tokens share this value. Pick by role: color.card,) Tj ET
+BT /F1 10 Tf 54 380.4 Td (  color.popover.) Tj ET
+BT /F1 10 Tf 54 364.4 Td (- Examples: F023 components/chat/weather.tsx:347, F024 components/chat/weather.tsx:365, F025) Tj ET
+BT /F1 10 Tf 54 351.4 Td (  components/chat/weather.tsx:380.) Tj ET
+BT /F1 10 Tf 54 335.4 Td (- Findings: F023, F024, F025.) Tj ET
+BT /F2 11 Tf 54 309.1 Td (G10: color-literal bg-red-50 \(True drift\)) Tj ET
+BT /F1 10 Tf 54 293.1 Td (- What: bg-red-50 references the Tailwind default palette \(--color-red-50\), not a system token.) Tj ET
+BT /F1 10 Tf 54 277.1 Td (- Spread: 2 findings in 1 file, at error. Involves color.destructive.) Tj ET
+BT /F1 10 Tf 54 261.1 Td (- Why this class: color-literal at error, with a nearest fix.) Tj ET
+BT /F1 10 Tf 54 245.1 Td (- Fix: bg-destructive \(nearest\). destructive is the system's token for this role. Chosen by role,) Tj ET
+BT /F1 10 Tf 54 232.1 Td (  not by value; verify it reads correctly here.) Tj ET
+BT /F1 10 Tf 54 216.1 Td (- Examples: F026 components/chat/message.tsx:264, F027 components/chat/message.tsx:287.) Tj ET
+BT /F1 10 Tf 54 200.1 Td (- Findings: F026, F027.) Tj ET
+BT /F2 13 Tf 54 171.2 Td (Fix path by class) Tj ET
+BT /F2 11 Tf 54 144.9 Td (True drift) Tj ET
+BT /F1 10 Tf 54 125.9 Td (Fix in code, in group order. Apply exact fixes first; check each nearest fix by eye, since a) Tj ET
+BT /F1 10 Tf 54 112.9 Td (neighbouring step can be a different design.) Tj ET
+BT /F3 8 Tf 54 100.5 Td (Group | Rule | Found | Findings | Files) Tj ET
+BT /F3 8 Tf 54 88.1 Td (G02 | color-literal | text-red-500 | F005, F006, F007, F008 | 2) Tj ET
 BT /F1 8 Tf 54 36 Td (DRAFT - vercel/ai-chatbot - page 3 of 6) Tj ET
 endstream
 endobj
@@ -164,63 +164,63 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 11 0 R >>
 endobj
 13 0 obj
-<< /Length 4955 >>
+<< /Length 4920 >>
 stream
-BT /F3 8 Tf 54 725.6 Td (G08 | color-literal | text-white/60 | F020, F021, F022 | 1) Tj ET
-BT /F3 8 Tf 54 713.2 Td (G09 | color-literal | text-white/80 | F023, F024, F025 | 1) Tj ET
-BT /F3 8 Tf 54 700.8 Td (G10 | color-literal | bg-red-50 | F026, F027 | 1) Tj ET
-BT /F3 8 Tf 54 688.4 Td (G11 | color-literal | bg-white/10 | F028, F029 | 1) Tj ET
-BT /F3 8 Tf 54 676.0 Td (G12 | color-literal | border-red-200 | F030, F031 | 1) Tj ET
-BT /F3 8 Tf 54 663.6 Td (G13 | color-literal | dark:bg-red-950/50 | F032, F033 | 1) Tj ET
-BT /F3 8 Tf 54 651.2 Td (G14 | color-literal | dark:text-neutral-50 | F034, F035 | 1) Tj ET
-BT /F3 8 Tf 54 638.8 Td (G15 | color-literal | text-blue-200 | F036, F037 | 1) Tj ET
-BT /F3 8 Tf 54 626.4 Td (G16 | color-literal | text-white/70 | F038, F039 | 1) Tj ET
-BT /F3 8 Tf 54 614.0 Td (G17 | color-literal | text-white/90 | F040, F041 | 1) Tj ET
-BT /F3 8 Tf 54 601.6 Td (G18 | color-literal | text-yellow-200 | F042, F043 | 1) Tj ET
-BT /F3 8 Tf 54 589.2 Td (G19 | color-literal | bg-amber-500 | F044 | 1) Tj ET
-BT /F3 8 Tf 54 576.8 Td (G20 | color-literal | bg-black/20 | F045 | 1) Tj ET
-BT /F3 8 Tf 54 564.4 Td (G21 | color-literal | bg-black/40 | F046 | 1) Tj ET
-BT /F3 8 Tf 54 552.0 Td (G22 | color-literal | bg-black/50 | F047 | 1) Tj ET
-BT /F3 8 Tf 54 539.6 Td (G23 | color-literal | bg-black/60 | F048 | 1) Tj ET
-BT /F3 8 Tf 54 527.2 Td (G24 | color-literal | bg-white/20 | F049 | 1) Tj ET
-BT /F3 8 Tf 54 514.8 Td (G25 | color-literal | dark:bg-neutral-900 | F050 | 1) Tj ET
-BT /F3 8 Tf 54 502.4 Td (G26 | color-literal | dark:bg-neutral-950 | F051 | 1) Tj ET
-BT /F3 8 Tf 54 490.0 Td (G27 | color-literal | data-[type=error]:text-red-600 | F052 | 1) Tj ET
-BT /F3 8 Tf 54 477.6 Td (G28 | color-literal | data-[type=success]:text-green-600 | F053 | 1) Tj ET
-BT /F3 8 Tf 54 465.2 Td (G29 | color-literal | hover:bg-black/80 | F054 | 1) Tj ET
-BT /F3 8 Tf 54 452.8 Td (G30 | color-literal | text-blue-600 | F055 | 1) Tj ET
-BT /F3 8 Tf 54 440.4 Td (G31 | color-literal | text-emerald-500 | F056 | 1) Tj ET
-BT /F3 8 Tf 54 428.0 Td (G32 | color-literal | text-green-600 | F057 | 1) Tj ET
-BT /F3 8 Tf 54 415.6 Td (G33 | color-literal | text-neutral-500 | F058 | 1) Tj ET
-BT /F3 8 Tf 54 403.2 Td (G34 | color-literal | text-orange-600 | F059 | 1) Tj ET
-BT /F3 8 Tf 54 390.8 Td (G35 | color-literal | text-red-400 | F060 | 1) Tj ET
-BT /F3 8 Tf 54 378.4 Td (G36 | color-literal | text-red-600 | F061 | 1) Tj ET
-BT /F3 8 Tf 54 366.0 Td (G37 | color-literal | text-yellow-600 | F062 | 1) Tj ET
-BT /F3 8 Tf 54 353.6 Td (G38 | component-substitution | <button className="flex size-6 cursor-pointer items-center justify-center) Tj ET
-BT /F3 8 Tf 54 343.2 Td (rounde | F063 | 1) Tj ET
-BT /F3 8 Tf 54 330.8 Td (G39 | component-substitution | <button className="flex size-7 items-center justify-center rounded-md) Tj ET
-BT /F3 8 Tf 54 320.4 Td (text-muted | F064 | 1) Tj ET
-BT /F3 8 Tf 54 308.0 Td (G40 | component-substitution | <button className="flex size-7 items-center justify-center rounded-md) Tj ET
-BT /F3 8 Tf 54 297.6 Td (text-muted | F065 | 1) Tj ET
-BT /F3 8 Tf 54 285.2 Td (G41 | component-substitution | <button className="rounded px-1.5 py-0.5 text-muted-foreground/50) Tj ET
-BT /F3 8 Tf 54 274.8 Td (transition-col | F066 | 1) Tj ET
-BT /F3 8 Tf 54 262.4 Td (G42 | component-substitution | <button className="absolute top-1.5 right-1.5 flex size-5 items-center) Tj ET
-BT /F3 8 Tf 54 252.0 Td (justify-c | F067 | 1) Tj ET
-BT /F3 8 Tf 54 239.6 Td (G43 | component-substitution | <button className="flex w-full items-center rounded-2xl border) Tj ET
-BT /F3 8 Tf 54 229.2 Td (border-border/30 | F068 | 1) Tj ET
-BT /F3 8 Tf 54 216.8 Td (G44 | component-substitution | <button className="inline-flex items-center justify-center gap-2) Tj ET
-BT /F3 8 Tf 54 206.4 Td (rounded-lg bg-f | F069 | 1) Tj ET
-BT /F3 8 Tf 54 194.0 Td (G45 | component-substitution | <button className="inline-flex items-center justify-center rounded-lg) Tj ET
-BT /F3 8 Tf 54 183.6 Td (border bor | F070 | 1) Tj ET
-BT /F3 8 Tf 54 171.2 Td (G46 | component-substitution | <button className={cn\( "flex items-center justify-center rounded-full p-3) Tj ET
-BT /F3 8 Tf 54 160.8 Td (text-m | F071 | 1) Tj ET
-BT /F3 8 Tf 54 148.4 Td (G47 | component-substitution | <button className={cn\( "flex size-7 items-center justify-center rounded-md) Tj ET
-BT /F3 8 Tf 54 138.0 Td (text- | F072 | 1) Tj ET
-BT /F3 8 Tf 54 125.6 Td (G48 | component-substitution | <button aria-label="Scroll to bottom" className={'absolute bottom-4) Tj ET
-BT /F3 8 Tf 54 115.2 Td (left-1/2 z-1 | F073 | 1) Tj ET
-BT /F3 8 Tf 54 102.8 Td (G49 | component-substitution | <button className="rounded-md bg-primary px-3 py-1.5) Tj ET
-BT /F3 8 Tf 54 92.4 Td (text-primary-foreground tex | F074 | 1) Tj ET
-BT /F3 8 Tf 54 80.0 Td (G50 | component-substitution | <button className="rounded-md px-3 py-1.5 text-muted-foreground text-sm) Tj ET
+BT /F3 8 Tf 54 725.6 Td (G03 | color-literal | text-white | F009, F010, F011 | 2) Tj ET
+BT /F3 8 Tf 54 713.2 Td (G04 | color-literal | bg-black/80 | F012, F013 | 2) Tj ET
+BT /F3 8 Tf 54 700.8 Td (G08 | color-literal | text-white/60 | F020, F021, F022 | 1) Tj ET
+BT /F3 8 Tf 54 688.4 Td (G09 | color-literal | text-white/80 | F023, F024, F025 | 1) Tj ET
+BT /F3 8 Tf 54 676.0 Td (G10 | color-literal | bg-red-50 | F026, F027 | 1) Tj ET
+BT /F3 8 Tf 54 663.6 Td (G11 | color-literal | bg-white/10 | F028, F029 | 1) Tj ET
+BT /F3 8 Tf 54 651.2 Td (G12 | color-literal | border-red-200 | F030, F031 | 1) Tj ET
+BT /F3 8 Tf 54 638.8 Td (G13 | color-literal | dark:bg-red-950/50 | F032, F033 | 1) Tj ET
+BT /F3 8 Tf 54 626.4 Td (G14 | color-literal | dark:text-neutral-50 | F034, F035 | 1) Tj ET
+BT /F3 8 Tf 54 614.0 Td (G15 | color-literal | text-blue-200 | F036, F037 | 1) Tj ET
+BT /F3 8 Tf 54 601.6 Td (G16 | color-literal | text-white/70 | F038, F039 | 1) Tj ET
+BT /F3 8 Tf 54 589.2 Td (G17 | color-literal | text-white/90 | F040, F041 | 1) Tj ET
+BT /F3 8 Tf 54 576.8 Td (G18 | color-literal | text-yellow-200 | F042, F043 | 1) Tj ET
+BT /F3 8 Tf 54 564.4 Td (G19 | color-literal | bg-amber-500 | F044 | 1) Tj ET
+BT /F3 8 Tf 54 552.0 Td (G20 | color-literal | bg-black/20 | F045 | 1) Tj ET
+BT /F3 8 Tf 54 539.6 Td (G21 | color-literal | bg-black/40 | F046 | 1) Tj ET
+BT /F3 8 Tf 54 527.2 Td (G22 | color-literal | bg-black/50 | F047 | 1) Tj ET
+BT /F3 8 Tf 54 514.8 Td (G23 | color-literal | bg-black/60 | F048 | 1) Tj ET
+BT /F3 8 Tf 54 502.4 Td (G24 | color-literal | bg-white/20 | F049 | 1) Tj ET
+BT /F3 8 Tf 54 490.0 Td (G25 | color-literal | dark:bg-neutral-900 | F050 | 1) Tj ET
+BT /F3 8 Tf 54 477.6 Td (G26 | color-literal | dark:bg-neutral-950 | F051 | 1) Tj ET
+BT /F3 8 Tf 54 465.2 Td (G27 | color-literal | data-[type=error]:text-red-600 | F052 | 1) Tj ET
+BT /F3 8 Tf 54 452.8 Td (G28 | color-literal | data-[type=success]:text-green-600 | F053 | 1) Tj ET
+BT /F3 8 Tf 54 440.4 Td (G29 | color-literal | hover:bg-black/80 | F054 | 1) Tj ET
+BT /F3 8 Tf 54 428.0 Td (G30 | color-literal | text-blue-600 | F055 | 1) Tj ET
+BT /F3 8 Tf 54 415.6 Td (G31 | color-literal | text-emerald-500 | F056 | 1) Tj ET
+BT /F3 8 Tf 54 403.2 Td (G32 | color-literal | text-green-600 | F057 | 1) Tj ET
+BT /F3 8 Tf 54 390.8 Td (G33 | color-literal | text-neutral-500 | F058 | 1) Tj ET
+BT /F3 8 Tf 54 378.4 Td (G34 | color-literal | text-orange-600 | F059 | 1) Tj ET
+BT /F3 8 Tf 54 366.0 Td (G35 | color-literal | text-red-400 | F060 | 1) Tj ET
+BT /F3 8 Tf 54 353.6 Td (G36 | color-literal | text-red-600 | F061 | 1) Tj ET
+BT /F3 8 Tf 54 341.2 Td (G37 | color-literal | text-yellow-600 | F062 | 1) Tj ET
+BT /F3 8 Tf 54 328.8 Td (G38 | component-substitution | <button className="flex size-6 cursor-pointer items-center justify-center) Tj ET
+BT /F3 8 Tf 54 318.4 Td (rounde | F063 | 1) Tj ET
+BT /F3 8 Tf 54 306.0 Td (G39 | component-substitution | <button className="flex size-7 items-center justify-center rounded-md) Tj ET
+BT /F3 8 Tf 54 295.6 Td (text-muted | F064 | 1) Tj ET
+BT /F3 8 Tf 54 283.2 Td (G40 | component-substitution | <button className="flex size-7 items-center justify-center rounded-md) Tj ET
+BT /F3 8 Tf 54 272.8 Td (text-muted | F065 | 1) Tj ET
+BT /F3 8 Tf 54 260.4 Td (G41 | component-substitution | <button className="rounded px-1.5 py-0.5 text-muted-foreground/50) Tj ET
+BT /F3 8 Tf 54 250.0 Td (transition-col | F066 | 1) Tj ET
+BT /F3 8 Tf 54 237.6 Td (G42 | component-substitution | <button className="absolute top-1.5 right-1.5 flex size-5 items-center) Tj ET
+BT /F3 8 Tf 54 227.2 Td (justify-c | F067 | 1) Tj ET
+BT /F3 8 Tf 54 214.8 Td (G43 | component-substitution | <button className="flex w-full items-center rounded-2xl border) Tj ET
+BT /F3 8 Tf 54 204.4 Td (border-border/30 | F068 | 1) Tj ET
+BT /F3 8 Tf 54 192.0 Td (G44 | component-substitution | <button className="inline-flex items-center justify-center gap-2) Tj ET
+BT /F3 8 Tf 54 181.6 Td (rounded-lg bg-f | F069 | 1) Tj ET
+BT /F3 8 Tf 54 169.2 Td (G45 | component-substitution | <button className="inline-flex items-center justify-center rounded-lg) Tj ET
+BT /F3 8 Tf 54 158.8 Td (border bor | F070 | 1) Tj ET
+BT /F3 8 Tf 54 146.4 Td (G46 | component-substitution | <button className={cn\( "flex items-center justify-center rounded-full p-3) Tj ET
+BT /F3 8 Tf 54 136.0 Td (text-m | F071 | 1) Tj ET
+BT /F3 8 Tf 54 123.6 Td (G47 | component-substitution | <button className={cn\( "flex size-7 items-center justify-center rounded-md) Tj ET
+BT /F3 8 Tf 54 113.2 Td (text- | F072 | 1) Tj ET
+BT /F3 8 Tf 54 100.8 Td (G48 | component-substitution | <button aria-label="Scroll to bottom" className={'absolute bottom-4) Tj ET
+BT /F3 8 Tf 54 90.4 Td (left-1/2 z-1 | F073 | 1) Tj ET
+BT /F3 8 Tf 54 78.0 Td (G49 | component-substitution | <button className="rounded-md bg-primary px-3 py-1.5) Tj ET
 BT /F1 8 Tf 54 36 Td (DRAFT - vercel/ai-chatbot - page 4 of 6) Tj ET
 endstream
 endobj
@@ -228,58 +228,59 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 13 0 R >>
 endobj
 15 0 obj
-<< /Length 4546 >>
+<< /Length 4666 >>
 stream
-BT /F3 8 Tf 54 727.6 Td (transiti | F075 | 1) Tj ET
-BT /F3 8 Tf 54 715.2 Td (G51 | component-substitution | <button className="cursor pointer flex w-fit flex-row items-start) Tj ET
-BT /F3 8 Tf 54 704.8 Td (justify-betwee | F076 | 1) Tj ET
-BT /F3 8 Tf 54 692.4 Td (G52 | component-substitution | <button className="flex w-fit cursor-pointer flex-row items-center gap-2) Tj ET
-BT /F3 8 Tf 54 682.0 Td (rounded | F077 | 1) Tj ET
-BT /F3 8 Tf 54 669.6 Td (G53 | component-substitution | <button className="group flex size-8 items-center justify-center) Tj ET
-BT /F3 8 Tf 54 659.2 Td (rounded-lg bord | F078 | 1) Tj ET
-BT /F3 8 Tf 54 646.8 Td (G54 | component-substitution | <button className="rounded-xl border border-border/30 bg-card/20 px-3) Tj ET
-BT /F3 8 Tf 54 636.4 Td (py-2.5 tex | F079 | 1) Tj ET
-BT /F3 8 Tf 54 624.0 Td (G55 | component-substitution | <button className={cn\( "flex w-full items-center gap-3 px-4 py-2.5) Tj ET
-BT /F3 8 Tf 54 613.6 Td (text-left tra | F080 | 1) Tj ET
-BT /F3 8 Tf 54 601.2 Td (G56 | component-substitution | <button className="w-full px-1 py-0.5 text-left text-red-500") Tj ET
-BT /F3 8 Tf 54 590.8 Td (type="submit"> | F081 | 1) Tj ET
-BT /F3 8 Tf 54 578.4 Td (G57 | spacing-literal | has-[>kbd]:ml-[-0.15rem] | F082 | 1) Tj ET
-BT /F3 8 Tf 54 566.0 Td (G58 | spacing-literal | has-[>kbd]:mr-[-0.15rem] | F083 | 1) Tj ET
-BT /F3 8 Tf 54 553.6 Td (G59 | token-reference | toast-mobile:w-[356px] | F084 | 1) Tj ET
-BT /F3 8 Tf 54 541.2 Td (G60 | token-reference | toast-mobile:w-fit | F085 | 1) Tj ET
-BT /F2 11 Tf 54 514.9 Td (Needs a decision) Tj ET
-BT /F1 10 Tf 54 495.9 Td (A decision for the team before any code changes: add the missing token, name the file as a) Tj ET
-BT /F1 10 Tf 54 482.9 Td (foundation, or widen the component's className.allow. Each decision closes a whole group.) Tj ET
-BT /F3 8 Tf 54 470.5 Td (Group | Rule | Found | Findings | Files) Tj ET
-BT /F3 8 Tf 54 458.1 Td (G01 | classname-policy | rounded-full | F001, F002, F003, F004 | 3) Tj ET
-BT /F3 8 Tf 54 445.7 Td (G05 | classname-policy | gap-1.5 | F014, F015 | 2) Tj ET
-BT /F3 8 Tf 54 433.3 Td (G06 | classname-policy | px-4 | F016, F017 | 2) Tj ET
-BT /F3 8 Tf 54 420.9 Td (G07 | classname-policy | rounded-lg | F018, F019 | 2) Tj ET
-BT /F3 8 Tf 54 408.5 Td (G61 | classname-policy | dark:bg-background | F086, F087 | 1) Tj ET
-BT /F3 8 Tf 54 396.1 Td (G62 | classname-policy | dark:hover:bg-muted | F088, F089 | 1) Tj ET
-BT /F3 8 Tf 54 383.7 Td (G63 | classname-policy | [&>*:not\(:first-child\)]:rounded-l-md | F090 | 1) Tj ET
-BT /F3 8 Tf 54 371.3 Td (G64 | classname-policy | [&>*:not\(:last-child\)]:rounded-r-md | F091 | 1) Tj ET
-BT /F3 8 Tf 54 358.9 Td (G65 | classname-policy | **:data-[slot=command-input-wrapper]:h-auto | F092 | 1) Tj ET
-BT /F3 8 Tf 54 346.5 Td (G66 | classname-policy | active:translate-y-0 | F093 | 1) Tj ET
-BT /F3 8 Tf 54 334.1 Td (G67 | classname-policy | bg-foreground | F094 | 1) Tj ET
-BT /F3 8 Tf 54 321.7 Td (G68 | classname-policy | border | F095 | 1) Tj ET
-BT /F3 8 Tf 54 309.3 Td (G69 | classname-policy | border-border/50 | F096 | 1) Tj ET
-BT /F3 8 Tf 54 296.9 Td (G70 | classname-policy | cursor-pointer | F097 | 1) Tj ET
-BT /F3 8 Tf 54 284.5 Td (G71 | classname-policy | focus-visible:border-border/50 | F098 | 1) Tj ET
-BT /F3 8 Tf 54 272.1 Td (G72 | classname-policy | focus-visible:ring-0 | F099 | 1) Tj ET
-BT /F3 8 Tf 54 259.7 Td (G73 | classname-policy | hover:bg-foreground/90 | F100 | 1) Tj ET
-BT /F3 8 Tf 54 247.3 Td (G74 | classname-policy | hover:text-foreground | F101 | 1) Tj ET
-BT /F3 8 Tf 54 234.9 Td (G75 | classname-policy | rounded-md | F102 | 1) Tj ET
-BT /F3 8 Tf 54 222.5 Td (G76 | classname-policy | shadow-none | F103 | 1) Tj ET
-BT /F3 8 Tf 54 210.1 Td (G77 | classname-policy | text-background | F104 | 1) Tj ET
-BT /F3 8 Tf 54 197.7 Td (G78 | classname-policy | text-muted-foreground | F105 | 1) Tj ET
-BT /F3 8 Tf 54 185.3 Td (G79 | classname-policy | text-xs | F106 | 1) Tj ET
-BT /F3 8 Tf 54 172.9 Td (G80 | classname-policy | transition-colors | F107 | 1) Tj ET
-BT /F3 8 Tf 54 160.5 Td (G81 | classname-policy | translate-x-[-50%] | F108 | 1) Tj ET
-BT /F3 8 Tf 54 148.1 Td (G82 | classname-policy | whitespace-nowrap | F109 | 1) Tj ET
-BT /F2 11 Tf 54 121.8 Td (Intentional exception) Tj ET
-BT /F1 10 Tf 54 102.8 Td (Keep it and write the reason after the zengin-allow comment's colon, so the engine honours it and) Tj ET
-BT /F1 10 Tf 54 89.8 Td (the next reader knows why; or remove the exception.) Tj ET
+BT /F3 8 Tf 54 727.6 Td (text-primary-foreground tex | F074 | 1) Tj ET
+BT /F3 8 Tf 54 715.2 Td (G50 | component-substitution | <button className="rounded-md px-3 py-1.5 text-muted-foreground text-sm) Tj ET
+BT /F3 8 Tf 54 704.8 Td (transiti | F075 | 1) Tj ET
+BT /F3 8 Tf 54 692.4 Td (G51 | component-substitution | <button className="cursor pointer flex w-fit flex-row items-start) Tj ET
+BT /F3 8 Tf 54 682.0 Td (justify-betwee | F076 | 1) Tj ET
+BT /F3 8 Tf 54 669.6 Td (G52 | component-substitution | <button className="flex w-fit cursor-pointer flex-row items-center gap-2) Tj ET
+BT /F3 8 Tf 54 659.2 Td (rounded | F077 | 1) Tj ET
+BT /F3 8 Tf 54 646.8 Td (G53 | component-substitution | <button className="group flex size-8 items-center justify-center) Tj ET
+BT /F3 8 Tf 54 636.4 Td (rounded-lg bord | F078 | 1) Tj ET
+BT /F3 8 Tf 54 624.0 Td (G54 | component-substitution | <button className="rounded-xl border border-border/30 bg-card/20 px-3) Tj ET
+BT /F3 8 Tf 54 613.6 Td (py-2.5 tex | F079 | 1) Tj ET
+BT /F3 8 Tf 54 601.2 Td (G55 | component-substitution | <button className={cn\( "flex w-full items-center gap-3 px-4 py-2.5) Tj ET
+BT /F3 8 Tf 54 590.8 Td (text-left tra | F080 | 1) Tj ET
+BT /F3 8 Tf 54 578.4 Td (G56 | component-substitution | <button className="w-full px-1 py-0.5 text-left text-red-500") Tj ET
+BT /F3 8 Tf 54 568.0 Td (type="submit"> | F081 | 1) Tj ET
+BT /F3 8 Tf 54 555.6 Td (G57 | spacing-literal | has-[>kbd]:ml-[-0.15rem] | F082 | 1) Tj ET
+BT /F3 8 Tf 54 543.2 Td (G58 | spacing-literal | has-[>kbd]:mr-[-0.15rem] | F083 | 1) Tj ET
+BT /F3 8 Tf 54 530.8 Td (G59 | token-reference | toast-mobile:w-[356px] | F084 | 1) Tj ET
+BT /F3 8 Tf 54 518.4 Td (G60 | token-reference | toast-mobile:w-fit | F085 | 1) Tj ET
+BT /F2 11 Tf 54 492.1 Td (Needs a decision) Tj ET
+BT /F1 10 Tf 54 473.1 Td (A decision for the team before any code changes: add the missing token, name the file as a) Tj ET
+BT /F1 10 Tf 54 460.1 Td (foundation, or widen the component's className.allow. Each decision closes a whole group.) Tj ET
+BT /F3 8 Tf 54 447.7 Td (Group | Rule | Found | Findings | Files) Tj ET
+BT /F3 8 Tf 54 435.3 Td (G01 | classname-policy | rounded-full | F001, F002, F003, F004 | 3) Tj ET
+BT /F3 8 Tf 54 422.9 Td (G05 | classname-policy | gap-1.5 | F014, F015 | 2) Tj ET
+BT /F3 8 Tf 54 410.5 Td (G06 | classname-policy | px-4 | F016, F017 | 2) Tj ET
+BT /F3 8 Tf 54 398.1 Td (G07 | classname-policy | rounded-lg | F018, F019 | 2) Tj ET
+BT /F3 8 Tf 54 385.7 Td (G61 | classname-policy | dark:bg-background | F086, F087 | 1) Tj ET
+BT /F3 8 Tf 54 373.3 Td (G62 | classname-policy | dark:hover:bg-muted | F088, F089 | 1) Tj ET
+BT /F3 8 Tf 54 360.9 Td (G63 | classname-policy | [&>*:not\(:first-child\)]:rounded-l-md | F090 | 1) Tj ET
+BT /F3 8 Tf 54 348.5 Td (G64 | classname-policy | [&>*:not\(:last-child\)]:rounded-r-md | F091 | 1) Tj ET
+BT /F3 8 Tf 54 336.1 Td (G65 | classname-policy | **:data-[slot=command-input-wrapper]:h-auto | F092 | 1) Tj ET
+BT /F3 8 Tf 54 323.7 Td (G66 | classname-policy | active:translate-y-0 | F093 | 1) Tj ET
+BT /F3 8 Tf 54 311.3 Td (G67 | classname-policy | bg-foreground | F094 | 1) Tj ET
+BT /F3 8 Tf 54 298.9 Td (G68 | classname-policy | border | F095 | 1) Tj ET
+BT /F3 8 Tf 54 286.5 Td (G69 | classname-policy | border-border/50 | F096 | 1) Tj ET
+BT /F3 8 Tf 54 274.1 Td (G70 | classname-policy | cursor-pointer | F097 | 1) Tj ET
+BT /F3 8 Tf 54 261.7 Td (G71 | classname-policy | focus-visible:border-border/50 | F098 | 1) Tj ET
+BT /F3 8 Tf 54 249.3 Td (G72 | classname-policy | focus-visible:ring-0 | F099 | 1) Tj ET
+BT /F3 8 Tf 54 236.9 Td (G73 | classname-policy | hover:bg-foreground/90 | F100 | 1) Tj ET
+BT /F3 8 Tf 54 224.5 Td (G74 | classname-policy | hover:text-foreground | F101 | 1) Tj ET
+BT /F3 8 Tf 54 212.1 Td (G75 | classname-policy | rounded-md | F102 | 1) Tj ET
+BT /F3 8 Tf 54 199.7 Td (G76 | classname-policy | shadow-none | F103 | 1) Tj ET
+BT /F3 8 Tf 54 187.3 Td (G77 | classname-policy | text-background | F104 | 1) Tj ET
+BT /F3 8 Tf 54 174.9 Td (G78 | classname-policy | text-muted-foreground | F105 | 1) Tj ET
+BT /F3 8 Tf 54 162.5 Td (G79 | classname-policy | text-xs | F106 | 1) Tj ET
+BT /F3 8 Tf 54 150.1 Td (G80 | classname-policy | transition-colors | F107 | 1) Tj ET
+BT /F3 8 Tf 54 137.7 Td (G81 | classname-policy | translate-x-[-50%] | F108 | 1) Tj ET
+BT /F3 8 Tf 54 125.3 Td (G82 | classname-policy | whitespace-nowrap | F109 | 1) Tj ET
+BT /F2 11 Tf 54 99.0 Td (Intentional exception) Tj ET
+BT /F1 10 Tf 54 80.0 Td (Keep it and write the reason after the zengin-allow comment's colon, so the engine honours it and) Tj ET
 BT /F1 8 Tf 54 36 Td (DRAFT - vercel/ai-chatbot - page 5 of 6) Tj ET
 endstream
 endobj
@@ -287,26 +288,27 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 15 0 R >>
 endobj
 17 0 obj
-<< /Length 1763 >>
+<< /Length 1852 >>
 stream
-BT /F1 10 Tf 54 719.0 Td (No group in the hand-review set.) Tj ET
-BT /F2 11 Tf 54 692.7 Td (False positive) Tj ET
-BT /F1 10 Tf 54 673.7 Td (Not a code change. Tune the definitions \(a passthrough type, a foundation file\) so the engine stops) Tj ET
-BT /F1 10 Tf 54 660.7 Td (reporting it, and count it in the report's false-positive rate.) Tj ET
-BT /F1 10 Tf 54 641.7 Td (No group in the hand-review set.) Tj ET
-BT /F2 13 Tf 54 612.8 Td (Beyond the hand-review cap) Tj ET
-BT /F1 10 Tf 54 593.8 Td (Every finding is in the hand-review set; the cap of 150 was not reached.) Tj ET
-BT /F2 13 Tf 54 564.9 Td (What the scan cannot see) Tj ET
-BT /F1 10 Tf 54 548.9 Td (- Drift outside the engine's seven rule kinds \(color-literal, spacing-literal, token-reference,) Tj ET
-BT /F1 10 Tf 54 535.9 Td (  unknown-prop, unknown-prop-value, classname-policy, component-substitution\): behavioural,) Tj ET
-BT /F1 10 Tf 54 522.9 Td (  architectural and most accessibility drift.) Tj ET
-BT /F1 10 Tf 54 506.9 Td (- What renders at runtime: class names built from runtime values, styles set from JavaScript, and) Tj ET
-BT /F1 10 Tf 54 493.9 Td (  the visual result of an override.) Tj ET
-BT /F1 10 Tf 54 477.9 Td (- Files outside the configured scope, and any system the definitions do not describe.) Tj ET
-BT /F1 10 Tf 54 461.9 Td (- Whether a finding matters to a user. That judgement is the hand review.) Tj ET
-BT /F2 13 Tf 54 433.0 Td (Evidence) Tj ET
-BT /F1 10 Tf 54 414.0 Td (Every finding id above resolves in findings.json, with its file:line, rule, found value, the token) Tj ET
-BT /F1 10 Tf 54 401.0 Td (or component involved, its proposed class and the reason for it. run.json records the run.) Tj ET
+BT /F1 10 Tf 54 725.0 Td (the next reader knows why; or remove the exception.) Tj ET
+BT /F1 10 Tf 54 706.0 Td (No group in the hand-review queue.) Tj ET
+BT /F2 11 Tf 54 679.7 Td (False positive) Tj ET
+BT /F1 10 Tf 54 660.7 Td (Not a code change. Tune the definitions \(a passthrough type, a foundation file\) so the engine stops) Tj ET
+BT /F1 10 Tf 54 647.7 Td (reporting it, and count it in the report's false-positive rate.) Tj ET
+BT /F1 10 Tf 54 628.7 Td (No group in the hand-review queue.) Tj ET
+BT /F2 13 Tf 54 599.8 Td (Beyond the hand-review cap) Tj ET
+BT /F1 10 Tf 54 580.8 Td (Every finding is queued for hand review; the cap of 150 was not reached.) Tj ET
+BT /F2 13 Tf 54 551.9 Td (What the scan cannot see) Tj ET
+BT /F1 10 Tf 54 535.9 Td (- Drift outside the engine's seven rule kinds \(color-literal, spacing-literal, token-reference,) Tj ET
+BT /F1 10 Tf 54 522.9 Td (  unknown-prop, unknown-prop-value, classname-policy, component-substitution\): behavioural,) Tj ET
+BT /F1 10 Tf 54 509.9 Td (  architectural and most accessibility drift.) Tj ET
+BT /F1 10 Tf 54 493.9 Td (- What renders at runtime: class names built from runtime values, styles set from JavaScript, and) Tj ET
+BT /F1 10 Tf 54 480.9 Td (  the visual result of an override.) Tj ET
+BT /F1 10 Tf 54 464.9 Td (- Files outside the configured scope, and any system the definitions do not describe.) Tj ET
+BT /F1 10 Tf 54 448.9 Td (- Whether a finding matters to a user. That judgement is the hand review.) Tj ET
+BT /F2 13 Tf 54 420.0 Td (Evidence) Tj ET
+BT /F1 10 Tf 54 401.0 Td (Every finding id above resolves in findings.json, with its file:line, rule, found value, the token) Tj ET
+BT /F1 10 Tf 54 388.0 Td (or component involved, its proposed class and the reason for it. run.json records the run.) Tj ET
 BT /F1 8 Tf 54 36 Td (DRAFT - vercel/ai-chatbot - page 6 of 6) Tj ET
 endstream
 endobj
@@ -323,19 +325,19 @@ xref
 0000000349 00000 n 
 0000000444 00000 n 
 0000000554 00000 n 
-0000004306 00000 n 
-0000004452 00000 n 
-0000008236 00000 n 
-0000008383 00000 n 
-0000012134 00000 n 
-0000012282 00000 n 
-0000017290 00000 n 
-0000017438 00000 n 
-0000022037 00000 n 
-0000022185 00000 n 
-0000024001 00000 n 
+0000004411 00000 n 
+0000004557 00000 n 
+0000008317 00000 n 
+0000008464 00000 n 
+0000012137 00000 n 
+0000012285 00000 n 
+0000017258 00000 n 
+0000017406 00000 n 
+0000022125 00000 n 
+0000022273 00000 n 
+0000024178 00000 n 
 trailer
 << /Size 19 /Root 1 0 R /Info 6 0 R >>
 startxref
-24149
+24326
 %%EOF

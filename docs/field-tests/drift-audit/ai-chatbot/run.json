@@ -13,15 +13,16 @@
     "name": "@zenginui/cli",
     "version": "0.9.0"
   },
-  "generatedAt": "2026-10-15T13:47:53.097Z",
-  "durationMs": 477,
+  "generatedAt": "2026-10-15T20:34:09.764Z",
+  "durationMs": 520,
   "filesChecked": 124,
   "cap": 150,
   "totals": {
     "findings": 109,
     "groups": 82,
-    "hand": 109,
+    "queued": 109,
     "summarised": 0,
+    "confirmed": 0,
     "byClass": {
       "true-drift": {
         "findings": 75,

@@ -7,8 +7,9 @@ Run: shadcn-ui/taxonomy at 298a885, against @/components/ui@0.0.0. 117 files che
 ## Summary
 
 - This run reported 35 findings in 31 groups. A group is one rule and one found value with one proposed class: one decision.
-- Hand review covers 35 findings in 31 groups, up to the cap of 150, taken in rank order (severity times the number of files). 0 findings are summarised, not classified by hand. 35 + 0 = 35.
-- False positives proposed in the hand-review set: 0 of 35. The rate is stated once each one has been confirmed by hand.
+- 35 findings in 31 groups are queued for hand review, up to the cap of 150, taken in rank order (severity times the number of files). 0 findings past the cap are summarised. 35 + 0 = 35.
+- Confirmed by hand so far: 0 of 35. Until a reviewer confirms a finding, its class is a proposal made by rule.
+- False positives proposed in the queue: 0 of 35. The rate is stated once each one has been confirmed by hand.
 - Every number here comes from this run and is reconciled above. No figure from another run is quoted.
 
 | Proposed class | Findings | Groups |
@@ -17,7 +18,7 @@ Run: shadcn-ui/taxonomy at 298a885, against @/components/ui@0.0.0. 117 files che
 | Needs a decision | 4 | 4 |
 | Intentional exception | 0 | 0 |
 | False positive | 0 | 0 |
-| Hand-review set | 35 | 31 |
+| Queued for hand review | 35 | 31 |
 
 ## Top issues
 
@@ -162,17 +163,17 @@ A decision for the team before any code changes: add the missing token, name the
 
 Keep it and write the reason after the zengin-allow comment's colon, so the engine honours it and the next reader knows why; or remove the exception.
 
-No group in the hand-review set.
+No group in the hand-review queue.
 
 ### False positive
 
 Not a code change. Tune the definitions (a passthrough type, a foundation file) so the engine stops reporting it, and count it in the report's false-positive rate.
 
-No group in the hand-review set.
+No group in the hand-review queue.
 
 ## Beyond the hand-review cap
 
-Every finding is in the hand-review set; the cap of 150 was not reached.
+Every finding is queued for hand review; the cap of 150 was not reached.
 
 ## What the scan cannot see
 
