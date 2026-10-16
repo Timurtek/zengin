@@ -190,9 +190,19 @@ npx zengin init --from package @your/design-system
 
 Tokens come from the package's stylesheet, with the variable names kept exactly as they are, so a fix reads \`var(--surface-base)\` and not some renamed equivalent. The component manifest comes from the package's type declarations: props, enum values, and the element whose attributes pass through. Types it cannot open, from another library, are recorded as passthrough rather than guessed at.
 
+## From a Claude Design export
+
+\`\`\`bash
+npx zengin init --from claude-design --dir ./my-design-system
+\`\`\`
+
+Run it on the exported folder, the one with \`_ds_manifest.json\` in it. Tokens come from the stylesheets the manifest lists in \`globalCssPaths\`, with the variable names kept. Zengin classifies each token from its value and not from the \`kind\` the manifest gives it, because a font size can arrive labelled as spacing. Components come from each \`.d.ts\`. If the export has an \`_adherence.oxlintrc.json\`, Zengin checks each contract against it and reports where the two disagree. It does not pick a winner.
+
+It stops with an error if the manifest is missing, if a listed stylesheet is missing, if a path leaves the export, or if the manifest names more than one theme. It will not overwrite existing definitions unless you pass \`--force\`.
+
 ## What to expect on the first run
 
-A real codebase reports hundreds of violations on day one and that is the normal result, not a failure. The three field tests in the repository each did. Work in this order:
+A real codebase reports hundreds of violations on day one and that is the normal result, not a failure. The four field tests in the repository each did. Work in this order:
 
 1. Set \`scope.foundations\` to the stylesheets that legitimately hold literals: your theme layer. Literals live there and nowhere else.
 2. Set \`scope.ownership\` to the directories you have taken ownership of. Contract and substitution rules switch off there.
@@ -1040,7 +1050,7 @@ Check options: \`--changed\`, \`--staged\`, \`--format pretty|json|github\`, \`-
 | \`zengin define [names...]\` | Your own components into the manifest, from their types and CSS. |
 | \`zengin doctor\` | The project itself: agent wiring, pins, definitions, generated files. \`--fix\` repairs. |
 | \`zengin upgrade [items...]\` | What changed upstream since you copied. \`--write\` takes it. |
-| \`zengin init\` | A config in an existing project. \`--from shadcn\`, \`--from package <name>\`. |
+| \`zengin init\` | A config in an existing project. \`--from shadcn\`, \`--from package <name>\`, \`--from claude-design\`. |
 
 Create options: \`--template\`, \`--theme\`, \`--framework vite\\|next\`, \`--name\`, \`--registry\`, \`--no-storybook\`.
 

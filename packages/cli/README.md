@@ -165,10 +165,11 @@ zengin explain classname-policy
 zengin init                     # a commented zengin.config.yaml template
 zengin init --from shadcn       # derive zengin/tokens.json, zengin/components.json and a config from a shadcn/ui project
 zengin init --from package @umami/react-zen   # the same from an installed design-system package: its CSS variables (names kept) and .d.ts
+zengin init --from claude-design   # the same from a Claude Design export: _ds_manifest.json, its stylesheets and .d.ts files
 zengin init --from shadcn --dir ../app --force
 ```
 
-The template refuses to overwrite an existing config. The shadcn path reads the theme CSS, the Tailwind config and `components/ui`, writes the definitions, and prints the defaults worth reviewing. See [`@zenginui/adapter-shadcn`](../adapter-shadcn). The package path reads `node_modules/<name>`: its theme stylesheet, its precompiled utilities and its `.d.ts`; see [`@zenginui/adapter-css`](../adapter-css).
+The template refuses to overwrite an existing config. The shadcn path reads the theme CSS, the Tailwind config and `components/ui`, writes the definitions, and prints the defaults worth reviewing. See [`@zenginui/adapter-shadcn`](../adapter-shadcn). The package path reads `node_modules/<name>`: its theme stylesheet, its precompiled utilities and its `.d.ts`; see [`@zenginui/adapter-css`](../adapter-css). The Claude Design path reads the export in `--dir` (default: the current directory) and checks each component's contract against `_adherence.oxlintrc.json` when there is one.
 
 ## Not included, on purpose
 
