@@ -1,5 +1,16 @@
 # @zenginui/mcp
 
+## 0.3.0
+
+### Minor Changes
+
+- [#39](https://github.com/Timurtek/zengin/pull/39) [`6ec5344`](https://github.com/Timurtek/zengin/commit/6ec5344cb7e5c9551f2bd563ffdc356507310900) Thanks [@Timurtek](https://github.com/Timurtek)! - Anonymous, opt-in usage counts. Off until you say yes: the first `zengin` run at a terminal asks once, and Enter is no. `zengin telemetry on | off` changes it. Never sent in CI, under `DO_NOT_TRACK`, or before you answer, and an event carries only its name, the tool, its version, a random id and whole-number counts: never a path, code, a name or an email. Every event is listed in [docs/telemetry.md](https://github.com/Timurtek/zengin/blob/main/docs/telemetry.md).
+
+### Patch Changes
+
+- Updated dependencies [[`6ec5344`](https://github.com/Timurtek/zengin/commit/6ec5344cb7e5c9551f2bd563ffdc356507310900)]:
+  - @zenginui/engine@0.8.0
+
 ## 0.2.0
 
 ### Minor Changes

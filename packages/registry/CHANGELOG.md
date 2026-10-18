@@ -1,5 +1,12 @@
 # @zenginui/registry
 
+## 0.5.4
+
+### Patch Changes
+
+- Updated dependencies [[`6ec5344`](https://github.com/Timurtek/zengin/commit/6ec5344cb7e5c9551f2bd563ffdc356507310900)]:
+  - @zenginui/engine@0.8.0
+
 ## 0.5.3
 
 ### Patch Changes
