@@ -1,6 +1,6 @@
 # Analytics
 
-What Zengin measures, where, and how to read it. The site at zengin.timurtek.com (`examples/marketing-site`, the home page and `/why/`) sends events to the org's PostHog Cloud project (US, project 652049). Nothing else in this repository sends anything: the CLI, the MCP server, the hook and every project `zengin create` writes are untouched.
+What Zengin measures, where, and how to read it. The site at zengin.timurtek.com (`examples/marketing-site`, the home page and `/why/`) sends events to the org's PostHog Cloud project (US, project 652049). The CLI, the MCP server and the hook send anonymous counts to the same project only after the person running them says yes; that is its own page, [telemetry.md](telemetry.md). Every project `zengin create` writes sends nothing.
 
 ## The one number
 
@@ -61,4 +61,4 @@ No event carries the copied text. `template` and `theme` are names from the publ
 ## Not measured yet
 
 - `/docs/`, `/storybook/`, `/rollup/` and the template previews are separate builds and send nothing.
-- The CLI sends nothing. Telemetry in a tool people run on their own code is a product decision, not a wiring task.
+- The CLI, hook and MCP server send nothing until someone says yes to their one question (Tek's decision, 2026-10-17, ZEN-CLIEVENTS-001). What they send then is in [telemetry.md](telemetry.md).

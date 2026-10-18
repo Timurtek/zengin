@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { track, versionOf } from "@zenginui/engine";
 import { parseHookArgs, runHook, settingsSnippet, type HookInput } from "./hook.js";
 
 const HELP = `zengin-hook: Claude Code PostToolUse hook for the Zengin conformance engine.
@@ -48,6 +49,8 @@ async function main(): Promise<void> {
   if (result.stdout) process.stdout.write(result.stdout);
   if (result.stderr) process.stderr.write(result.stderr + "\n");
   process.exitCode = result.exitCode;
+  // A count, only when the person said yes to `zengin telemetry`; the hook itself never asks (docs/telemetry.md).
+  if (result.exitCode === 2) await track({ event: "hook_violation_blocked", tool: "hook", version: versionOf(import.meta.url), counts: { violations_count: result.violations.length } });
 }
 
 main().catch((e: unknown) => {
