@@ -170,6 +170,16 @@ zengin init --from shadcn --dir ../app --force
 
 The template refuses to overwrite an existing config. The shadcn path reads the theme CSS, the Tailwind config and `components/ui`, writes the definitions, and prints the defaults worth reviewing. See [`@zenginui/adapter-shadcn`](../adapter-shadcn). The package path reads `node_modules/<name>`: its theme stylesheet, its precompiled utilities and its `.d.ts`; see [`@zenginui/adapter-css`](../adapter-css).
 
+## telemetry
+
+```bash
+zengin telemetry          # the choice, where it is stored, and whether this environment sends at all
+zengin telemetry on       # share anonymous usage counts
+zengin telemetry off      # stop, and delete the anonymous id
+```
+
+Off until you say yes. The first run at a terminal asks once, and Enter is no. Nothing is sent in CI, under `DO_NOT_TRACK`, or before you answer, and an event never carries a path, code, a name or an email. Every event is listed in [docs/telemetry.md](../../docs/telemetry.md).
+
 ## Not included, on purpose
 
 `zengin fix` would apply `exact` fixes automatically. It is a small addition, and it is left out for now because the first milestone's non-goals exclude tools that edit code. It is a candidate for later once the false-positive rate of the rules is measured on a real codebase.

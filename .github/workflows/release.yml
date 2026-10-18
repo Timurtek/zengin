@@ -25,6 +25,9 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+        env:
+          # The PostHog project key the opt-in usage counts go to (docs/telemetry.md). Unset, the build sends nothing.
+          ZENGIN_POSTHOG_KEY: ${{ secrets.ZENGIN_POSTHOG_KEY }}
       - run: pnpm test
 
       # With pending changesets: opens or updates the "Version Packages" PR.
@@ -43,6 +46,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # `pnpm release` builds again before publishing, so the key is needed here too.
+          ZENGIN_POSTHOG_KEY: ${{ secrets.ZENGIN_POSTHOG_KEY }}
           # Provenance needs a public source repository, which this is since 2026-09-13: npm records
           # the workflow and commit each package was built from, and shows it on the package page.
           NPM_CONFIG_PROVENANCE: "true"
