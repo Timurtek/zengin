@@ -16,8 +16,11 @@ import type { PostHog, PostHogConfig } from "posthog-js";
 export const APP = "ZenginUI";
 export const DEFAULT_HOST = "https://us.i.posthog.com";
 
-export type AnalyticsEvent = "$pageview" | "install_command_copied" | "code_copied";
+export type AnalyticsEvent = "$pageview" | "install_command_copied" | "code_copied" | "feedback_sent";
 export type EventProperties = Record<string, string>;
+
+/** The DOM event the footer's feedback form fires on the document once a message has been accepted. */
+export const FEEDBACK_SENT = "zengin:feedback-sent";
 
 type Client = Pick<PostHog, "init" | "capture">;
 
@@ -98,7 +101,8 @@ export function describeCopy(code: string): [AnalyticsEvent, EventProperties] {
 }
 
 /**
- * Called once by each page's entry point: sends that page's pageview and measures every CodeBlock copy button.
+ * Called once by each page's entry point: sends that page's pageview and measures every CodeBlock copy button
+ * and every feedback message sent from the footer.
  * The copy listener sits on the document rather than in the components, because src/ is also the `marketing`
  * template and must ship without any of this (packages/registry/src/build.ts strips this file and its call).
  */
@@ -121,4 +125,6 @@ export function startMeasuring(): void {
     },
     { capture: true },
   );
+  // Only that a message was sent: never its text, never the email address, never whether one was given.
+  document.addEventListener(FEEDBACK_SENT, () => analytics.track("feedback_sent"));
 }

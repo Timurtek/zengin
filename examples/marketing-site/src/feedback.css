@@ -1,0 +1,30 @@
+/* The footer's feedback form (feedback.tsx), above the footer line, in the body face rather than the footer's mono. */
+.feedback {
+  display: grid;
+  /* The page's width, so it lines up with the footer line, with fields no wider than they read well. */
+  grid-template-columns: minmax(0, 44rem);
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-10);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  letter-spacing: normal;
+  color: var(--color-text);
+}
+
+.feedback__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.feedback__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.feedback__status {
+  color: var(--color-text-muted);
+}

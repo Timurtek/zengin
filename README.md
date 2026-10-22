@@ -56,6 +56,10 @@ The vision asks for one marketing page and one application workflow from the sam
 
 Every example app is a consumer of Zengin UI and reports on every push to main (`.github/workflows/rollup.yml`, `scripts/report-examples.mjs`); the snapshots live in [`reports/`](reports) and the marketing site rolls them up at build time into [zengin.timurtek.com/rollup/](https://zengin.timurtek.com/rollup/): drift, adoption and suppressions over time, a sparkline per repository. The same two commands, `zengin report --into` and `zengin rollup <dir>`, do it for any set of repositories.
 
+## Feedback
+
+Tell us what works and what does not in [GitHub Discussions](https://github.com/Timurtek/zengin/discussions), or with the form at the foot of [zengin.timurtek.com](https://zengin.timurtek.com). A bug with steps to reproduce it is an [issue](https://github.com/Timurtek/zengin/issues). Every message is read.
+
 ## Development
 
 ```bash
