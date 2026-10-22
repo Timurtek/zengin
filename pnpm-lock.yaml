@@ -184,6 +184,9 @@ importers:
         specifier: workspace:*
         version: link:../../packages/site-errors
     devDependencies:
+      '@testing-library/react':
+        specifier: ^16.3.3
+        version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@types/react':
         specifier: ^19.3.0
         version: 19.3.0
@@ -205,6 +208,9 @@ importers:
       '@zenginui/mcp':
         specifier: workspace:*
         version: link:../../packages/mcp
+      jsdom:
+        specifier: ^30.0.1
+        version: 30.0.1
       puppeteer-core:
         specifier: ^25.10.0
         version: 25.10.0

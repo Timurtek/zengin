@@ -1,9 +1,11 @@
 import { NPM, REPO } from "../content";
+import { Feedback } from "../feedback";
 
 /** The same foot on every page of this site. The why page used to simply stop at its last section. */
 export function Footer() {
   return (
     <footer className="footer">
+      <Feedback />
       <div className="wrap footer__inner">
         <span>Zengin is MIT licensed. Built on Zengin UI, checked by Zengin.</span>
         <span className="footer__links">
