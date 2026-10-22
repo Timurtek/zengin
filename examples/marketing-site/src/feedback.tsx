@@ -77,7 +77,7 @@ export function FeedbackForm({ endpoint, send = sendFeedback }: FeedbackFormProp
   }
 
   return (
-    <form className="wrap feedback"aria-labelledby="feedback-title" noValidate onSubmit={submit}>
+    <form className="wrap feedback" aria-labelledby="feedback-title" noValidate onSubmit={submit}>
       <h2 id="feedback-title" className="feedback__title">
         Tell us what works and what does not
       </h2>
@@ -93,7 +93,7 @@ export function FeedbackForm({ endpoint, send = sendFeedback }: FeedbackFormProp
         error={contactError}
       />
       <div className="feedback__actions">
-        <Button type="submit" variant="soft" tone="primary"loading={status.kind === "sending"}>
+        <Button type="submit" variant="soft" tone="primary" loading={status.kind === "sending"}>
           Send feedback
         </Button>
         <p className="feedback__status" role="status" aria-live="polite">
