@@ -10,7 +10,7 @@ import { AGENT_WIRING } from "@zenginui/engine";
 import { admits, runDoctor } from "../src/doctor.js";
 import { init, initFromClaudeDesign, initFromShadcn } from "../src/init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "../src/report.js";
-import { explain, parseArgs } from "../src/index.js";
+import { explain, helpFor, parseArgs } from "../src/index.js";
 import { runFigma, type ScaffoldOptions } from "../src/scaffold.js";
 import { figmaToHex, hexToFigma, type FigmaColor, type FigmaValue, type LocalVariables, type VariablesPayload } from "@zenginui/figma";
 
@@ -581,5 +581,21 @@ describe("zengin figma with the project's brand", () => {
     const out = runFigma("export", [], opts({ themes: "themes", out: "figma/themed.json" }), dir);
     expect(out).toContain('"Theme" (1 modes: meadow');
     expect(out).toContain("The project's brand (src/theme/brand.css) is not applied with --themes");
+  });
+});
+
+describe("help for one command", () => {
+  it("zengin init --help and zengin help init are init's usage and options; --version is the version", () => {
+    expect(parseArgs(["init", "--help"], "/x")).toMatchObject({ command: "help", positional: ["init"] });
+    expect(parseArgs(["help", "init"], "/x")).toMatchObject({ command: "help", positional: ["init"] });
+    expect(parseArgs(["--help"], "/x")).toMatchObject({ command: "help", positional: [] });
+    expect(parseArgs(["--version"], "/x").command).toBe("version");
+    const init = helpFor("init");
+    expect(init).toContain("zengin init --from package <name>");
+    expect(init).toContain("Init options:");
+    expect(init).toContain("--tokens <css>");
+    expect(init).not.toContain("Rollup options:");
+    expect(helpFor("add")).toContain("Create and add options:");
+    expect(helpFor("nope")).toContain("zengin has no command \"nope\"");
   });
 });

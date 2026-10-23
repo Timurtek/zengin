@@ -174,6 +174,13 @@ npx zengin check --staged             # what is about to be committed
 
 You do not have to start over, and you should not. \`zengin init\` reads the system a project already uses and writes the definitions from it.
 
+The CLI is \`@zenginui/cli\`. Until it is one of the project's dependencies, name the package: the npm name \`zengin\` belongs to something else, so a bare \`npx zengin\` fails.
+
+\`\`\`bash
+npm install --save-dev @zenginui/cli   # then every command is npx zengin <command>
+npx -p @zenginui/cli zengin init       # or once, without installing
+\`\`\`
+
 ## From a shadcn/ui project
 
 \`\`\`bash
@@ -189,6 +196,15 @@ npx zengin init --from package @your/design-system
 \`\`\`
 
 Tokens come from the package's stylesheet, with the variable names kept exactly as they are, so a fix reads \`var(--surface-base)\` and not some renamed equivalent. The component manifest comes from the package's type declarations: props, enum values, and the element whose attributes pass through. Types it cannot open, from another library, are recorded as passthrough rather than guessed at.
+
+It reads the package the way a monorepo ships it:
+
+- **Barrels and source.** The types entry is followed through \`export * from\`. A package whose types are its TypeScript source (\`"types": "./src/index.ts"\`, the usual shape of an internal package) is read as source, cva variants included.
+- **Tokens wherever they live.** If the package's own stylesheets define none, the project's \`:root\` stylesheets are read, then stylesheets it imports by relative path, then the package's dependencies. Name them outright with \`--tokens path/to/theme.css\`.
+- **Tailwind.** \`@theme\` blocks are listed in \`classes.css\`, so the utilities they define resolve. A Tailwind 3 project resolves classes through its \`tailwind.config\`, which the engine loads as Tailwind's build does. If the design system's own code styles with Tailwind's palette, the config allows the palette.
+- **Scope.** \`scope.include\` comes from what the project already tells its tools: \`tsconfig.json\`'s \`include\`, Tailwind 3's \`content\`, Tailwind 4's \`@source\`.
+
+The report says where each of these came from. It also warns when \`node_modules\` holds a copy of a package whose source sits in the same workspace, since a published build behind the source makes new props read as unknown.
 
 ## What to expect on the first run
 
@@ -378,6 +394,17 @@ Sometimes the code is right and the rule does not know it. Say so on the line ab
 One comment suppresses one violation on the next line. It names the rule. And it carries a reason after the colon.
 
 **A comment with no reason suppresses nothing.** The violation still reports, and the engine tells you the comment was ignored. This is the single most opinionated decision in the tool and it is deliberate: a suppression without a reason is indistinguishable from giving up, and a codebase full of them is a system nobody believes in.
+
+## When the rule is right and so is the code
+
+\`component-substitution\` reports a raw element styled like a system component, and sometimes that is the point: a checkbox drawn inside a row that is itself a button, because a real Checkbox would nest one button inside another. The finding is fair, the code is correct, and the reason belongs next to it, where the next reader finds it:
+
+\`\`\`tsx
+{/* zengin-allow component-substitution: the row is the button; a Checkbox here would nest buttons */}
+<span className={checkboxVariants({ size: "sm" })} aria-hidden />
+\`\`\`
+
+That is the expected answer, not a workaround: the engine cannot see that the element is presentational, and the comment says it once, with the reason, in the file.
 
 ## They are counted
 
@@ -1089,6 +1116,7 @@ scope:
 classes:
   tailwind: auto                   # auto | true | false
   css: ["app/globals.css"]
+  config: tailwind.config.ts       # Tailwind 3 only; default: tailwind.config.{ts,js,cjs,mjs} at the root
 
 rules:
   color-literal: { severity: error, allow: semantic }
@@ -1121,7 +1149,7 @@ See [Scope and ownership](#scope). \`foundations\` is where literals are allowed
 
 ## classes
 
-\`tailwind: auto\` enables the Tailwind adapter when your \`package.json\` depends on it. \`css\` names stylesheets whose \`@custom-variant\` and \`@utility\` rules the class compiler needs to know about, and stylesheets that ship precompiled utilities.
+\`tailwind: auto\` enables the Tailwind adapter when your \`package.json\` depends on it, and the Tailwind it uses is the project's own: version 4 compiles from your CSS, version 3 from your \`tailwind.config\`, which the engine loads as Tailwind's build does. \`css\` names stylesheets whose \`@theme\`, \`@custom-variant\` and \`@utility\` rules the class compiler needs to know about, and stylesheets that ship precompiled utilities.
 
 ## rules
 

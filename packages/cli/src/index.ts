@@ -135,7 +135,7 @@ Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 us
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "define" | "doctor" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "telemetry" | "help";
+  command: "check" | "explain" | "init" | "define" | "doctor" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "telemetry" | "help" | "version";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean; tokens: string[] };
@@ -148,6 +148,8 @@ interface Parsed {
 export function parseArgs(argv: string[], cwd: string): Parsed {
   const check: CheckOptions = { ...DEFAULT_CHECK, cwd, paths: [] };
   const positional: string[] = [];
+  let wantsHelp = false;
+  let wantsVersion = false;
   let command: Parsed["command"] | undefined;
   const rules: RuleId[] = [];
   const initOpts: Parsed["init"] = { force: false, tokens: [] };
@@ -171,7 +173,8 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
         positional.push(a);
       }
     } else if (!a.startsWith("-")) positional.push(a);
-    else if (a === "-h" || a === "--help") command = "help";
+    else if (a === "-h" || a === "--help") wantsHelp = true;
+    else if (a === "-v" || a === "--version") wantsVersion = true;
     else if (a === "--config" || a === "-c") check.config = value();
     else if (a.startsWith("--config=")) check.config = a.slice(9);
     else if (a === "--changed") check.changed = argv[i + 1] && !argv[i + 1]!.startsWith("-") ? argv[++i]! : "HEAD";
@@ -270,6 +273,9 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       check.format = asFormat(rawFormat);
     }
   }
+  // `zengin init --help` is help for init: the command it came with is the topic, as `zengin help init` names it
+  if (wantsHelp) return { command: "help", positional: command && command !== "help" ? [command] : positional.slice(0, 1), check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold, doctor };
+  if (wantsVersion) return { command: "version", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold, doctor };
   if (initOpts.from && !["shadcn", "package", "claude-design"].includes(initOpts.from)) throw new Error(`--from supports "shadcn", "claude-design" and "package <name>" (got ${initOpts.from}).`);
   return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold, doctor };
 }
@@ -336,7 +342,7 @@ export function telemetry(arg: string | undefined, env: Record<string, string | 
 
 /** The one first-run question, at a terminal only; Enter is no, and either answer is stored so it is never asked again. */
 async function askOnce(command: Parsed["command"]): Promise<void> {
-  if (command === "help" || command === "telemetry") return;
+  if (command === "help" || command === "version" || command === "telemetry") return;
   if (!shouldAsk(Boolean(process.stdin.isTTY && process.stdout.isTTY && process.stderr.isTTY))) return;
   const yes = await askConsent(process.stdin, process.stderr);
   try {
@@ -347,12 +353,30 @@ async function askOnce(command: Parsed["command"]): Promise<void> {
   }
 }
 
+/** Help for one command: its usage lines and its options section, with how to see the rest. */
+export function helpFor(topic: string | undefined): string {
+  if (!topic) return HELP;
+  const lines = HELP.split("\n");
+  const usage = lines.filter((l) => new RegExp(`^  zengin ${topic}( |$)`).test(l));
+  if (!usage.length) return `zengin has no command "${topic}".\n\n${HELP}`;
+  const heading = HELP_SECTION[topic] ?? `${topic.charAt(0).toUpperCase()}${topic.slice(1)} options:`;
+  const start = lines.indexOf(heading);
+  const section: string[] = [];
+  if (start >= 0) for (let i = start; i < lines.length && lines[i] !== ""; i++) section.push(lines[i]!);
+  return ["Usage:", ...usage, "", ...(section.length ? [...section, ""] : []), "Every command: zengin --help", ""].join("\n");
+}
+
+const HELP_SECTION: Record<string, string> = { create: "Create and add options:", add: "Create and add options:" };
+
 async function main(): Promise<void> {
   const parsed = parseArgs(process.argv.slice(2), process.cwd());
   await askOnce(parsed.command);
   switch (parsed.command) {
     case "help":
-      process.stdout.write(HELP);
+      process.stdout.write(helpFor(parsed.positional[0]));
+      return;
+    case "version":
+      process.stdout.write(`${VERSION}\n`);
       return;
     case "telemetry":
       process.stdout.write(telemetry(parsed.positional[0]) + "\n");
