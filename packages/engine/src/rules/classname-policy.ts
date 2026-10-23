@@ -23,6 +23,7 @@ export const classnamePolicy: Rule = {
     const out: Violation[] = [];
     for (const [el, comp] of ctx.systemElements) {
       if (el.tag.includes(".")) continue;
+      if (comp.omits?.includes("className")) continue; // unknown-prop reports the className itself
       const allow = comp.className?.allow ?? [];
 
       for (const use of ctx.classUses) {

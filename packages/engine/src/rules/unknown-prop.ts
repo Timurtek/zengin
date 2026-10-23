@@ -58,13 +58,25 @@ export const unknownProp: Rule = {
     const out: Violation[] = [];
     for (const [el, comp] of ctx.systemElements) {
       if (el.tag.includes(".")) continue; // sub-parts are not contracted yet
+      const omitted = new Set(comp.omits ?? []);
+      for (const attr of el.attrs) {
+        if (!omitted.has(attr.name)) continue;
+        out.push(
+          ctx.report(ID, {
+            range: attr.range,
+            found: attr.source,
+            message: `${comp.name} does not take "${attr.name}": its props type omits it.${attr.name === "className" ? " Style it through its props, or wrap it." : ""}`,
+            fix: { replace: null, confidence: "none" },
+          }),
+        );
+      }
       if (comp.passthrough?.length) continue; // forwards props of types the manifest does not enumerate
       const known = Object.keys(comp.props ?? {});
       // An uncontracted component (no declared props beyond asChild, nothing extended) cannot call a prop unknown.
       if (!comp.extends && known.filter((k) => k !== "asChild").length === 0) continue;
       const passthrough = new Set([...ALWAYS, ...(comp.extends ? [...GLOBAL, ...(BY_TAG[comp.extends] ?? [])] : [])]);
       for (const attr of el.attrs) {
-        if (known.includes(attr.name) || passthrough.has(attr.name) || ALWAYS_RE.test(attr.name)) continue;
+        if (omitted.has(attr.name) || known.includes(attr.name) || passthrough.has(attr.name) || ALWAYS_RE.test(attr.name)) continue;
         const near = nearest(attr.name, known, 2);
         out.push(
           ctx.report(ID, {

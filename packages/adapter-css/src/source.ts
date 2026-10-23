@@ -12,6 +12,8 @@ import {
   PLACEMENT,
   propKind,
   scanDeclarations,
+  effectiveOmits,
+  mergeKind,
   SKIP_PROPS,
   unwrap,
   type Declarations,
@@ -123,13 +125,14 @@ export function deriveManifestFromSource(files: SourceFile[], opts: SourceOption
     for (const m of info.members) {
       if (m.type !== "TSPropertySignature") continue;
       const key = idName(m["key"]);
-      if (!key || SKIP_PROPS.has(key) || key in props) continue;
+      if (!key || SKIP_PROPS.has(key)) continue;
       const kind = propKind((m["typeAnnotation"] as Node | undefined)?.["typeAnnotation"] as Node | undefined, resolveAlias);
       if (!kind) continue;
       const def = site.defaults[key];
-      props[key] = def === undefined ? kind : { ...kind, default: def };
+      const merged = mergeKind(props[key], kind);
+      props[key] = def === undefined || merged.default !== undefined ? merged : { ...merged, default: def };
     }
-    for (const [prop, values] of Object.entries(info.variants)) props[prop] = { type: "enum", values };
+    for (const [prop, values] of Object.entries(info.variants)) props[prop] = values.length ? { type: "enum", values } : { type: "boolean" };
 
     const owns = decideOwns(site.rootClass ? ownsByClass.get(site.rootClass) : undefined, props, site.attrProps ?? {});
     if (Object.keys(owns).length) withOwns++;
@@ -146,6 +149,7 @@ export function deriveManifestFromSource(files: SourceFile[], opts: SourceOption
       className: { allow: PLACEMENT },
       ...(Object.keys(owns).length ? { owns } : {}),
       ...(info.passthrough.length ? { passthrough: [...new Set(info.passthrough)] } : {}),
+      ...(effectiveOmits(info).length ? { omits: effectiveOmits(info) } : {}),
     } as ComponentManifest);
     origin[name] = site.file;
   }

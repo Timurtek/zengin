@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createEngine, loadConfigFile, readProjectFiles, resolveConfig, type Violation } from "@zenginui/engine";
 import { describe, expect, it } from "vitest";
-import { deriveManifestFromSource, deriveManifestFromTypes, derivePackage, deriveTokensFromCss, writePackage } from "../src/index.js";
+import { deriveManifestFromSource, deriveManifestFromTypes, derivePackage, deriveTokensFromCss, renderReport, writePackage } from "../src/index.js";
 
 /** A project with one design-system package installed, its own files, then init and check, as a preflight runs it. */
 async function preflight(pkg: { name: string; files: Record<string, string> }, project: Record<string, string>, tailwind = true): Promise<{ violations: Violation[]; config: string }> {
@@ -123,8 +123,9 @@ export { Badge, Button, badgeVariants, buttonVariants };
     expect(byName("Button").props!["asChild"]).toEqual({ type: "boolean" });
   });
 
-  it("links <name>Variants to its component by name when the props type does not say, and skips boolean variants", () => {
+  it("links <name>Variants to its component by name when the props type does not say, and reads boolean variants as booleans", () => {
     expect(byName("Badge").props!["tone"]).toMatchObject({ type: "enum", values: ["neutral", "danger"] });
+    expect(byName("Badge").props!["inset"]).toEqual({ type: "boolean" });
     expect(byName("Badge").owns).toEqual({});
     expect(d.report.withVariants).toBe(2);
   });
@@ -142,7 +143,7 @@ export function Stack({ gap, justify, children }: StackProps) { return <div clas
     const s = deriveManifestFromSource([{ path: "src/ui/chip.tsx", content: src }], { importFrom: "@/ui" });
     const chip = s.components.find((c) => c.name === "Chip")!;
     expect(chip.props!["size"]).toMatchObject({ type: "enum", values: ["sm", "md"] });
-    expect(chip.props!["selected"]).toBeUndefined();
+    expect(chip.props!["selected"]).toEqual({ type: "boolean" }); // a boolean variant is a boolean prop
     const st = s.components.find((c) => c.name === "Stack")!;
     expect(st.props!["gap"]).toMatchObject({ values: ["1", "2"] });
     expect(st.props!["justify"]).toMatchObject({ values: ["start", "between"] });
@@ -361,5 +362,137 @@ describe("a design system that styles with Tailwind's palette", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("what a props type says it does not take, and whose props it forwards (defects 10-12)", () => {
+  const dts = `import * as React from "react";
+import React__default from "react";
+import { motion } from "framer-motion";
+type ButtonPrimitiveProps = React.ButtonHTMLAttributes<HTMLButtonElement> & { render?: React.ReactElement };
+type ButtonProps = Omit<ButtonPrimitiveProps, "className" | "style"> & { variant?: "default" | "ghost" };
+declare const Button: React.ForwardRefExoticComponent<ButtonProps & React.RefAttributes<HTMLButtonElement>>;
+declare function Badge(props: React.HTMLAttributes<HTMLDivElement> & { tone?: "info" | "danger" }): React.JSX.Element;
+declare function Chip(props: React__default.HTMLAttributes<HTMLSpanElement> & { label: string }): React.JSX.Element;
+declare function Pill(props: React.HTMLAttributes<HTMLSpanElement>): React.JSX.Element;
+type FileUploadReadFileProps = { readFile: true; onChange: (data: { src: string }) => void } | { readFile?: false; onChange: (file: File) => void };
+type FileUploadProps = FileUploadReadFileProps & { accept: string; variant?: "default" | "plain" };
+declare function FileUpload(props: FileUploadProps): React.JSX.Element;
+declare function MenuItem<T extends React.ElementType = "button">(props: { as?: T; icon?: React.ReactNode } & React.ComponentPropsWithoutRef<T>): React.JSX.Element;
+declare function AnimatedSizeContainer(props: React.ComponentProps<typeof motion.div> & { width?: boolean }): React.JSX.Element;
+declare const Stack: import("react").ForwardRefExoticComponent<{ gap?: "1" | "2"; justify?: "start" | "between" } & import("react").RefAttributes<HTMLDivElement>>;
+export { AnimatedSizeContainer, Badge, Button, Chip, FileUpload, MenuItem, Pill, Stack };
+`;
+  const d = deriveManifestFromTypes(dts, { importFrom: "@acme/ui" });
+  const by = (n: string) => d.components.find((c) => c.name === n)!;
+
+  it("records what Omit removes (Comp's DS Button takes no className)", () => {
+    expect(by("Button").omits).toEqual(["className", "style"]);
+    expect(by("Button").props!["variant"]).toMatchObject({ values: ["default", "ghost"] });
+  });
+
+  it("treats React's helpers as React's whichever way React is imported, never as passthrough", () => {
+    for (const name of ["Badge", "Chip", "Pill"]) expect(by(name).passthrough).toBeUndefined();
+    expect(by("Badge").extends).toBe("div");
+    expect(by("Chip").props!["label"]).toEqual({ type: "string" });
+  });
+
+  it("reads every member of a union of props shapes (Dub's FileUpload)", () => {
+    expect(Object.keys(by("FileUpload").props!).sort()).toEqual(["accept", "onChange", "readFile", "variant"]);
+  });
+
+  it("passes through another component's props and a polymorphic element's, instead of guessing div", () => {
+    expect(by("AnimatedSizeContainer").passthrough).toEqual(["typeof motion.div"]);
+    expect(by("MenuItem").passthrough).toEqual(["ComponentPropsWithoutRef<T> (polymorphic)"]);
+  });
+
+  it("recognises a component typed as import(\"react\").ForwardRefExoticComponent (Sim's Button)", () => {
+    expect(by("Stack").props!["gap"]).toMatchObject({ values: ["1", "2"] });
+  });
+
+  it("the engine reports a className passed to a component that omits it, and leaves classname-policy out of it", async () => {
+    const pkg = {
+      name: "@acme/ds",
+      files: {
+        "package.json": JSON.stringify({ name: "@acme/ds", version: "1.0.0", types: "index.d.ts", exports: { "./styles.css": "./styles.css" } }),
+        "styles.css": ":root { --primary: #2563eb; }",
+        "index.d.ts": dts,
+      },
+    };
+    const app = {
+      "package.json": JSON.stringify({ name: "app" }),
+      "app/page.tsx": `import { Button, MenuItem, AnimatedSizeContainer } from "@acme/ds";
+export default function Page() {
+  return (
+    <>
+      <Button variant="ghost" className="w-full">Go</Button>
+      <MenuItem as="a" href="/x" target="_blank">Link</MenuItem>
+      <AnimatedSizeContainer initial={false} transition={{ duration: 0.2 }}>x</AnimatedSizeContainer>
+    </>
+  );
+}
+`,
+    };
+    const { violations } = await preflight(pkg, app, false);
+    expect(violations.map((v) => `${v.rule} ${v.found}`)).toEqual(['unknown-prop className="w-full"']);
+    expect(violations[0]!.message).toContain("its props type omits it");
+  });
+});
+
+describe("omits and the workspace's own copy (defects 10 and 13)", () => {
+  it("an omitted prop the type declares again is accepted", () => {
+    const d = deriveManifestFromTypes(
+      `import * as React from "react";
+interface LinkProps extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "className" | "href"> { className?: string; to: string }
+declare function Link(props: LinkProps): React.JSX.Element;
+export { Link };
+`,
+      { importFrom: "@acme/ui" },
+    );
+    expect(d.components[0]!.omits).toEqual(["href"]);
+  });
+
+  it("warns when node_modules holds a copy of a package whose source is in the workspace", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zengin-workspace-"));
+    try {
+      const write = (rel: string, content: string) => {
+        mkdirSync(join(dir, rel, ".."), { recursive: true });
+        writeFileSync(join(dir, rel), content);
+      };
+      write("pnpm-workspace.yaml", "packages: ['apps/*', 'packages/*']\n");
+      write("packages/ui/package.json", JSON.stringify({ name: "@dub/ui", version: "0.3.21" }));
+      write("apps/web/package.json", JSON.stringify({ name: "web" }));
+      write("apps/web/node_modules/@dub/ui/package.json", JSON.stringify({ name: "@dub/ui", version: "0.3.21", types: "index.d.ts" }));
+      write("apps/web/node_modules/@dub/ui/index.d.ts", "declare function Button(props: { variant?: 'primary' }): any;\nexport { Button };\n");
+      write("apps/web/node_modules/@dub/ui/styles.css", ":root { --bg-default: 255 255 255; }");
+      const d = derivePackage(join(dir, "apps", "web"), "@dub/ui");
+      expect(d.report.workspaceSource).toBe("../../packages/ui");
+      expect(renderReport(d)).toContain("this workspace has its source at ../../packages/ui");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("discriminated unions and React's own props (defect 12, continued)", () => {
+  const d = deriveManifestFromTypes(
+    `import * as React from "react";
+type ChipModalFieldProps = { type: "input"; value: string } | { type: "custom"; render: () => React.ReactNode } | { type: "textarea" | "dropdown"; value: string };
+declare function ChipModalField(props: ChipModalFieldProps): React.JSX.Element;
+type AccordionItemProps = Omit<React.ComponentPropsWithRef<"div">, "ref"> & { value: string };
+declare const AccordionItem: React.ForwardRefExoticComponent<AccordionItemProps & React.RefAttributes<HTMLDivElement>>;
+export { AccordionItem, ChipModalField };
+`,
+    { importFrom: "@sim/emcn" },
+  );
+  const by = (n: string) => d.components.find((c) => c.name === n)!;
+
+  it("merges a key's values across the members of a union", () => {
+    expect(by("ChipModalField").props!["type"]).toEqual({ type: "enum", values: ["input", "custom", "textarea", "dropdown"] });
+    expect(Object.keys(by("ChipModalField").props!).sort()).toEqual(["render", "type", "value"]);
+  });
+
+  it("never counts ref as omitted: forwardRef gives it back", () => {
+    expect(by("AccordionItem").omits).toBeUndefined();
   });
 });
