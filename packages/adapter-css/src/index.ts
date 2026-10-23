@@ -3,6 +3,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import type { ComponentManifest } from "@zenginui/engine";
 import { deriveTokensFromCss } from "./tokens.js";
 import { moduleGraph } from "./modules.js";
+import { deriveScope, type DerivedScope } from "./scope.js";
 import { deriveManifestFromSource } from "./source.js";
 import { deriveManifestFromTypes, HTML_TAGS, type TypesDerivation } from "./types.js";
 
@@ -30,6 +31,9 @@ export interface PackageDerivation {
     paletteClasses: number;
     /** The package's source in the same workspace, when node_modules holds a separate copy of it: the two may differ. */
     workspaceSource?: string;
+    /** What scope.include was derived from: tsconfig, Tailwind content, @source. Empty: the default folders. */
+    scopeFrom: string[];
+    scopeInclude: string[];
   };
 }
 
@@ -85,7 +89,8 @@ export function derivePackage(projectDir: string, pkgName: string, opts: Package
   // `bg-neutral-100` in the app is the same vocabulary, not a literal that escaped the tokens.
   const ownCode = [utility ? readFileSync(utility.file, "utf8") : "", ...(typesFile ? sourceTexts(typesFile) : [])].join("\n");
   const paletteClasses = paletteUse(ownCode);
-  const config = renderConfig(pkgName, pkg.version ?? "0.0.0", classesCss, utility ? rel(projectDir, utility.file) : undefined, foundations, paletteClasses >= PALETTE_THRESHOLD);
+  const scope = deriveScope(projectDir);
+  const config = renderConfig(pkgName, pkg.version ?? "0.0.0", classesCss, utility ? rel(projectDir, utility.file) : undefined, foundations, paletteClasses >= PALETTE_THRESHOLD, scope);
   return {
     tokens: theme.derivation.tokens,
     tokensDark: theme.derivation.tokensDark,
@@ -104,6 +109,8 @@ export function derivePackage(projectDir: string, pkgName: string, opts: Package
       componentCount: types.report.components,
       withVariants: types.report.withVariants,
       paletteClasses,
+      scopeFrom: scope.from,
+      scopeInclude: scope.include,
       ...(() => {
         const ws = workspaceSource(projectDir, pkgDir, pkgName);
         return ws ? { workspaceSource: ws } : {};
@@ -360,7 +367,7 @@ function sourceTexts(entry: string): string[] {
   return moduleGraph(entry).exported.map((f) => readFileSync(f, "utf8"));
 }
 
-function renderConfig(pkgName: string, version: string, classesCss: string[], utilityFile: string | undefined, foundations: string[], palette = false): string {
+function renderConfig(pkgName: string, version: string, classesCss: string[], utilityFile: string | undefined, foundations: string[], palette: boolean, scope: DerivedScope): string {
   const why = utilityFile ? "precompiled utilities, and the @theme blocks Tailwind compiles against" : "the @theme blocks Tailwind compiles against";
   const css = classesCss.length ? `[${classesCss.map((p) => `"${p}"`).join(", ")}]   # ${why}` : "[]";
   const found = foundations.length ? `[${foundations.map((f) => `"${f}"`).join(", ")}]   # define :root variables; literals live here` : "[]";
@@ -372,8 +379,8 @@ system:
   sources: ["${pkgName}", "${pkgName}/*"]
 
 scope:
-  include: ["src/**/*.{ts,tsx,css}", "app/**/*.{ts,tsx,css}", "components/**/*.{ts,tsx,css}", "styles/**/*.css"]
-  exclude: ["**/node_modules/**", "**/*.test.{ts,tsx}", "**/*.stories.{ts,tsx}", "**/*.d.ts"]
+  include: [${scope.include.map((g) => `"${g}"`).join(", ")}]${scope.from.length ? `   # from ${scope.from.join(", ")}` : ""}
+  exclude: [${scope.exclude.map((g) => `"${g}"`).join(", ")}]
   foundations: ${found}
   ownership: []
 
@@ -429,6 +436,7 @@ export function renderReport(d: PackageDerivation): string {
       ? `Colors: the package's own code styles with ${r.paletteClasses} Tailwind palette classes, so the palette is on-system (color-literal allow: palette)`
       : `Colors: semantic tokens only (color-literal allow: semantic); the package's own code uses ${r.paletteClasses} palette classes`,
   ];
+  lines.push(`Scope: ${r.scopeInclude.join(", ")}${r.scopeFrom.length ? ` (from ${r.scopeFrom.join(", ")})` : " (the default folders that exist)"}`);
   if (r.workspaceSource) {
     lines.push(
       `Warning: ${r.package} in node_modules is a separate copy; this workspace has its source at ${r.workspaceSource}. If the copy is a published build behind the source, props added since read as unknown. Build the workspace package and link it, or point --tokens and the types at the source.`,

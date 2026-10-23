@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { createEngine, loadConfigFile, readProjectFiles, resolveConfig, type Violation } from "@zenginui/engine";
 import { describe, expect, it } from "vitest";
 import { deriveManifestFromSource, deriveManifestFromTypes, derivePackage, deriveTokensFromCss, renderReport, writePackage } from "../src/index.js";
+import { deriveScope } from "../src/scope.js";
 
 /** A project with one design-system package installed, its own files, then init and check, as a preflight runs it. */
 async function preflight(pkg: { name: string; files: Record<string, string> }, project: Record<string, string>, tailwind = true): Promise<{ violations: Violation[]; config: string }> {
@@ -494,5 +495,61 @@ export { AccordionItem, ChipModalField };
 
   it("never counts ref as omitted: forwardRef gives it back", () => {
     expect(by("AccordionItem").omits).toBeUndefined();
+  });
+});
+
+describe("scope from what the project tells its tools (defect 9)", () => {
+  function project(files: Record<string, string>): string {
+    const dir = mkdtempSync(join(tmpdir(), "zengin-scope-"));
+    for (const [rel, content] of Object.entries(files)) {
+      mkdirSync(join(dir, rel, ".."), { recursive: true });
+      writeFileSync(join(dir, rel), content);
+    }
+    return dir;
+  }
+
+  it("takes Tailwind 3's content folders inside the project (Dub's app and ui), not the monorepo's", () => {
+    const dir = project({
+      "tailwind.config.ts": 'export default { presets: [{ content: ["./app/**/*.{js,ts,jsx,tsx}", "./ui/**/*.{js,ts,jsx,tsx}", "../../packages/ui/src/**/*{.js,.ts,.jsx,.tsx}"] }] };',
+      "app/page.tsx": "",
+      "ui/button.tsx": "",
+    });
+    try {
+      const s = deriveScope(dir);
+      expect(s.include).toEqual(["app/**/*.{ts,tsx,css}", "ui/**/*.{ts,tsx,css}"]);
+      expect(s.from).toEqual(["tailwind.config.ts content"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("scopes the whole project when tsconfig includes **/*.tsx (Sim, whose @source leaves hooks/ out)", () => {
+    const dir = project({
+      "tsconfig.json": '{\n  // comments are fine, and so is a path glob that looks like one: "./*"\n  "compilerOptions": { "paths": { "@/*": ["./*"] } },\n  "include": ["**/*.ts", "**/*.tsx", "../next-env.d.ts"],\n}',
+      "app/_styles/globals.css": "@source '../../app';\n@source '../../ee';\n@source not '../../**/*.test.tsx';",
+      "app/page.tsx": "",
+      "ee/x.tsx": "",
+      "hooks/use-x.ts": "",
+    });
+    try {
+      const s = deriveScope(dir);
+      expect(s.include).toEqual(["**/*.{ts,tsx,css}"]);
+      expect(s.exclude).toEqual(expect.arrayContaining(["**/.next/**", "**/*.test.{ts,tsx}", "**/*.stories.{ts,tsx}"]));
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("reads @source relative to its stylesheet, and adds the default folders that exist", () => {
+    const dir = project({
+      "app/_styles/globals.css": "@source '../../ee';\n@source '../../../../packages/emcn/src';",
+      "ee/x.tsx": "",
+      "src/a.tsx": "",
+    });
+    try {
+      expect(deriveScope(dir).include).toEqual(["app/**/*.{ts,tsx,css}", "ee/**/*.{ts,tsx,css}", "src/**/*.{ts,tsx,css}"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

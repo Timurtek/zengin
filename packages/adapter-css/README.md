@@ -1,22 +1,24 @@
 # @zenginui/adapter-css
 
-Turns a design system that ships as an npm package into Zengin definitions. It reads the package's stylesheet and type declarations and writes the two files the engine needs, plus a config. Nothing is executed.
+Turns a design system that ships as an npm package into Zengin definitions. It reads the package's stylesheets and its types (declarations or TypeScript source) and writes the two files the engine needs, plus a config. Nothing is executed.
 
 ```bash
 zengin init --from package @umami/react-zen    # in the project root
 zengin check
 ```
 
-Verified against [umami-software/umami](../../docs/field-tests/2026-09-12-umami.md): 158 components and 53 tokens derived from `@umami/react-zen` with no hand edits, 147 violations, 0 false positives.
+Verified against [umami-software/umami](../../docs/field-tests/2026-09-12-umami.md): 158 components and 53 tokens derived from `@umami/react-zen` with no hand edits, 147 violations, 0 false positives. Since 2026-10-22 it also reads Comp's (`@trycompai/design-system`, TypeScript source behind barrels), Sim's (`@sim/emcn`, a workspace package with no stylesheet) and Dub's (`@dub/ui`, tokens in a sibling preset, Tailwind 3) without hand preparation.
 
 ## What it reads
 
 | Input | Where | Becomes |
 | --- | --- | --- |
-| Custom properties | The package stylesheet that is mostly variables (variables per class rule), found through `exports`, `files` and the package root. `:root`, `html`, `[data-theme="light"]` blocks are the light theme; `[data-theme="dark"]`, `.dark` and `prefers-color-scheme: dark` blocks are the dark overrides. | `zengin/tokens.json` and `zengin/tokens.dark.json`, grouped by what each value is: `color`, `space`, `radius`, `text`, `font`, `shadow`. **Variable names are kept**: each token carries `$extensions.zengin.cssVar`, so the engine recognises `var(--surface-base)` and suggests `var(--surface-base)`. A `var()` to another variable of the same group becomes a DTCG alias. |
+| Custom properties | The package stylesheet that is mostly variables (variables per class rule), found through `exports`, `files` and the package root; failing that, the project's `:root` stylesheets, stylesheets it imports by relative path, then the package's dependencies; or what `--tokens <css>` names. Literal values in `@theme` blocks count. `:root`, `html`, `[data-theme="light"]` blocks are the light theme; `[data-theme="dark"]`, `.dark` and `prefers-color-scheme: dark` blocks are the dark overrides. | `zengin/tokens.json` and `zengin/tokens.dark.json`, grouped by what each value is: `color`, `space`, `radius`, `text`, `font`, `shadow`. **Variable names are kept**: each token carries `$extensions.zengin.cssVar`, so the engine recognises `var(--surface-base)` and suggests `var(--surface-base)`. A `var()` to another variable of the same group becomes a DTCG alias. RGB channels (`--bg-default: 255 255 255`) are colors referred to as `rgb(var(--bg-default))`. Spacing, type sizes and radii extend Tailwind's scale unless the sheet resets the namespace (`--spacing-*: initial`). |
 | Precompiled utilities | The largest other stylesheet, when one is larger than the theme sheet (`styles.full.css`). | `classes.css` in the config. The engine indexes it, so `className="w-full bg-white"` resolves to declarations without a class compiler, and a shipped `bg-white` is judged where it is used. |
-| Type declarations | `types`, `exports["."].types`, or `dist/index.d.ts`. | `zengin/components.json`: one entry per `declare function X`, `declare const X: ForwardRefExoticComponent<…>` or `FC<…>`. Props from the parameter type, followed through interfaces, aliases, intersections, `Omit`/`Pick`/`Partial` and `VariantProps<typeof x>`; string-literal unions become enums, `boolean`, `string`, `number` and function types keep their kind. The `tailwind-variants` or `cva` constant named for the component (`button` for `Button`) supplies the `variant` and `size` values and what those props own. `HTMLAttributes<HTMLButtonElement>` in the chain becomes `extends: button`. |
-| Project stylesheets | Any `.css` under the project (not `node_modules`) that defines custom properties on `:root`. | `scope.foundations`. The project's theme layer holds literals by design and is not checked. |
+| Types | `types`, `exports["."].types`, or `dist/index.d.ts`, followed through `export *` barrels. A source entry (`./src/index.ts`) is read as source. | `zengin/components.json`: one entry per component. Props from the parameter type, followed through interfaces, aliases, intersections, unions (a key in several members merges its values), `Omit`/`Pick`/`Partial` and `VariantProps<typeof x>`; string-literal unions become enums, `boolean`, `string`, `number` and function types keep their kind. The `tailwind-variants` or `cva` constant named for the component (`button` or `buttonVariants` for `Button`) supplies the `variant` and `size` values and what those props own; a boolean variant is a boolean prop. `HTMLAttributes<HTMLButtonElement>` in the chain becomes `extends: button`. What `Omit` removes and the type does not declare again becomes `omits`. |
+| Project stylesheets | Any `.css` under the project (not `node_modules`) that defines custom properties on `:root`. | `scope.foundations`. The project's theme layer holds literals by design and is not checked. The ones with `@theme` blocks also go in `classes.css`, so the utilities they define resolve. |
+| What the project scans | `tsconfig.json` `include`, Tailwind 3 `content`, Tailwind 4 `@source`. | `scope.include`. Anything that covers the whole project scopes the whole project, minus build output, tests and stories. |
+| Palette use | The package's own utility sheet or source. | `color-literal: allow: palette` when it styles with ten or more Tailwind palette classes: the palette is part of that system. |
 
 ## Passthrough
 
