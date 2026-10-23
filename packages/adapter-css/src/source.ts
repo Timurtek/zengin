@@ -190,7 +190,16 @@ function componentsIn(body: Node[], file: string): ComponentSite[] {
   for (const node of body) {
     if (node.type !== "ExportNamedDeclaration" && node.type !== "ExportDefaultDeclaration") continue;
     const decl = node["declaration"] as Node | undefined;
-    if (!decl) continue;
+    if (!decl) {
+      // `const Button = forwardRef(...)` above, `export { Button, buttonVariants }` at the bottom: shadcn's habit.
+      // A re-export from another module (`export { X } from "./x"`) is that module's to declare.
+      if (node["source"]) continue;
+      for (const sp of (node["specifiers"] as Node[] | undefined) ?? []) {
+        const local = idName(sp["local"]);
+        if (locals.has(local)) seen(idName(sp["exported"]), locals.get(local));
+      }
+      continue;
+    }
     if (decl.type === "FunctionDeclaration") seen(idName(decl["id"]), decl);
     if (decl.type === "VariableDeclaration") {
       for (const d of (decl["declarations"] as Node[]) ?? []) seen(idName(d["id"]), functionOf(d["init"] as Node | undefined, locals));

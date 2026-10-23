@@ -187,3 +187,179 @@ describe("--text-* holds colors and sizes (defect 3)", () => {
     expect(violations.map((v) => `${v.rule} ${v.found}`)).toEqual([]);
   });
 });
+
+describe("RGB channel triples are colors (defect 7)", () => {
+  // Dub's Tailwind 3 shape: channels on :root, used as rgb(var(--x) / <alpha-value>) in the Tailwind preset.
+  const css = `:root {
+  --bg-default: 255 255 255;
+  --content-emphasis: 23, 23, 23;
+  --radius: 8px;
+}
+.dark { --bg-default: 0 0 0; }
+`;
+
+  it("reads them as colors with their hex, referred to as rgb(var(--x))", () => {
+    const d = deriveTokensFromCss(css);
+    const color = d.tokens["color"] as Record<string, { $value: string; $extensions: { zengin: Record<string, string> } }>;
+    expect(color["bg-default"]).toEqual({ $value: "#ffffff", $extensions: { zengin: { cssVar: "--bg-default", reference: "rgb(var(--bg-default))" } } });
+    expect(color["content-emphasis"]!.$value).toBe("#171717");
+    expect((d.tokensDark!["color"] as typeof color)["bg-default"]!.$value).toBe("#000000");
+  });
+
+  it("suggests rgb(var(--x)) as the fix, not var(--x)", async () => {
+    const pkg = { name: "@dub/ui", files: { "package.json": JSON.stringify({ name: "@dub/ui", version: "0.3.21", exports: { "./styles.css": "./styles.css" } }), "styles.css": css } };
+    const app = { "package.json": JSON.stringify({ name: "web" }), "app/page.tsx": `export default function Page() {\n  return <p style={{ color: "#171717", padding: 8 }}>Hi</p>;\n}\n` };
+    const { violations } = await preflight(pkg, app, false);
+    const color = violations.find((v) => v.rule === "color-literal")!;
+    expect(color.fix).toMatchObject({ replace: '"rgb(var(--content-emphasis))"', confidence: "exact" });
+  });
+});
+
+describe("tokens outside the package's own stylesheet (defect 6)", () => {
+  function project(files: Record<string, string>): string {
+    const dir = mkdtempSync(join(tmpdir(), "zengin-tokens-"));
+    for (const [rel, content] of Object.entries(files)) {
+      mkdirSync(join(dir, rel, ".."), { recursive: true });
+      writeFileSync(join(dir, rel), content);
+    }
+    return dir;
+  }
+  const dts = "import * as React from 'react';\ndeclare function Button(props: { variant?: 'primary' | 'secondary' }): React.JSX.Element;\nexport { Button };\n";
+
+  it("finds them in a dependency of the package (Dub's @dub/tailwind-config)", () => {
+    const dir = project({
+      "node_modules/@dub/ui/package.json": JSON.stringify({ name: "@dub/ui", version: "0.3.21", types: "dist/index.d.ts", dependencies: { "@dub/tailwind-config": "0.0.1" } }),
+      "node_modules/@dub/ui/dist/index.d.ts": dts,
+      "node_modules/@dub/ui/dist/index.css": ".bg-white{background-color:#fff}",
+      "node_modules/@dub/tailwind-config/package.json": JSON.stringify({ name: "@dub/tailwind-config", exports: { "./themes.css": "./themes.css" } }),
+      "node_modules/@dub/tailwind-config/themes.css": ":root { --bg-default: 255 255 255; --content-default: 64 64 64; }",
+    });
+    try {
+      const d = derivePackage(dir, "@dub/ui");
+      expect(d.report.themeFile).toBe("node_modules/@dub/tailwind-config/themes.css");
+      expect(d.report.tokenCount).toBe(2);
+      expect(d.report.componentCount).toBe(1);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("finds them in the project when the package ships no stylesheet (Sim's globals.css)", () => {
+    const dir = project({
+      "node_modules/@sim/emcn/package.json": JSON.stringify({ name: "@sim/emcn", version: "0.1.0", types: "index.d.ts" }),
+      "node_modules/@sim/emcn/index.d.ts": dts,
+      "app/_styles/globals.css": ":root { --surface-1: #ffffff; --text-muted: #7a7a7a; }\n@theme inline { --text-caption: 12px; }",
+    });
+    try {
+      const d = derivePackage(dir, "@sim/emcn");
+      expect(d.report.themeFile).toBe("app/_styles/globals.css");
+      expect(d.config).toContain('css: ["app/_styles/globals.css"]');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("takes the stylesheets --tokens names over everything, and says what to do when nothing holds tokens", () => {
+    const dir = project({
+      "node_modules/@acme/ui/package.json": JSON.stringify({ name: "@acme/ui", version: "1.0.0", types: "index.d.ts" }),
+      "node_modules/@acme/ui/index.d.ts": dts,
+      "theme/a.css": ":root { --brand: #0e7c6b; }",
+      "theme/b.css": ":root { --gap: 12px; }",
+    });
+    try {
+      const d = derivePackage(dir, "@acme/ui", { tokens: ["theme/a.css", "theme/b.css"] });
+      expect(d.report.themeFile).toBe("theme/a.css + theme/b.css");
+      expect(d.report.tokenCount).toBe(2);
+      rmSync(join(dir, "theme"), { recursive: true });
+      expect(() => derivePackage(dir, "@acme/ui")).toThrow(/ships no stylesheet.*--tokens <path/);
+      expect(() => derivePackage(dir, "@acme/ui", { tokens: ["theme/a.css"] })).toThrow(/no stylesheet at theme\/a.css/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("packages that ship barrels and TypeScript source (defect 5)", () => {
+  function project(files: Record<string, string>): string {
+    const dir = mkdtempSync(join(tmpdir(), "zengin-source-"));
+    for (const [rel, content] of Object.entries(files)) {
+      mkdirSync(join(dir, rel, ".."), { recursive: true });
+      writeFileSync(join(dir, rel), content);
+    }
+    return dir;
+  }
+  const css = ":root { --primary: #2563eb; --muted: #f4f4f5; }";
+
+  it("follows export * barrels through declaration files", () => {
+    const dir = project({
+      "node_modules/@acme/ui/package.json": JSON.stringify({ name: "@acme/ui", version: "2.0.0", types: "dist/index.d.ts", exports: { "./styles.css": "./styles.css" } }),
+      "node_modules/@acme/ui/styles.css": css,
+      "node_modules/@acme/ui/dist/index.d.ts": 'export * from "./components/index.js";\n',
+      "node_modules/@acme/ui/dist/components/index.d.ts": 'export * from "./button.js";\nexport { Badge } from "./badge.js";\n',
+      "node_modules/@acme/ui/dist/components/button.d.ts": "import * as React from 'react';\nexport interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> { variant?: 'solid' | 'ghost' }\nexport declare function Button(props: ButtonProps): React.JSX.Element;\n",
+      "node_modules/@acme/ui/dist/components/badge.d.ts": "import * as React from 'react';\ndeclare function Badge(props: { tone?: 'info' | 'danger' }): React.JSX.Element;\nexport { Badge };\n",
+    });
+    try {
+      const d = derivePackage(dir, "@acme/ui");
+      expect(d.components.map((c) => c.name).sort()).toEqual(["Badge", "Button"]);
+      expect(d.components.find((c) => c.name === "Button")!.props!["variant"]).toMatchObject({ values: ["solid", "ghost"] });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("reads a package whose types entry is TypeScript source (Comp, Sim): components, cva variants, owns and replaces", () => {
+    const dir = project({
+      "node_modules/@acme/ds/package.json": JSON.stringify({ name: "@acme/ds", version: "1.1.19", types: "./src/index.ts", exports: { ".": { types: "./src/index.ts" }, "./globals.css": "./src/styles/globals.css" } }),
+      "node_modules/@acme/ds/src/styles/globals.css": css,
+      "node_modules/@acme/ds/src/index.ts": 'export * from "./components/ui";\n',
+      "node_modules/@acme/ds/src/components/ui/index.ts": 'export * from "../atoms";\n',
+      "node_modules/@acme/ds/src/components/atoms/index.ts": 'export * from "./button";\nexport * from "./text";\n',
+      "node_modules/@acme/ds/src/components/atoms/button.tsx": `import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+const buttonVariants = cva("inline-flex", { variants: { variant: { default: "bg-primary", ghost: "" }, size: { sm: "h-8", lg: "h-10" } } });
+type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className"> & VariantProps<typeof buttonVariants> & { loading?: boolean };
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ variant, size, ...props }, ref) => <button ref={ref} className={buttonVariants({ variant, size })} {...props} />);
+Button.displayName = "Button";
+export { Button, buttonVariants };
+export type { ButtonProps };
+`,
+      "node_modules/@acme/ds/src/components/atoms/text.tsx": `import * as React from "react";
+export interface TextProps { variant?: "body" | "muted"; size?: "sm" | "md"; children?: React.ReactNode }
+export function Text({ variant = "body", size = "md", children }: TextProps) { return <p data-variant={variant} data-size={size}>{children}</p>; }
+`,
+    });
+    try {
+      const d = derivePackage(dir, "@acme/ds");
+      expect(d.report.typesFile).toBe("node_modules/@acme/ds/src/index.ts");
+      const button = d.components.find((c) => c.name === "Button")!;
+      expect(button.props!["variant"]).toMatchObject({ values: ["default", "ghost"] });
+      expect(button.props!["loading"]).toEqual({ type: "boolean" });
+      expect(button.replaces).toEqual(["button"]);
+      expect(button.owns).toMatchObject({ "background-color": "variant", padding: "size" });
+      expect(d.components.find((c) => c.name === "Text")!.props!["variant"]).toMatchObject({ values: ["body", "muted"] });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("a design system that styles with Tailwind's palette", () => {
+  it("writes allow: palette when the package's own code uses ten or more palette classes, and says so", () => {
+    const palette = ["neutral-50", "neutral-100", "neutral-200", "neutral-500", "neutral-900", "red-500", "red-600", "green-500", "blue-500", "amber-500"].map((p) => `.bg-${p}{background-color:#000}`).join("");
+    const dir = mkdtempSync(join(tmpdir(), "zengin-palette-"));
+    try {
+      const pkg = join(dir, "node_modules", "@dub", "ui");
+      mkdirSync(join(pkg, "dist"), { recursive: true });
+      writeFileSync(join(pkg, "package.json"), JSON.stringify({ name: "@dub/ui", version: "0.3.21", types: "dist/index.d.ts" }));
+      writeFileSync(join(pkg, "dist", "index.d.ts"), "declare function Button(props: { variant?: 'primary' }): any;\nexport { Button };\n");
+      writeFileSync(join(pkg, "styles.css"), ":root { --bg-default: 255 255 255; }");
+      writeFileSync(join(pkg, "dist", "index.css"), palette + "/* utilities */".repeat(200));
+      const d = derivePackage(dir, "@dub/ui");
+      expect(d.report.paletteClasses).toBe(10);
+      expect(d.config).toContain("allow: palette");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});

@@ -2,7 +2,7 @@ import { offsetsToRange } from "../parse/css.js";
 import { findColorLiterals, findVarRefs, isColorProp, rewriteAll, tokenUtilityPrefix } from "../resolve/css-props.js";
 import type { Token, Fix, Violation } from "../types.js";
 import { rewriteKey, utilityUses, type ClassUse, type Rule, type RuleContext } from "./context.js";
-import { normalizeColor, type ColorMatch } from "../system/tokens.js";
+import { normalizeColor, tokenRef, type ColorMatch } from "../system/tokens.js";
 
 const ID = "color-literal";
 
@@ -112,6 +112,9 @@ function classFix(ctx: RuleContext, use: ClassUse, m: Match): Fix {
   return fixFor(m, replace);
 }
 
+/** A Tailwind palette utility: `bg-neutral-100`, `border-red-500/50`, `text-white`. */
+const PALETTE_STEP = /^[a-z]+(?:-[a-z]+)*-(?:(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|[1-9]00|950)|white|black)(?:\/[\w.[\]%]+)?$/;
+
 export const colorLiteral: Rule = {
   id: ID,
   check(ctx) {
@@ -123,6 +126,9 @@ export const colorLiteral: Rule = {
       const colorDecls = use.decls.filter((d) => isColorProp(d.prop));
       if (colorDecls.length === 0) continue;
 
+      // Tailwind 3 compiles a palette step to a literal (`rgb(245 245 245)`), not to `--color-neutral-100`; with
+      // the palette allowed, the class is the vocabulary, whatever it compiles to.
+      if (allowPalette && PALETTE_STEP.test(use.base)) continue;
       const literal = colorDecls.flatMap((d) => findColorLiterals(d.value))[0];
       if (literal) {
         const m = describe(ctx, literal.literal);
@@ -157,7 +163,7 @@ export const colorLiteral: Rule = {
           const matches = lits.map((l) => ({ lit: l, m: describe(ctx, l.literal) }));
           const worst = matches.find((x) => x.m.confidence === "none")?.m ?? matches.find((x) => x.m.confidence === "nearest")?.m ?? matches[0]!.m;
           const replaceable = matches.every((x) => x.m.token);
-          const rewritten = replaceable ? rewriteAll(sp.value, matches.map((x) => ({ literal: x.lit.literal, offset: x.lit.offset, cssVar: x.m.token!.cssVar }))) : null;
+          const rewritten = replaceable ? rewriteAll(sp.value, matches.map((x) => ({ literal: x.lit.literal, offset: x.lit.offset, ref: tokenRef(x.m.token!) }))) : null;
           out.push(
             ctx.report(ID, {
               range: sp.valueRange,
@@ -180,7 +186,7 @@ export const colorLiteral: Rule = {
             range: offsetsToRange(ctx.file.content, start, start + lit.literal.length),
             found: lit.literal,
             message: m.message,
-            fix: fixFor(m, m.token ? `var(${m.token.cssVar})` : null),
+            fix: fixFor(m, m.token ? tokenRef(m.token) : null),
           }),
         );
       }

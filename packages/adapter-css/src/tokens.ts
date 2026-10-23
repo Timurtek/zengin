@@ -18,6 +18,8 @@ export interface CssToken {
   value: string;
   /** Resolved literal, aliases followed, for classification and for the dark file. */
   resolved: string;
+  /** How CSS refers to it when not `var(--x)`: RGB channels are used as `rgb(var(--x))`. */
+  reference?: string;
 }
 
 export interface CssDerivation {
@@ -83,6 +85,11 @@ export function deriveTokensFromCss(css: string, opts: CssOptions = {}): CssDeri
   const skipped: string[] = [];
   for (const [cssVar, value] of light) {
     const resolved = resolveIn(light, light, value);
+    const channels = rgbChannels(resolved);
+    if (channels) {
+      lightTokens.push({ cssVar, group: "color", value, resolved: channels, reference: `rgb(var(${cssVar}))` });
+      continue;
+    }
     const group = classify(cssVar, resolved);
     if (!group) {
       skipped.push(cssVar);
@@ -94,9 +101,10 @@ export function deriveTokensFromCss(css: string, opts: CssOptions = {}): CssDeri
   const darkTokens: CssToken[] = [];
   for (const [cssVar, value] of dark) {
     if (!lightVars.has(cssVar)) continue; // a dark-only variable is not a token the light theme defines
-    const resolved = resolveIn(dark, light, value);
-    const group = lightTokens.find((t) => t.cssVar === cssVar)!.group;
-    darkTokens.push({ cssVar, group, value, resolved });
+    const raw = resolveIn(dark, light, value);
+    const lightToken = lightTokens.find((t) => t.cssVar === cssVar)!;
+    const resolved = lightToken.reference ? (rgbChannels(raw) ?? raw) : raw;
+    darkTokens.push({ cssVar, group: lightToken.group, value, resolved, ...(lightToken.reference ? { reference: lightToken.reference } : {}) });
   }
 
   const groupOf = new Map(lightTokens.map((t) => [t.cssVar, t.group]));
@@ -139,8 +147,8 @@ export function classify(cssVar: string, resolved: string): Group | undefined {
     if (/space|spacing|gap|padding|margin|^--sp-/.test(name)) return "space";
   }
   if (/^\d+(\.\d+)?$/.test(v)) return "other";
-  // `--fg: 226,224,247` is used as rgba(var(--fg), .5). It is a variable the system defines, not a color on its own.
-  if (/^\d{1,3}(\s*,\s*|\s+)\d{1,3}(\s*,\s*|\s+)\d{1,3}$/.test(v)) return "other";
+  // A bare channel triple is a color only where it is used as one; deriveTokensFromCss reads it as rgb(var(--x)).
+  if (rgbChannels(v)) return "other";
   if (/^(repeating-)?(linear|radial|conic)-gradient\(/.test(v)) return "other";
   if (/font-family|^--font(-|$)/.test(name) || /(sans-serif|serif|monospace)\s*$/.test(v)) return "font";
   if (/shadow/.test(name) || /^\d.*px.*(rgb|#|oklch|hsl)/.test(v)) return "shadow";
@@ -165,7 +173,7 @@ function toDtcg(tokens: CssToken[], groupOf: Map<string, Group>, description: st
     // An alias to another variable in the file becomes a DTCG alias when the target is a light token of the same group.
     const alias = /^var\((--[\w-]+)\)$/.exec(t.value);
     const value = alias && groupOf.get(alias[1]!) === t.group ? `{${t.group}.${alias[1]!.slice(2)}}` : t.resolved;
-    group[key] = { $value: value, $extensions: { zengin: { cssVar: t.cssVar } } };
+    group[key] = { $value: value, $extensions: { zengin: { cssVar: t.cssVar, ...(t.reference ? { reference: t.reference } : {}) } } };
   }
   return out;
 }
@@ -183,6 +191,18 @@ function extension(group: Group, replaced: Set<string>): Record<string, unknown>
 }
 
 const TAILWIND_NAMESPACE: Partial<Record<Group, string>> = { space: "spacing", text: "text", radius: "radius" };
+
+/**
+ * RGB channels as Tailwind 3 systems store colors, `--bg-default: 255 255 255` (or `226, 224, 247`), used as
+ * `rgb(var(--bg-default) / <alpha-value>)`. The hex of the color they make, or undefined for anything else.
+ */
+export function rgbChannels(v: string): string | undefined {
+  const m = /^(\d{1,3})(?:\s*,\s*|\s+)(\d{1,3})(?:\s*,\s*|\s+)(\d{1,3})$/.exec(v.trim());
+  if (!m) return undefined;
+  const parts = [m[1], m[2], m[3]].map(Number);
+  if (parts.some((n) => n > 255)) return undefined;
+  return "#" + parts.map((n) => n.toString(16).padStart(2, "0")).join("");
+}
 
 function hasAncestorMedia(rule: Rule, params: RegExp): boolean {
   let p = rule.parent;

@@ -83,14 +83,14 @@ export async function createEngine(config: ResolvedConfig, definitions?: SystemD
     .map((p) => projectTailwindRules(readFileSync(p, "utf8")))
     .join("\n");
   const utility: UtilityResolver | undefined = config.classes.tailwind
-    ? await createTailwindResolver(toThemeCss(defs.tokens), projectRules)
+    ? await createTailwindResolver(toThemeCss(defs.tokens), projectRules, config.classes)
     : undefined;
   // Utilities compile from the theme, so a profile with its own tokens compiles its own.
   const utilityFor = new Map<ProfileView, UtilityResolver | undefined>([[profiles.base, utility]]);
   if (config.classes.tailwind) {
     for (const view of profiles.views) {
       if (view === profiles.base) continue;
-      utilityFor.set(view, view.definitions.tokens === defs.tokens ? utility : await createTailwindResolver(toThemeCss(view.definitions.tokens), projectRules));
+      utilityFor.set(view, view.definitions.tokens === defs.tokens ? utility : await createTailwindResolver(toThemeCss(view.definitions.tokens), projectRules, config.classes));
     }
   }
   const scope = new Scope(config);

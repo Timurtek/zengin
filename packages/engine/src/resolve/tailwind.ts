@@ -1,6 +1,6 @@
 import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import postcss from "postcss";
 import type { Declaration, UtilityResolver } from "./resolver.js";
 
@@ -45,17 +45,45 @@ export function projectTailwindRules(css: string): string {
   return out.join("\n");
 }
 
-export async function createTailwindResolver(themeCss: string, projectRules = ""): Promise<UtilityResolver> {
-  let tailwind: typeof import("tailwindcss");
-  try {
-    tailwind = await import("tailwindcss");
-  } catch {
+/** Where the project's Tailwind is: its root, and its Tailwind 3 config when it has one. */
+export interface TailwindSource {
+  /** The project root. Tailwind is loaded from here first, so the version is the project's. */
+  root?: string;
+  /** Tailwind 3: the config file. Default: tailwind.config.{ts,js,cjs,mjs} at the root. */
+  config?: string;
+}
+
+/**
+ * The Tailwind the project builds with: resolved from the project first, so `npx` and a global install check
+ * against the project's own version, then from beside the engine.
+ */
+export function loadTailwind(root: string | undefined): { require: NodeRequire; version: string; from: "project" | "zengin" } | undefined {
+  const attempts: [NodeRequire, "project" | "zengin"][] = [];
+  if (root) attempts.push([createRequire(join(root, "package.json")), "project"]);
+  attempts.push([require, "zengin"]);
+  for (const [req, from] of attempts) {
+    try {
+      const pkg = JSON.parse(readFileSync(req.resolve("tailwindcss/package.json"), "utf8")) as { version: string };
+      return { require: req, version: pkg.version, from };
+    } catch {
+      // not installed there
+    }
+  }
+  return undefined;
+}
+
+export async function createTailwindResolver(themeCss: string, projectRules = "", source: TailwindSource = {}): Promise<UtilityResolver> {
+  const found = loadTailwind(source.root);
+  if (!found) {
     throw new Error(
-      "classes.tailwind is enabled but the tailwindcss package could not be loaded. Install tailwindcss@^4 in the project, or set classes.tailwind: false in zengin.config.yaml.",
+      "classes.tailwind is enabled but the tailwindcss package could not be loaded from the project or from zengin. Install the project's dependencies, or set classes.tailwind: false in zengin.config.yaml.",
     );
   }
+  if (Number(found.version.split(".")[0]) === 3) return createTailwind3Resolver(found.require, source);
+  const req = found.require;
+  const tailwind = req("tailwindcss") as typeof import("tailwindcss");
 
-  const themePath = require.resolve("tailwindcss/theme.css");
+  const themePath = req.resolve("tailwindcss/theme.css");
   const defaultVars = new Set<string>();
   const defaultVarValues = new Map<string, string>();
   postcss.parse(readFileSync(themePath, "utf8")).walkDecls((d) => {
@@ -76,9 +104,9 @@ export async function createTailwindResolver(themeCss: string, projectRules = ""
     loadStylesheet: async (id: string, base: string) => {
       let resolved: string;
       try {
-        resolved = require.resolve(id);
+        resolved = req.resolve(id);
       } catch {
-        resolved = require.resolve(id, { paths: [base] });
+        resolved = req.resolve(id, { paths: [base] });
       }
       return { path: resolved, content: readFileSync(resolved, "utf8"), base: dirname(resolved) };
     },
@@ -109,6 +137,76 @@ export async function createTailwindResolver(themeCss: string, projectRules = ""
       return result;
     },
   };
+}
+
+/**
+ * Tailwind 3: the theme is the project's tailwind.config, loaded the way Tailwind's own build loads it (it is
+ * code, so this is the one place the engine runs the project's files), and each class is generated on its own
+ * through Tailwind's synchronous rule generator, the path its language server uses. Tailwind 3 writes no theme
+ * variables, so there are no default variables to tell apart: a default-palette class compiles to a literal,
+ * which the literal rules judge.
+ */
+function createTailwind3Resolver(req: NodeRequire, source: TailwindSource): UtilityResolver {
+  const configPath = source.config ?? findTailwindConfig(source.root);
+  let userConfig: Record<string, unknown> = {};
+  if (configPath) {
+    try {
+      const loadConfig = req("tailwindcss/loadConfig") as (path: string) => Record<string, unknown>;
+      userConfig = loadConfig(configPath);
+    } catch (e) {
+      throw new Error(
+        `Tailwind 3: could not load ${configPath} (${e instanceof Error ? e.message.split("\n")[0] : String(e)}). It imports what the project installs; install the project's dependencies, or set classes.tailwind: false.`,
+      );
+    }
+  }
+  const resolveConfig = req("tailwindcss/resolveConfig") as (c: unknown) => unknown;
+  const { createContext } = req("tailwindcss/lib/lib/setupContextUtils.js") as { createContext: (c: unknown) => unknown };
+  const { generateRules } = req("tailwindcss/lib/lib/generateRules.js") as { generateRules: (c: Set<string>, ctx: unknown) => [unknown, postcss.Node][] };
+  const context = createContext(resolveConfig({ ...userConfig, content: [{ raw: "" }] }));
+
+  const cache = new Map<string, Declaration[] | null>();
+  return {
+    defaultVars: new Set<string>(),
+    defaultVarValues: new Map<string, string>(),
+    resolve(candidate: string): Declaration[] | null {
+      const hit = cache.get(candidate);
+      if (hit !== undefined) return hit;
+      let result: Declaration[] | null = null;
+      try {
+        const rules = generateRules(new Set([candidate]), context);
+        if (rules.length) {
+          const decls: Declaration[] = [];
+          for (const [, node] of rules) {
+            const walk = (n: postcss.Node): void => {
+              if (n.type === "decl") {
+                const d = n as postcss.Declaration;
+                // `rgb(239 68 68 / var(--tw-bg-opacity, 1))` is Tailwind 3 carrying its own opacity utility; the
+                // color is `rgb(239 68 68)`, and `rgb(var(--bg-default) / ...)` is the token's reference.
+                if (!d.prop.startsWith("--tw-")) decls.push({ prop: d.prop, value: d.value.replace(/\s*\/\s*var\(--tw-[\w-]*opacity(?:\s*,\s*1)?\)/g, "") });
+              } else if ("each" in n) (n as postcss.Container).each((c) => walk(c));
+            };
+            walk(node);
+          }
+          // `ring-neutral-500` compiles to Tailwind's own `--tw-ring-color` and nothing else: it exists, with
+          // nothing to judge. As the Tailwind 4 path does, that is an empty list, not "renders nothing".
+          result = decls;
+        }
+      } catch {
+        result = null;
+      }
+      cache.set(candidate, result);
+      return result;
+    },
+  };
+}
+
+function findTailwindConfig(root: string | undefined): string | undefined {
+  if (!root) return undefined;
+  for (const name of ["tailwind.config.ts", "tailwind.config.js", "tailwind.config.cjs", "tailwind.config.mjs", "tailwind.config.mts", "tailwind.config.cts"]) {
+    const p = join(root, name);
+    if (existsSync(p)) return p;
+  }
+  return undefined;
 }
 
 /** Splits a class string into candidates, preserving each candidate's offset within the string. */
