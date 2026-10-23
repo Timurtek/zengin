@@ -80,10 +80,16 @@ export function variantsFor(component: string, variants: Map<string, Record<stri
   return variants.get(camel) ?? variants.get(`${camel}Variants`);
 }
 
-export type Info = { members: Node[]; extends?: string; found: boolean; variants: Record<string, string[]>; passthrough: string[] };
+export type Info = { members: Node[]; extends?: string; found: boolean; variants: Record<string, string[]>; passthrough: string[]; omitted: string[] };
+
+/** What Omit removed and the props type did not declare again: `Omit<Base, "className"> & { className?: string }` takes one. */
+export function effectiveOmits(info: Info): string[] {
+  const declared = new Set(info.members.filter((m) => m.type === "TSPropertySignature").map((m) => idName(m["key"])));
+  return [...new Set(info.omitted)].filter((k) => !declared.has(k) && k !== "ref" && k !== "key");
+}
 
 export function emptyInfo(): Info {
-  return { members: [], found: false, variants: {}, passthrough: [] };
+  return { members: [], found: false, variants: {}, passthrough: [], omitted: [] };
 }
 
 /**
@@ -98,8 +104,11 @@ export function makeCollector(decls: Declarations, opts: { strictElements?: bool
     if (t.type === "TSTypeLiteral") {
       into.found = true;
       into.members.push(...(t["members"] as Node[]));
-    } else if (t.type === "TSIntersectionType") {
+    } else if (t.type === "TSIntersectionType" || t.type === "TSUnionType") {
+      // A union of props shapes (`ReadFileProps | UploadProps`) accepts the props of each.
       for (const p of t["types"] as Node[]) collect(p, seen, into);
+    } else if (t.type === "TSParenthesizedType") {
+      collect(t["typeAnnotation"] as Node, seen, into);
     } else if (t.type === "TSTypeReference") {
       const name = refName(t["typeName"] as Node);
       const args = ((t["typeArguments"] ?? t["typeParameters"]) as Node | undefined)?.["params"] as Node[] | undefined;
@@ -111,7 +120,12 @@ export function makeCollector(decls: Declarations, opts: { strictElements?: bool
         if (q) into.passthrough.push(q);
         return;
       }
-      if (name === "Omit" || name === "Partial" || name === "Pick" || name === "Readonly" || name === "Required") return collect(args?.[0], seen, into);
+      if (name === "Omit") {
+        collect(args?.[0], seen, into);
+        into.omitted.push(...literalKeys(args?.[1]));
+        return;
+      }
+      if (name === "Partial" || name === "Pick" || name === "Readonly" || name === "Required") return collect(args?.[0], seen, into);
       if (name === "VariantProps") {
         const q = args?.[0];
         const target = q?.type === "TSTypeQuery" ? idName(q["exprName"]) : "";
@@ -121,6 +135,21 @@ export function makeCollector(decls: Declarations, opts: { strictElements?: bool
           Object.assign(into.variants, map);
         }
         return;
+      }
+      if (/^(ComponentProps|ComponentPropsWithoutRef|ComponentPropsWithRef)$/.test(name)) {
+        const arg = args?.[0];
+        // `typeof motion.div`, `typeof RadixSelect.Root`: another component's props, which only it knows.
+        if (arg?.type === "TSTypeQuery") {
+          into.found = true;
+          into.passthrough.push(`typeof ${entityText(arg["exprName"] as Node)}`);
+          return;
+        }
+        // `ComponentPropsWithoutRef<T>` with T the component's own type parameter: polymorphic, any element's props.
+        if (arg?.type === "TSTypeReference" && isTypeParameter(refName(arg["typeName"] as Node), decls)) {
+          into.found = true;
+          into.passthrough.push(`${name}<${refName(arg["typeName"] as Node)}> (polymorphic)`);
+          return;
+        }
       }
       const el = elementOf(name, args, opts.strictElements);
       if (el) {
@@ -186,14 +215,14 @@ export function deriveManifestFromTypes(dts: string, opts: { importFrom: string;
     for (const m of info.members) {
       if (m.type !== "TSPropertySignature") continue;
       const key = idName(m["key"]);
-      if (!key || SKIP_PROPS.has(key) || key in props) continue;
+      if (!key || SKIP_PROPS.has(key)) continue;
       const kind = propKind((m["typeAnnotation"] as Node | undefined)?.["typeAnnotation"] as Node | undefined);
-      if (kind) props[key] = kind;
+      if (kind) props[key] = mergeKind(props[key], kind);
     }
     const v = Object.keys(info.variants).length ? info.variants : variantsFor(name, variants);
     if (v) {
       withVariants++;
-      for (const [prop, values] of Object.entries(v)) props[prop] = { type: "enum", values, ...(values.includes("default") ? { default: "default" } : {}) };
+      for (const [prop, values] of Object.entries(v)) props[prop] = values.length ? { type: "enum", values, ...(values.includes("default") ? { default: "default" } : {}) } : { type: "boolean" };
     }
     if (!info.found && !v) {
       skipped.push(`${name}: no props type found`);
@@ -215,6 +244,7 @@ export function deriveManifestFromTypes(dts: string, opts: { importFrom: string;
       owns,
       states: ["default"],
       ...(info.passthrough.length ? { passthrough: [...new Set(info.passthrough)] } : {}),
+      ...(effectiveOmits(info).length ? { omits: effectiveOmits(info) } : {}),
     } as ComponentManifest);
   }
   return { components, report: { components: components.length, withVariants, skipped } };
@@ -263,8 +293,8 @@ export function variantCall(init: Node | undefined): Record<string, string[]> | 
   for (const p of variantsProp["properties"] as Node[]) {
     if (p.type !== "ObjectProperty" || (p["value"] as Node).type !== "ObjectExpression") continue;
     const values = ((p["value"] as Node)["properties"] as Node[]).filter((x) => x.type === "ObjectProperty").map((x) => keyName(x["key"] as Node));
-    // a boolean variant (`{ true: "...", false: "..." }`) is a boolean prop, not an enum to list
-    if (values.length && !values.every((v) => v === "true" || v === "false")) out[keyName(p["key"] as Node)] = values;
+    // a boolean variant (`{ true: "...", false: "..." }`) is a boolean prop: no values to list
+    if (values.length) out[keyName(p["key"] as Node)] = values.every((v) => v === "true" || v === "false") ? [] : values;
   }
   return Object.keys(out).length ? out : undefined;
 }
@@ -298,8 +328,11 @@ function cvaMap(fn: Node): Record<string, string[]> | undefined {
     for (const m of lit["members"] as Node[]) {
       if (m.type !== "TSPropertySignature") continue;
       const kind = propKind((m["typeAnnotation"] as Node | undefined)?.["typeAnnotation"] as Node | undefined);
-      // `class` and `className` are ClassProp's; a boolean variant (`inset?: boolean`) carries no values to list
-      if (kind?.type === "enum" && kind.values?.length) out[idName(m["key"])] = kind.values;
+      // `class` and `className` are ClassProp's; a boolean variant (`inset?: boolean`) is a boolean prop, no values
+      const key = idName(m["key"]);
+      if (key === "class" || key === "className") continue;
+      if (kind?.type === "enum" && kind.values?.length) out[key] = kind.values;
+      else if (kind?.type === "boolean") out[key] = [];
     }
   }
   return Object.keys(out).length ? out : undefined;
@@ -357,14 +390,18 @@ export function propKind(
   }
 }
 
+const COMPONENT_TYPES = /^(FC|FunctionComponent|ForwardRefExoticComponent|ComponentType|MemoExoticComponent|NamedExoticComponent)$/;
+
 export function isComponentType(ann: Node): boolean {
-  if (ann.type === "TSTypeReference") return /^(FC|FunctionComponent|ForwardRefExoticComponent|ComponentType|MemoExoticComponent|NamedExoticComponent)$/.test(refName(ann["typeName"] as Node));
+  if (ann.type === "TSTypeReference") return COMPONENT_TYPES.test(refName(ann["typeName"] as Node));
+  // `import("react").ForwardRefExoticComponent<P>`, which tsc writes when the module never imported React by name
+  if (ann.type === "TSImportType") return COMPONENT_TYPES.test(entityText(ann["qualifier"] as Node).split(".").pop() ?? "");
   return ann.type === "TSFunctionType";
 }
 
 /** The props type of a `ForwardRefExoticComponent<P>` or `FC<P>`; a function type's first parameter. */
 export function componentPropsType(ann: Node): Node | undefined {
-  if (ann.type === "TSTypeReference") return (((ann["typeArguments"] ?? ann["typeParameters"]) as Node | undefined)?.["params"] as Node[] | undefined)?.[0];
+  if (ann.type === "TSTypeReference" || ann.type === "TSImportType") return (((ann["typeArguments"] ?? ann["typeParameters"]) as Node | undefined)?.["params"] as Node[] | undefined)?.[0];
   if (ann.type === "TSFunctionType") {
     const first = ((ann["params"] ?? ann["parameters"]) as Node[] | undefined)?.[0];
     return (first?.["typeAnnotation"] as Node | undefined)?.["typeAnnotation"] as Node | undefined;
@@ -412,7 +449,43 @@ function htmlTag(name: string): string | undefined {
 function isReactNamespace(n: Node, imports: Map<string, string>): boolean {
   let cur: Node = n;
   while (cur.type === "TSQualifiedName") cur = cur["left"] as Node;
-  return imports.get(idName(cur)) === "react#*";
+  const head = idName(cur);
+  const from = imports.get(head);
+  // `import * as React`, `import React from "react"`, or the global `React` namespace @types/react declares
+  return from === "react#*" || from === "react#default" || (from === undefined && head === "React");
+}
+
+/**
+ * A prop met again in another member of a union: `{ type: "input" } | { type: "custom" }` takes either, so the
+ * values merge. Anything else keeps the first reading.
+ */
+export function mergeKind(
+  prev: NonNullable<ComponentManifest["props"]>[string] | undefined,
+  next: NonNullable<ComponentManifest["props"]>[string],
+): NonNullable<ComponentManifest["props"]>[string] {
+  if (!prev) return next;
+  if (prev.type === "enum" && next.type === "enum") return { ...prev, values: [...new Set([...(prev.values ?? []), ...(next.values ?? [])])] };
+  return prev;
+}
+
+/** The string keys of `"className" | "style"`, as `Omit` takes them. */
+function literalKeys(t: Node | undefined): string[] {
+  if (!t) return [];
+  if (t.type === "TSLiteralType" && typeof (t["literal"] as Node)["value"] === "string") return [String((t["literal"] as Node)["value"])];
+  if (t.type === "TSUnionType") return (t["types"] as Node[]).flatMap(literalKeys);
+  return [];
+}
+
+/** A name no declaration in the module defines and shaped like a type parameter: `T`, `TElement`, `C`. */
+function isTypeParameter(name: string, decls: Declarations): boolean {
+  if (decls.interfaces.has(name) || decls.aliases.has(name) || decls.imports.has(name)) return false;
+  return /^[A-Z]$|^T[A-Z]\w*$|^(As|Element|Tag|Comp|Component)$/.test(name);
+}
+
+function entityText(n: Node): string {
+  if (n.type === "TSQualifiedName") return `${entityText(n["left"] as Node)}.${idName(n["right"])}`;
+  if (n.type === "MemberExpression") return `${entityText(n["object"] as Node)}.${idName(n["property"])}`;
+  return idName(n);
 }
 
 /** Heritage clauses carry `A.B` as a MemberExpression; type positions carry it as a TSQualifiedName. One shape here. */

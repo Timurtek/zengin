@@ -297,6 +297,11 @@ export interface ComponentManifest {
    * because the manifest cannot say what the component does not accept. Enum values are still checked.
    */
   passthrough?: string[];
+  /**
+   * Props the component's type removes from what it forwards, as `Omit<ButtonProps, "className">` does: a design
+   * system that takes no className says so in its types, and passing one is an error whatever else passes through.
+   */
+  omits?: string[];
 }
 
 export interface SystemDefinitions {

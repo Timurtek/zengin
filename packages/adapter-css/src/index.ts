@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import type { ComponentManifest } from "@zenginui/engine";
 import { deriveTokensFromCss } from "./tokens.js";
@@ -28,6 +28,8 @@ export interface PackageDerivation {
     skippedComponents: string[];
     /** Distinct Tailwind palette classes the package's own code styles with; ten or more make the palette on-system. */
     paletteClasses: number;
+    /** The package's source in the same workspace, when node_modules holds a separate copy of it: the two may differ. */
+    workspaceSource?: string;
   };
 }
 
@@ -102,6 +104,10 @@ export function derivePackage(projectDir: string, pkgName: string, opts: Package
       componentCount: types.report.components,
       withVariants: types.report.withVariants,
       paletteClasses,
+      ...(() => {
+        const ws = workspaceSource(projectDir, pkgDir, pkgName);
+        return ws ? { workspaceSource: ws } : {};
+      })(),
       skippedVariables: theme.derivation.report.skipped,
       skippedComponents: types.report.skipped,
     },
@@ -208,6 +214,54 @@ function findCss(pkgDir: string, pkg: { exports?: unknown; files?: string[] }): 
   for (const name of safeReaddir(pkgDir)) add(name);
   for (const sub of ["dist", "styles", "css"]) for (const name of safeReaddir(join(pkgDir, sub))) add(join(sub, name));
   return [...out];
+}
+
+/**
+ * The package's own source, when the project sits in a workspace that has it and node_modules holds a different
+ * copy (a published build installed instead of the workspace link). Searched in the workspace root's packages,
+ * apps and libs folders, two levels deep.
+ */
+function workspaceSource(projectDir: string, pkgDir: string, pkgName: string): string | undefined {
+  let root: string | undefined;
+  for (let dir = resolve(projectDir); ; ) {
+    if (existsSync(join(dir, "pnpm-workspace.yaml")) || existsSync(join(dir, "turbo.json")) || hasWorkspaces(join(dir, "package.json"))) root = dir;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  if (!root) return undefined;
+  const installed = realpath(pkgDir);
+  for (const group of ["packages", "apps", "libs"]) {
+    for (const name of safeReaddir(join(root, group))) {
+      for (const dir of [join(root, group, name), ...safeReaddir(join(root, group, name)).map((n) => join(root!, group, name, n))]) {
+        const pj = join(dir, "package.json");
+        if (!existsSync(pj)) continue;
+        try {
+          if ((JSON.parse(readFileSync(pj, "utf8")) as { name?: string }).name !== pkgName) continue;
+        } catch {
+          continue;
+        }
+        return realpath(dir) === installed ? undefined : relative(projectDir, dir).replace(/\\/g, "/");
+      }
+    }
+  }
+  return undefined;
+}
+
+function hasWorkspaces(pj: string): boolean {
+  try {
+    return existsSync(pj) && "workspaces" in (JSON.parse(readFileSync(pj, "utf8")) as object);
+  } catch {
+    return false;
+  }
+}
+
+function realpath(p: string): string {
+  try {
+    return realpathSync(p);
+  } catch {
+    return resolve(p);
+  }
 }
 
 /** Stylesheets the project's own stylesheets import by relative path, wherever they live. */
@@ -375,6 +429,11 @@ export function renderReport(d: PackageDerivation): string {
       ? `Colors: the package's own code styles with ${r.paletteClasses} Tailwind palette classes, so the palette is on-system (color-literal allow: palette)`
       : `Colors: semantic tokens only (color-literal allow: semantic); the package's own code uses ${r.paletteClasses} palette classes`,
   ];
+  if (r.workspaceSource) {
+    lines.push(
+      `Warning: ${r.package} in node_modules is a separate copy; this workspace has its source at ${r.workspaceSource}. If the copy is a published build behind the source, props added since read as unknown. Build the workspace package and link it, or point --tokens and the types at the source.`,
+    );
+  }
   if (r.skippedVariables.length) lines.push(`Not tokens (unclassified values): ${r.skippedVariables.join(", ")}`);
   if (r.skippedComponents.length) lines.push(`Skipped components: ${r.skippedComponents.join("; ")}`);
   const passthrough = d.components.filter((c) => c.passthrough?.length);
