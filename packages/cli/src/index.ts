@@ -44,6 +44,8 @@ Usage:
 Init options:
   --from shadcn         read the theme CSS, Tailwind config and components/ui; write zengin/ and zengin.config.yaml
   --from package <name> read node_modules/<name>: tokens from its stylesheet (names kept), manifest from its .d.ts
+  --tokens <css>        with --from package: the stylesheet(s) that hold the tokens, when the package's own do not
+                        (default: the package's, else the project's :root sheets, else the package's dependencies')
   --from claude-design  read the export in --dir (default: here); contracts are cross-checked against _adherence.oxlintrc.json
   --dir <path>          project directory (default: cwd)
   --force               overwrite existing zengin/ definitions and config
@@ -136,7 +138,7 @@ interface Parsed {
   command: "check" | "explain" | "init" | "define" | "doctor" | "report" | "rollup" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "telemetry" | "help";
   positional: string[];
   check: CheckOptions;
-  init: { from?: string; dir?: string; force: boolean };
+  init: { from?: string; dir?: string; force: boolean; tokens: string[] };
   report: { repo?: string; includeViolations: boolean; out?: string; into?: string; at?: string; commit?: string; ref?: string };
   rollup: { previous?: string; format: "markdown" | "json" | "html"; out?: string };
   scaffold: ScaffoldOptions;
@@ -148,7 +150,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
   const positional: string[] = [];
   let command: Parsed["command"] | undefined;
   const rules: RuleId[] = [];
-  const initOpts: Parsed["init"] = { force: false };
+  const initOpts: Parsed["init"] = { force: false, tokens: [] };
   const reportOpts: Parsed["report"] = { includeViolations: false };
   const rollupOpts: Parsed["rollup"] = { format: "markdown" };
   const scaffold: ScaffoldOptions = { storybook: true, force: false, list: false, write: false };
@@ -185,6 +187,8 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
     else if (a.startsWith("--format=")) rawFormat = a.slice(9);
     else if (a === "--max") check.max = asInt(value());
     else if (a.startsWith("--max=")) check.max = asInt(a.slice(6));
+    else if (a === "--tokens") initOpts.tokens.push(...value().split(",").filter(Boolean));
+    else if (a.startsWith("--tokens=")) initOpts.tokens.push(...a.slice(9).split(",").filter(Boolean));
     else if (a === "--from") initOpts.from = value();
     else if (a.startsWith("--from=")) initOpts.from = a.slice(7);
     else if (a === "--dir") initOpts.dir = scaffold.dir = value();
@@ -365,7 +369,7 @@ async function main(): Promise<void> {
       } else if (parsed.init.from === "package") {
         const pkgName = parsed.positional[0];
         if (!pkgName) throw new Error("zengin init --from package needs the package name, e.g. zengin init --from package @umami/react-zen");
-        process.stdout.write(initFromPackage(dir, pkgName, parsed.init.force) + "\n");
+        process.stdout.write(initFromPackage(dir, pkgName, parsed.init.force, parsed.init.tokens) + "\n");
       } else {
         const path = init(dir);
         process.stdout.write(`Wrote ${path}. Edit system.package to point at your design system, then run: zengin check\n`);

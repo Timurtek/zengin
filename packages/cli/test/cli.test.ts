@@ -142,7 +142,7 @@ describe("zengin init", () => {
 
   it("derives definitions from a Claude Design export with --from claude-design, then checks it", async () => {
     const parsed = parseArgs(["init", "--from", "claude-design", "--dir", "export", "--force"], "/x");
-    expect(parsed.init).toEqual({ from: "claude-design", dir: "export", force: true });
+    expect(parsed.init).toEqual({ from: "claude-design", dir: "export", force: true, tokens: [] });
 
     const exported = mkdtempSync(join(tmpdir(), "zengin-claude-design-"));
     try {
@@ -223,7 +223,8 @@ describe("zengin init", () => {
 
   it("rejects an unknown --from", () => {
     expect(() => parseArgs(["init", "--from", "mui"], "/x")).toThrow(/--from supports "shadcn"/);
-    expect(parseArgs(["init", "--from", "shadcn", "--dir", "../app", "--force"], "/x").init).toEqual({ from: "shadcn", dir: "../app", force: true });
+    expect(parseArgs(["init", "--from", "shadcn", "--dir", "../app", "--force"], "/x").init).toEqual({ from: "shadcn", dir: "../app", force: true, tokens: [] });
+    expect(parseArgs(["init", "--from", "package", "@dub/ui", "--tokens", "../../packages/tailwind-config/themes.css", "--tokens=a.css,b.css"], "/x").init.tokens).toEqual(["../../packages/tailwind-config/themes.css", "a.css", "b.css"]);
   });
 });
 

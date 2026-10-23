@@ -150,8 +150,10 @@ export interface ZenginConfig {
   classes?: {
     /** Compile utility classes with Tailwind v4. `auto` (default) enables it when the project depends on tailwindcss. */
     tailwind?: "auto" | boolean;
-    /** Project stylesheets whose `@custom-variant` and `@utility` rules the Tailwind adapter must know about. */
+    /** Project stylesheets whose `@custom-variant`, `@utility` and `@theme` rules the Tailwind adapter must know about. */
     css?: string[];
+    /** Tailwind 3: the config file the theme comes from. Default: tailwind.config.{ts,js,cjs,mjs} at the project root. */
+    config?: string;
   };
   rules?: Partial<Record<RuleId, RuleConfig | Severity | "off">>;
   /**
@@ -211,6 +213,10 @@ export interface ResolvedConfig {
     tailwind: boolean;
     /** Absolute paths. */
     css: string[];
+    /** The project root: Tailwind is loaded from here first. */
+    root: string;
+    /** Tailwind 3's config file, absolute, when the config names one. */
+    config?: string;
   };
   rules: Record<RuleId, ResolvedRuleConfig>;
   /** In declaration order; the first match wins. Empty when the project has one design, which is the default. */
@@ -253,6 +259,8 @@ export interface Token {
   key: string;
   /** The group declared `$extensions.zengin.extendsDefault`: the framework default scale stays part of the system. */
   extendsDefault: boolean;
+  /** How CSS refers to the token when it is not `var(cssVar)`: `rgb(var(--bg-default))` for a variable holding RGB channels. */
+  reference?: string;
 }
 
 export interface PropManifest {

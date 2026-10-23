@@ -1,8 +1,10 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import type { ComponentManifest } from "@zenginui/engine";
 import { deriveTokensFromCss } from "./tokens.js";
-import { deriveManifestFromTypes, type TypesDerivation } from "./types.js";
+import { moduleGraph } from "./modules.js";
+import { deriveManifestFromSource } from "./source.js";
+import { deriveManifestFromTypes, HTML_TAGS, type TypesDerivation } from "./types.js";
 
 export interface PackageDerivation {
   tokens: Record<string, unknown>;
@@ -24,6 +26,8 @@ export interface PackageDerivation {
     withVariants: number;
     skippedVariables: string[];
     skippedComponents: string[];
+    /** Distinct Tailwind palette classes the package's own code styles with; ten or more make the palette on-system. */
+    paletteClasses: number;
   };
 }
 
@@ -33,14 +37,21 @@ export interface PackageDerivation {
  * a config that points the class resolver at the package's precompiled utilities, when it ships any.
  * Nothing is executed; the package is read as text.
  */
-export function derivePackage(projectDir: string, pkgName: string): PackageDerivation {
+export interface PackageOptions {
+  /**
+   * Stylesheets that hold the tokens, project-relative, when the package's own do not: a sibling preset
+   * (`@dub/tailwind-config/themes.css`) or the app's globals. Read together, in order.
+   */
+  tokens?: string[];
+}
+
+export function derivePackage(projectDir: string, pkgName: string, opts: PackageOptions = {}): PackageDerivation {
   const pkgDir = join(projectDir, "node_modules", ...pkgName.split("/"));
   const pkgJsonPath = join(pkgDir, "package.json");
   if (!existsSync(pkgJsonPath)) throw new Error(`${pkgName} is not installed: no ${rel(projectDir, pkgJsonPath)}. Install it first.`);
-  const pkg = JSON.parse(readFileSync(pkgJsonPath, "utf8")) as { version?: string; types?: string; typings?: string; main?: string; exports?: unknown; files?: string[] };
+  const pkg = JSON.parse(readFileSync(pkgJsonPath, "utf8")) as { version?: string; types?: string; typings?: string; main?: string; exports?: unknown; files?: string[]; dependencies?: Record<string, string>; peerDependencies?: Record<string, string> };
 
   const cssFiles = findCss(pkgDir, pkg);
-  if (!cssFiles.length) throw new Error(`${pkgName} ships no stylesheet: looked at its exports, its files list and its root for *.css.`);
   // The theme sheet is the one that is mostly custom properties: variables per class rule. A precompiled
   // utility sheet defines more variables (Tailwind's whole palette) but thousands of rules; it is the largest of the rest.
   const scored = cssFiles.map((f) => {
@@ -50,23 +61,29 @@ export function derivePackage(projectDir: string, pkgName: string): PackageDeriv
     return { file: f, derivation, size: statSync(f).size, score: derivation.report.light / (1 + rules) };
   });
   scored.sort((a, b) => b.score - a.score);
-  const theme = scored[0]!;
-  if (theme.derivation.report.light === 0) throw new Error(`${pkgName}'s stylesheets define no custom properties on :root, so there are no tokens to derive.`);
+  const foundations = findFoundations(projectDir);
+  const theme = tokenSheet(projectDir, pkgDir, pkg, scored, foundations, opts.tokens);
+  if (!theme) {
+    const where = cssFiles.length ? `${pkgName}'s stylesheets define no custom properties on :root` : `${pkgName} ships no stylesheet`;
+    throw new Error(`${where}, and neither do the project's stylesheets or the package's dependencies, so there are no tokens to derive. Name the stylesheet that holds them: --tokens <path/to/theme.css>.`);
+  }
+  const fromPackage = scored.find((s) => s.file === theme.file);
   const utility = scored
-    .slice(1)
+    .filter((s) => s !== fromPackage)
     .sort((a, b) => b.size - a.size)
-    .find((s) => s.size > theme.size);
+    .find((s) => s.size > (fromPackage?.size ?? 0));
 
   const typesFile = findTypes(pkgDir, pkg);
-  const types: TypesDerivation = typesFile
-    ? deriveManifestFromTypes(readFileSync(typesFile, "utf8"), { importFrom: pkgName, version: pkg.version })
-    : { components: [], report: { components: 0, withVariants: 0, skipped: [] } };
+  const types: TypesDerivation = typesFile ? manifestFromEntry(pkgDir, typesFile, pkgName, pkg.version) : { components: [], report: { components: 0, withVariants: 0, skipped: [] } };
 
-  const foundations = findFoundations(projectDir);
   // Stylesheets whose @theme blocks Tailwind compiles against: the design system's own and the project's.
-  const themeSheets = [...cssFiles.map((f) => rel(projectDir, f)), ...foundations].filter((p) => hasTheme(join(projectDir, p)));
+  const themeSheets = [...new Set([...cssFiles.map((f) => rel(projectDir, f)), ...foundations, ...(fromPackage ? [] : [rel(projectDir, theme.file)])])].filter((p) => hasTheme(join(projectDir, p)));
   const classesCss = [...(utility ? [rel(projectDir, utility.file)] : []), ...themeSheets.filter((p) => !utility || p !== rel(projectDir, utility.file))];
-  const config = renderConfig(pkgName, pkg.version ?? "0.0.0", classesCss, utility ? rel(projectDir, utility.file) : undefined, foundations);
+  // A design system whose own components style with Tailwind's palette has made the palette part of the system:
+  // `bg-neutral-100` in the app is the same vocabulary, not a literal that escaped the tokens.
+  const ownCode = [utility ? readFileSync(utility.file, "utf8") : "", ...(typesFile ? sourceTexts(typesFile) : [])].join("\n");
+  const paletteClasses = paletteUse(ownCode);
+  const config = renderConfig(pkgName, pkg.version ?? "0.0.0", classesCss, utility ? rel(projectDir, utility.file) : undefined, foundations, paletteClasses >= PALETTE_THRESHOLD);
   return {
     tokens: theme.derivation.tokens,
     tokensDark: theme.derivation.tokensDark,
@@ -76,7 +93,7 @@ export function derivePackage(projectDir: string, pkgName: string): PackageDeriv
       package: pkgName,
       version: pkg.version ?? "unknown",
       foundations,
-      themeFile: rel(projectDir, theme.file),
+      themeFile: theme.label,
       utilityFile: utility ? rel(projectDir, utility.file) : undefined,
       typesFile: typesFile ? rel(projectDir, typesFile) : undefined,
       tokenCount: theme.derivation.report.light,
@@ -84,10 +101,96 @@ export function derivePackage(projectDir: string, pkgName: string): PackageDeriv
       byGroup: theme.derivation.report.byGroup,
       componentCount: types.report.components,
       withVariants: types.report.withVariants,
+      paletteClasses,
       skippedVariables: theme.derivation.report.skipped,
       skippedComponents: types.report.skipped,
     },
   };
+}
+
+interface Scored {
+  file: string;
+  derivation: ReturnType<typeof deriveTokensFromCss>;
+  size: number;
+  score: number;
+}
+
+/**
+ * Where the tokens are. Named stylesheets win outright; otherwise the package's own theme sheet, then the
+ * project's `:root` sheets (an app that themes the package in its globals), then the stylesheets of the
+ * package's own dependencies (a design system whose variables live in a sibling preset).
+ */
+function tokenSheet(
+  projectDir: string,
+  pkgDir: string,
+  pkg: { dependencies?: Record<string, string>; peerDependencies?: Record<string, string> },
+  scored: Scored[],
+  foundations: string[],
+  named: string[] | undefined,
+): { file: string; label: string; derivation: Scored["derivation"] } | undefined {
+  if (named?.length) {
+    const files = named.map((p) => resolve(projectDir, p));
+    for (const f of files) if (!existsSync(f)) throw new Error(`--tokens: no stylesheet at ${rel(projectDir, f)}.`);
+    const derivation = deriveTokensFromCss(files.map((f) => readFileSync(f, "utf8")).join("\n"));
+    if (derivation.report.light === 0) throw new Error(`--tokens: ${named.join(", ")} define${named.length === 1 ? "s" : ""} no custom properties on :root.`);
+    return { file: files[0]!, label: files.map((f) => rel(projectDir, f)).join(" + "), derivation };
+  }
+  const best = scored[0];
+  if (best && best.derivation.report.light > 0) return { file: best.file, label: rel(projectDir, best.file), derivation: best.derivation };
+  // The project's :root sheets, and what its stylesheets import by relative path: a monorepo app reaches its
+  // tokens as `@import "../../../packages/tailwind-config/themes.css"`.
+  const candidates: string[] = [...foundations.map((f) => join(projectDir, f)), ...importedSheets(projectDir)];
+  for (const dep of Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies })) {
+    // installed beside the package (pnpm, nested) or at the project root (hoisted)
+    for (const base of [join(pkgDir, "node_modules"), join(projectDir, "node_modules")]) {
+      const depDir = join(base, ...dep.split("/"));
+      if (!existsSync(join(depDir, "package.json"))) continue;
+      const depPkg = JSON.parse(readFileSync(join(depDir, "package.json"), "utf8")) as { exports?: unknown; files?: string[] };
+      candidates.push(...findCss(depDir, depPkg));
+      break;
+    }
+  }
+  const ranked = candidates
+    .map((file) => {
+      const derivation = deriveTokensFromCss(readFileSync(file, "utf8"));
+      return { file, derivation, light: derivation.report.light };
+    })
+    .filter((c) => c.light > 0)
+    .sort((a, b) => b.light - a.light);
+  const pick = ranked[0];
+  return pick ? { file: pick.file, label: rel(projectDir, pick.file), derivation: pick.derivation } : undefined;
+}
+
+/**
+ * The manifest from a package's types entry. A declaration file is read with every declaration file it
+ * re-exports or imports, so a barrel (`export * from "./components"`) yields its components. An entry that is
+ * TypeScript source, as an internal package consumed through `transpilePackages` ships, is read as source:
+ * components from the files the entry re-exports, props types from wherever they import them.
+ */
+function manifestFromEntry(pkgDir: string, entry: string, pkgName: string, version: string | undefined): TypesDerivation {
+  const graph = moduleGraph(entry);
+  if (/\.d\.m?ts$/.test(entry)) {
+    const dts = graph.all.filter((f) => /\.d\.m?ts$/.test(f)).map((f) => readFileSync(f, "utf8")).join("\n");
+    return deriveManifestFromTypes(dts, { importFrom: pkgName, version });
+  }
+  const files = graph.all.map((f) => ({ path: rel(pkgDir, f), content: readFileSync(f, "utf8") }));
+  const exported = new Set(graph.exported.map((f) => rel(pkgDir, f)));
+  const s = deriveManifestFromSource(files, { importFrom: pkgName, version, owned: (p) => exported.has(p) });
+  // A Tailwind component has no stylesheet to say what it owns; its variant props say it, as the declaration
+  // path reads them: `variant` paints the box, `size` pads it and sets its type.
+  for (const c of s.components) {
+    // and, as the declaration path does for a stranger's package, a Button is a button
+    const tag = c.name.toLowerCase();
+    c.replaces = HTML_TAGS.has(tag) ? [tag] : [];
+    if (HTML_TAGS.has(tag)) c.extends ??= tag;
+    if (c.owns && Object.keys(c.owns).length) continue;
+    const owns: Record<string, string> = {};
+    if (c.props?.["variant"]?.type === "enum") Object.assign(owns, { "background-color": "variant", color: "variant", "border-color": "variant" });
+    if (c.props?.["size"]?.type === "enum") Object.assign(owns, { padding: "size", font: "size" });
+    if (Object.keys(owns).length) c.owns = owns;
+  }
+  const withVariants = s.components.filter((c) => Object.values(c.props ?? {}).some((p) => p.type === "enum")).length;
+  return { components: s.components, report: { components: s.components.length, withVariants, skipped: s.report.skipped } };
 }
 
 function findCss(pkgDir: string, pkg: { exports?: unknown; files?: string[] }): string[] {
@@ -107,8 +210,22 @@ function findCss(pkgDir: string, pkg: { exports?: unknown; files?: string[] }): 
   return [...out];
 }
 
-/** Stylesheets in the project (not node_modules) that define custom properties on :root: its theme layer. */
-function findFoundations(projectDir: string): string[] {
+/** Stylesheets the project's own stylesheets import by relative path, wherever they live. */
+function importedSheets(projectDir: string): string[] {
+  const out = new Set<string>();
+  for (const file of projectStylesheets(projectDir)) {
+    const content = readFileSync(file, "utf8");
+    for (const m of content.matchAll(/@import\s+(?:url\()?\s*["']([^"']+\.css)["']/g)) {
+      if (!m[1]!.startsWith(".")) continue;
+      const target = resolve(dirname(file), m[1]!);
+      if (existsSync(target)) out.add(target);
+    }
+  }
+  return [...out];
+}
+
+/** Every stylesheet in the project, outside node_modules and build output. */
+function projectStylesheets(projectDir: string): string[] {
   const out: string[] = [];
   const walk = (dir: string, depth: number) => {
     if (depth > 6) return;
@@ -122,11 +239,19 @@ function findFoundations(projectDir: string): string[] {
         continue;
       }
       if (isDir) walk(abs, depth + 1);
-      else if (/\.css$/.test(name) && /:root\s*\{[^}]*--[\w-]+\s*:/.test(readFileSync(abs, "utf8"))) out.push(rel(projectDir, abs));
+      else if (/\.css$/.test(name)) out.push(abs);
     }
   };
   walk(projectDir, 0);
-  return out.sort();
+  return out;
+}
+
+/** Stylesheets in the project (not node_modules) that define custom properties on :root: its theme layer. */
+function findFoundations(projectDir: string): string[] {
+  return projectStylesheets(projectDir)
+    .filter((abs) => /:root\s*\{[^}]*--[\w-]+\s*:/.test(readFileSync(abs, "utf8")))
+    .map((abs) => rel(projectDir, abs))
+    .sort();
 }
 
 function findTypes(pkgDir: string, pkg: { types?: string; typings?: string; main?: string; exports?: unknown }): string | undefined {
@@ -153,7 +278,8 @@ function safeReaddir(dir: string): string[] {
 }
 
 function rel(from: string, abs: string): string {
-  const r = abs.startsWith(from) ? abs.slice(from.length).replace(/^[\\/]/, "") : abs;
+  // inside the project, a project path; outside it (a monorepo sibling), a relative one: ../../packages/x.css
+  const r = abs.startsWith(from) ? abs.slice(from.length).replace(/^[\\/]/, "") : relative(from, abs);
   return r.replace(/\\/g, "/");
 }
 
@@ -166,7 +292,21 @@ function hasTheme(abs: string): boolean {
   }
 }
 
-function renderConfig(pkgName: string, version: string, classesCss: string[], utilityFile: string | undefined, foundations: string[]): string {
+const PALETTE_THRESHOLD = 10;
+const PALETTE = /\b(?:bg|text|border|ring|fill|stroke|from|to|via|outline|divide|placeholder|decoration|accent|caret|shadow)-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|[1-9]00|950)\b/g;
+
+/** Distinct Tailwind palette classes in a body of CSS or source. */
+export function paletteUse(text: string): number {
+  return new Set(text.match(PALETTE) ?? []).size;
+}
+
+/** The source files a types entry reaches, when it is source rather than declarations. */
+function sourceTexts(entry: string): string[] {
+  if (/\.d\.m?ts$/.test(entry)) return [];
+  return moduleGraph(entry).exported.map((f) => readFileSync(f, "utf8"));
+}
+
+function renderConfig(pkgName: string, version: string, classesCss: string[], utilityFile: string | undefined, foundations: string[], palette = false): string {
   const why = utilityFile ? "precompiled utilities, and the @theme blocks Tailwind compiles against" : "the @theme blocks Tailwind compiles against";
   const css = classesCss.length ? `[${classesCss.map((p) => `"${p}"`).join(", ")}]   # ${why}` : "[]";
   const found = foundations.length ? `[${foundations.map((f) => `"${f}"`).join(", ")}]   # define :root variables; literals live here` : "[]";
@@ -188,7 +328,7 @@ classes:
   css: ${css}
 
 rules:
-  color-literal: { severity: error, allow: semantic }
+  color-literal: { severity: error, allow: ${palette ? "palette }   # the package's own components style with Tailwind's palette" : "semantic }"}
   spacing-literal: error
   token-reference: error
   unknown-prop: error
@@ -231,6 +371,9 @@ export function renderReport(d: PackageDerivation): string {
     `Classes: ${r.utilityFile ? `resolved against ${r.utilityFile}` : "no utility stylesheet found; class names resolve against the project's own CSS"}`,
     `Foundations: ${r.foundations.length ? r.foundations.join(", ") : "none (no project stylesheet defines :root variables)"}`,
     `Components: ${r.componentCount} from ${r.typesFile ?? "no type declarations found"}, ${r.withVariants} with variant maps`,
+    r.paletteClasses >= PALETTE_THRESHOLD
+      ? `Colors: the package's own code styles with ${r.paletteClasses} Tailwind palette classes, so the palette is on-system (color-literal allow: palette)`
+      : `Colors: semantic tokens only (color-literal allow: semantic); the package's own code uses ${r.paletteClasses} palette classes`,
   ];
   if (r.skippedVariables.length) lines.push(`Not tokens (unclassified values): ${r.skippedVariables.join(", ")}`);
   if (r.skippedComponents.length) lines.push(`Skipped components: ${r.skippedComponents.join("; ")}`);

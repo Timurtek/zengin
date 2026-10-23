@@ -164,6 +164,13 @@ export function deriveManifestFromTypes(dts: string, opts: { importFrom: string;
   const ast = parse(dts, { sourceType: "module", plugins: [["typescript", { dts: true }]], errorRecovery: true }) as unknown as { program: { body: Node[] } };
   const decls = scanDeclarations(ast.program.body.map(unwrap));
   const { functions, variants, exported } = decls;
+  // `export declare function X` exports X as surely as `export { X }`; a barrel's files mix the two.
+  for (const node of ast.program.body) {
+    if (node.type !== "ExportNamedDeclaration" || !node["declaration"]) continue;
+    const d = node["declaration"] as Node;
+    if (d["id"]) exported.add(idName(d["id"]));
+    for (const v of (d["declarations"] as Node[] | undefined) ?? []) exported.add(idName(v["id"]));
+  }
   const collect = makeCollector(decls);
 
   const components: ComponentManifest[] = [];

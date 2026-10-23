@@ -51,6 +51,8 @@ export function resolveConfig(config: ZenginConfig, projectDir: string): Resolve
     classes: {
       tailwind: resolveTailwind(config.classes?.tailwind ?? "auto", projectDir),
       css: (config.classes?.css ?? []).map((p) => resolve(projectDir, p)),
+      root: projectDir,
+      ...(config.classes?.config ? { config: resolve(projectDir, config.classes.config) } : {}),
     },
     rules,
     profiles: readProfiles(config, projectDir),

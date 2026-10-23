@@ -29,16 +29,18 @@ interface RawToken {
   extendsDefault: boolean;
   /** `$extensions.zengin.cssVar`: the variable the project actually uses, when it is not the derived name. */
   cssVar?: string;
+  /** `$extensions.zengin.reference`: how CSS refers to the token, when it is not `var(--x)`. */
+  reference?: string;
 }
 
 function collect(node: unknown, path: string[], inherited: TokenType | undefined, extendsDefault: boolean, out: RawToken[]): void {
   if (typeof node !== "object" || node === null) return;
   const obj = node as Record<string, unknown>;
   const type = (obj["$type"] as TokenType | undefined) ?? inherited;
-  const zengin = (obj["$extensions"] as { zengin?: { extendsDefault?: boolean; cssVar?: string } } | undefined)?.zengin;
+  const zengin = (obj["$extensions"] as { zengin?: { extendsDefault?: boolean; cssVar?: string; reference?: string } } | undefined)?.zengin;
   const ext = zengin?.extendsDefault ?? extendsDefault;
   if ("$value" in obj) {
-    out.push({ path, type: type ?? "string", raw: obj["$value"], extendsDefault: ext, cssVar: zengin?.cssVar });
+    out.push({ path, type: type ?? "string", raw: obj["$value"], extendsDefault: ext, cssVar: zengin?.cssVar, reference: zengin?.reference });
     return;
   }
   for (const [k, v] of Object.entries(obj)) {
@@ -95,8 +97,17 @@ export function loadTokens(json: unknown): Token[] {
       namespace,
       key,
       extendsDefault: r.extendsDefault,
+      ...(r.reference ? { reference: r.reference } : {}),
     };
   });
+}
+
+/**
+ * How CSS refers to a token: `var(--x)`, or what the token file says when the variable holds something other than
+ * a value, such as RGB channels used as `rgb(var(--bg-default))`.
+ */
+export function tokenRef(t: Pick<Token, "cssVar" | "reference">): string {
+  return t.reference ?? `var(${t.cssVar})`;
 }
 
 /**

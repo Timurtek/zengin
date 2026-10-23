@@ -66,8 +66,8 @@ ${renderClaudeDesignReport(derivation)}`;
 }
 
 /** Derives definitions and a config from an installed package's stylesheet and type declarations. Returns the report text. */
-export function initFromPackage(dir: string, pkgName: string, force: boolean): string {
-  const derivation = derivePackage(dir, pkgName);
+export function initFromPackage(dir: string, pkgName: string, force: boolean, tokens: string[] = []): string {
+  const derivation = derivePackage(dir, pkgName, tokens.length ? { tokens } : {});
   const { written } = writePackage(dir, derivation, force);
   return `Wrote ${written.join(", ")}
 

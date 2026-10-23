@@ -1,6 +1,7 @@
 import { offsetsToRange } from "../parse/css.js";
 import { findLengthLiterals, isSpacingProp, rewriteAll, tokenUtilityPrefix } from "../resolve/css-props.js";
 import type { Fix, Token, Violation } from "../types.js";
+import { tokenRef } from "../system/tokens.js";
 import { rewriteKey, utilityUses, type ClassUse, type Rule, type RuleContext } from "./context.js";
 
 const ID = "spacing-literal";
@@ -79,7 +80,7 @@ export const spacingLiteral: Rule = {
           const worst = offScale[0]?.m ?? matches[0]!.m;
           if (!worst) continue;
           const replaceable = matches.every((x) => x.m?.token);
-          const rewritten = replaceable ? rewriteAll(sp.value, matches.map((x) => ({ literal: x.lit.literal, offset: x.lit.offset, cssVar: x.m!.token!.cssVar }))) : null;
+          const rewritten = replaceable ? rewriteAll(sp.value, matches.map((x) => ({ literal: x.lit.literal, offset: x.lit.offset, ref: tokenRef(x.m!.token!) }))) : null;
           const px = offScale[0]?.m?.px ?? worst.px;
           out.push(
             ctx.report(ID, {
@@ -108,7 +109,7 @@ export const spacingLiteral: Rule = {
             message: m.confidence === "exact"
               ? `Spacing literal where a token reference is required. ${m.px}px matches ${m.token!.name} but will not follow scale changes.`
               : `Arbitrary spacing value. ${m.px}px is not on the spacing scale.`,
-            fix: fixFor(m, m.token ? `var(${m.token.cssVar})` : null),
+            fix: fixFor(m, m.token ? tokenRef(m.token) : null),
           }),
         );
       }
