@@ -60,7 +60,7 @@ export function scanDeclarations(body: Node[], decls: Declarations = emptyDeclar
       for (const d of node["declarations"] as Node[]) {
         const name = idName(d["id"]);
         const ann = ((d["id"] as Node)["typeAnnotation"] as Node | undefined)?.["typeAnnotation"] as Node | undefined;
-        const map = variantMap(ann);
+        const map = variantMap(ann) ?? variantCall(d["init"] as Node | undefined);
         if (map) variants.set(name, map);
         else if (isPascal(name) && ann && isComponentType(ann)) functions.set(name, componentPropsType(ann));
       }
@@ -68,6 +68,16 @@ export function scanDeclarations(body: Node[], decls: Declarations = emptyDeclar
     if (node.type === "ExportNamedDeclaration") for (const s of (node["specifiers"] as Node[]) ?? []) exported.add(idName(s["exported"]));
   }
   return decls;
+}
+
+/**
+ * The variant constant named for a component: `button` (tailwind-variants' habit) or `buttonVariants`
+ * (cva's and shadcn's). The props type's own `VariantProps<typeof x>` wins over either, since it names the
+ * constant outright.
+ */
+export function variantsFor(component: string, variants: Map<string, Record<string, string[]>>): Record<string, string[]> | undefined {
+  const camel = component.charAt(0).toLowerCase() + component.slice(1);
+  return variants.get(camel) ?? variants.get(`${camel}Variants`);
 }
 
 export type Info = { members: Node[]; extends?: string; found: boolean; variants: Record<string, string[]>; passthrough: string[] };
@@ -173,8 +183,7 @@ export function deriveManifestFromTypes(dts: string, opts: { importFrom: string;
       const kind = propKind((m["typeAnnotation"] as Node | undefined)?.["typeAnnotation"] as Node | undefined);
       if (kind) props[key] = kind;
     }
-    const camel = name.charAt(0).toLowerCase() + name.slice(1);
-    const v = variants.get(camel) ?? (Object.keys(info.variants).length ? info.variants : undefined);
+    const v = Object.keys(info.variants).length ? info.variants : variantsFor(name, variants);
     if (v) {
       withVariants++;
       for (const [prop, values] of Object.entries(v)) props[prop] = { type: "enum", values, ...(values.includes("default") ? { default: "default" } : {}) };
@@ -204,9 +213,15 @@ export function deriveManifestFromTypes(dts: string, opts: { importFrom: string;
   return { components, report: { components: components.length, withVariants, skipped } };
 }
 
-/** `declare const button: TVReturnType<{ variant: { a: ...; b: ... }; size: {...} }, ...>` to `{ variant: [a, b], size: [...] }`. */
+/**
+ * A variant constant's type to `{ variant: [a, b], size: [...] }`. Two shapes: tailwind-variants'
+ * `TVReturnType<{ variant: { a: ...; b: ... } }, ...>`, and the function type tsc emits for a cva constant,
+ * `(props?: ({ variant?: "a" | "b" | null | undefined } & ClassProp) | undefined) => string`.
+ */
 export function variantMap(ann: Node | undefined): Record<string, string[]> | undefined {
-  if (!ann || ann.type !== "TSTypeReference") return undefined;
+  if (!ann) return undefined;
+  if (ann.type === "TSFunctionType") return cvaMap(ann);
+  if (ann.type !== "TSTypeReference") return undefined;
   const name = refName(ann["typeName"] as Node);
   if (!/^(TVReturnType|VariantProps)$/.test(name)) return undefined;
   const params = ((ann["typeArguments"] ?? ann["typeParameters"]) as Node | undefined)?.["params"] as Node[] | undefined;
@@ -219,6 +234,66 @@ export function variantMap(ann: Node | undefined): Record<string, string[]> | un
     if (!inner || inner.type !== "TSTypeLiteral") continue;
     const values = (inner["members"] as Node[]).filter((x) => x.type === "TSPropertySignature").map((x) => idName(x["key"]));
     if (values.length) out[idName(m["key"])] = values;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
+/**
+ * A variant constant in source: `cva(base, { variants: { size: { sm: "", md: "" } } })` or
+ * `tv({ variants: { ... } })`, also through `satisfies`/`as`.
+ */
+export function variantCall(init: Node | undefined): Record<string, string[]> | undefined {
+  let n = init;
+  while (n && (n.type === "TSSatisfiesExpression" || n.type === "TSAsExpression" || n.type === "ParenthesizedExpression")) n = n["expression"] as Node;
+  if (!n || n.type !== "CallExpression") return undefined;
+  const callee = idName(n["callee"]);
+  if (callee !== "cva" && callee !== "tv") return undefined;
+  const args = n["arguments"] as Node[];
+  const config = (callee === "cva" ? args[1] : args[0]) as Node | undefined;
+  const variantsProp = objectProp(config, "variants");
+  if (!variantsProp || variantsProp.type !== "ObjectExpression") return undefined;
+  const out: Record<string, string[]> = {};
+  for (const p of variantsProp["properties"] as Node[]) {
+    if (p.type !== "ObjectProperty" || (p["value"] as Node).type !== "ObjectExpression") continue;
+    const values = ((p["value"] as Node)["properties"] as Node[]).filter((x) => x.type === "ObjectProperty").map((x) => keyName(x["key"] as Node));
+    // a boolean variant (`{ true: "...", false: "..." }`) is a boolean prop, not an enum to list
+    if (values.length && !values.every((v) => v === "true" || v === "false")) out[keyName(p["key"] as Node)] = values;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
+function objectProp(obj: Node | undefined, key: string): Node | undefined {
+  if (!obj || obj.type !== "ObjectExpression") return undefined;
+  const p = (obj["properties"] as Node[]).find((x) => x.type === "ObjectProperty" && keyName(x["key"] as Node) === key);
+  return p?.["value"] as Node | undefined;
+}
+
+function keyName(k: Node): string {
+  if (k.type === "NumericLiteral") return String(k["value"]);
+  return idName(k);
+}
+
+/** cva's emitted type: the first parameter's literal members whose types are unions of string literals. */
+function cvaMap(fn: Node): Record<string, string[]> | undefined {
+  const ret = (fn["returnType"] as Node | undefined)?.["typeAnnotation"] as Node | undefined;
+  if (ret && ret.type !== "TSStringKeyword") return undefined;
+  const first = ((fn["params"] ?? fn["parameters"]) as Node[] | undefined)?.[0];
+  const literals: Node[] = [];
+  const gather = (t: Node | undefined): void => {
+    if (!t) return;
+    if (t.type === "TSParenthesizedType") gather(t["typeAnnotation"] as Node);
+    else if (t.type === "TSUnionType" || t.type === "TSIntersectionType") for (const p of t["types"] as Node[]) gather(p);
+    else if (t.type === "TSTypeLiteral") literals.push(t);
+  };
+  gather((first?.["typeAnnotation"] as Node | undefined)?.["typeAnnotation"] as Node | undefined);
+  const out: Record<string, string[]> = {};
+  for (const lit of literals) {
+    for (const m of lit["members"] as Node[]) {
+      if (m.type !== "TSPropertySignature") continue;
+      const kind = propKind((m["typeAnnotation"] as Node | undefined)?.["typeAnnotation"] as Node | undefined);
+      // `class` and `className` are ClassProp's; a boolean variant (`inset?: boolean`) carries no values to list
+      if (kind?.type === "enum" && kind.values?.length) out[idName(m["key"])] = kind.values;
+    }
   }
   return Object.keys(out).length ? out : undefined;
 }

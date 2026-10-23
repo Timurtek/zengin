@@ -63,7 +63,10 @@ export function derivePackage(projectDir: string, pkgName: string): PackageDeriv
     : { components: [], report: { components: 0, withVariants: 0, skipped: [] } };
 
   const foundations = findFoundations(projectDir);
-  const config = renderConfig(pkgName, pkg.version ?? "0.0.0", utility ? rel(projectDir, utility.file) : undefined, foundations);
+  // Stylesheets whose @theme blocks Tailwind compiles against: the design system's own and the project's.
+  const themeSheets = [...cssFiles.map((f) => rel(projectDir, f)), ...foundations].filter((p) => hasTheme(join(projectDir, p)));
+  const classesCss = [...(utility ? [rel(projectDir, utility.file)] : []), ...themeSheets.filter((p) => !utility || p !== rel(projectDir, utility.file))];
+  const config = renderConfig(pkgName, pkg.version ?? "0.0.0", classesCss, utility ? rel(projectDir, utility.file) : undefined, foundations);
   return {
     tokens: theme.derivation.tokens,
     tokensDark: theme.derivation.tokensDark,
@@ -154,8 +157,18 @@ function rel(from: string, abs: string): string {
   return r.replace(/\\/g, "/");
 }
 
-function renderConfig(pkgName: string, version: string, utilityFile: string | undefined, foundations: string[]): string {
-  const css = utilityFile ? `["${utilityFile}"]   # precompiled utilities: class names resolve against these declarations` : "[]";
+/** Whether a stylesheet declares a Tailwind `@theme` block. */
+function hasTheme(abs: string): boolean {
+  try {
+    return /@theme\b/.test(readFileSync(abs, "utf8"));
+  } catch {
+    return false;
+  }
+}
+
+function renderConfig(pkgName: string, version: string, classesCss: string[], utilityFile: string | undefined, foundations: string[]): string {
+  const why = utilityFile ? "precompiled utilities, and the @theme blocks Tailwind compiles against" : "the @theme blocks Tailwind compiles against";
+  const css = classesCss.length ? `[${classesCss.map((p) => `"${p}"`).join(", ")}]   # ${why}` : "[]";
   const found = foundations.length ? `[${foundations.map((f) => `"${f}"`).join(", ")}]   # define :root variables; literals live here` : "[]";
   return `# Derived by @zenginui/adapter-css from ${pkgName}@${version}. Definitions live in ./zengin; regenerate with: zengin init --from package ${pkgName} --force
 system:
