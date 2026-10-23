@@ -8,6 +8,8 @@ const ID = "component-substitution";
 
 /** Attributes dropped when rewriting a raw element to the system component. */
 const STYLING_ATTRS = new Set(["className", "class", "style"]);
+/** Owned properties that style text and nothing else. */
+const TEXT_ONLY = new Set(["color", "font", "font-size", "font-weight", "line-height", "letter-spacing", "text-decoration"]);
 
 /** Imported names that are types or helpers, never a component that could be substituted. */
 function isComponentName(name: string): boolean {
@@ -95,6 +97,9 @@ export const componentSubstitution: Rule = {
           }
         }
         if (owned.size < 2) continue;
+        // Text color and size alone style a link-like control, not a box: a stand-in for the system component
+        // paints, bounds or pads itself.
+        if ([...owned].every((k) => TEXT_ONLY.has(k))) continue;
       }
 
       const kept = el.attrs.filter((a) => !STYLING_ATTRS.has(a.name) && !(el.tag === "button" && a.name === "type"));

@@ -48,14 +48,15 @@ export const spacingLiteral: Rule = {
       if (lit) {
         // A named step such as p-px resolves to a literal; it is arbitrary only when written as one.
         const arbitrary = use.base.includes("[");
-        if (!arbitrary && !ctx.tokens.namespaces.has("spacing")) continue;
+        if (!arbitrary && (!ctx.tokens.namespaces.has("spacing") || ctx.tokens.extendedNamespaces.has("spacing"))) continue;
         const m = match(ctx, lit.literal);
         if (m) out.push(reportClass(ctx, use, m, `Arbitrary spacing value. ${m.px}px is not on the spacing scale.`));
         continue;
       }
       const scale = DEFAULT_SCALE.exec(decl.value);
-      // A system that defines no spacing tokens has adopted Tailwind's scale as its own.
-      if (scale && ctx.tokens.namespaces.has("spacing")) {
+      // A system that defines no spacing tokens has adopted Tailwind's scale as its own, and one whose spacing
+      // tokens extend the default (`extendsDefault`) keeps it beside them.
+      if (scale && ctx.tokens.namespaces.has("spacing") && !ctx.tokens.extendedNamespaces.has("spacing")) {
         const px = Number(scale[1]) * 4;
         if (px === 0) continue;
         const m = match(ctx, `${px}px`);

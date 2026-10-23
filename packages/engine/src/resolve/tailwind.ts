@@ -15,10 +15,15 @@ const PROPERTY_RULE_DECLS = new Set(["syntax", "inherits", "initial-value"]);
  * `themeCss` is the `@theme` block generated from the system tokens; Tailwind's default theme is loaded
  * underneath it so the rules can tell "references the default palette" apart from "references nothing".
  */
-/** Extracts the at-rules a project adds to Tailwind that change what compiles: custom variants and utilities. */
+/**
+ * Extracts the at-rules a project adds to Tailwind that change what compiles: custom variants, utilities, and
+ * `@theme` blocks. A design system's `@theme inline { --color-muted-foreground: var(--muted-foreground) }` is
+ * what makes `text-muted-foreground` a utility at all; without it the class compiles to nothing and reads as
+ * a reference to no token.
+ */
 export function projectTailwindRules(css: string): string {
   const out: string[] = [];
-  const re = /@(custom-variant|utility)\s+[^;{]+/g;
+  const re = /@(?:(?:custom-variant|utility)\s+[^;{]+|theme\b[^;{]*)/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(css)) !== null) {
     const start = m.index;
@@ -58,6 +63,12 @@ export async function createTailwindResolver(themeCss: string, projectRules = ""
     defaultVars.add(d.prop);
     defaultVarValues.set(d.prop, d.value);
   });
+
+  // A variable the project's own @theme sets is the project's, not Tailwind's default: `rounded-md` against a
+  // system that defines `--radius-md` there is on-system. Only the top-level declarations of @theme blocks count.
+  for (const block of projectRules.matchAll(/@theme\b[^{]*\{([^}]*)\}/g)) {
+    for (const d of block[1]!.matchAll(/(--[\w-]+)\s*:/g)) defaultVars.delete(d[1]!);
+  }
 
   const css = `@import "tailwindcss/theme.css";\n${themeCss}\n${projectRules}`;
   const designSystem = await tailwind.__unstable__loadDesignSystem(css, {
