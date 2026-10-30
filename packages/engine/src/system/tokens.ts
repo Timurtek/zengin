@@ -247,8 +247,19 @@ export function hexToRgb(hex: string): [number, number, number] | undefined {
 
 /** Tailwind v4 `@theme` block generated from the token set. Values are emitted resolved. */
 export function toThemeCss(tokens: Token[]): string {
-  const lines = tokens.map((t) => `  ${t.cssVar}: ${t.value};`);
+  // A token keeps the project's own variable name, and some names sit in a Tailwind namespace that means
+  // something else: `--text-muted: #7a7a7a` is a color, and in @theme Tailwind would read it as a font size
+  // and compile `text-muted` to `font-size: #7a7a7a`. A token goes in only where its namespace agrees with it.
+  const lines = tokens.filter(agreesWithTailwind).map((t) => `  ${t.cssVar}: ${t.value};`);
   return `@theme {\n${lines.join("\n")}\n}\n`;
+}
+
+/** Whether a token's variable name and its type agree on Tailwind 4's theme namespaces. */
+function agreesWithTailwind(t: Token): boolean {
+  const v = t.cssVar;
+  if (v.startsWith("--color-")) return t.type === "color";
+  if (/^--(text|spacing|radius|breakpoint|container)-/.test(v)) return t.type !== "color";
+  return true;
 }
 
 export interface SpacingStep {

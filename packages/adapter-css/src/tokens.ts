@@ -26,6 +26,8 @@ export interface CssDerivation {
   tokens: Record<string, unknown>;
   tokensDark: Record<string, unknown> | undefined;
   report: { light: number; dark: number; byGroup: Record<string, number>; skipped: string[] };
+  /** Tailwind namespaces the stylesheet resets with `--<ns>-*: initial` in @theme: replaced, not extended. */
+  replaced: string[];
 }
 
 const LIGHT_SELECTOR = /^(:root|html|:host)(\s*,\s*(:root|html|:host))*$|\[data-theme="light"\]|\.light\b/;
@@ -50,6 +52,23 @@ export function deriveTokensFromCss(css: string, opts: CssOptions = {}): CssDeri
     rule.each((node) => {
       if (node.type !== "decl" || !node.prop.startsWith("--")) return;
       (isDark ? dark : light).set(node.prop, node.value.trim());
+    });
+  });
+
+  // Tailwind 4 systems often define their scale in @theme and nowhere else: `@theme { --color-brand: #0e7c6b }`.
+  // A literal there is a token; an alias (`--color-x: var(--x)`) only maps a utility onto one, and is read by the
+  // engine from the stylesheet itself. A :root definition of the same variable wins.
+  const replaced = new Set<string>();
+  root.walkAtRules("theme", (at: AtRule) => {
+    at.each((node) => {
+      if (node.type !== "decl" || !node.prop.startsWith("--")) return;
+      const reset = /^--([a-z]+(?:-[a-z]+)?)-\*$/.exec(node.prop);
+      if (reset) {
+        if (node.value.trim() === "initial") replaced.add(reset[1]!);
+        return;
+      }
+      if (node.prop === "--*" || /\bvar\(/.test(node.value) || light.has(node.prop)) return;
+      light.set(node.prop, node.value.trim());
     });
   });
 
@@ -87,9 +106,10 @@ export function deriveTokensFromCss(css: string, opts: CssOptions = {}): CssDeri
   return {
     light: lightTokens,
     dark: darkTokens,
-    tokens: toDtcg(lightTokens, groupOf, "Derived from the project's stylesheet by `zengin init --from package`. Variable names are kept; see $extensions.zengin.cssVar."),
-    tokensDark: darkTokens.length ? toDtcg(darkTokens, groupOf, "Dark overrides, derived from the stylesheet's dark block.") : undefined,
+    tokens: toDtcg(lightTokens, groupOf, "Derived from the project's stylesheet by `zengin init --from package`. Variable names are kept; see $extensions.zengin.cssVar.", replaced),
+    tokensDark: darkTokens.length ? toDtcg(darkTokens, groupOf, "Dark overrides, derived from the stylesheet's dark block.", replaced) : undefined,
     report: { light: lightTokens.length, dark: darkTokens.length, byGroup, skipped },
+    replaced: [...replaced],
   };
 }
 
@@ -106,6 +126,8 @@ export function classify(cssVar: string, resolved: string): Group | undefined {
   if (/letter-spacing|^--ls-|^--tracking/.test(name)) return "other";
   // A border width is not a gap: `gap: 1` must not be told to use `--bw`.
   if (/border-width|^--bw(-|$)/.test(name)) return "other";
+  // Tailwind 4's own namespaces for lengths that are not a scale anyone spaces things with.
+  if (/^--(breakpoint|container|blur|perspective|inset-shadow|drop-shadow|default)-/.test(name)) return "other";
   if (/^-?\d*\.?\d+(px|rem|em)$/.test(v)) {
     if (/radius|rounded|^--r-/.test(name)) return "radius";
     if (/font-size|text-|size-(xs|sm|md|lg|xl)|-text$|^--fs-/.test(name)) return "text";
@@ -135,10 +157,10 @@ function isColor(v: string): boolean {
 const GROUP_TYPE: Record<Group, string> = { color: "color", space: "dimension", radius: "dimension", text: "dimension", font: "fontFamily", shadow: "shadow", other: "string" };
 
 /** A DTCG tree: one group per kind, each variable a token keyed by its name without the dashes. */
-function toDtcg(tokens: CssToken[], groupOf: Map<string, Group>, description: string): Record<string, unknown> {
+function toDtcg(tokens: CssToken[], groupOf: Map<string, Group>, description: string, replaced: Set<string>): Record<string, unknown> {
   const out: Record<string, unknown> = { $description: description };
   for (const t of tokens) {
-    const group = (out[t.group] ??= { $type: GROUP_TYPE[t.group] }) as Record<string, unknown>;
+    const group = (out[t.group] ??= { $type: GROUP_TYPE[t.group], ...extension(t.group, replaced) }) as Record<string, unknown>;
     const key = t.cssVar.slice(2);
     // An alias to another variable in the file becomes a DTCG alias when the target is a light token of the same group.
     const alias = /^var\((--[\w-]+)\)$/.exec(t.value);
@@ -147,6 +169,20 @@ function toDtcg(tokens: CssToken[], groupOf: Map<string, Group>, description: st
   }
   return out;
 }
+
+/**
+ * A handful of length variables (`--header-height`, `--gutter`) is not a whole scale: Tailwind's default steps
+ * stay on-system beside them, as adapter-shadcn already has it for radii, unless the stylesheet resets the namespace.
+ */
+function extension(group: Group, replaced: Set<string>): Record<string, unknown> {
+  // Tailwind 4's @theme extends unless a namespace is reset, so type sizes and radii a system leaves alone
+  // (`text-sm` beside its own `--text-caption`) are still part of its build.
+  const ns = TAILWIND_NAMESPACE[group];
+  if (!ns) return {};
+  return { $extensions: { zengin: { extendsDefault: !replaced.has(ns) } } };
+}
+
+const TAILWIND_NAMESPACE: Partial<Record<Group, string>> = { space: "spacing", text: "text", radius: "radius" };
 
 function hasAncestorMedia(rule: Rule, params: RegExp): boolean {
   let p = rule.parent;

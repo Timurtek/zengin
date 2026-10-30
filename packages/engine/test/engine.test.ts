@@ -375,3 +375,15 @@ describe("the dark token file", () => {
     expect(loadDarkTokens(light, dark).map((t) => [t.path, t.cssVar, t.value])).toEqual([["color.surface", "--surface", "#f3f4f6"]]);
   });
 });
+
+describe("component-substitution needs a box, not just text styling", () => {
+  it("leaves a button styled only by text color and size alone, and still reports one that paints a background", async () => {
+    const dir = PROJECTS[1].dir;
+    const { config, dir: projectDir } = loadConfigFile(join(dir, "zengin.config.yaml"));
+    const engine = await createEngine(resolveConfig(config, projectDir));
+    const css = { path: "src/features/links.css", content: ".quiet { color: var(--color-text-muted); font-size: 14px; font-weight: 500; }\n.boxed { background-color: var(--color-surface-raised); color: var(--color-text); }\n" };
+    const tsx = { path: "src/features/Links.tsx", content: 'import "./links.css";\nexport const L = () => (<><button className="quiet">More</button><button className="boxed">Go</button></>);\n' };
+    const sub = engine.check([css, tsx]).filter((v) => v.rule === "component-substitution");
+    expect(sub.map((v) => v.found)).toEqual(['<button className="boxed">']);
+  });
+});
