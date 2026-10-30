@@ -28,10 +28,11 @@ Conversion: a **Funnel** of `$pageview` → `install_command_copied`, both filte
 | `$pageview` | each page loads (home, `/why/`) | `app` | People reach the site, and which page they land on (`$pathname`, `$referring_domain`). It is the denominator for every rate below. |
 | `install_command_copied` | the Copy button on a code block holding `npm create zengin@latest` is pressed | `app`, `template` (`default` when none is named), `theme` (when the command names one), `section` (the id of the page section, e.g. `get-started`, `templates`, `start`) | **The main action.** A visitor took the command to their terminal. It is the venture's one number. |
 | `code_copied` | the Copy button on any other code block is pressed (CLI, MCP, hook, config snippets) | `app`, `section` | People are reading closely enough to take a snippet. It shows which surfaces (MCP, hook, CLI, rollup) draw interest. |
+| `feedback_sent` | the feedback form at the foot of either page is sent and the webhook accepts it | `app` | People tell us something. The messages themselves are read in ORG Brain's Feedback page; this counts them next to the pageviews. |
 
 There is **no signup**. Zengin has no accounts, so there is nothing to sign up for.
 
-No event carries the copied text. `template` and `theme` are names from the public registry.
+No event carries the copied text. `template` and `theme` are names from the public registry. `feedback_sent` carries neither the message, nor the email address, nor whether one was given.
 
 ## Privacy
 
@@ -49,13 +50,23 @@ No event carries the copied text. `template` and `theme` are names from the publ
 - The code is `examples/marketing-site/src/measure.ts`, started once by each page's entry point (`src/main.tsx`, `src/why.tsx`). It is not called `analytics.ts`, because the bundler names the chunk both pages share after it, and blockers drop scripts called `analytics-*.js`.
 - `src/` is also the `marketing` template. `packages/registry/src/build.ts` keeps `measure.ts` and its call out of the template (`SITE_ONLY`), and `packages/registry/test/registry.test.ts` holds it there.
 
+## Feedback form
+
+The footer of both pages carries a feedback form (`examples/marketing-site/src/feedback.tsx`): ORG Brain's feedback snippet on Zengin UI's `TextArea`, `TextField` and `Button`. It posts `{ id, product: "ZenginUI", text, contact?, page }` to the n8n webhook **`zengin-feedback`**, which forwards it to ORG Brain's `/api/event` as `type: feedback`, `verb: in`, `source: form`; the message lands in ORG Brain's Feedback page under ZenginUI and posts one notice in Discord's #feedback.
+
+- The webhook's URL comes from **`VITE_FEEDBACK_ENDPOINT`**, set in the Vercel project for the site. **No URL means no form**: in dev, in CI and in previews it is not shown and nothing is sent.
+- The email address is optional and the form says what it is for. It goes to the webhook only, never to PostHog.
+- Like `measure.ts`, the form and its stylesheet (`src/feedback.css`) are `SITE_ONLY`, and the template's `Footer.tsx` is written without them.
+- Open-source readers can also use [GitHub Discussions](https://github.com/Timurtek/zengin/discussions), linked from the README; ORG Brain reads those itself.
+
 ## How it is checked
 
-- `pnpm --filter marketing-site test` runs `zengin check`, the unit tests (`test/measure.test.ts`), and `scripts/check-measure.mjs`. The script builds the site with a test key, opens both pages in headless Chrome with PostHog's endpoint intercepted, copies the create command, and asserts:
+- `pnpm --filter marketing-site test` runs `zengin check`, the unit tests (`test/measure.test.ts`, `test/feedback.test.tsx`), and `scripts/check-measure.mjs`. The script builds the site with a test key and a test feedback endpoint, opens both pages in headless Chrome with PostHog's endpoint and the webhook intercepted, copies the create command, sends the feedback form with the keyboard alone, and asserts:
   - each pageview and copy is sent, with `app: "ZenginUI"`;
   - no personal properties are sent;
+  - the form posts one message to the webhook and sends one `feedback_sent`, and no event carries the message or the email address;
   - a Do Not Track visitor sends nothing;
-  - a build without the key sends nothing.
+  - a build without the key or the endpoint sends nothing and shows no form.
 - Run it with `--verbose` to see every request and the full list of property names PostHog receives.
 
 ## Not measured yet

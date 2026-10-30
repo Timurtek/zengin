@@ -70,6 +70,10 @@ describe("buildRegistry", () => {
     expect(paths).not.toContain("src/env.d.ts");
     expect(marketing.files.find((f) => f.path === "src/main.tsx")!.content).toMatch(/import \{ App \} from "\.\/App";\r?\n\r?\ncreateRoot\(/);
     expect(marketing.files.find((f) => f.path === "src/why.tsx")!.content).toMatch(/import \{ Why \} from "\.\/sections\/Why";\r?\n\r?\ntype Theme/);
+    // The site's footer asks for feedback and posts it to Zengin's webhook; a created project's footer does not.
+    expect(paths.filter((p) => p.includes("feedback"))).toEqual([]);
+    for (const f of marketing.files) expect(f.content, f.path).not.toMatch(/feedback/i);
+    expect(marketing.files.find((f) => f.path === "src/sections/Footer.tsx")!.content).toMatch(/from "\.\.\/content";\r?\n\r?\n\/\*\*[^\n]*\r?\nexport function Footer\(\) \{\r?\n  return \(\r?\n    <footer className="footer">\r?\n      <div className="wrap footer__inner">/);
     // The site reports its errors to Zengin's PostHog; a project made from the site's source must not.
     for (const item of registry.items.filter((i) => i.type === "template")) {
       for (const f of item.files) expect(f.content, `${item.name} ${f.path}`).not.toMatch(/site-errors|posthog/i);
