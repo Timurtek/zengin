@@ -144,7 +144,12 @@ export function normalizeColor(v: string): string | undefined {
     return undefined;
   }
   const rgb = /^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)\s*(?:[,/]\s*([\d.]+%?)\s*)?\)$/.exec(s);
-  if (rgb) return toHex(Number(rgb[1]), Number(rgb[2]), Number(rgb[3]));
+  if (rgb) {
+    const base = toHex(Number(rgb[1]), Number(rgb[2]), Number(rgb[3]));
+    const a = rgb[4] === undefined ? 1 : rgb[4].endsWith("%") ? Number(rgb[4].slice(0, -1)) / 100 : Number(rgb[4]);
+    // A translucent color is not the opaque one: rgba(255,255,255,.92) must not match #ffffff.
+    return a >= 1 || Number.isNaN(a) ? base : base + Math.round(Math.max(a, 0) * 255).toString(16).padStart(2, "0");
+  }
   // hsl(210 40% 98%), hsl(210, 40%, 98%), and the bare shadcn triple "210 40% 98%".
   const hsl = /^(?:hsla?\(\s*)?(-?[\d.]+)(?:deg)?[\s,]+([\d.]+)%[\s,]+([\d.]+)%\s*(?:[,/]\s*[\d.]+%?\s*)?\)?$/.exec(s);
   if (hsl) {
@@ -228,6 +233,12 @@ function oklchToRgb(L: number, C: number, H: number): [number, number, number] {
   return [gamma(lr), gamma(lg), gamma(lb)];
 }
 
+/** 0 to 1; an opaque or unparseable color is 1. */
+export function alphaOf(color: string): number {
+  const n = normalizeColor(color);
+  return n && n.length === 9 ? parseInt(n.slice(7, 9), 16) / 255 : 1;
+}
+
 export function hexToRgb(hex: string): [number, number, number] | undefined {
   const n = normalizeColor(hex);
   if (!n) return undefined;
@@ -277,6 +288,7 @@ export class TokenIndex {
   /** Namespaces whose framework default scale remains on-system (Tailwind `extend` semantics). */
   readonly extendedNamespaces: Set<string>;
   private readonly scale: SpacingStep[];
+  private readonly steps: SpacingStep[];
   /** A color token's dark value, where it differs from its light one. */
   private readonly darkColors: { token: Token; value: string; brand: boolean }[];
   private readonly branded: Set<string>;
@@ -297,6 +309,9 @@ export class TokenIndex {
       .map((token) => ({ token, px: toPx(token.value) }))
       .filter((s): s is SpacingStep => s.px !== undefined)
       .sort((a, b) => a.px - b.px);
+    // Neighbours of an off-scale length come from the steps alone when the system names enough of them to be a scale.
+    const named = this.scale.filter((s) => SCALE_STEP.test(s.token.name));
+    this.steps = named.length >= 3 ? named : this.scale;
     const darkByVar = new Map((opts.dark ?? []).map((t) => [t.cssVar, t.value]));
     this.darkColors = [];
     for (const t of this.colors) {
@@ -342,9 +357,12 @@ export class TokenIndex {
       ...this.colors.map((t) => ({ token: t, value: t.value, mode: "light" as const, brand: this.branded.has(t.cssVar) })),
       ...this.darkColors.map((d) => ({ ...d, mode: "dark" as const })),
     ];
+    const alpha = alphaOf(literal);
     for (const m of candidates) {
       const c = hexToRgb(m.value);
       if (!c) continue;
+      // #ffffff is not near rgba(255,255,255,.08): the same channels, a different paint.
+      if (Math.abs(alphaOf(m.value) - alpha) > 0.02) continue;
       const d = (rgb[0] - c[0]) ** 2 + (rgb[1] - c[1]) ** 2 + (rgb[2] - c[2]) ** 2;
       if (d < bestD) {
         bestD = d;
@@ -360,15 +378,19 @@ export class TokenIndex {
     if (px === undefined) return {};
     let below: SpacingStep | undefined;
     let above: SpacingStep | undefined;
-    let exact: Token | undefined;
-    for (const s of this.scale) {
-      if (s.px === px) exact = s.token;
+    for (const s of this.steps) {
       if (s.px < px) below = s;
       if (s.px > px && !above) above = s;
     }
+    // Several tokens can hold one value (--sp-3, --safe-top, --gutter). The step is the one that follows the scale.
+    const same = this.scale.filter((s) => s.px === px);
+    const exact = (same.find((s) => this.steps.includes(s)) ?? same[0])?.token;
     return { px, exact, below, above };
   }
 }
+
+/** A token named for a place on a scale: `sp-3`, `space-2h`, `spacing-xl`. `--gutter` and `--tabbar-h` name a use, not a step. */
+const SCALE_STEP = /[-.](\d+h?|(\dx)?[sl]|xs|sm|md|lg|xl|base)$/;
 
 export function toPx(v: string): number | undefined {
   const m = /^(-?[\d.]+)(px|rem|em)?$/.exec(v.trim());

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { track, versionOf } from "@zenginui/engine";
 import { createHost, findConfig } from "./host.js";
 import { MCP_PATH, startHttp } from "./http.js";
 import { createServer } from "./server.js";
@@ -68,9 +69,13 @@ async function main(): Promise<void> {
   const host = createHost(configPath);
   const system = `${host.config.system.package}@${host.config.system.version}`;
 
+  // A count, only when the person said yes to `zengin telemetry`; the server itself never asks (docs/telemetry.md).
+  const started = () => void track({ event: "mcp_server_started", tool: "mcp", version: versionOf(import.meta.url) });
+
   if (!args.http) {
     process.stderr.write(`zengin-mcp: ${system}, config ${configPath}\n`);
     await createServer(host).connect(new StdioServerTransport());
+    started();
     return;
   }
 
@@ -85,6 +90,7 @@ async function main(): Promise<void> {
     `zengin-mcp: ${system}, config ${configPath}\n` +
       `zengin-mcp: Streamable HTTP on http://${shown}:${bound}${MCP_PATH} (auth: ${token ? "bearer" : "none"}; tools: ${args.public ? "public, no file reads" : "all"})\n`,
   );
+  started();
   const stop = () => server.close(() => process.exit(0));
   process.on("SIGINT", stop);
   process.on("SIGTERM", stop);

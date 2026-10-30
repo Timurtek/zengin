@@ -2,7 +2,7 @@
 // `npm create zengin my-app -- --template saas` runs this as `create-zengin my-app --template saas`.
 // The command line itself lives in @zenginui/cli; this adds the `create` word the npm convention leaves out.
 // Any other zengin command still works through it: `npx create-zengin check` is `zengin check`.
-const COMMANDS = new Set(["check", "explain", "init", "report", "rollup", "create", "add", "upgrade", "tokens", "registry", "theme", "fonts", "icons", "brand", "figma", "mock", "define", "help"]);
+const COMMANDS = new Set(["check", "explain", "init", "report", "rollup", "create", "add", "upgrade", "tokens", "registry", "theme", "fonts", "icons", "brand", "figma", "mock", "define", "telemetry", "help"]);
 
 // Someone who runs `npm create zengin -- --help` asked how to create a project. Forwarding to the full CLI
 // answered with every command from `check` to `figma plugin`, and put the create flags two screens down.

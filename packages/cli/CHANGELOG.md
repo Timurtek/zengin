@@ -1,5 +1,37 @@
 # @zenginui/cli
 
+## 0.11.0
+
+### Minor Changes
+
+- [#39](https://github.com/Timurtek/zengin/pull/39) [`6ec5344`](https://github.com/Timurtek/zengin/commit/6ec5344cb7e5c9551f2bd563ffdc356507310900) Thanks [@Timurtek](https://github.com/Timurtek)! - Anonymous, opt-in usage counts. Off until you say yes: the first `zengin` run at a terminal asks once, and Enter is no. `zengin telemetry on | off` changes it. Never sent in CI, under `DO_NOT_TRACK`, or before you answer, and an event carries only its name, the tool, its version, a random id and whole-number counts: never a path, code, a name or an email. Every event is listed in [docs/telemetry.md](https://github.com/Timurtek/zengin/blob/main/docs/telemetry.md).
+
+### Patch Changes
+
+- Updated dependencies [[`6ec5344`](https://github.com/Timurtek/zengin/commit/6ec5344cb7e5c9551f2bd563ffdc356507310900)]:
+  - @zenginui/engine@0.8.0
+  - @zenginui/adapter-css@0.6.1
+  - @zenginui/adapter-shadcn@0.1.7
+  - @zenginui/figma@0.3.2
+  - @zenginui/registry@0.5.4
+  - @zenginui/rollup@0.1.7
+
+## 0.10.0
+
+### Minor Changes
+
+- [#34](https://github.com/Timurtek/zengin/pull/34) [`aa22497`](https://github.com/Timurtek/zengin/commit/aa224970bd3ef4eeedd1d799af5a2d0948f0cc43) Thanks [@Timurtek](https://github.com/Timurtek)! - `zengin init --from claude-design` derives definitions from a Claude Design export: tokens from the stylesheets its `_ds_manifest.json` names (the manifest's token `kind` is reported, not trusted), components from their `.d.ts` files, and a cross-check of those contracts against `_adherence.oxlintrc.json`. The engine's fixes got better on the way: a spacing fix names the scale step rather than a token named for a use (`--sp-3`, not `--safe-top`), a translucent color is no longer told it matches the opaque one, and `oklch(var(--l) var(--c) 145)` is not a color literal.
+
+### Patch Changes
+
+- Updated dependencies [[`aa22497`](https://github.com/Timurtek/zengin/commit/aa224970bd3ef4eeedd1d799af5a2d0948f0cc43)]:
+  - @zenginui/adapter-css@0.6.0
+  - @zenginui/engine@0.7.0
+  - @zenginui/adapter-shadcn@0.1.6
+  - @zenginui/figma@0.3.1
+  - @zenginui/registry@0.5.3
+  - @zenginui/rollup@0.1.6
+
 ## 0.9.0
 
 ### Minor Changes

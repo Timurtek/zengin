@@ -1,0 +1,12 @@
+:root {
+  --coral-500: #FF4D3D;
+  --ink-900: #1A1410;
+  --brand: var(--coral-500);
+  --text-strong: var(--ink-900);
+  --shadow-brand: 0 10px 24px rgba(255, 77, 61, 0.34);
+}
+
+[data-theme="night"] {
+  --ink-900: #ffffff;
+  --night-only: #000000;
+}

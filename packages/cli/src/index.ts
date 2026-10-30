@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import { dirname, relative, resolve } from "node:path";
-import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity } from "@zenginui/engine";
+import { FAMILY_NOTES, RULE_DOCS, RULE_IDS, type RuleId, type Severity, type TelemetryEventName } from "@zenginui/engine";
+import { askConsent, blockedBy, consentPath, readConsent, shouldAsk, TELEMETRY_DOCS, track, versionOf, writeConsent } from "@zenginui/engine";
 import { AUDIT_FILES, runAudit } from "./audit.js";
 import { DEFAULT_CHECK, runCheck, type CheckOptions, type Format } from "./check.js";
 import { renderGithub, renderJson, renderPretty } from "./format-cli.js";
 import { runDefine } from "./define.js";
 import { runDoctor } from "./doctor.js";
-import { init, initFromPackage, initFromShadcn } from "./init.js";
+import { init, initFromClaudeDesign, initFromPackage, initFromShadcn } from "./init.js";
 import { historyPath, renderRollup, runReport, runRollup } from "./report.js";
 import { runAdd, runBrand, runCreate, runFigma, runFonts, runIcons, runMock, runUpgrade, runRegistryBuild, runTheme, runTokens, type ScaffoldOptions } from "./scaffold.js";
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -19,7 +20,8 @@ Usage:
   zengin init                         write a zengin.config.yaml in the current directory
   zengin init --from shadcn           derive tokens, manifest and config from a shadcn/ui project
   zengin init --from package <name>   derive them from an installed package: its CSS variables and type declarations
-  zengin define [names...]            teach the manifest the components this project owns, from their own types and CSS
+  zengin init --from claude-design    derive them from a Claude Design export: _ds_manifest.json, its stylesheets and .d.ts files
+  zengin define [names...]           teach the manifest the components this project owns, from their own types and CSS
   zengin doctor [--fix]               is this project's plumbing what this version expects: agent wiring, pins, generated files
   zengin report [--out file]          one repository's snapshot: violations plus inventory, as JSON, for the rollup
   zengin report --into <dir>          the same, filed as <dir>/<repo>/<time>.json so the directory is the history
@@ -39,10 +41,12 @@ Usage:
   zengin figma connect                Code Connect files from zengin/components.json
   zengin figma plugin                 the plugin that imports and exports variables in any Figma file
   zengin registry build --out <dir>   build the registry from a Zengin repository checkout
+  zengin telemetry [on|off]           anonymous usage counts: off until you say yes; shows the choice without an argument
 
 Init options:
   --from shadcn         read the theme CSS, Tailwind config and components/ui; write zengin/ and zengin.config.yaml
   --from package <name> read node_modules/<name>: tokens from its stylesheet (names kept), manifest from its .d.ts
+  --from claude-design  read the export in --dir (default: here); contracts are cross-checked against _adherence.oxlintrc.json
   --dir <path>          project directory (default: cwd)
   --force               overwrite existing zengin/ definitions and config
 
@@ -129,11 +133,15 @@ Check options:
   --format <fmt>        pretty | json | github (default: pretty; github emits PR annotations)
   --max <n>             violations shown in pretty output (default: 200)
 
+Telemetry:
+  Off by default. The first run at a terminal asks once (Enter is no). Never sent in CI or when
+  DO_NOT_TRACK is set, and never a path, code, a name or an email. Every event: ${TELEMETRY_DOCS}
+
 Exit codes: 0 clean or below --fail-on, 1 violations at or above --fail-on, 2 usage or configuration error.
 `;
 
 interface Parsed {
-  command: "check" | "explain" | "init" | "define" | "doctor" | "report" | "rollup" | "audit" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "help";
+  command: "check" | "explain" | "init" | "define" | "doctor" | "report" | "rollup" | "audit" | "create" | "add" | "tokens" | "registry" | "theme" | "fonts" | "icons" | "upgrade" | "brand" | "figma" | "mock" | "telemetry" | "help";
   positional: string[];
   check: CheckOptions;
   init: { from?: string; dir?: string; force: boolean };
@@ -165,7 +173,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       return v;
     };
     if (!a.startsWith("-") && !command) {
-      if (a === "check" || a === "explain" || a === "init" || a === "define" || a === "doctor" || a === "report" || a === "rollup" || a === "audit" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "fonts" || a === "icons" || a === "upgrade" || a === "brand" || a === "figma" || a === "mock" || a === "help") command = a;
+      if (a === "check" || a === "explain" || a === "init" || a === "define" || a === "doctor" || a === "report" || a === "rollup" || a === "audit" || a === "create" || a === "add" || a === "tokens" || a === "registry" || a === "theme" || a === "fonts" || a === "icons" || a === "upgrade" || a === "brand" || a === "figma" || a === "mock" || a === "telemetry" || a === "help") command = a;
       else {
         command = "check";
         positional.push(a);
@@ -270,7 +278,7 @@ export function parseArgs(argv: string[], cwd: string): Parsed {
       check.format = asFormat(rawFormat);
     }
   }
-  if (initOpts.from && initOpts.from !== "shadcn" && initOpts.from !== "package") throw new Error(`--from supports "shadcn" and "package <name>" (got ${initOpts.from}).`);
+  if (initOpts.from && !["shadcn", "package", "claude-design"].includes(initOpts.from)) throw new Error(`--from supports "shadcn", "claude-design" and "package <name>" (got ${initOpts.from}).`);
   return { command: command ?? "check", positional, check, init: initOpts, report: reportOpts, rollup: rollupOpts, scaffold, doctor, audit };
 }
 
@@ -311,11 +319,51 @@ export function explain(rule: string | undefined): string {
   return lines.join("\n");
 }
 
+const VERSION = versionOf(import.meta.url);
+
+/** One usage count, sent only when the person said yes (see docs/telemetry.md). */
+function record(event: TelemetryEventName, counts: Record<string, number> = {}): Promise<boolean> {
+  return track({ event, tool: "cli", version: VERSION, counts });
+}
+
+/** `zengin telemetry [on|off|status]`: change the choice, or show it and whether this environment may send at all. */
+export function telemetry(arg: string | undefined, env: Record<string, string | undefined> = process.env): string {
+  if (arg === "on" || arg === "off") writeConsent(arg === "on", env);
+  else if (arg !== undefined && arg !== "status") throw new Error(`zengin telemetry takes on, off or status (got ${arg}).`);
+  const consent = readConsent(env);
+  const blocked = blockedBy(env);
+  const choice = consent === undefined ? "not chosen yet, so off" : consent.enabled ? "on" : "off";
+  return [
+    `Anonymous usage counts: ${choice}.`,
+    ...(blocked ? [`Nothing is sent here whatever the choice: ${blocked} is set.`] : []),
+    `Stored in ${consentPath(env)}.`,
+    `What is sent: ${TELEMETRY_DOCS}`,
+    consent?.enabled ? "Turn off: zengin telemetry off" : "Turn on: zengin telemetry on",
+  ].join("\n");
+}
+
+/** The one first-run question, at a terminal only; Enter is no, and either answer is stored so it is never asked again. */
+async function askOnce(command: Parsed["command"]): Promise<void> {
+  if (command === "help" || command === "telemetry") return;
+  if (!shouldAsk(Boolean(process.stdin.isTTY && process.stdout.isTTY && process.stderr.isTTY))) return;
+  const yes = await askConsent(process.stdin, process.stderr);
+  try {
+    writeConsent(yes);
+    process.stderr.write(yes ? "Usage counts are on. zengin telemetry off turns them off.\n\n" : "Usage counts stay off. zengin telemetry on turns them on.\n\n");
+  } catch (e) {
+    process.stderr.write(`zengin: could not save the choice to ${consentPath()} (${e instanceof Error ? e.message : String(e)}). Nothing is sent; you will be asked again.\n\n`);
+  }
+}
+
 async function main(): Promise<void> {
   const parsed = parseArgs(process.argv.slice(2), process.cwd());
+  await askOnce(parsed.command);
   switch (parsed.command) {
     case "help":
       process.stdout.write(HELP);
+      return;
+    case "telemetry":
+      process.stdout.write(telemetry(parsed.positional[0]) + "\n");
       return;
     case "explain":
       process.stdout.write(explain(parsed.positional[0]) + "\n");
@@ -324,16 +372,17 @@ async function main(): Promise<void> {
       const dir = parsed.init.dir ? resolve(process.cwd(), parsed.init.dir) : process.cwd();
       if (parsed.init.from === "shadcn") {
         process.stdout.write(initFromShadcn(dir, parsed.init.force) + "\n");
-        return;
-      }
-      if (parsed.init.from === "package") {
+      } else if (parsed.init.from === "claude-design") {
+        process.stdout.write(initFromClaudeDesign(dir, parsed.init.force) + "\n");
+      } else if (parsed.init.from === "package") {
         const pkgName = parsed.positional[0];
         if (!pkgName) throw new Error("zengin init --from package needs the package name, e.g. zengin init --from package @umami/react-zen");
         process.stdout.write(initFromPackage(dir, pkgName, parsed.init.force) + "\n");
-        return;
+      } else {
+        const path = init(dir);
+        process.stdout.write(`Wrote ${path}. Edit system.package to point at your design system, then run: zengin check\n`);
       }
-      const path = init(dir);
-      process.stdout.write(`Wrote ${path}. Edit system.package to point at your design system, then run: zengin check\n`);
+      await record("init_completed");
       return;
     }
     case "doctor": {
@@ -344,6 +393,7 @@ async function main(): Promise<void> {
       });
       process.stdout.write(result.report + "\n");
       process.exitCode = result.exitCode;
+      await record("doctor_run", { findings_count: result.findings.filter((f) => f.level !== "ok").length, fixed_count: result.fixed.length });
       return;
     }
     case "define": {
@@ -359,9 +409,11 @@ async function main(): Promise<void> {
     }
     case "create":
       process.stdout.write((await runCreate(parsed.positional[0], parsed.scaffold, process.cwd())) + "\n");
+      await record("project_created");
       return;
     case "add":
       process.stdout.write((await runAdd(parsed.positional, parsed.scaffold, process.cwd())) + "\n");
+      await record("component_added", { items_count: parsed.positional.length });
       return;
     case "mock":
       process.stdout.write(runMock(parsed.positional, parsed.scaffold, process.cwd()) + "\n");
@@ -383,6 +435,7 @@ async function main(): Promise<void> {
       return;
     case "brand":
       process.stdout.write((await runBrand(parsed.scaffold, process.cwd())) + "\n");
+      await record("brand_generated");
       return;
     case "tokens":
       process.stdout.write(runTokens(parsed.scaffold, process.cwd()) + "\n");
@@ -420,6 +473,7 @@ async function main(): Promise<void> {
       } else {
         process.stdout.write(text + "\n");
       }
+      await record("rollup_generated", { repo_count: result.totals.repos });
       return;
     }
     case "audit": {
@@ -444,6 +498,7 @@ async function main(): Promise<void> {
         parsed.check.format === "json" ? renderJson(result) : parsed.check.format === "github" ? renderGithub(result) : renderPretty(result, parsed.check.max);
       process.stdout.write(out + "\n");
       process.exitCode = result.exitCode;
+      await record("check_run", { files_count: result.filesChecked, violations_count: result.violations.length });
     }
   }
 }

@@ -13,3 +13,20 @@ export { renderSummary, renderViolations, summarize, type Summary } from "./form
 export { RULE_DOCS, FAMILY_NOTES, type RuleFamily } from "./docs.js";
 export { readOwnedPragma, type OwnedPragma } from "./scope.js";
 export { AGENT_WIRING, hookSettings } from "./system/wiring.js";
+export {
+  EVENTS,
+  TELEMETRY_DOCS,
+  askConsent,
+  blockedBy,
+  buildEvent,
+  consentPath,
+  readConsent,
+  shouldAsk,
+  track,
+  versionOf,
+  writeConsent,
+  type Consent,
+  type TelemetryEvent,
+  type TelemetryEventName,
+  type TelemetryTool,
+} from "./telemetry.js";

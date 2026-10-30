@@ -2,7 +2,7 @@ import { offsetsToRange } from "../parse/css.js";
 import { findColorLiterals, findVarRefs, isColorProp, rewriteAll, tokenUtilityPrefix } from "../resolve/css-props.js";
 import type { Token, Fix, Violation } from "../types.js";
 import { rewriteKey, utilityUses, type ClassUse, type Rule, type RuleContext } from "./context.js";
-import type { ColorMatch } from "../system/tokens.js";
+import { normalizeColor, type ColorMatch } from "../system/tokens.js";
 
 const ID = "color-literal";
 
@@ -18,6 +18,12 @@ interface Match {
 function where(m: ColorMatch): string {
   if (m.brand) return m.mode === "dark" ? "the project's brand (dark)" : "the project's brand";
   return m.mode === "dark" ? "the dark theme" : "the default theme";
+}
+
+/** A color with an alpha channel below 1: `rgba(0,0,0,.5)`, `#00000080`. */
+function hasAlpha(literal: string): boolean {
+  const n = normalizeColor(literal);
+  return n !== undefined && n.length === 9 && !n.endsWith("ff");
 }
 
 /** What the engine knows about a color value relative to the token set. */
@@ -41,6 +47,10 @@ function describe(ctx: RuleContext, literal: string): Match {
       candidates: names,
       note: `Several tokens share this value. Pick by role: ${names.join(", ")}.`,
     };
+  }
+  if (hasAlpha(literal)) {
+    // No token carries this transparency. Any opaque token is a different paint, so there is no fix to offer.
+    return { message: `Color literal where a token reference is required. ${literal} is translucent and no token has this color at this alpha.`, confidence: "none" };
   }
   const near = ctx.tokens.nearestColorMatch(literal);
   if (near) {

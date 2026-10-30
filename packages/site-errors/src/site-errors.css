@@ -1,0 +1,14 @@
+/* The failure page fills the window, so the message is the first thing seen, not a line at the top. */
+.site-error {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--spacing-6);
+}
+
+.site-error__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-3);
+}

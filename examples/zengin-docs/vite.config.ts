@@ -18,4 +18,9 @@ function pageFallback(): Plugin {
   };
 }
 
-export default defineConfig({ plugins: [react(), pageFallback()], server: { port: 5181, strictPort: true } });
+export default defineConfig({
+  plugins: [react(), pageFallback()],
+  server: { port: 5181, strictPort: true },
+  // The commit Vercel built, so a reported error names the release it happened in.
+  define: { "import.meta.env.VITE_RELEASE": JSON.stringify(process.env.VERCEL_GIT_COMMIT_SHA ?? "local") },
+});

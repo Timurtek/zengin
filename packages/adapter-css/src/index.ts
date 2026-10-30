@@ -227,7 +227,16 @@ export function renderReport(d: PackageDerivation): string {
   return lines.join("\n");
 }
 
-export { deriveTokensFromCss, classify, type CssDerivation, type CssToken, type Group } from "./tokens.js";
+export { deriveTokensFromCss, classify, type CssDerivation, type CssOptions, type CssToken, type Group } from "./tokens.js";
+export {
+  crossCheck,
+  deriveClaudeDesign,
+  readAdherence,
+  renderClaudeDesignReport,
+  writeClaudeDesign,
+  type ClaudeDesignDerivation,
+  type ContractFinding,
+} from "./claude-design.js";
 export { deriveManifestFromTypes, type TypesDerivation } from "./types.js";
 export {
   deriveManifestFromSource,

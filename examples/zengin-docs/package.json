@@ -14,7 +14,8 @@
   "dependencies": {
     "@zenginui/ui": "workspace:*",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "site-errors": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",
