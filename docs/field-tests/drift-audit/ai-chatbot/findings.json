@@ -1,0 +1,3749 @@
+{
+  "schema": "zengin-audit-findings/1",
+  "groups": [
+    {
+      "id": "G01",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "rounded-full",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F001",
+        "F002",
+        "F003",
+        "F004"
+      ],
+      "files": 3,
+      "score": 6,
+      "review": "queued"
+    },
+    {
+      "id": "G02",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-red-500",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F005",
+        "F006",
+        "F007",
+        "F008"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "queued"
+    },
+    {
+      "id": "G03",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-white",
+      "involves": "color.card",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F009",
+        "F010",
+        "F011"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "queued"
+    },
+    {
+      "id": "G04",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-black/80",
+      "involves": "color.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F012",
+        "F013"
+      ],
+      "files": 2,
+      "score": 6,
+      "review": "queued"
+    },
+    {
+      "id": "G05",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "gap-1.5",
+      "involves": "Badge",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F014",
+        "F015"
+      ],
+      "files": 2,
+      "score": 4,
+      "review": "queued"
+    },
+    {
+      "id": "G06",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "px-4",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F016",
+        "F017"
+      ],
+      "files": 2,
+      "score": 4,
+      "review": "queued"
+    },
+    {
+      "id": "G07",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "rounded-lg",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F018",
+        "F019"
+      ],
+      "files": 2,
+      "score": 4,
+      "review": "queued"
+    },
+    {
+      "id": "G08",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-white/60",
+      "involves": "color.card",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F020",
+        "F021",
+        "F022"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G09",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-white/80",
+      "involves": "color.card",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F023",
+        "F024",
+        "F025"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G10",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-red-50",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F026",
+        "F027"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G11",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-white/10",
+      "involves": "color.card",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F028",
+        "F029"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G12",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "border-red-200",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F030",
+        "F031"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G13",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "dark:bg-red-950/50",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F032",
+        "F033"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G14",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "dark:text-neutral-50",
+      "involves": "color.background",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F034",
+        "F035"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G15",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-blue-200",
+      "involves": "color.primary",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F036",
+        "F037"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G16",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-white/70",
+      "involves": "color.card",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F038",
+        "F039"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G17",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-white/90",
+      "involves": "color.card",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F040",
+        "F041"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G18",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-yellow-200",
+      "involves": "color.sidebar-border",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F042",
+        "F043"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G19",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-amber-500",
+      "involves": "color.chart-5",
+      "class": "true-drift",
+      "basis": "color-literal at error, with an exact fix.",
+      "findings": [
+        "F044"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G20",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-black/20",
+      "involves": "color.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F045"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G21",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-black/40",
+      "involves": "color.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F046"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G22",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-black/50",
+      "involves": "color.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F047"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G23",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-black/60",
+      "involves": "color.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F048"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G24",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "bg-white/20",
+      "involves": "color.card",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F049"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G25",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "dark:bg-neutral-900",
+      "involves": "color.background",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F050"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G26",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "dark:bg-neutral-950",
+      "involves": "color.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F051"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G27",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "data-[type=error]:text-red-600",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F052"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G28",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "data-[type=success]:text-green-600",
+      "involves": "color.chart-2",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F053"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G29",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "hover:bg-black/80",
+      "involves": "color.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F054"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G30",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-blue-600",
+      "involves": "color.primary",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F055"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G31",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-emerald-500",
+      "involves": "color.chart-2",
+      "class": "true-drift",
+      "basis": "color-literal at error, with an exact fix.",
+      "findings": [
+        "F056"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G32",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-green-600",
+      "involves": "color.chart-2",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F057"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G33",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-neutral-500",
+      "involves": "color.muted.foreground",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F058"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G34",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-orange-600",
+      "involves": "color.chart-1",
+      "class": "true-drift",
+      "basis": "color-literal at error, with an exact fix.",
+      "findings": [
+        "F059"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G35",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-red-400",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F060"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G36",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-red-600",
+      "involves": "color.destructive",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F061"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G37",
+      "rule": "color-literal",
+      "severity": "error",
+      "found": "text-yellow-600",
+      "involves": "color.chart-5",
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "findings": [
+        "F062"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G38",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n              className=\"flex size-6 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground\"\r\n              onClick={onClose}\r\n              type=\"button\"\r\n            >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F063"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G39",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n            className=\"flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-30\"\r\n            disabled={isFirst}\r\n            onClick={handlePrevious}\r\n            type=\"button\"\r\n          >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F064"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G40",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n            className=\"flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-30\"\r\n            disabled={isLast}\r\n            onClick={handleNext}\r\n            type=\"button\"\r\n          >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F065"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G41",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n            className=\"rounded px-1.5 py-0.5 text-muted-foreground/50 transition-colors hover:bg-muted hover:text-foreground\"\r\n            onMouseDown={handleCancelEditMouseDown}\r\n            type=\"button\"\r\n          >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F066"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G42",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n          className=\"absolute top-1.5 right-1.5 flex size-5 items-center justify-center rounded-full bg-black/60 text-white opacity-0 backdrop-blur-sm transition-opacity hover:bg-black/80 group-hover:opacity-100\"\r\n          onClick={onRemove}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F067"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G43",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n          className=\"flex w-full items-center rounded-2xl border border-border/30 bg-card/30 px-4 py-3 text-left text-[13px] text-muted-foreground/40 transition-colors hover:border-border/50 hover:text-muted-foreground/60\"\r\n          onClick={handleDefaultAction}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F068"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G44",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n          className=\"inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-3 py-1.5 text-sm font-medium text-background transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50\"\r\n          disabled={isMutating}\r\n          onClick={handleRestore}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F069"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G45",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n          className=\"inline-flex items-center justify-center rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-all duration-150 hover:bg-muted active:scale-[0.98]\"\r\n          onClick={handleLatest}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F070"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G46",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n          className={cn(\r\n            \"flex items-center justify-center rounded-full p-3 text-muted-foreground transition-all duration-150\",\r\n            \"hover:text-foreground\",\r\n            \"active:scale-95\",\r\n            \"disabled:pointer-events-none disabled:opacity-30\",\r\n            {\r\n              \"text-foreground\": isActive,\r\n            }\r\n          )}\r\n          disabled={disabled}\r\n          onClick={handleClick}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F071"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G47",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n          className={cn(\r\n            \"flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground\",\r\n            mode === \"diff\" && \"bg-muted text-foreground\"\r\n          )}\r\n          onClick={handleToggleMode}\r\n          title=\"Show changes\"\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F072"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G48",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n        aria-label=\"Scroll to bottom\"\r\n        className={`absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center rounded-full border border-border/50 bg-card/90 px-3.5 shadow-[var(--shadow-float)] backdrop-blur-lg transition-all duration-200 h-7 text-[10px] ${\r\n          isAtBottom\r\n            ? \"pointer-events-none scale-90 opacity-0\"\r\n            : \"pointer-events-auto scale-100 opacity-100\"\r\n        }`}\r\n        onClick={handleScrollToBottom}\r\n        type=\"button\"\r\n      >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F073"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G49",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n        className=\"rounded-md bg-primary px-3 py-1.5 text-primary-foreground text-sm transition-colors hover:bg-primary/90\"\r\n        onClick={handleAllow}\r\n        type=\"button\"\r\n      >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F074"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G50",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n        className=\"rounded-md px-3 py-1.5 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground\"\r\n        onClick={handleDeny}\r\n        type=\"button\"\r\n      >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F075"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G51",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n      className=\"cursor pointer flex w-fit flex-row items-start justify-between gap-3 rounded-xl border px-3 py-2\"\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F076"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G52",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n      className=\"flex w-fit cursor-pointer flex-row items-center gap-2 rounded-xl border bg-background px-3 py-2\"\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F077"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G53",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n      className=\"group flex size-8 items-center justify-center rounded-lg border border-transparent text-muted-foreground transition-all duration-150 hover:border-border hover:bg-muted hover:text-foreground active:scale-95\"\r\n      data-testid=\"artifact-close-button\"\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F078"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G54",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n      className=\"rounded-xl border border-border/30 bg-card/20 px-3 py-2.5 text-left text-[11px] leading-relaxed text-muted-foreground/70 transition-all duration-200 hover:border-border/60 hover:bg-card/40 hover:text-muted-foreground\"\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F079"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G55",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button\r\n      className={cn(\r\n        \"flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors\",\r\n        index === selectedIndex ? \"bg-muted/70\" : \"hover:bg-muted/40\"\r\n      )}\r\n      data-selected={index === selectedIndex}\r\n      onClick={handleClick}\r\n      onMouseDown={handleMouseDown}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F080"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G56",
+      "rule": "component-substitution",
+      "severity": "error",
+      "found": "<button className=\"w-full px-1 py-0.5 text-left text-red-500\" type=\"submit\">",
+      "involves": "Button",
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "findings": [
+        "F081"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G57",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "has-[>kbd]:ml-[-0.15rem]",
+      "involves": "has-[>kbd]:ml-[-0.15rem]",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F082"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G58",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "found": "has-[>kbd]:mr-[-0.15rem]",
+      "involves": "has-[>kbd]:mr-[-0.15rem]",
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "findings": [
+        "F083"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G59",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "toast-mobile:w-[356px]",
+      "involves": "toast-mobile:w-[356px]",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F084"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G60",
+      "rule": "token-reference",
+      "severity": "error",
+      "found": "toast-mobile:w-fit",
+      "involves": "toast-mobile:w-fit",
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "findings": [
+        "F085"
+      ],
+      "files": 1,
+      "score": 3,
+      "review": "queued"
+    },
+    {
+      "id": "G61",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "dark:bg-background",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F086",
+        "F087"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G62",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "dark:hover:bg-muted",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F088",
+        "F089"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G63",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "[&>*:not(:first-child)]:rounded-l-md",
+      "involves": "ButtonGroup",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F090"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G64",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "[&>*:not(:last-child)]:rounded-r-md",
+      "involves": "ButtonGroup",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F091"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G65",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "**:data-[slot=command-input-wrapper]:h-auto",
+      "involves": "Command",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F092"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G66",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "active:translate-y-0",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F093"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G67",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "bg-foreground",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F094"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G68",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "border",
+      "involves": "Collapsible",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F095"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G69",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "border-border/50",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F096"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G70",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "cursor-pointer",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F097"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G71",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "focus-visible:border-border/50",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F098"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G72",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "focus-visible:ring-0",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F099"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G73",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "hover:bg-foreground/90",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F100"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G74",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "hover:text-foreground",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F101"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G75",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "rounded-md",
+      "involves": "Collapsible",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F102"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G76",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "shadow-none",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F103"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G77",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "text-background",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F104"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G78",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "text-muted-foreground",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F105"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G79",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "text-xs",
+      "involves": "Badge",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F106"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G80",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "transition-colors",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F107"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G81",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "translate-x-[-50%]",
+      "involves": "Button",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F108"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    },
+    {
+      "id": "G82",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "found": "whitespace-nowrap",
+      "involves": "ScrollArea",
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "findings": [
+        "F109"
+      ],
+      "files": 1,
+      "score": 2,
+      "review": "queued"
+    }
+  ],
+  "findings": [
+    {
+      "id": "F001",
+      "group": "G01",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/conversation.tsx:88",
+      "file": "components/ai-elements/conversation.tsx",
+      "line": 88,
+      "col": 60,
+      "found": "rounded-full",
+      "involves": "Button",
+      "message": "className on Button may not set border-radius. border-radius is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F002",
+      "group": "G01",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/conversation.tsx:155",
+      "file": "components/ai-elements/conversation.tsx",
+      "line": 155,
+      "col": 33,
+      "found": "rounded-full",
+      "involves": "Button",
+      "message": "className on Button may not set border-radius. border-radius is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F003",
+      "group": "G01",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/suggestion.tsx:48",
+      "file": "components/ai-elements/suggestion.tsx",
+      "line": 48,
+      "col": 37,
+      "found": "rounded-full",
+      "involves": "Button",
+      "message": "className on Button may not set border-radius. border-radius is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F004",
+      "group": "G01",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/tool.tsx:69",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 69,
+      "col": 29,
+      "found": "rounded-full",
+      "involves": "Badge",
+      "message": "className on Badge may not set border-radius. border-radius is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F005",
+      "group": "G02",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:264",
+      "file": "components/chat/message.tsx",
+      "line": 264,
+      "col": 71,
+      "found": "text-red-500",
+      "involves": "color.destructive",
+      "message": "text-red-500 references the Tailwind default palette (--color-red-500), not a system token.",
+      "fix": {
+        "replace": "text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F006",
+      "group": "G02",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:287",
+      "file": "components/chat/message.tsx",
+      "line": 287,
+      "col": 71,
+      "found": "text-red-500",
+      "involves": "color.destructive",
+      "message": "text-red-500 references the Tailwind default palette (--color-red-500), not a system token.",
+      "fix": {
+        "replace": "text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F007",
+      "group": "G02",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:323",
+      "file": "components/chat/message.tsx",
+      "line": 323,
+      "col": 56,
+      "found": "text-red-500",
+      "involves": "color.destructive",
+      "message": "text-red-500 references the Tailwind default palette (--color-red-500), not a system token.",
+      "fix": {
+        "replace": "text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F008",
+      "group": "G02",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/sign-out-form.tsx:15",
+      "file": "components/chat/sign-out-form.tsx",
+      "line": 15,
+      "col": 53,
+      "found": "text-red-500",
+      "involves": "color.destructive",
+      "message": "text-red-500 references the Tailwind default palette (--color-red-500), not a system token.",
+      "fix": {
+        "replace": "text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F009",
+      "group": "G03",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/preview-attachment.tsx:47",
+      "file": "components/chat/preview-attachment.tsx",
+      "line": 47,
+      "col": 114,
+      "found": "text-white",
+      "involves": "color.card",
+      "message": "text-white references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F010",
+      "group": "G03",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:363",
+      "file": "components/chat/weather.tsx",
+      "line": 363,
+      "col": 49,
+      "found": "text-white",
+      "involves": "color.card",
+      "message": "text-white references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F011",
+      "group": "G03",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:412",
+      "file": "components/chat/weather.tsx",
+      "line": 412,
+      "col": 47,
+      "found": "text-white",
+      "involves": "color.card",
+      "message": "text-white references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F012",
+      "group": "G04",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ui/alert-dialog.tsx:39",
+      "file": "components/ui/alert-dialog.tsx",
+      "line": 39,
+      "col": 29,
+      "found": "bg-black/80",
+      "involves": "color.foreground",
+      "message": "bg-black/80 references the Tailwind default palette (--color-black), not a system token.",
+      "fix": {
+        "replace": "bg-foreground",
+        "confidence": "nearest",
+        "token": "color.foreground",
+        "note": "Nearest by value: color.foreground = #060606. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F013",
+      "group": "G04",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ui/dialog.tsx:42",
+      "file": "components/ui/dialog.tsx",
+      "line": 42,
+      "col": 37,
+      "found": "bg-black/80",
+      "involves": "color.foreground",
+      "message": "bg-black/80 references the Tailwind default palette (--color-black), not a system token.",
+      "fix": {
+        "replace": "bg-foreground",
+        "confidence": "nearest",
+        "token": "color.foreground",
+        "note": "Nearest by value: color.foreground = #060606. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F014",
+      "group": "G05",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/tool.tsx:69",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 69,
+      "col": 21,
+      "found": "gap-1.5",
+      "involves": "Badge",
+      "message": "className on Badge may not set gap. className on Badge is limited to: margin, flex-item, grid-item, position, display.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F015",
+      "group": "G05",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 22,
+      "found": "gap-1.5",
+      "involves": "Button",
+      "message": "className on Button may not set gap. className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F016",
+      "group": "G06",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/suggestion.tsx:48",
+      "file": "components/ai-elements/suggestion.tsx",
+      "line": 48,
+      "col": 50,
+      "found": "px-4",
+      "involves": "Button",
+      "message": "className on Button may not set padding-inline. padding is owned by the size prop.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F017",
+      "group": "G06",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/chat-header.tsx:55",
+      "file": "components/chat/chat-header.tsx",
+      "line": 55,
+      "col": 52,
+      "found": "px-4",
+      "involves": "Button",
+      "message": "className on Button may not set padding-inline. padding is owned by the size prop.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F018",
+      "group": "G07",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/chat-header.tsx:55",
+      "file": "components/chat/chat-header.tsx",
+      "line": 55,
+      "col": 27,
+      "found": "rounded-lg",
+      "involves": "Button",
+      "message": "className on Button may not set border-radius. border-radius is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F019",
+      "group": "G07",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 30,
+      "found": "rounded-lg",
+      "involves": "Button",
+      "message": "className on Button may not set border-radius. border-radius is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F020",
+      "group": "G08",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:348",
+      "file": "components/chat/weather.tsx",
+      "line": 348,
+      "col": 27,
+      "found": "text-white/60",
+      "involves": "color.card",
+      "message": "text-white/60 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F021",
+      "group": "G08",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:404",
+      "file": "components/chat/weather.tsx",
+      "line": 404,
+      "col": 36,
+      "found": "text-white/60",
+      "involves": "color.card",
+      "message": "text-white/60 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F022",
+      "group": "G08",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:421",
+      "file": "components/chat/weather.tsx",
+      "line": 421,
+      "col": 51,
+      "found": "text-white/60",
+      "involves": "color.card",
+      "message": "text-white/60 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F023",
+      "group": "G09",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:347",
+      "file": "components/chat/weather.tsx",
+      "line": 347,
+      "col": 39,
+      "found": "text-white/80",
+      "involves": "color.card",
+      "message": "text-white/80 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F024",
+      "group": "G09",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:365",
+      "file": "components/chat/weather.tsx",
+      "line": 365,
+      "col": 40,
+      "found": "text-white/80",
+      "involves": "color.card",
+      "message": "text-white/80 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F025",
+      "group": "G09",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:380",
+      "file": "components/chat/weather.tsx",
+      "line": 380,
+      "col": 44,
+      "found": "text-white/80",
+      "involves": "color.card",
+      "message": "text-white/80 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F026",
+      "group": "G10",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:264",
+      "file": "components/chat/message.tsx",
+      "line": 264,
+      "col": 57,
+      "found": "bg-red-50",
+      "involves": "color.destructive",
+      "message": "bg-red-50 references the Tailwind default palette (--color-red-50), not a system token.",
+      "fix": {
+        "replace": "bg-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F027",
+      "group": "G10",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:287",
+      "file": "components/chat/message.tsx",
+      "line": 287,
+      "col": 57,
+      "found": "bg-red-50",
+      "involves": "color.destructive",
+      "message": "bg-red-50 references the Tailwind default palette (--color-red-50), not a system token.",
+      "fix": {
+        "replace": "bg-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F028",
+      "group": "G11",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:343",
+      "file": "components/chat/weather.tsx",
+      "line": 343,
+      "col": 40,
+      "found": "bg-white/10",
+      "involves": "color.card",
+      "message": "bg-white/10 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "bg-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F029",
+      "group": "G11",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:379",
+      "file": "components/chat/weather.tsx",
+      "line": 379,
+      "col": 36,
+      "found": "bg-white/10",
+      "involves": "color.card",
+      "message": "bg-white/10 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "bg-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F030",
+      "group": "G12",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:264",
+      "file": "components/chat/message.tsx",
+      "line": 264,
+      "col": 42,
+      "found": "border-red-200",
+      "involves": "color.destructive",
+      "message": "border-red-200 references the Tailwind default palette (--color-red-200), not a system token.",
+      "fix": {
+        "replace": "border-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F031",
+      "group": "G12",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:287",
+      "file": "components/chat/message.tsx",
+      "line": 287,
+      "col": 42,
+      "found": "border-red-200",
+      "involves": "color.destructive",
+      "message": "border-red-200 references the Tailwind default palette (--color-red-200), not a system token.",
+      "fix": {
+        "replace": "border-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F032",
+      "group": "G13",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:264",
+      "file": "components/chat/message.tsx",
+      "line": 264,
+      "col": 84,
+      "found": "dark:bg-red-950/50",
+      "involves": "color.destructive",
+      "message": "dark:bg-red-950/50 references the Tailwind default palette (--color-red-950), not a system token.",
+      "fix": {
+        "replace": "dark:bg-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F033",
+      "group": "G13",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:287",
+      "file": "components/chat/message.tsx",
+      "line": 287,
+      "col": 84,
+      "found": "dark:bg-red-950/50",
+      "involves": "color.destructive",
+      "message": "dark:bg-red-950/50 references the Tailwind default palette (--color-red-950), not a system token.",
+      "fix": {
+        "replace": "dark:bg-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F034",
+      "group": "G14",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/sheet-editor.tsx:59",
+      "file": "components/chat/sheet-editor.tsx",
+      "line": 59,
+      "col": 51,
+      "found": "dark:text-neutral-50",
+      "involves": "color.background",
+      "message": "dark:text-neutral-50 references the Tailwind default palette (--color-neutral-50), not a system token.",
+      "fix": {
+        "replace": "dark:text-background",
+        "confidence": "nearest",
+        "token": "color.background",
+        "candidates": [
+          "color.background",
+          "color.primary.foreground",
+          "color.sidebar-primary.foreground"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.background, color.primary.foreground, color.sidebar-primary.foreground."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F035",
+      "group": "G14",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/sheet-editor.tsx:62",
+      "file": "components/chat/sheet-editor.tsx",
+      "line": 62,
+      "col": 57,
+      "found": "dark:text-neutral-50",
+      "involves": "color.background",
+      "message": "dark:text-neutral-50 references the Tailwind default palette (--color-neutral-50), not a system token.",
+      "fix": {
+        "replace": "dark:text-background",
+        "confidence": "nearest",
+        "token": "color.background",
+        "candidates": [
+          "color.background",
+          "color.primary.foreground",
+          "color.sidebar-primary.foreground"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.background, color.primary.foreground, color.sidebar-primary.foreground."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F036",
+      "group": "G15",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:357",
+      "file": "components/chat/weather.tsx",
+      "line": 357,
+      "col": 18,
+      "found": "text-blue-200",
+      "involves": "color.primary",
+      "message": "text-blue-200 references the Tailwind default palette (--color-blue-200), not a system token.",
+      "fix": {
+        "replace": "text-primary",
+        "confidence": "nearest",
+        "token": "color.primary",
+        "note": "primary is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F037",
+      "group": "G15",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:405",
+      "file": "components/chat/weather.tsx",
+      "line": 405,
+      "col": 24,
+      "found": "text-blue-200",
+      "involves": "color.primary",
+      "message": "text-blue-200 references the Tailwind default palette (--color-blue-200), not a system token.",
+      "fix": {
+        "replace": "text-primary",
+        "confidence": "nearest",
+        "token": "color.primary",
+        "note": "primary is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F038",
+      "group": "G16",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:375",
+      "file": "components/chat/weather.tsx",
+      "line": 375,
+      "col": 29,
+      "found": "text-white/70",
+      "involves": "color.card",
+      "message": "text-white/70 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F039",
+      "group": "G16",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:399",
+      "file": "components/chat/weather.tsx",
+      "line": 399,
+      "col": 47,
+      "found": "text-white/70",
+      "involves": "color.card",
+      "message": "text-white/70 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F040",
+      "group": "G17",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:356",
+      "file": "components/chat/weather.tsx",
+      "line": 356,
+      "col": 30,
+      "found": "text-white/90",
+      "involves": "color.card",
+      "message": "text-white/90 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F041",
+      "group": "G17",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:372",
+      "file": "components/chat/weather.tsx",
+      "line": 372,
+      "col": 41,
+      "found": "text-white/90",
+      "involves": "color.card",
+      "message": "text-white/90 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "text-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F042",
+      "group": "G18",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:358",
+      "file": "components/chat/weather.tsx",
+      "line": 358,
+      "col": 18,
+      "found": "text-yellow-200",
+      "involves": "color.sidebar-border",
+      "message": "text-yellow-200 references the Tailwind default palette (--color-yellow-200), not a system token.",
+      "fix": {
+        "replace": "text-sidebar-border",
+        "confidence": "nearest",
+        "token": "color.sidebar-border",
+        "note": "Nearest by value: color.sidebar-border = #d7d7d7. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F043",
+      "group": "G18",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:406",
+      "file": "components/chat/weather.tsx",
+      "line": 406,
+      "col": 24,
+      "found": "text-yellow-200",
+      "involves": "color.sidebar-border",
+      "message": "text-yellow-200 references the Tailwind default palette (--color-yellow-200), not a system token.",
+      "fix": {
+        "replace": "text-sidebar-border",
+        "confidence": "nearest",
+        "token": "color.sidebar-border",
+        "note": "Nearest by value: color.sidebar-border = #d7d7d7. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F044",
+      "group": "G19",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/artifact.tsx:343",
+      "file": "components/chat/artifact.tsx",
+      "line": 343,
+      "col": 73,
+      "found": "bg-amber-500",
+      "involves": "color.chart-5",
+      "message": "bg-amber-500 references the Tailwind default palette (--color-amber-500), not a system token.",
+      "fix": {
+        "replace": "bg-chart-5",
+        "confidence": "exact",
+        "token": "color.chart-5"
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with an exact fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F045",
+      "group": "G20",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/suggestion.tsx:33",
+      "file": "components/chat/suggestion.tsx",
+      "line": 33,
+      "col": 39,
+      "found": "bg-black/20",
+      "involves": "color.foreground",
+      "message": "bg-black/20 references the Tailwind default palette (--color-black), not a system token.",
+      "fix": {
+        "replace": "bg-foreground",
+        "confidence": "nearest",
+        "token": "color.foreground",
+        "note": "Nearest by value: color.foreground = #060606. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F046",
+      "group": "G21",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/preview-attachment.tsx:38",
+      "file": "components/chat/preview-attachment.tsx",
+      "line": 38,
+      "col": 83,
+      "found": "bg-black/40",
+      "involves": "color.foreground",
+      "message": "bg-black/40 references the Tailwind default palette (--color-black), not a system token.",
+      "fix": {
+        "replace": "bg-foreground",
+        "confidence": "nearest",
+        "token": "color.foreground",
+        "note": "Nearest by value: color.foreground = #060606. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F047",
+      "group": "G22",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ui/sheet.tsx:40",
+      "file": "components/ui/sheet.tsx",
+      "line": 40,
+      "col": 29,
+      "found": "bg-black/50",
+      "involves": "color.foreground",
+      "message": "bg-black/50 references the Tailwind default palette (--color-black), not a system token.",
+      "fix": {
+        "replace": "bg-foreground",
+        "confidence": "nearest",
+        "token": "color.foreground",
+        "note": "Nearest by value: color.foreground = #060606. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F048",
+      "group": "G23",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/preview-attachment.tsx:47",
+      "file": "components/chat/preview-attachment.tsx",
+      "line": 47,
+      "col": 102,
+      "found": "bg-black/60",
+      "involves": "color.foreground",
+      "message": "bg-black/60 references the Tailwind default palette (--color-black), not a system token.",
+      "fix": {
+        "replace": "bg-foreground",
+        "confidence": "nearest",
+        "token": "color.foreground",
+        "note": "Nearest by value: color.foreground = #060606. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F049",
+      "group": "G24",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/weather.tsx:394",
+      "file": "components/chat/weather.tsx",
+      "line": 394,
+      "col": 24,
+      "found": "bg-white/20",
+      "involves": "color.card",
+      "message": "bg-white/20 references the Tailwind default palette (--color-white), not a system token.",
+      "fix": {
+        "replace": "bg-card",
+        "confidence": "nearest",
+        "token": "color.card",
+        "candidates": [
+          "color.card",
+          "color.popover"
+        ],
+        "note": "Several tokens share this value. Pick by role: color.card, color.popover."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F050",
+      "group": "G25",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/sheet-editor.tsx:62",
+      "file": "components/chat/sheet-editor.tsx",
+      "line": 62,
+      "col": 37,
+      "found": "dark:bg-neutral-900",
+      "involves": "color.background",
+      "message": "dark:bg-neutral-900 references the Tailwind default palette (--color-neutral-900), not a system token.",
+      "fix": {
+        "replace": "dark:bg-background",
+        "confidence": "nearest",
+        "token": "color.background",
+        "note": "Nearest by value: color.background = #151515 in the dark theme. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F051",
+      "group": "G26",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/sheet-editor.tsx:59",
+      "file": "components/chat/sheet-editor.tsx",
+      "line": 59,
+      "col": 31,
+      "found": "dark:bg-neutral-950",
+      "involves": "color.foreground",
+      "message": "dark:bg-neutral-950 references the Tailwind default palette (--color-neutral-950), not a system token.",
+      "fix": {
+        "replace": "dark:bg-foreground",
+        "confidence": "nearest",
+        "token": "color.foreground",
+        "note": "Nearest by value: color.foreground = #060606. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F052",
+      "group": "G27",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/toast.tsx:56",
+      "file": "components/chat/toast.tsx",
+      "line": 56,
+      "col": 14,
+      "found": "data-[type=error]:text-red-600",
+      "involves": "color.destructive",
+      "message": "data-[type=error]:text-red-600 references the Tailwind default palette (--color-red-600), not a system token.",
+      "fix": {
+        "replace": "data-[type=error]:text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F053",
+      "group": "G28",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/toast.tsx:56",
+      "file": "components/chat/toast.tsx",
+      "line": 56,
+      "col": 45,
+      "found": "data-[type=success]:text-green-600",
+      "involves": "color.chart-2",
+      "message": "data-[type=success]:text-green-600 references the Tailwind default palette (--color-green-600), not a system token.",
+      "fix": {
+        "replace": "data-[type=success]:text-chart-2",
+        "confidence": "nearest",
+        "token": "color.chart-2",
+        "note": "Nearest by value: color.chart-2 = #00bc7d in the dark theme. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F054",
+      "group": "G29",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/preview-attachment.tsx:47",
+      "file": "components/chat/preview-attachment.tsx",
+      "line": 47,
+      "col": 171,
+      "found": "hover:bg-black/80",
+      "involves": "color.foreground",
+      "message": "hover:bg-black/80 references the Tailwind default palette (--color-black), not a system token.",
+      "fix": {
+        "replace": "hover:bg-foreground",
+        "confidence": "nearest",
+        "token": "color.foreground",
+        "note": "Nearest by value: color.foreground = #060606. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F055",
+      "group": "G30",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ai-elements/tool.tsx:60",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 60,
+      "col": 60,
+      "found": "text-blue-600",
+      "involves": "color.primary",
+      "message": "text-blue-600 references the Tailwind default palette (--color-blue-600), not a system token.",
+      "fix": {
+        "replace": "text-primary",
+        "confidence": "nearest",
+        "token": "color.primary",
+        "note": "primary is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F056",
+      "group": "G31",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/console.tsx:142",
+      "file": "components/chat/console.tsx",
+      "line": 142,
+      "col": 20,
+      "found": "text-emerald-500",
+      "involves": "color.chart-2",
+      "message": "text-emerald-500 references the Tailwind default palette (--color-emerald-500), not a system token.",
+      "fix": {
+        "replace": "text-chart-2",
+        "confidence": "exact",
+        "token": "color.chart-2"
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with an exact fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F057",
+      "group": "G32",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ai-elements/tool.tsx:63",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 63,
+      "col": 58,
+      "found": "text-green-600",
+      "involves": "color.chart-2",
+      "message": "text-green-600 references the Tailwind default palette (--color-green-600), not a system token.",
+      "fix": {
+        "replace": "text-chart-2",
+        "confidence": "nearest",
+        "token": "color.chart-2",
+        "note": "Nearest by value: color.chart-2 = #00bc7d in the dark theme. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F058",
+      "group": "G33",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/document.tsx:141",
+      "file": "components/chat/document.tsx",
+      "line": 141,
+      "col": 30,
+      "found": "text-neutral-500",
+      "involves": "color.muted.foreground",
+      "message": "text-neutral-500 references the Tailwind default palette (--color-neutral-500), not a system token.",
+      "fix": {
+        "replace": "text-muted-foreground",
+        "confidence": "nearest",
+        "token": "color.muted.foreground",
+        "note": "Nearest by value: color.muted.foreground = #7a7a7a. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F059",
+      "group": "G34",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ai-elements/tool.tsx:64",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 64,
+      "col": 51,
+      "found": "text-orange-600",
+      "involves": "color.chart-1",
+      "message": "text-orange-600 references the Tailwind default palette (--color-orange-600), not a system token.",
+      "fix": {
+        "replace": "text-chart-1",
+        "confidence": "exact",
+        "token": "color.chart-1"
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with an exact fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F060",
+      "group": "G35",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/chat/console.tsx:147",
+      "file": "components/chat/console.tsx",
+      "line": 147,
+      "col": 20,
+      "found": "text-red-400",
+      "involves": "color.destructive",
+      "message": "text-red-400 references the Tailwind default palette (--color-red-400), not a system token.",
+      "fix": {
+        "replace": "text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F061",
+      "group": "G36",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ai-elements/tool.tsx:65",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 65,
+      "col": 50,
+      "found": "text-red-600",
+      "involves": "color.destructive",
+      "message": "text-red-600 references the Tailwind default palette (--color-red-600), not a system token.",
+      "fix": {
+        "replace": "text-destructive",
+        "confidence": "nearest",
+        "token": "color.destructive",
+        "note": "destructive is the system's token for this role. Chosen by role, not by value; verify it reads correctly here."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F062",
+      "group": "G37",
+      "rule": "color-literal",
+      "severity": "error",
+      "evidence": "components/ai-elements/tool.tsx:59",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 59,
+      "col": 54,
+      "found": "text-yellow-600",
+      "involves": "color.chart-5",
+      "message": "text-yellow-600 references the Tailwind default palette (--color-yellow-600), not a system token.",
+      "fix": {
+        "replace": "text-chart-5",
+        "confidence": "nearest",
+        "token": "color.chart-5",
+        "note": "Nearest by value: color.chart-5 = #fe9a00. Verify the semantic role before applying."
+      },
+      "class": "true-drift",
+      "basis": "color-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F063",
+      "group": "G38",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/suggestion.tsx:53",
+      "file": "components/chat/suggestion.tsx",
+      "line": 53,
+      "col": 13,
+      "found": "<button\r\n              className=\"flex size-6 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground\"\r\n              onClick={onClose}\r\n              type=\"button\"\r\n            >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, height). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={onClose}>\r\n              <CrossIcon size={12} />\r\n            </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props."
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F064",
+      "group": "G39",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/version-footer.tsx:111",
+      "file": "components/chat/version-footer.tsx",
+      "line": 111,
+      "col": 11,
+      "found": "<button\r\n            className=\"flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-30\"\r\n            disabled={isFirst}\r\n            onClick={handlePrevious}\r\n            type=\"button\"\r\n          >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, height). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button disabled={isFirst} onClick={handlePrevious}>\r\n            <ChevronLeftIcon className=\"size-4\" />\r\n          </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F065",
+      "group": "G40",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/version-footer.tsx:122",
+      "file": "components/chat/version-footer.tsx",
+      "line": 122,
+      "col": 11,
+      "found": "<button\r\n            className=\"flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-30\"\r\n            disabled={isLast}\r\n            onClick={handleNext}\r\n            type=\"button\"\r\n          >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, height). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button disabled={isLast} onClick={handleNext}>\r\n            <ChevronRightIcon className=\"size-4\" />\r\n          </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F066",
+      "group": "G41",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/multimodal-input.tsx:462",
+      "file": "components/chat/multimodal-input.tsx",
+      "line": 462,
+      "col": 11,
+      "found": "<button\r\n            className=\"rounded px-1.5 py-0.5 text-muted-foreground/50 transition-colors hover:bg-muted hover:text-foreground\"\r\n            onMouseDown={handleCancelEditMouseDown}\r\n            type=\"button\"\r\n          >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onMouseDown={handleCancelEditMouseDown}>\r\n            Cancel\r\n          </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props."
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F067",
+      "group": "G42",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/preview-attachment.tsx:46",
+      "file": "components/chat/preview-attachment.tsx",
+      "line": 46,
+      "col": 9,
+      "found": "<button\r\n          className=\"absolute top-1.5 right-1.5 flex size-5 items-center justify-center rounded-full bg-black/60 text-white opacity-0 backdrop-blur-sm transition-opacity hover:bg-black/80 group-hover:opacity-100\"\r\n          onClick={onRemove}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, height). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={onRemove}>\r\n          <CrossSmallIcon size={10} />\r\n        </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F068",
+      "group": "G43",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/preview.tsx:76",
+      "file": "components/chat/preview.tsx",
+      "line": 76,
+      "col": 9,
+      "found": "<button\r\n          className=\"flex w-full items-center rounded-2xl border border-border/30 bg-card/30 px-4 py-3 text-left text-[13px] text-muted-foreground/40 transition-colors hover:border-border/50 hover:text-muted-foreground/60\"\r\n          onClick={handleDefaultAction}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-color, border-radius, color, font, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={handleDefaultAction}>\r\n          Ask anything...\r\n        </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F069",
+      "group": "G44",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/version-footer.tsx:146",
+      "file": "components/chat/version-footer.tsx",
+      "line": 146,
+      "col": 9,
+      "found": "<button\r\n          className=\"inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-3 py-1.5 text-sm font-medium text-background transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50\"\r\n          disabled={isMutating}\r\n          onClick={handleRestore}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, font, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button disabled={isMutating} onClick={handleRestore}>\r\n          Restore\r\n          {isMutating ? (\r\n            <div className=\"animate-spin\">\r\n              <LoaderIcon size={14} />\r\n            </div>\r\n          ) : null}\r\n        </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F070",
+      "group": "G45",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/version-footer.tsx:159",
+      "file": "components/chat/version-footer.tsx",
+      "line": 159,
+      "col": 9,
+      "found": "<button\r\n          className=\"inline-flex items-center justify-center rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition-all duration-150 hover:bg-muted active:scale-[0.98]\"\r\n          onClick={handleLatest}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-color, border-radius, font, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={handleLatest}>\r\n          Latest\r\n        </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F071",
+      "group": "G46",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/artifact-actions.tsx:52",
+      "file": "components/chat/artifact-actions.tsx",
+      "line": 52,
+      "col": 9,
+      "found": "<button\r\n          className={cn(\r\n            \"flex items-center justify-center rounded-full p-3 text-muted-foreground transition-all duration-150\",\r\n            \"hover:text-foreground\",\r\n            \"active:scale-95\",\r\n            \"disabled:pointer-events-none disabled:opacity-30\",\r\n            {\r\n              \"text-foreground\": isActive,\r\n            }\r\n          )}\r\n          disabled={disabled}\r\n          onClick={handleClick}\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (border-radius, color, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button disabled={disabled} onClick={handleClick}>\r\n          {action.icon}\r\n        </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F072",
+      "group": "G47",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/version-footer.tsx:132",
+      "file": "components/chat/version-footer.tsx",
+      "line": 132,
+      "col": 9,
+      "found": "<button\r\n          className={cn(\r\n            \"flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground\",\r\n            mode === \"diff\" && \"bg-muted text-foreground\"\r\n          )}\r\n          onClick={handleToggleMode}\r\n          title=\"Show changes\"\r\n          type=\"button\"\r\n        >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, height). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={handleToggleMode} title=\"Show changes\">\r\n          <DiffIcon className=\"size-4\" />\r\n        </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F073",
+      "group": "G48",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/messages.tsx:117",
+      "file": "components/chat/messages.tsx",
+      "line": 117,
+      "col": 7,
+      "found": "<button\r\n        aria-label=\"Scroll to bottom\"\r\n        className={`absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center rounded-full border border-border/50 bg-card/90 px-3.5 shadow-[var(--shadow-float)] backdrop-blur-lg transition-all duration-200 h-7 text-[10px] ${\r\n          isAtBottom\r\n            ? \"pointer-events-none scale-90 opacity-0\"\r\n            : \"pointer-events-auto scale-100 opacity-100\"\r\n        }`}\r\n        onClick={handleScrollToBottom}\r\n        type=\"button\"\r\n      >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-color, border-radius, font, height, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button aria-label=\"Scroll to bottom\" onClick={handleScrollToBottom}>\r\n        <ArrowDownIcon className=\"size-3 text-muted-foreground\" />\r\n      </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F074",
+      "group": "G49",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:73",
+      "file": "components/chat/message.tsx",
+      "line": 73,
+      "col": 7,
+      "found": "<button\r\n        className=\"rounded-md bg-primary px-3 py-1.5 text-primary-foreground text-sm transition-colors hover:bg-primary/90\"\r\n        onClick={handleAllow}\r\n        type=\"button\"\r\n      >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, font, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={handleAllow}>\r\n        Allow\r\n      </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F075",
+      "group": "G50",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/message.tsx:66",
+      "file": "components/chat/message.tsx",
+      "line": 66,
+      "col": 7,
+      "found": "<button\r\n        className=\"rounded-md px-3 py-1.5 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground\"\r\n        onClick={handleDeny}\r\n        type=\"button\"\r\n      >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, color, font, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={handleDeny}>\r\n        Deny\r\n      </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F076",
+      "group": "G51",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/document.tsx:135",
+      "file": "components/chat/document.tsx",
+      "line": 135,
+      "col": 5,
+      "found": "<button\r\n      className=\"cursor pointer flex w-fit flex-row items-start justify-between gap-3 rounded-xl border px-3 py-2\"\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (border-radius, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={handleClick}>\r\n      <div className=\"flex flex-row items-start gap-3\">\r\n        <div className=\"mt-1 text-neutral-500\">\r\n          {type === \"create\" ? (\r\n            <FileIcon />\r\n          ) : type === \"update\" ? (\r\n            <PencilEditIcon />\r\n          ) : type === \"request-suggestions\" ? (\r\n            <MessageIcon />\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className=\"text-left\">\r\n          {`${getActionText(type, \"present\")} ${\r\n            type === \"create\" && \"title\" in args && args.title\r\n              ? `\"${args.title}\"`\r\n              : type === \"update\" && \"description\" in args\r\n                ? `\"${args.description}\"`\r\n                : type === \"request-suggestions\"\r\n                  ? \"for document\"\r\n                  : \"\"\r\n          }`}\r\n        </div>\r\n      </div>\r\n\r\n      <div className=\"mt-1 animate-spin\">{<LoaderIcon />}</div>\r\n    </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F077",
+      "group": "G52",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/document.tsx:69",
+      "file": "components/chat/document.tsx",
+      "line": 69,
+      "col": 5,
+      "found": "<button\r\n      className=\"flex w-fit cursor-pointer flex-row items-center gap-2 rounded-xl border bg-background px-3 py-2\"\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-radius, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={handleClick}>\r\n      <div className=\"text-muted-foreground\">\r\n        {type === \"create\" ? (\r\n          <FileIcon />\r\n        ) : type === \"update\" ? (\r\n          <PencilEditIcon />\r\n        ) : type === \"request-suggestions\" ? (\r\n          <MessageIcon />\r\n        ) : null}\r\n      </div>\r\n      <div className=\"text-left\">\r\n        {`${getActionText(type, \"past\")} \"${result.title}\"`}\r\n      </div>\r\n    </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F078",
+      "group": "G53",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/artifact-close-button.tsx:19",
+      "file": "components/chat/artifact-close-button.tsx",
+      "line": 19,
+      "col": 5,
+      "found": "<button\r\n      className=\"group flex size-8 items-center justify-center rounded-lg border border-transparent text-muted-foreground transition-all duration-150 hover:border-border hover:bg-muted hover:text-foreground active:scale-95\"\r\n      data-testid=\"artifact-close-button\"\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-color, border-radius, color, height). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button data-testid=\"artifact-close-button\" onClick={handleClick}>\r\n      <CrossIcon size={16} />\r\n    </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F079",
+      "group": "G54",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/preview.tsx:20",
+      "file": "components/chat/preview.tsx",
+      "line": 20,
+      "col": 5,
+      "found": "<button\r\n      className=\"rounded-xl border border-border/30 bg-card/20 px-3 py-2.5 text-left text-[11px] leading-relaxed text-muted-foreground/70 transition-all duration-200 hover:border-border/60 hover:bg-card/40 hover:text-muted-foreground\"\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, border-color, border-radius, color, font, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button onClick={handleClick}>\r\n      {suggestion}\r\n    </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F080",
+      "group": "G55",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/slash-commands.tsx:98",
+      "file": "components/chat/slash-commands.tsx",
+      "line": 98,
+      "col": 5,
+      "found": "<button\r\n      className={cn(\r\n        \"flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors\",\r\n        index === selectedIndex ? \"bg-muted/70\" : \"hover:bg-muted/40\"\r\n      )}\r\n      data-selected={index === selectedIndex}\r\n      onClick={handleClick}\r\n      onMouseDown={handleMouseDown}\r\n      type=\"button\"\r\n    >",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (background-color, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button data-selected={index === selectedIndex} onClick={handleClick} onMouseDown={handleMouseDown}>\r\n      <div className=\"flex size-6 shrink-0 items-center justify-center text-muted-foreground/60\">\r\n        {cmd.icon}\r\n      </div>\r\n      <span className=\"font-mono text-[13px] text-foreground\">/{cmd.name}</span>\r\n      <span className=\"text-[12px] text-muted-foreground/50\">\r\n        {cmd.description}\r\n      </span>\r\n      {cmd.shortcut ? (\r\n        <span className=\"ml-auto text-[11px] text-muted-foreground/30\">\r\n          {cmd.shortcut}\r\n        </span>\r\n      ) : null}\r\n    </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F081",
+      "group": "G56",
+      "rule": "component-substitution",
+      "severity": "error",
+      "evidence": "components/chat/sign-out-form.tsx:15",
+      "file": "components/chat/sign-out-form.tsx",
+      "line": 15,
+      "col": 5,
+      "found": "<button className=\"w-full px-1 py-0.5 text-left text-red-500\" type=\"submit\">",
+      "involves": "Button",
+      "message": "Raw <button> styled as a system Button (color, padding). Use Button from @/components/ui.",
+      "fix": {
+        "replace": "<Button>\r\n      Sign out\r\n    </Button>",
+        "confidence": "nearest",
+        "note": "Express the removed styling through Button props. Add: import { Button } from \"@/components/ui\";"
+      },
+      "class": "true-drift",
+      "basis": "component-substitution at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F082",
+      "group": "G57",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "components/ui/input-group.tsx:31",
+      "file": "components/ui/input-group.tsx",
+      "line": 31,
+      "col": 49,
+      "found": "has-[>kbd]:ml-[-0.15rem]",
+      "involves": "has-[>kbd]:ml-[-0.15rem]",
+      "message": "Arbitrary spacing value. -2.4px is not on the spacing scale.",
+      "fix": {
+        "replace": "has-[>kbd]:ml-0.5",
+        "confidence": "nearest",
+        "note": "Nearest step: 0.5 = 2px."
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F083",
+      "group": "G58",
+      "rule": "spacing-literal",
+      "severity": "error",
+      "evidence": "components/ui/input-group.tsx:33",
+      "file": "components/ui/input-group.tsx",
+      "line": 33,
+      "col": 48,
+      "found": "has-[>kbd]:mr-[-0.15rem]",
+      "involves": "has-[>kbd]:mr-[-0.15rem]",
+      "message": "Arbitrary spacing value. -2.4px is not on the spacing scale.",
+      "fix": {
+        "replace": "has-[>kbd]:mr-0.5",
+        "confidence": "nearest",
+        "note": "Nearest step: 0.5 = 2px."
+      },
+      "class": "true-drift",
+      "basis": "spacing-literal at error, with a nearest fix.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F084",
+      "group": "G59",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "components/chat/toast.tsx:45",
+      "file": "components/chat/toast.tsx",
+      "line": 45,
+      "col": 26,
+      "found": "toast-mobile:w-[356px]",
+      "involves": "toast-mobile:w-[356px]",
+      "message": "Unknown variant \"toast-mobile\". The class renders nothing; the variant is not defined by Tailwind or by a @custom-variant in the project's CSS.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F085",
+      "group": "G60",
+      "rule": "token-reference",
+      "severity": "error",
+      "evidence": "components/chat/toast.tsx:48",
+      "file": "components/chat/toast.tsx",
+      "line": 48,
+      "col": 17,
+      "found": "toast-mobile:w-fit",
+      "involves": "toast-mobile:w-fit",
+      "message": "Unknown variant \"toast-mobile\". The class renders nothing; the variant is not defined by Tailwind or by a @custom-variant in the project's CSS.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "true-drift",
+      "basis": "token-reference at error, with a fix to be written by hand.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F086",
+      "group": "G61",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/conversation.tsx:88",
+      "file": "components/ai-elements/conversation.tsx",
+      "line": 88,
+      "col": 73,
+      "found": "dark:bg-background",
+      "involves": "Button",
+      "message": "className on Button may not set background-color. background-color is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F087",
+      "group": "G61",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/conversation.tsx:155",
+      "file": "components/ai-elements/conversation.tsx",
+      "line": 155,
+      "col": 46,
+      "found": "dark:bg-background",
+      "involves": "Button",
+      "message": "className on Button may not set background-color. background-color is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F088",
+      "group": "G62",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/conversation.tsx:88",
+      "file": "components/ai-elements/conversation.tsx",
+      "line": 88,
+      "col": 92,
+      "found": "dark:hover:bg-muted",
+      "involves": "Button",
+      "message": "className on Button may not set background-color. background-color is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F089",
+      "group": "G62",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/conversation.tsx:155",
+      "file": "components/ai-elements/conversation.tsx",
+      "line": 155,
+      "col": 65,
+      "found": "dark:hover:bg-muted",
+      "involves": "Button",
+      "message": "className on Button may not set background-color. background-color is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F090",
+      "group": "G63",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/message.tsx:245",
+      "file": "components/ai-elements/message.tsx",
+      "line": 245,
+      "col": 10,
+      "found": "[&>*:not(:first-child)]:rounded-l-md",
+      "involves": "ButtonGroup",
+      "message": "className on ButtonGroup may not set border-top-left-radius, border-bottom-left-radius. className on ButtonGroup is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F091",
+      "group": "G64",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/message.tsx:245",
+      "file": "components/ai-elements/message.tsx",
+      "line": 245,
+      "col": 47,
+      "found": "[&>*:not(:last-child)]:rounded-r-md",
+      "involves": "ButtonGroup",
+      "message": "className on ButtonGroup may not set border-top-right-radius, border-bottom-right-radius. className on ButtonGroup is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F092",
+      "group": "G65",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/model-selector.tsx:56",
+      "file": "components/ai-elements/model-selector.tsx",
+      "line": 56,
+      "col": 18,
+      "found": "**:data-[slot=command-input-wrapper]:h-auto",
+      "involves": "Command",
+      "message": "className on Command may not set height. className on Command is limited to: .",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F093",
+      "group": "G66",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 184,
+      "found": "active:translate-y-0",
+      "involves": "Button",
+      "message": "className on Button may not set translate. className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F094",
+      "group": "G67",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/chat-header.tsx:55",
+      "file": "components/chat/chat-header.tsx",
+      "line": 55,
+      "col": 38,
+      "found": "bg-foreground",
+      "involves": "Button",
+      "message": "className on Button may not set background-color. background-color is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F095",
+      "group": "G68",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/tool.tsx:29",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 29,
+      "col": 59,
+      "found": "border",
+      "involves": "Collapsible",
+      "message": "className on Collapsible may not set border-style, border-width. className on Collapsible is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F096",
+      "group": "G69",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 41,
+      "found": "border-border/50",
+      "involves": "Button",
+      "message": "className on Button may not set border-color. border-color is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F097",
+      "group": "G70",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/suggestion.tsx:48",
+      "file": "components/ai-elements/suggestion.tsx",
+      "line": 48,
+      "col": 22,
+      "found": "cursor-pointer",
+      "involves": "Button",
+      "message": "className on Button may not set cursor. className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F098",
+      "group": "G71",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 153,
+      "found": "focus-visible:border-border/50",
+      "involves": "Button",
+      "message": "className on Button may not set border-color. border-color is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F099",
+      "group": "G72",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 132,
+      "found": "focus-visible:ring-0",
+      "involves": "Button",
+      "message": "className on Button may not set box-shadow. className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F100",
+      "group": "G73",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/chat-header.tsx:55",
+      "file": "components/chat/chat-header.tsx",
+      "line": 55,
+      "col": 73,
+      "found": "hover:bg-foreground/90",
+      "involves": "Button",
+      "message": "className on Button may not set background-color. background-color is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F101",
+      "group": "G74",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 110,
+      "found": "hover:text-foreground",
+      "involves": "Button",
+      "message": "className on Button may not set color. color is owned by the variant prop.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F102",
+      "group": "G75",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/tool.tsx:29",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 29,
+      "col": 48,
+      "found": "rounded-md",
+      "involves": "Collapsible",
+      "message": "className on Collapsible may not set border-radius. className on Collapsible is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F103",
+      "group": "G76",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 80,
+      "found": "shadow-none",
+      "involves": "Button",
+      "message": "className on Button may not set box-shadow. className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F104",
+      "group": "G77",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/chat-header.tsx:55",
+      "file": "components/chat/chat-header.tsx",
+      "line": 55,
+      "col": 57,
+      "found": "text-background",
+      "involves": "Button",
+      "message": "className on Button may not set color. color is owned by the variant prop.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F105",
+      "group": "G78",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 58,
+      "found": "text-muted-foreground",
+      "involves": "Button",
+      "message": "className on Button may not set color. color is owned by the variant prop.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F106",
+      "group": "G79",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/tool.tsx:69",
+      "file": "components/ai-elements/tool.tsx",
+      "line": 69,
+      "col": 42,
+      "found": "text-xs",
+      "involves": "Badge",
+      "message": "className on Badge may not set font-size, line-height. font is owned by the component; use a variant or a token.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F107",
+      "group": "G80",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/chat/visibility-selector.tsx:117",
+      "file": "components/chat/visibility-selector.tsx",
+      "line": 117,
+      "col": 92,
+      "found": "transition-colors",
+      "involves": "Button",
+      "message": "className on Button may not set transition-property, transition-timing-function, transition-duration. className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F108",
+      "group": "G81",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/conversation.tsx:88",
+      "file": "components/ai-elements/conversation.tsx",
+      "line": 88,
+      "col": 41,
+      "found": "translate-x-[-50%]",
+      "involves": "Button",
+      "message": "className on Button may not set translate. className on Button is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    },
+    {
+      "id": "F109",
+      "group": "G82",
+      "rule": "classname-policy",
+      "severity": "warn",
+      "evidence": "components/ai-elements/suggestion.tsx:20",
+      "file": "components/ai-elements/suggestion.tsx",
+      "line": 20,
+      "col": 49,
+      "found": "whitespace-nowrap",
+      "involves": "ScrollArea",
+      "message": "className on ScrollArea may not set white-space. className on ScrollArea is limited to: margin, width, height, flex-item, grid-item, position, display, overflow.",
+      "fix": {
+        "replace": null,
+        "confidence": "none"
+      },
+      "class": "needs-decision",
+      "basis": "True by the component's contract, reported at warn: whether className.allow should widen for this component is a policy call.",
+      "review": "queued",
+      "confirmed": false
+    }
+  ]
+}

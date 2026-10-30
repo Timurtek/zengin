@@ -1,0 +1,45 @@
+{
+  "schema": "zengin-audit/1",
+  "repo": {
+    "name": "shadcn-ui/taxonomy",
+    "ref": "main",
+    "commit": "298a8857c7128a0d121e7f699dfd729f23b3966d"
+  },
+  "system": {
+    "package": "@/components/ui",
+    "version": "0.0.0"
+  },
+  "tool": {
+    "name": "@zenginui/cli",
+    "version": "0.9.0"
+  },
+  "generatedAt": "2026-10-15T20:34:08.930Z",
+  "durationMs": 386,
+  "filesChecked": 117,
+  "cap": 150,
+  "totals": {
+    "findings": 35,
+    "groups": 31,
+    "queued": 35,
+    "summarised": 0,
+    "confirmed": 0,
+    "byClass": {
+      "true-drift": {
+        "findings": 31,
+        "groups": 27
+      },
+      "needs-decision": {
+        "findings": 4,
+        "groups": 4
+      },
+      "intentional-exception": {
+        "findings": 0,
+        "groups": 0
+      },
+      "false-positive": {
+        "findings": 0,
+        "groups": 0
+      }
+    }
+  }
+}
