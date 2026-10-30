@@ -1,5 +1,11 @@
 # @zenginui/cli
 
+## 0.12.0
+
+### Minor Changes
+
+- [#37](https://github.com/Timurtek/zengin/pull/37) [`98c6aff`](https://github.com/Timurtek/zengin/commit/98c6afff19b4c968cb93ffa3ea514ebfc49e6434) Thanks [@Timurtek](https://github.com/Timurtek)! - `zengin audit <repo> --out <dir>` runs the Design System Drift Audit on a repository whose definitions were derived in prework. Findings are grouped by cause (one rule and one found value is one decision), ranked by severity times the number of files, and each gets a proposed class (true drift, needs a decision, intentional exception, false positive) with its `file:line` evidence and the reason. The first 150 in rank order are queued for hand review (`--cap`), the rest are summarised; every finding is written `confirmed: false`, since only a reviewer confirms a class. It writes `findings.json`, `run.json`, and a report draft as `report.md` and `report.pdf`, all to `--out` and nowhere else; the repository is only read.
+
 ## 0.11.0
 
 ### Minor Changes

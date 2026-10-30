@@ -1,6 +1,6 @@
 {
   "name": "create-zengin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "npm create zengin: a new project on Zengin UI that owns its components. Runs @zenginui/cli create.",
   "license": "MIT",
   "type": "module",
